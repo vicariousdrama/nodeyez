@@ -28,7 +28,9 @@ The [slideshow](./scripts/slideshow.sh) viewer uses the framebuffer imageviewer,
 Consider following the helpful guidance at [node.guide](https://node.guide) on different nodes available.  Personally I like [Stadicus Raspibolt](https://github.com/Stadicus/RaspiBolt) and [MyNodeBTC](https://github.com/mynodebtc/mynode), but nearly any Raspberry Pi based node should be sufficient provided you have access to the GPIO pins.
 
 2. Acquire and install a 3.5" TFT screen
-The resolution is 480x320 and should be based on the XPT2046 chip.  The one I've used I got from a local electronics store.
+The resolution is 480x320 and should be based on the XPT2046 chip.  The one I've used I got from a local electronics store.  It looks like this and generally costs between $15 and $30. You can get one from [amazon here](https://amzn.to/3f7QbgJ)
+
+![image of the 3.5" TFT screen for raspberry pi](xpt2046-tft-piscreen.jpg)
 
 3. Enable the GPIO for SPI. 
 Login to your pi, and do `sudo raspi-config` (menu 3 Interface Options / P4 SPI). Save and exit.
