@@ -3,8 +3,11 @@ Display panels to get the most from your node
 
 This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  It may then be easily displayed to an attached screen.  A simple [slideshow.sh](./scripts/slideshow.sh) script can cycle through the images every few seconds for near live information updates.
 
+![image strip](./nodeyez.png)
 
-
+- [block height](#blockheightpy)
+- [difficulty epoch](#difficultyepochpy)
+- [mempool blocks](#mempool-blockspy)
 
 ## Pre-requisites
 
@@ -58,4 +61,18 @@ You'll need to reboot before the changes for boot and the GPIO pins are enabled 
 ## blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
 
-![alt text](./blockheight.png)
+![sample image depicting the blockheight reads 693131](./blockheight.png)
+
+## difficultyepoch.py
+This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
+
+![difficulty epoch image sample showing several blocks mined, and ahead of schedule](./difficultyepoch.png)
+
+## mempool-blocks.py
+This python script will query the mempool.space service. By default it assumes the usage of mempool space viewer on a local MyNodeBTC instance, but the script can be altered to use the public [mempool.space](https://mempool.space) website.  It will display up to 3 upcoming blocks in a similar way as mempool space website renders.
+
+![sample image of mempool blocks](./mempool-blocks.png)
+
+
+
+
