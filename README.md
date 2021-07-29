@@ -16,6 +16,8 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 
 ## ToDo / Plans / Known Issues
 
+This repository is in Alpha stage. This means it likely has bugs, and documentation may not fully guide a new user to succesful operation.  Users of this repository are invited to provide feedback, in the form of questions, recommendations, bug reports etc.  
+
 Currently, all the python scripts assume that image files will be generated and saved in a common folder (/home/admin/images). This was done for expedience when developing this prototype on a MyNode instance.  The plan is to improve these scripts to use a single output folder instead of configuring them uniquely, and to turn this all into a more easily managed service. Eventually, it could become a package/application for the popular node deployments
 
 The [slideshow](./scripts/slideshow.sh) viewer uses the framebuffer imageviewer, which requires root access. I believe this could be gotten around by adding whatever user would be running it to the `video` group.  
