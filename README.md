@@ -1,6 +1,11 @@
 # nodeyez
 Display panels to get the most from your node
 
+This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  It may then be easily displayed to an attached screen.  A simple [slideshow.sh](./scripts/slideshow.sh) script can cycle through the images every few seconds for near live information updates.
+
+
+
+
 ## Pre-requisites
 
 1. Build yourself a Raspberry Pi Bitcoin Node.  
