@@ -78,8 +78,6 @@ sudo apt install git
 git clone https://github.com/vicariousdrama/nodeyez.git
 ```
 
-
-
 ## blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
 
@@ -175,12 +173,68 @@ This python script calls upon the bisq marketplace to get the current fiat valua
 
 ![sample sats per usd display](./satsperusd.png)
 
+Before running the script, edit it to make changes
+```
+nano scripts/satsperusd.py
+```
+You may want to change the location of the outputFile.  You can also alter the colors representing each sat if you so desire.
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 1 hour). This calls out to the bisq marketplace data, so an hour is likely sufficient.  It does report the low and high for the past day which gives you a nice range of current valuation.
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it as a background process
+```
+python3 scripts/satsperusd.py &
+```
+
 ## sysinfo.py
 A useful python script that reports the CPU temperature and load, drive space in use and free, as well as memory usage.  Color coding follows green/yellow/red for ranging from all OK to heavy usage to warning.
 
 ![sample system info panel](./sysinfo.png)
 
+Before running the script, edit it to make changes
+```
+nano scripts/sysinfo.py
+```
+You may want to change the location of the outputFile.  
+This script assumes you have a microsd card as the boot drive, and an external drive, like an SSD attached for the main drive.
+If your configuration is different you may need to adjust the drive devices referenced on 109,118 and 206,207
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it as a background process
+```
+python3 scripts/sysinfo.py &
+```
+
 ## utcclock.py
 This script provides a simple rendering of the current date and time
 
 ![sample date and time display](./utcclock.png)
+
+Before running the script, edit it to make changes
+```
+nano scripts/utcclock.py
+```
+You may want to change the location of the outputFile.
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it as a background process
+```
+python3 scripts/utcclock.py &
+```
+
+## Running the Slideshow
+
+Once you've started processes to create desired image panels from above, now its time to display them on your screen.
+
+The [slideshow.sh](./scripts/slideshow.sh) file is a basic wrapper around the fbi program.  To run it
+
+```
+(
+cd scripts
+chmod +x slideshow.sh
+sudo ./slideshow.sh &
+)
+```
+
+You should start seeing images display on your screen.  If you dont see any images, then edit the slideshow.sh file, and remove the part at the end `> /dev/null 2>&1` and rerun. Any errors should be reported to help diagnose.
