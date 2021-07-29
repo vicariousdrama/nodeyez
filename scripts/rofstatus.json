@@ -1,0 +1,116 @@
+{
+  "sleeptime": "900",
+  "imagesettings": {
+    "colors": {
+      "node": "#c0c0c0",
+      "offline": "#ff4040",
+      "online": "#40ff40",
+      "offlinetext": "#ffffff",
+      "onlinetext": "#000000",
+      "text": "#ffffff",
+      "textshadow": "#000000"
+    },
+    "fonts": {
+      "date": {
+        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "fontsize": 12
+      },
+      "notes": {
+        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "fontsize": 16
+      },
+      "ring": {
+        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "fontsize": 24
+      }
+    }
+  },
+  "rings":[
+    {
+      "name": "label for ring",
+      "imagefilename": "/home/admin/images/rof-x.png",
+      "imagesettings": {
+        "colors": {
+          "node": "#c0c0c0",
+          "offline": "#ff4040",
+          "online": "#40ff00",
+          "offlinetext": "#ffffff",
+          "onlinetext": "#000000",
+          "text": "#ffffff",
+          "textshadow": "#000000"
+        },
+        "fonts": {
+          "date": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 12
+          },
+          "notes": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 16
+          },
+          "ring": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 24
+          }
+        }
+      },
+      "nodes": [
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        }
+      ]
+    },
+    {
+      "name": "ring2",
+      "imagefilename": "/home/admin/images/rof-ring2.png",
+      "imagesettings": {
+        "colors": {
+          "node": "#c0c0c0",
+          "offline": "#ff4040",
+          "online": "#40ff00",
+          "offlinetext": "#ffffff",
+          "onlinetext": "#000000",
+          "text": "#ffffff",
+          "textshadow": "#000000"
+        },
+        "fonts": {
+          "date": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 12
+          },
+          "notes": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 16
+          },
+          "ring": {
+            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "fontsize": 24
+          }
+        }
+      },
+      "nodes": [
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        },
+        {"pubkey": "apubkey",
+         "operator": "twitter handle, telegram nick, email, etc."
+        }
+      ]
+    }
+  ]
+}
