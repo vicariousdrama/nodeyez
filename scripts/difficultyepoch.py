@@ -138,13 +138,13 @@ def createimage(width=480, height=320):
             nextepochdesc = nextepochdesc + "s"
         secondstoepochend = secondstoepochend - (nextepochhours * 3600)
     if secondstoepochend > 600:
-        nextepochminutes = math.floor(secondstoepochend / 600)
+        nextepochminutes = math.floor(secondstoepochend / 60)
         if nextepochdesc != "":
             nextepochdesc = nextepochdesc + ", "
         nextepochdesc = nextepochdesc + str(nextepochminutes) + " minute"
         if nextepochminutes > 1:
             nextepochdesc = nextepochdesc + "s"
-        secondstoepochend = secondstoepochend - (nextepochminutes * 600)
+        secondstoepochend = secondstoepochend - (nextepochminutes * 60)
     else:
         if nextepochdesc == "":
             "a few minutes"
