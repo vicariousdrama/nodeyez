@@ -3,7 +3,7 @@ Display panels to get the most from your node
 
 This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  It may then be easily displayed to an attached screen.  A simple [slideshow.sh](./scripts/slideshow.sh) script can cycle through the images every few seconds for near live information updates.
 
-![image strip](./nodeyez.png)
+![image strip](./images/nodeyez.png)
 
 - [block height](#blockheightpy)
 - [difficulty epoch](#difficultyepochpy)
@@ -30,7 +30,7 @@ Consider following the helpful guidance at [node.guide](https://node.guide) on d
 2. Acquire and install a 3.5" TFT screen
 The resolution is 480x320 and should be based on the XPT2046 chip.  The one I've used I got from a local electronics store.  It looks like this and generally costs between $15 and $30. You can get one from [amazon here](https://amzn.to/3f7QbgJ)
 
-![image of the 3.5" TFT screen for raspberry pi](xpt2046-tft-piscreen.jpg)
+![image of the 3.5" TFT screen for raspberry pi](./images/xpt2046-tft-piscreen.jpg)
 
 3. Enable the GPIO for SPI. 
 Login to your pi, and do `sudo raspi-config` (menu 3 Interface Options / P4 SPI). Save and exit.
@@ -85,7 +85,7 @@ git clone https://github.com/vicariousdrama/nodeyez.git
 ## blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
 
-![sample image depicting the blockheight reads 693131](./blockheight.png)
+![sample image depicting the blockheight reads 693131](./images/blockheight.png)
 
 Before running the script, edit it to make changes
 ```
@@ -109,7 +109,7 @@ ps aux | grep blockheight
 ## difficultyepoch.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
 
-![difficulty epoch image sample showing several blocks mined, and ahead of schedule](./difficultyepoch.png)
+![difficulty epoch image sample showing several blocks mined, and ahead of schedule](./images/difficultyepoch.png)
 
 Before running the script, edit it to make changes
 ```
@@ -127,7 +127,7 @@ python3 scripts/difficultyepoch.py &
 ## mempool-blocks.py
 This python script will query the mempool.space service. By default it assumes the usage of mempool space viewer on a local MyNodeBTC instance, but the script can be altered to use the public [mempool.space](https://mempool.space) website.  It will display up to 3 upcoming blocks in a similar way as mempool space website renders.
 
-![sample image of mempool blocks](./mempool-blocks.png)
+![sample image of mempool blocks](./images/mempool-blocks.png)
 
 Before running the script, edit it to make changes
 ```
@@ -147,7 +147,7 @@ python3 scripts/mempool-blocks.py &
 ## rofstatus.py
 The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node in the preordained sequence and the script will provide a useful image showing its present state.  If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  Node operator contact list appears to the right of the ring.  You can define as many ring of fire configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
 
-![sample ring of fire rendering showing 8 nodes, 2 offline](./rof-x.png)
+![sample ring of fire rendering showing 8 nodes, 2 offline](./images/rof-x.png)
 
 Before running the script, you should review it
 ```
@@ -175,7 +175,7 @@ python3 rofstatus.py &
 ## satsperusd.py
 This python script calls upon the bisq marketplace to get the current fiat valuation of Bitcoin in US Dollar terms, and then calculates the sats per dollar and displays graphically
 
-![sample sats per usd display](./satsperusd.png)
+![sample sats per usd display](./images/satsperusd.png)
 
 Before running the script, edit it to make changes
 ```
@@ -193,7 +193,7 @@ python3 scripts/satsperusd.py &
 ## sysinfo.py
 A useful python script that reports the CPU temperature and load, drive space in use and free, as well as memory usage.  Color coding follows green/yellow/red for ranging from all OK to heavy usage to warning.
 
-![sample system info panel](./sysinfo.png)
+![sample system info panel](./images/sysinfo.png)
 
 Before running the script, edit it to make changes
 ```
@@ -213,7 +213,7 @@ python3 scripts/sysinfo.py &
 ## utcclock.py
 This script provides a simple rendering of the current date and time
 
-![sample date and time display](./utcclock.png)
+![sample date and time display](./images/utcclock.png)
 
 Before running the script, edit it to make changes
 ```
