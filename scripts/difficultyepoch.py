@@ -115,12 +115,16 @@ def createimage(width=480, height=320):
     timenow = getcurrenttimeinseconds()
     secondspassed = timenow - timebegan
     expectedmined = int(math.floor(secondspassed / 600))
-    nextadjustment = str(float("%.2f" % (((float(blocksmined) / float(expectedmined)) - 1.0) * 100)))
+    nextadjustment = "0.0"
+    if float(expectedmined) > 0:
+        nextadjustment = str(float("%.2f" % (((float(blocksmined) / float(expectedmined)) - 1.0) * 100)))
     adjustcolor = colorbehind
     if "-" not in nextadjustment:
         nextadjustment = "+" + nextadjustment
         adjustcolor = colormined
-    estimateepochend = int(math.floor((float(secondspassed) / float(blocksmined))*2016)) + timebegan
+    estimateepochend = timebegan + (2016*600)
+    if float(blocksmined) > 0:
+        estimateepochend = int(math.floor((float(secondspassed) / float(blocksmined))*2016)) + timebegan
     secondstoepochend = estimateepochend - timenow
     nextepochdesc = ""
     if secondstoepochend > 86400:
