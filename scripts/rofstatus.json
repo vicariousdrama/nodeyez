@@ -2,7 +2,7 @@
   "sleeptime": "900",
   "imagesettings": {
     "colors": {
-      "node": "#c0c0c0",
+      "circle": "#404040",
       "offline": "#ff4040",
       "online": "#40ff40",
       "offlinetext": "#ffffff",
@@ -27,13 +27,16 @@
   },
   "rings":[
     {
-      "name": "label for ring",
-      "imagefilename": "/home/admin/images/rof-x.png",
+      "name": "Sample Ring",
+      "shortlabel": "Sample",
+      "imagefilename": "/home/admin/images/rof-sample.png",
+      "telegramgroup": "",
+      "telegramadmin": "",
       "imagesettings": {
         "colors": {
-          "node": "#c0c0c0",
+          "circle": "#404040",
           "offline": "#ff4040",
-          "online": "#40ff00",
+          "online": "#40ff40",
           "offlinetext": "#ffffff",
           "onlinetext": "#000000",
           "text": "#ffffff",
@@ -55,62 +58,23 @@
         }
       },
       "nodes": [
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
+        {"pubkey": "0311e4ee7e18ebd68b4e1c425da78a5a8af4d5825ece596d9258d152bd962a7e2b",
+         "operator": "Warpedspace-PLEBNET.org"
         },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
+        {"pubkey": "03bb88ccc444534da7b5b64b4f7b15e1eccb18e102db0e400d4b9cfe93763aa26d",
+         "operator": "ln2me.com"
         },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
+        {"pubkey": "03d2e20bc19d995098ba357157a9cfbfbfdff4b78fce5ec713128e988e0115d776",
+         "operator": "DARTHNODE-PLEBNET.org"
         },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
+        {"pubkey": "02a7225838d63a99cf7f967805624d915775cfe96a5dfdd95f23b63ae157a63a70",
+         "operator": "LiveLongAndProsper"
         },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
-        }
-      ]
-    },
-    {
-      "name": "ring2",
-      "imagefilename": "/home/admin/images/rof-ring2.png",
-      "imagesettings": {
-        "colors": {
-          "node": "#c0c0c0",
-          "offline": "#ff4040",
-          "online": "#40ff00",
-          "offlinetext": "#ffffff",
-          "onlinetext": "#000000",
-          "text": "#ffffff",
-          "textshadow": "#000000"
-        },
-        "fonts": {
-          "date": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 12
-          },
-          "notes": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 16
-          },
-          "ring": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 24
-          }
-        }
-      },
-      "nodes": [
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
-        },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
-        },
-        {"pubkey": "apubkey",
-         "operator": "twitter handle, telegram nick, email, etc."
+        {"pubkey": "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f",
+         "operator": "ACINQ"
         }
       ]
     }
   ]
 }
+
