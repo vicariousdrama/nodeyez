@@ -48,18 +48,19 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
         x=xy[0]
         y=xy[1]
         # iterate all channels of this node, look for cross cutting channels
-        for channel in nodesinfos[nodenumber]["channels"]:
-            pub1 = channel["node1_pub"]
-            pub2 = channel["node2_pub"]
-            for nidx in range(nodecount):
-                if nidx != nodenumber:
-                    pubthis = nodes[nodenumber]["pubkey"]
-                    pubthat = nodes[nidx]["pubkey"]
-                    if (pub1 == pubthis and pub2 == pubthat) or (pub2 == pubthis and pub1 == pubthat):
-                       thatxy=xy4nodeindex(nidx+1,nodecount,(cx,cy),radius)
-                       thatx=thatxy[0]
-                       thaty=thatxy[1]
-                       draw.line(xy=(x,y,thatx,thaty),fill=colorcircle,width=int(thickness/2))
+        if "channels" in nodesinfos[nodenumber]:
+            for channel in nodesinfos[nodenumber]["channels"]:
+                pub1 = channel["node1_pub"]
+                pub2 = channel["node2_pub"]
+                for nidx in range(nodecount):
+                    if nidx != nodenumber:
+                        pubthis = nodes[nodenumber]["pubkey"]
+                        pubthat = nodes[nidx]["pubkey"]
+                        if (pub1 == pubthis and pub2 == pubthat) or (pub2 == pubthis and pub1 == pubthat):
+                            thatxy=xy4nodeindex(nidx+1,nodecount,(cx,cy),radius)
+                            thatx=thatxy[0]
+                            thaty=thatxy[1]
+                            draw.line(xy=(x,y,thatx,thaty),fill=coloronline,width=int(thickness/2))
     nodenumber = -1
     # Circles for the nodes
     for nodestatus in nodesonline:
@@ -190,15 +191,16 @@ def getnodealiasandstatus(pubkey, nextnodepubkey):
         nodeonline = attemptconnect(nodeinfo)
     # look if there is a channel
     haschannel = 0
-    for channel in nodeinfo["channels"]:
-        node1_pub = channel["node1_pub"]
-        node2_pub = channel["node2_pub"]
-        if pubkey == node1_pub and nextnodepubkey == node2_pub:
-            haschannel = 1
-            break
-        if pubkey == node2_pub and nextnodepubkey == node1_pub:
-            haschannel = 1
-            break
+    if "channels" in nodeinfo:
+        for channel in nodeinfo["channels"]:
+            node1_pub = channel["node1_pub"]
+            node2_pub = channel["node2_pub"]
+            if pubkey == node1_pub and nextnodepubkey == node2_pub:
+                haschannel = 1
+                break
+            if pubkey == node2_pub and nextnodepubkey == node1_pub:
+                haschannel = 1
+                break
     return (nodealias, nodeonline, haschannel, nodeinfo)
 
 def checknodestatus(nodes):
@@ -240,7 +242,7 @@ def setfontandcolor(config):
     datefont = getfontconfig(config, "date")
     notesfont = getfontconfig(config, "notes")
     # color config
-    colorcircle = getcolorconfig(config, "node")
+    colorcircle = getcolorconfig(config, "circle")
     coloroffline = getcolorconfig(config, "offline")
     coloronline = getcolorconfig(config, "online")
     colorofflinetext = getcolorconfig(config, "offlinetext")

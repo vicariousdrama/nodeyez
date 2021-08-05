@@ -85,10 +85,10 @@ def getepochnum(blocknum):
 
 def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
-    return int(epochnum * 2016)
+    return int(epochnum * 2016) + 1
 
 def getcurrenttimeinseconds():
-    cmd = "date +%s"
+    cmd = "date -u +%s"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return int(cmdoutput)
@@ -115,8 +115,10 @@ def createimage(width=480, height=320):
     timenow = getcurrenttimeinseconds()
     secondspassed = timenow - timebegan
     expectedmined = int(math.floor(secondspassed / 600))
+    if blocksmined == 1:
+        expectedmined = 1
     nextadjustment = "0.0"
-    if float(expectedmined) > 0:
+    if float(expectedmined) > 0 and float(blocksmined) > 0:
         nextadjustment = str(float("%.2f" % (((float(blocksmined) / float(expectedmined)) - 1.0) * 100)))
     adjustcolor = colorbehind
     if "-" not in nextadjustment:
@@ -127,31 +129,34 @@ def createimage(width=480, height=320):
         estimateepochend = int(math.floor((float(secondspassed) / float(blocksmined))*2016)) + timebegan
     secondstoepochend = estimateepochend - timenow
     nextepochdesc = ""
-    if secondstoepochend > 86400:
-        nextepochdays = math.floor(secondstoepochend / 86400)
-        nextepochdesc = nextepochdesc + str(nextepochdays) + " day"
-        if nextepochdays > 1:
-            nextepochdesc = nextepochdesc + "s"
-        secondstoepochend = secondstoepochend - (nextepochdays * 86400)
-    if secondstoepochend > 3600:
-        nextepochhours = math.floor(secondstoepochend / 3600)
-        if nextepochdesc != "":
-            nextepochdesc = nextepochdesc + ", "
-        nextepochdesc = nextepochdesc + str(nextepochhours) + " hour"
-        if nextepochhours > 1:
-            nextepochdesc = nextepochdesc + "s"
-        secondstoepochend = secondstoepochend - (nextepochhours * 3600)
-    if secondstoepochend > 600:
-        nextepochminutes = math.floor(secondstoepochend / 60)
-        if nextepochdesc != "":
-            nextepochdesc = nextepochdesc + ", "
-        nextepochdesc = nextepochdesc + str(nextepochminutes) + " minute"
-        if nextepochminutes > 1:
-            nextepochdesc = nextepochdesc + "s"
-        secondstoepochend = secondstoepochend - (nextepochminutes * 60)
+    if blocksmined >= 10:
+        if secondstoepochend > 86400:
+            nextepochdays = math.floor(secondstoepochend / 86400)
+            nextepochdesc = nextepochdesc + str(nextepochdays) + " day"
+            if nextepochdays > 1:
+                nextepochdesc = nextepochdesc + "s"
+            secondstoepochend = secondstoepochend - (nextepochdays * 86400)
+        if secondstoepochend > 3600:
+            nextepochhours = math.floor(secondstoepochend / 3600)
+            if nextepochdesc != "":
+                nextepochdesc = nextepochdesc + ", "
+            nextepochdesc = nextepochdesc + str(nextepochhours) + " hour"
+            if nextepochhours > 1:
+                nextepochdesc = nextepochdesc + "s"
+            secondstoepochend = secondstoepochend - (nextepochhours * 3600)
+        if (secondstoepochend > 600) and ("," not in nextepochdesc):
+            nextepochminutes = math.floor(secondstoepochend / 60)
+            if nextepochdesc != "":
+                nextepochdesc = nextepochdesc + ", "
+            nextepochdesc = nextepochdesc + str(nextepochminutes) + " minute"
+            if nextepochminutes > 1:
+                nextepochdesc = nextepochdesc + "s"
+            secondstoepochend = secondstoepochend - (nextepochminutes * 60)
+        else:
+            if nextepochdesc == "":
+                "a few minutes"
     else:
-        if nextepochdesc == "":
-            "a few minutes"
+        nextepochdesc = "about 2 weeks"
 
     blockw=int(math.floor(width/63))
     padleft=int(math.floor((width-(63*blockw))/2))
@@ -186,7 +191,9 @@ def createimage(width=480, height=320):
     drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32)
     drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
     im.save(outputFile)
+    of2=outputFile.replace("/difficulty","/"+str(currentblock)+"-difficulty")
+    im.save(of2)
 
 while True:
     createimage()
-    time.sleep(600)
+    time.sleep(540)
