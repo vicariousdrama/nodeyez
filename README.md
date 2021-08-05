@@ -147,7 +147,7 @@ python3 scripts/mempool-blocks.py &
 ## rofstatus.py
 The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node in the preordained sequence and the script will provide a useful image showing its present state.  If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  Node operator contact list appears to the right of the ring.  You can define as many ring of fire configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
 
-![sample ring of fire rendering showing 8 nodes, 2 offline](./images/rof-x.png)
+![sample ring of fire rendering showing 5 nodes](./images/rof-sample.png)
 
 Before running the script, you should review it
 ```
