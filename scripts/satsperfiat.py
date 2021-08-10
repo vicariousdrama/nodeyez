@@ -14,6 +14,10 @@ fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
 fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
 fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",20)
 fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
+fontDeja128=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",128)
+last=1
+low=1
+high=1
 
 def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
     satsleft = spf
@@ -39,6 +43,8 @@ def getfont(size):
         return fontDeja20
     if size == 24:
         return fontDeja24
+    if size == 128:
+        return fontDeja128
 
 def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
     thefont = getfont(fontsize)
@@ -67,6 +73,9 @@ def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
 def createimage(width=480, height=320):
     last,high,low = getpriceinfo()
     satsperfiatunit = int(round(100000000.0 / last))
+    satsperfiatunitlow = int(round(100000000.0 / low))
+    satsperfiatunithigh = int(round(100000000.0 / high))
+    satsleft = satsperfiatunit
     satw=int(math.floor(width/87))
     padleft=int(math.floor((width-(87*satw))/2))
     padtop=40
@@ -74,36 +83,36 @@ def createimage(width=480, height=320):
     draw = ImageDraw.Draw(im)
     dc = 0
     dr = 0
-    while satsperfiatunit > 100:
-        satsperfiatunit = satsperfiatunit - 100
+    while satsleft > 100:
+        satsleft = satsleft - 100
         drawsatssquare(draw,dc,dr,100,satw,padleft,padtop)
         dc = dc + 1
         if dc >= 8:
             dr = dr + 1
             dc = 0
-    drawsatssquare(draw,dc,dr,satsperfiatunit,satw,padleft,padtop)
+    drawsatssquare(draw,dc,dr,satsleft,satw,padleft,padtop)
     drawcenteredtext(draw, "Sats Per USD", 24, int(width/2), int(padtop/2))
-    satsperfiatunit = int(round(100000000.0 / last))
     drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
-    satsperfiatunit = int(round(100000000.0 / low))
-    drawcenteredtext(draw, "High: " + str(satsperfiatunit), 20, int(width/8*7), height-padtop)
-    satsperfiatunit = int(round(100000000.0 / high))
-    drawcenteredtext(draw, "Low: " + str(satsperfiatunit), 20, int(width/8*1), height-padtop)
+    drawcenteredtext(draw, "High: " + str(satsperfiatunitlow), 20, int(width/8*7), height-padtop)
+    drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
+    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), color40FF40)
+    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-1, int(height/2)-1, color000000)
     drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, color40FF40)
     drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
     im.save(outputFile)
 
 def getpriceinfo():
     cmd = "torify curl --silent " + priceurl
-    last = 1
-    high = 1
-    low = 1
+    global last
+    global high
+    global low
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        last = int(math.floor(float(j["btc_usd"]["last"])))
-        high = int(math.floor(float(j["btc_usd"]["high"])))
-        low = int(math.floor(float(j["btc_usd"]["low"])))
+        if len(cmdoutput) > 0:
+            j = json.loads(cmdoutput)
+            last = int(math.floor(float(j["btc_usd"]["last"])))
+            high = int(math.floor(float(j["btc_usd"]["high"])))
+            low = int(math.floor(float(j["btc_usd"]["low"])))
     except subprocess.CalledProcessError as e:
         cmdoutput = "{\"error\":  }"
     return (last,high,low)
