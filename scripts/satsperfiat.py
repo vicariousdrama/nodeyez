@@ -7,6 +7,7 @@ import time
 
 priceurl="https://bisq.markets/bisq/api/markets/ticker"
 outputFile="/home/admin/images/satsperusd.png"
+color404040=ImageColor.getrgb("#404040")
 color40FF40=ImageColor.getrgb("#40FF40")
 color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
@@ -81,6 +82,8 @@ def createimage(width=480, height=320):
     padtop=40
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
+    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorFFFFFF)
+    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, color404040)
     dc = 0
     dr = 0
     while satsleft > 100:
@@ -95,8 +98,6 @@ def createimage(width=480, height=320):
     drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
     drawcenteredtext(draw, "High: " + str(satsperfiatunitlow), 20, int(width/8*7), height-padtop)
     drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
-    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), color40FF40)
-    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-1, int(height/2)-1, color000000)
     drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, color40FF40)
     drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
     im.save(outputFile)
