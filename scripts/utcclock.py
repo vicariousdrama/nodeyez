@@ -57,7 +57,6 @@ def createimage(width=480, height=320):
     drawcenteredtext(draw, getdayofweek(), 72, int(width/2), int(height/2)-120)
     drawcenteredtext(draw, getdate(), 72, int(width/2), int(height/2))
     drawcenteredtext(draw, gettime(), 96, int(width/2), int(height/2)+120)
-    drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
     im.save(outputFile)
 
 while True:
