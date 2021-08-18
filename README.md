@@ -82,6 +82,11 @@ sudo apt install git
 git clone https://github.com/vicariousdrama/nodeyez.git
 ```
 
+11. Install torify
+```
+sudo apt-get install apt-transport-tor
+```
+
 ## blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
 
