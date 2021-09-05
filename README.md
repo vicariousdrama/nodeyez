@@ -70,6 +70,9 @@ typing-extensions        3.7.4.2
 If neither PIL or Pillow is installed, then go ahead with
 `pip install Pillow`
 
+You can upgrade Pillow to the latest using
+`python3 -m pip install --upgrade Pillow`
+
 8. Reboot
 You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  Do a safe shutdown. If you're running a node package like MyNodeBTC, then use the console to power cycle the device cleanly.  
 
