@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 import json
@@ -6,7 +7,7 @@ import subprocess
 import time
 
 priceurl="https://bisq.markets/bisq/api/markets/ticker"
-outputFile="/home/admin/images/satsperusd.png"
+outputFile="/home/bitcoin/images/satsperusd.png"
 color404040=ImageColor.getrgb("#404040")
 color40FF40=ImageColor.getrgb("#40FF40")
 color000000=ImageColor.getrgb("#000000")
