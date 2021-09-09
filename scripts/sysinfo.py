@@ -22,7 +22,7 @@ fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
 fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
 fontDeja48=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",48)
 fontDeja64=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",64)
-outputFile="/home/admin/images/sysinfo.png"
+outputFile="/home/bitcoin/images/sysinfo.png"
 
 def drawicon(draw,icon,x,y,w,h,v=None):
     if icon == "thermometer":
