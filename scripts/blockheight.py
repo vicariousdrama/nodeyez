@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 import json
@@ -5,7 +6,7 @@ import math
 import subprocess
 import time
 
-outputFile="/home/admin/images/blockheight.png"
+outputFile="/home/bitcoin/images/blockheight.png"
 colorFFFFFF=ImageColor.getrgb("#ffffff")
 fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
 fontDeja96=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",96)
