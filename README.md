@@ -7,20 +7,23 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 
 - [block height](#blockheightpy)
 - [difficulty epoch](#difficultyepochpy)
+- [ip address](#ipaddresspy)
 - [mempool blocks](#mempool-blockspy)
 - [ring of fire](#rofstatuspy)
 - [sats per usd](#satsperusdpy)
 - [system info](#sysinfopy)
 - [utc clock](#utcclockpy)
 
+- [run as services at startup](#runatstartup)
+
 
 ## ToDo / Plans / Known Issues
 
 This repository is in Alpha stage. This means it likely has bugs, and documentation may not fully guide a new user to succesful operation.  Users of this repository are invited to provide feedback, in the form of questions, recommendations, bug reports etc.  
 
-Currently, all the python scripts assume that image files will be generated and saved in a common folder (/home/admin/images). This was done for expedience when developing this prototype on a MyNode instance.  The plan is to improve these scripts to use a single output folder instead of configuring them uniquely, and to turn this all into a more easily managed service. Eventually, it could become a package/application for the popular node deployments
+Currently, all the python scripts assume that image files will be generated and saved in a common folder (/home/bitcoin/images). This was done for expedience when developing this prototype on a MyNode instance.  The plan is to improve these scripts to use a single output folder instead of configuring them uniquely, and to turn this all into a more easily managed service. Eventually, it could become a package/application for the popular node deployments
 
-The [slideshow](./scripts/slideshow.sh) viewer uses the framebuffer imageviewer, which requires root access. I believe this could be gotten around by adding whatever user would be running it to the `video` group.  
+The [slideshow](./scripts/slideshow.sh) viewer uses the framebuffer imageviewer, which requires root access. 
 
 ## Pre-requisites
 
@@ -77,12 +80,14 @@ You can upgrade Pillow to the latest using
 You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  Do a safe shutdown. If you're running a node package like MyNodeBTC, then use the console to power cycle the device cleanly.  
 
 9. Create a folder for all the images
-The scripts assume `/home/admin/images` but you could use a different user account, provided they have access to the same resources.  Most scripts will reference bitcoin-cli and ln-cli.
+The scripts assume `/home/bitcoin/images` but you could use a different user account, provided they have access to the same resources.  Most scripts will reference bitcoin-cli and ln-cli.  Whatever account you run them under will need appropriate permissions, macaroon access already established (outside the scope of this guide).
 
 10. Clone the repository
 ```sh
+cd /home/bitcoin
 sudo apt install git
 git clone https://github.com/vicariousdrama/nodeyez.git
+chmod +x nodeyez/scripts/*
 ```
 
 11. Install torify
@@ -130,6 +135,24 @@ Save (CTRL+O) and Exit (CTRL+X).
 Run it as a background process
 ```
 python3 scripts/difficultyepoch.py &
+```
+
+## ipaddress.py
+This python script will report the current IP addresses of the node.  Values longer than 15 characters in length are eliminated, so this should only display IPv4 addresses.
+
+TODO: Sample image
+
+Before running the script, edit it to make changes
+```
+nano scripts/ipaddress.py
+```
+You may want to change the location of the outputFile.  
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it as a background process
+```
+python3 scripts/ipaddress.py &
 ```
 
 ## mempool-blocks.py
@@ -250,3 +273,35 @@ sudo ./slideshow.sh &
 ```
 
 You should start seeing images display on your screen.  If you dont see any images, then edit the slideshow.sh file, and remove the part at the end `> /dev/null 2>&1` and rerun. Any errors should be reported to help diagnose.
+
+## Run At Startup
+
+You can run the scripts you so choose automatically at startup so that you don't have to login and manually start them after a power outage.  To do this, copy the service scripts to the appropriate systemd folder
+
+```sh
+sudo cp ~/nodeyez/scripts/systemd/image-ipaddress.service /etc/systemd/system/image-ipaddress.service
+sudo cp ~/nodeyez/scripts/systemd/image-slideshow.service /etc/systemd/system/image-slideshow.service
+sudo cp ~/nodeyez/scripts/systemd/image-sysinfo.service /etc/systemd/system/image-sysinfo.service
+```
+
+Next enable the services
+
+```sh
+sudo systemctl enable image-ipaddress.service
+sudo systemctl enable image-slideshow.service
+sudo systemctl enable image-sysinfo.service
+```
+
+And then start them
+
+```sh
+sudo systemctl start image-ipaddress.service
+sudo systemctl start image-slideshow.service
+sudo systemctl start image-sysinfo.service
+```
+
+You can view the logs using journalctl like this
+
+```sh
+sudo journalctl -fu image-ipaddress.service
+```
