@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 import json
@@ -11,7 +12,7 @@ urlmempool="http://127.0.0.1:4080/api/v1/fees/mempool-blocks"
 urlfeerecs="http://127.0.0.1:4080/api/v1/fees/recommended"
 #urlfeerecs="https://mempool.space/api/v1/fees/recommended"
 
-outputFile="/home/admin/images/mempool-blocks.png"
+outputFile="/home/bitcoin/images/mempool-blocks.png"
 color202020=ImageColor.getrgb("#202020")
 color404040=ImageColor.getrgb("#404040")
 color606060=ImageColor.getrgb("#606060")
