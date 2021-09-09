@@ -29,7 +29,7 @@
     {
       "name": "Sample Ring",
       "shortlabel": "Sample",
-      "imagefilename": "/home/admin/images/rof-sample.png",
+      "imagefilename": "/home/bitcoin/images/rof-sample.png",
       "telegramgroup": "",
       "telegramadmin": "",
       "imagesettings": {
