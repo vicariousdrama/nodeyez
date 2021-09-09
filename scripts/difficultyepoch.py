@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 import json
@@ -5,7 +6,7 @@ import math
 import subprocess
 import time
 
-outputFile="/home/admin/images/difficultyepoch.png"
+outputFile="/home/bitcoin/images/difficultyepoch.png"
 colorgrid=ImageColor.getrgb("#404040")
 colorahead=ImageColor.getrgb("#FFFF40")
 colorbehind=ImageColor.getrgb("#FF0000")
