@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 import json
