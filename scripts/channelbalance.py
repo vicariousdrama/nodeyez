@@ -6,7 +6,7 @@ import math
 import subprocess
 import time
 
-outputFile = "/home/admin/images/channelbalance.png"
+outputFile = "/home/bitcoin/images/channelbalance.png"
 colorFFFFFF=ImageColor.getrgb("#ffffff")
 colorBackground=ImageColor.getrgb("#000000")
 colorBarOutline=ImageColor.getrgb("#770044")
