@@ -1,6 +1,6 @@
 # Nginx - For Website Dashboard
 
-Whether you are using a Raspberry Pi with a screen attached to GPIO pins or not, you can also setup a web based dashboard following these steps. 
+Whether you are using a Raspberry Pi with a screen attached to GPIO pins or not, you can also setup a web based dashboard to display the images and have them checked for updates every 10 seconds. 
 This guide assumes that you don't yet have NGINX installed, but guidance is provided in later sections for [modifying existing NGINX install](#modifying-existing-nginx-setup).
 
 ![sample image of dashboard](./images/websitedashboard.png)
