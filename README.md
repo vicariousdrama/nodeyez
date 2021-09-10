@@ -6,6 +6,7 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 ![image strip](./images/nodeyez.png)
 
 - [block height](#blockheightpy)
+- [channel balance](#channelbalancepy)
 - [difficulty epoch](#difficultyepochpy)
 - [ip address](#ipaddresspy)
 - [mempool blocks](#mempool-blockspy)
@@ -119,6 +120,26 @@ If you need to see if its running
 ps aux | grep blockheight
 ```
 
+## channelbalance.py
+This python script will create images depicting your nodes lightning channel balances. Multiple images may be created (8 per page), and a bar graph shows relative percentage of the balance on your end or the remote..
+
+![sample image of channel balance](./images/channelbalance.png)
+
+Before running the script, edit it to make changes
+```
+nano scripts/channelbalance.py
+```
+You may want to change the location of the outputFile.  
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 minutes).
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it as a background process
+```
+python3 scripts/channelbalance.py &
+```
+
+Or setup as as service in the section at the end of this page
+
 ## difficultyepoch.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
 
@@ -140,7 +161,7 @@ python3 scripts/difficultyepoch.py &
 ## ipaddress.py
 This python script will report the current IP addresses of the node.  Values longer than 15 characters in length are eliminated, so this should only display IPv4 addresses.
 
-TODO: Sample image
+![sample image of ip address](./images/ipaddress.png)
 
 Before running the script, edit it to make changes
 ```
@@ -279,6 +300,7 @@ You should start seeing images display on your screen.  If you dont see any imag
 You can run the scripts you so choose automatically at startup so that you don't have to login and manually start them after a power outage.  To do this, copy the service scripts to the appropriate systemd folder
 
 ```sh
+sudo cp ~/nodeyez/scripts/systemd/image-channelbalance.service /etc/systemd/system/image-channelbalance.service
 sudo cp ~/nodeyez/scripts/systemd/image-ipaddress.service /etc/systemd/system/image-ipaddress.service
 sudo cp ~/nodeyez/scripts/systemd/image-slideshow.service /etc/systemd/system/image-slideshow.service
 sudo cp ~/nodeyez/scripts/systemd/image-sysinfo.service /etc/systemd/system/image-sysinfo.service
@@ -287,6 +309,7 @@ sudo cp ~/nodeyez/scripts/systemd/image-sysinfo.service /etc/systemd/system/imag
 Next enable the services
 
 ```sh
+sudo systemctl enable image-channelbalance.service
 sudo systemctl enable image-ipaddress.service
 sudo systemctl enable image-slideshow.service
 sudo systemctl enable image-sysinfo.service
@@ -295,6 +318,7 @@ sudo systemctl enable image-sysinfo.service
 And then start them
 
 ```sh
+sudo systemctl start image-channelbalance.service
 sudo systemctl start image-ipaddress.service
 sudo systemctl start image-slideshow.service
 sudo systemctl start image-sysinfo.service
