@@ -6,7 +6,7 @@ import math
 import subprocess
 import time
 
-outputFile = "/home/admin/images/minerstatus.png"
+outputFile = "/home/bitcoin/images/minerstatus.png"
 mineraddress = "69.69.69.69"
 minerusername = "root"
 colorFFFFFF=ImageColor.getrgb("#ffffff")
