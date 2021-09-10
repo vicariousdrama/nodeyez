@@ -5,7 +5,7 @@
 Description=Image for Lightning Channel Balances
 
 [Service]
-WorkingDirectory=/home/admin/nodeyez/scripts
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
 ExecStart=/home/admin/nodeyez/scripts/channelbalance.py
 User=admin
 
