@@ -1,7 +1,9 @@
 # nodeyez
 Display panels to get the most from your node
 
-This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) script or service, or to a [web site dashboard](#displayingtoawebsitedashboard).
+This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
+
+STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin user).  There may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.
 
 ![image strip](./images/nodeyez.png)
 
@@ -17,7 +19,7 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 - [system info](#sysinfopy)
 - [utc clock](#utcclockpy)
 
-You can also [run as services at startup](#runatstartup)
+You can also [run as services at startup](#run-at-startup)
 
 ## Pre-requisites
 
@@ -75,14 +77,6 @@ If you are using a Raspberry Pi, you can acquire and install a 3.5" TFT screen t
 ### Displaying to a Website Dashboard
 
 Whether you are using a Raspberry Pi or not, you can also display the images via website dashboard.  You can prepare that by setting up [nginx](./nginx.md)
-
-## ToDo / Plans / Known Issues
-
-This repository is in Alpha stage. This means it likely has bugs, and documentation may not fully guide a new user to succesful operation.  Users of this repository are invited to provide feedback, in the form of questions, recommendations, bug reports etc.  
-
-Currently, all the python scripts assume that image files will be generated and saved in a common folder (/home/bitcoin/images). This was done for expedience when developing this prototype on a MyNode instance.  The plan is to improve these scripts to use a single output folder instead of configuring them uniquely, and to turn this all into a more easily managed service. Eventually, it could become a package/application for the popular node deployments
-
-The [slideshow](./scripts/slideshow.sh) viewer uses the framebuffer imageviewer, which requires root access. 
 
 ## Available scripts
 
