@@ -1,0 +1,18 @@
+# RaspiBolt: systemd unit for Lightning Channel Balance panel generation
+# /etc/systemd/system/image-channelbalance.service
+
+[Unit]
+Description=Image for Lightning Channel Balances
+
+[Service]
+WorkingDirectory=/home/admin/nodeyez/scripts
+ExecStart=/home/admin/nodeyez/scripts/channelbalance.py
+User=admin
+
+# Restart on failure but not more than 2 times every 10 minutes (600 seconds). Otherwise stop
+Restart=on-failure
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Install]
+WantedBy=multi-user.target
