@@ -14,8 +14,10 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 - [difficulty epoch](#difficultyepochpy)
 - [ip address](#ipaddresspy)
 - [mempool blocks](#mempool-blockspy)
+- [miner status](#minerstatuspy)
 - [ring of fire](#rofstatuspy)
 - [sats per usd](#satsperusdpy)
+- [slushpool](#slushpoolpy)
 - [system info](#sysinfopy)
 - [utc clock](#utcclockpy)
 
@@ -169,6 +171,25 @@ Run it `python3 scripts/mempool-blocks.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+### minerstatus.py
+This python script is useful if you are using a miner running Braiins OS.  This is built with an Antminer S9 in mind, so you may need to modify it for your particular miner.
+
+![sample image of miner status](./images/minerstatus.png)
+
+Before running the script, you should review it
+```
+nano scripts/minerstatus.py
+```
+You may want to change the location of the outputFile.
+You most definitely should change the mineraddress. Usually this should be an internal IP.
+Currently there is no authentication implemented, and it assumes root without a password.
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it `python3 scripts/minerstatus.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 ### rofstatus.py
 The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node in the preordained sequence and the script will provide a useful image showing its present state.  If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  Node operator contact list appears to the right of the ring.  You can define as many ring of fire configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
 
@@ -207,6 +228,24 @@ If you want to adjust the frequency, alter the sleeptime parameter near the bott
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/satsperusd.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
+### slushpool.py
+This python script is useful if you have a Slushpool account.  To use it, you'll want to add a profile for monitoring with read access. You can do that on the [Access Profiles page](https://slushpool.com/settings/access/).  The Limited read-only permission is sufficient for the API calls made.
+
+![sample image of slushpool](./images/slushpool.png)
+
+Before running the script, you should review it
+```
+nano scripts/slushpool.py
+```
+You may want to change the location of the outputFile.
+You most definitely should change the authtoken.
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it `python3 scripts/slushpool.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
