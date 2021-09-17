@@ -89,6 +89,11 @@ This python script will query the local bitcoin node using bitcoin-cli and prepa
 
 ![sample image depicting the blockheight reads 693131](./images/blockheight.png)
 
+Dependencies:
+- A bitcoin node running locally and fully synched
+- bitcoin-cli tool available with appropriate macaroons granted to the user running the script
+  - calls "getblockchaininfo"
+
 Before running the script, edit it to make changes
 ```
 nano scripts/blockheight.py
@@ -106,6 +111,11 @@ This python script will create images depicting your nodes lightning channel bal
 
 ![sample image of channel balance](./images/channelbalance.png)
 
+Dependencies:
+- A LND lightning node running locally
+- lncli tool available with appropriate macaroons granted to the user running the script
+  - calls "getnodeinfo", "listchannels"
+
 Before running the script, edit it to make changes
 ```
 nano scripts/channelbalance.py
@@ -122,6 +132,11 @@ Press CTRL+C to stop the process to make any changes.  If you're node has channe
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
 
 ![difficulty epoch image sample showing several blocks mined, and ahead of schedule](./images/difficultyepoch.png)
+
+Dependencies:
+- A bitcoin node running locally and fully synched
+- bitcoin-cli tool available with appropriate macaroons granted to the user running the script
+  - calls "getblock", "getblockchaininfo", "getblockhash"
 
 Before running the script, edit it to make changes
 ```
@@ -157,6 +172,11 @@ This python script will query the mempool.space service. By default it assumes t
 
 ![sample image of mempool blocks](./images/mempool-blocks.png)
 
+Dependencies:
+- A locally running instance of [Mempool](https://github.com/mempool/mempool) or configure script to call external service
+- If calling external service https://mempool.space
+  - Not using torify
+
 Before running the script, edit it to make changes
 ```
 nano scripts/mempool-blocks.py
@@ -176,6 +196,9 @@ This python script is useful if you are using a miner running Braiins OS.  This 
 
 ![sample image of miner status](./images/minerstatus.png)
 
+Dependencies:
+- A Miner (script only tested on Antminer S9) running [BraiinsOS+](https://braiins.com/os/plus)
+ 
 Before running the script, you should review it
 ```
 nano scripts/minerstatus.py
@@ -194,6 +217,11 @@ Press CTRL+C to stop the process to make any changes.  An image will be output t
 The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node in the preordained sequence and the script will provide a useful image showing its present state.  If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  Node operator contact list appears to the right of the ring.  You can define as many ring of fire configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
 
 ![sample ring of fire rendering showing 5 nodes](./images/rof-sample.png)
+
+Dependencies:
+- A LND lightning node running locally
+- lncli tool available with appropriate macaroons granted to the user running the script
+  - calls "connect", "disconnect", "getnodeinfo", "listpeers"
 
 Before running the script, you should review it
 ```
@@ -219,6 +247,10 @@ This python script calls upon the bisq marketplace to get the current fiat valua
 
 ![sample sats per usd display](./images/satsperusd.png)
 
+Dependencies:
+- External call to https://bisq.markets. 
+  - Uses torify
+
 Before running the script, edit it to make changes
 ```
 nano scripts/satsperusd.py
@@ -235,6 +267,12 @@ Press CTRL+C to stop the process to make any changes.  An image will be output t
 This python script is useful if you have a Slushpool account.  To use it, you'll want to add a profile for monitoring with read access. You can do that on the [Access Profiles page](https://slushpool.com/settings/access/).  The Limited read-only permission is sufficient for the API calls made.
 
 ![sample image of slushpool](./images/slushpool.png)
+
+Dependencies:
+- An account on Slushpool
+- An access token for Slushpool (Limited read-only)
+- External calls to https://slushpool.com for "accounts/rewards" and "accounts/profile"
+  - Not using torify
 
 Before running the script, you should review it
 ```
@@ -253,6 +291,9 @@ Press CTRL+C to stop the process to make any changes.  An image will be output t
 A useful python script that reports the CPU temperature and load, drive space in use and free, as well as memory usage.  Color coding follows green/yellow/red for ranging from all OK to heavy usage to warning.
 
 ![sample system info panel](./images/sysinfo.png)
+
+Dependencies:
+- Assumes a Raspberry Pi setup using a MicroSD card for the OS (/dev/root), and external storage (/dev/sda1) for data files for Bitcoin, LND, etc.
 
 Before running the script, edit it to make changes
 ```
