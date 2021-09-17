@@ -7,12 +7,13 @@ import math
 import subprocess
 import time
 
-urlmempool="http://127.0.0.1:4080/api/v1/fees/mempool-blocks"
-#urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
-urlfeerecs="http://127.0.0.1:4080/api/v1/fees/recommended"
-#urlfeerecs="https://mempool.space/api/v1/fees/recommended"
+urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
+urlfeerecs="https://mempool.space/api/v1/fees/recommended"
+# If you are running your own Mempool.space service, e.g., on MyNodeBTC, then uncomment the following
+#urlmempool="http://127.0.0.1:4080/api/v1/fees/mempool-blocks"
+#urlfeerecs="http://127.0.0.1:4080/api/v1/fees/recommended"
 
-outputFile="/home/bitcoin/images/mempool-blocks.png"
+outputFile="/home/bitcoin/images/mempoolblocks.png"
 color202020=ImageColor.getrgb("#202020")
 color404040=ImageColor.getrgb("#404040")
 color606060=ImageColor.getrgb("#606060")

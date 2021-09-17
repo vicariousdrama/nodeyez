@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for IP Address panel generation
+# /etc/systemd/system/nodeyez-sysinfo.service
+
+[Unit]
+Description=Image for IP Addrress
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/ipaddress.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

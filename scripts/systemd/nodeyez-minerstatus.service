@@ -1,18 +1,17 @@
 # RaspiBolt: systemd unit for Miner Status panel generation
-# /etc/systemd/system/image-minerstatus.service
+# /etc/systemd/system/nodeyez-minerstatus.service
 
 [Unit]
 Description=Image for Miner Status
+StartLimitIntervalSec=600
+StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/bitcoin/nodeyez/scripts
 ExecStart=/home/bitcoin/nodeyez/scripts/minerstatus.py
-User=admin
-
-# Restart on failure but not more than 2 times every 10 minutes (600 seconds). Otherwise stop
+User=bitcoin
 Restart=on-failure
-StartLimitIntervalSec=600
-StartLimitBurst=2
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target

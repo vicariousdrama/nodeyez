@@ -307,32 +307,47 @@ You should start seeing images display on your screen.  If you dont see any imag
 You can run the scripts you so choose automatically at startup so that you don't have to login and manually start them after a power outage.  To do this, copy the service scripts to the appropriate systemd folder
 
 ```sh
-sudo cp ~/nodeyez/scripts/systemd/image-channelbalance.service /etc/systemd/system/image-channelbalance.service
-sudo cp ~/nodeyez/scripts/systemd/image-ipaddress.service /etc/systemd/system/image-ipaddress.service
-sudo cp ~/nodeyez/scripts/systemd/image-slideshow.service /etc/systemd/system/image-slideshow.service
-sudo cp ~/nodeyez/scripts/systemd/image-sysinfo.service /etc/systemd/system/image-sysinfo.service
+sudo cp ~/nodeyez/scripts/systemd/*.service /etc/systemd/system/
 ```
 
-Next enable the services
+And enable them
 
 ```sh
-sudo systemctl enable image-channelbalance.service
-sudo systemctl enable image-ipaddress.service
-sudo systemctl enable image-slideshow.service
-sudo systemctl enable image-sysinfo.service
+sudo systemctl enable nodeyez-blockheight.service
+sudo systemctl enable nodeyez-channelbalance.service
+sudo systemctl enable nodeyez-difficultyepoch.service
+sudo systemctl enable nodeyez-ipaddress.service
+sudo systemctl enable nodeyez-mempoolblocks.service
+sudo systemctl enable nodeyez-minerstatus.service
+sudo systemctl enable nodeyez-rofstatus.service
+sudo systemctl enable nodeyez-satsperusd.service
+sudo systemctl enable nodeyez-slideshow.service
+sudo systemctl enable nodeyez-slushpool.service
+sudo systemctl enable nodeyez-sysinfo.service
+sudo systemctl enable nodeyez-utcclock.service
 ```
 
 And then start them
 
 ```sh
-sudo systemctl start image-channelbalance.service
-sudo systemctl start image-ipaddress.service
-sudo systemctl start image-slideshow.service
-sudo systemctl start image-sysinfo.service
+sudo systemctl start nodeyez-blockheight.service
+sudo systemctl start nodeyez-channelbalance.service
+sudo systemctl start nodeyez-difficultyepoch.service
+sudo systemctl start nodeyez-ipaddress.service
+sudo systemctl start nodeyez-mempoolblocks.service
+sudo systemctl start nodeyez-minerstatus.service
+sudo systemctl start nodeyez-rofstatus.service
+sudo systemctl start nodeyez-satsperusd.service
+sudo systemctl start nodeyez-slideshow.service
+sudo systemctl start nodeyez-slushpool.service
+sudo systemctl start nodeyez-sysinfo.service
+sudo systemctl start nodeyez-utcclock.service
 ```
 
 You can view the logs using journalctl like this
 
 ```sh
-sudo journalctl -fu image-ipaddress.service
+sudo journalctl -fu nodeyez-sysinfo.service
 ```
+
+And press CTRL+C to stop viewing the logs

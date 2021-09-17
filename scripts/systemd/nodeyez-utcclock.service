@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for UTC Clock panel generation
+# /etc/systemd/system/nodeyez-utcclock.service
+
+[Unit]
+Description=Image for UTC Clock
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/utcclock.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,18 +1,17 @@
 # RaspiBolt: systemd unit for System Info panel generation
-# /etc/systemd/system/image-sysinfo.service
+# /etc/systemd/system/nodeyez-sysinfo.service
 
 [Unit]
 Description=Image for System Information
+StartLimitIntervalSec=600
+StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/bitcoin/nodeyez/scripts
 ExecStart=/home/bitcoin/nodeyez/scripts/sysinfo.py
 User=bitcoin
-
-# Restart on failure but not more than 2 times every 10 minutes (600 seconds). Otherwise stop
 Restart=on-failure
-StartLimitIntervalSec=600
-StartLimitBurst=2
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target

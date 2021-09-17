@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for starting the Nodeyez Slideshow
+# /etc/systemd/system/nodeyez-slideshow.service
+
+[Unit]
+Description=Image Display Slideshow to Framebuffer
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/slideshow.sh
+User=root
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
