@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for Slushpool Mining Pool panel generation
+# /etc/systemd/system/nodeyez-slushpool.service
+
+[Unit]
+Description=Image for SlushPool Mining Pool
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/slushpool.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

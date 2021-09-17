@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for Ring of Fire Status panel generation
+# /etc/systemd/system/nodeyez-rofstatus.service
+
+[Unit]
+Description=Image(s) for Ring of Fire Status
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/rofstatus.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

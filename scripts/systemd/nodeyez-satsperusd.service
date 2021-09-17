@@ -1,0 +1,17 @@
+# RaspiBolt: systemd unit for Sats per USD panel generation
+# /etc/systemd/system/nodeyez-satsperusd.service
+
+[Unit]
+Description=Image for Sats per USD
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/satsperusd.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
