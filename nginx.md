@@ -33,7 +33,7 @@ This guide assumes that you don't yet have NGINX installed, but guidance is prov
 
 If you already have nginx installed, then you really just need to add a local server listening on a port, and an upstream node for optional SSL proxying.
 
-The premade configuration used in the prior section uses ports 907 for http, and 908 for SSL.  Why port 907? No reason other then its placement in the [BIP39 wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt).
+The premade configuration used in the prior section uses ports 906 for http, and 907 for SSL.  Why port 907? No reason other then its placement in the [BIP39 wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L907).
 
 * Edit the NGINX configuration file
 
@@ -45,7 +45,7 @@ The premade configuration used in the prior section uses ports 907 for http, and
 
   ```nginx
     upstream nodeimages {
-      server 127.0.0.1:907;
+      server 127.0.0.1:906;
     }
   ```
 
@@ -53,7 +53,7 @@ The premade configuration used in the prior section uses ports 907 for http, and
 
   ```nginx
     server {
-      listen 908 ssl;
+      listen 907 ssl;
       proxy_pass nodeimages;
     }
   ```
@@ -64,7 +64,7 @@ The premade configuration used in the prior section uses ports 907 for http, and
   http {
     include mime.types;
     server {
-      listen 907;
+      listen 906;
       root /home/bitcoin/images;
       default_type text/html;
       location / {
@@ -96,7 +96,7 @@ If you've setup the uncomplicated firewall to deny incoming and outgoing traffic
 * To enable SSL access
 
    ```sh
-   $ sudo ufw allow 908 comment 'allow access to node images over ssl'
+   $ sudo ufw allow 907 comment 'allow access to node images over ssl'
    ```
  
-Now see if you can access the dashboard at https://your-node-ip:908
+Now see if you can access the dashboard at https://your-node-ip:907

@@ -5,7 +5,7 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 
 STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin user).  There may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.
 
-![image strip](./images/nodeyez.png)
+![image strip](./images/nodeyez-strip.png)
 
 ## Quick Menu of Info Panels
 
@@ -78,7 +78,7 @@ If you are using a Raspberry Pi, you can acquire and install a 3.5" TFT screen t
 
 ### Displaying to a Website Dashboard
 
-Whether you are using a Raspberry Pi or not, you can also display the images via website dashboard.  You can prepare that by setting up [nginx](./nginx.md)
+Whether you are using a Raspberry Pi or not, you can also display the images via website dashboard.  You can prepare that by setting up [nginx](./nginx.md).  The dashboard view will automatically cycle through the same images at 10 second intervals, showing smaller versions at the top of the screen.  Clicking on an image will automatically advance the view to the full size version of that one.
 
 ## Available scripts
 
