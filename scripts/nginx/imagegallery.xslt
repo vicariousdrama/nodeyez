@@ -8,32 +8,78 @@
     <title><xsl:value-of select="$title" /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-    img.imageinlist {
-         display: inline;
-         height: 200px;
-         margin: 3px;
-         vertical-align: bottom;
+    @media only screen and (min-width: 1025px) {
+        img {
+            width: 33%;
+            height: auto;
+        }
+        img.imageinlist {
+            display: inline;
+            height: auto;
+            width: 33%;
+            margin: 1px;
+            vertical-align: bottom;
+        }
+        #imagelist {
+            width: 100%;
+        }
+        #imageinfocus {
+            display: none;
+        }
     }
-    @media all and (max-width: 20.4cm) {
+    @media only screen and (min-width: 769px) and (max-width: 1024px) {
         img {
             max-width: calc(100%);
+        }
+        img.imageinlist {
+            display: inline;
+            height: 120px;
+            margin: 3px;
+            vertical-align: bottom;
+        }
+        #imagelist {
+            width: 100%;
+            height: 120px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap
+        }
+        #imageinfocus {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    }
+    @media only screen and (max-width: 768px) {
+        svg {
+            max-width: calc(100%);
+            height: auto;
+        }
+        img {
+            max-width: calc(100%);
+        }
+        img.imageinlist {
+            display: inline;
+            height: 50px;
+            margin: 1px;
+            vertical-align: bottom;
+        }
+        #imagelist {
+            width: 100%;
+            height: 50px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap
+        }
+        #imageinfocus {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
     }
     body {
         margin: 0;
         background-color: #404040;
-    }
-    #imagelist {
-        width: 100%;
-        height: 200px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap
-    }
-    #imageinfocus {
-        width: 100%;
-        height: auto;
-        object-fit: contain;
     }
     </style>
     <script language="javascript">
