@@ -35,6 +35,13 @@ If you already have nginx installed, then you really just need to add a local se
 
 The premade configuration used in the prior section uses ports 906 for http, and 907 for SSL.  Why port 907? No reason other then its placement in the [BIP39 wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L907).
 
+* Copy in the stylesheet and set ownership
+
+  ```sh
+  $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+  $ sudo chown root:root /etc/nginx/imagegallery.xslt
+  ```
+
 * Edit the NGINX configuration file
 
   ```sh
