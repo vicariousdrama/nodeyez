@@ -12,6 +12,7 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 - [block height](#blockheightpy)
 - [channel balance](#channelbalancepy)
 - [difficulty epoch](#difficultyepochpy)
+- [f2 pool](#f2poolpy)
 - [ip address](#ipaddresspy)
 - [mempool blocks](#mempool-blockspy)
 - [miner status](#minerstatuspy)
@@ -147,6 +148,31 @@ If you want to adjust the frequency, alter the sleeptime parameter near the bott
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/difficultyepoch.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
+### f2pool.py
+This python script is useful if you have a F2 Pool account.  This is based on having a read only account setup.  You'll need your account name.
+
+![sample image of f2pool](./images/f2pool.png)
+
+Dependencies:
+- An account on F2 Pool
+- External calls to https://api.f2pool.com
+  - Not using torify
+
+Before running the script, you should review it
+```
+nano scripts/f2pool.py
+```
+You may want to change the location of the outputFile.
+You most definitely should change the account.
+You can set a string for the accountlabel which will be appended to the title
+The hashratelowthreshold affects when dots are plotted as yellow. By default it is set to 60 TH/s
+If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it `python3 scripts/f2pool.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
@@ -357,6 +383,7 @@ And enable them
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-difficultyepoch.service
+sudo systemctl enable nodeyez-f2pool.service
 sudo systemctl enable nodeyez-ipaddress.service
 sudo systemctl enable nodeyez-mempoolblocks.service
 sudo systemctl enable nodeyez-minerstatus.service
@@ -374,6 +401,7 @@ And then start them
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-difficultyepoch.service
+sudo systemctl start nodeyez-f2pool.service
 sudo systemctl start nodeyez-ipaddress.service
 sudo systemctl start nodeyez-mempoolblocks.service
 sudo systemctl start nodeyez-minerstatus.service
