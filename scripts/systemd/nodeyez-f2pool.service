@@ -1,0 +1,17 @@
+# systemd unit for F2 Pool Mining Summary panel generation
+# /etc/systemd/system/nodeyez-f2pool.service
+
+[Unit]
+Description=Image for F2 Pool Mining Summary
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/f2pool.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
