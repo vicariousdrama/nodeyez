@@ -191,15 +191,24 @@ def createimage(accountrewards, accountprofile, poolstats, width=480, height=320
     value_today = "0 sats"
     if len(accountrewards["btc"]["daily_rewards"]) > 0:
         since_date = accountrewards["btc"]["daily_rewards"][0]["date"]
-        value_last_day = str(int(float(accountrewards["btc"]["daily_rewards"][0]["total_reward"]) * 100000000)) + " sats"
-        todaytally = 0
+        sattally = 0
         for key in poolstats["btc"]["blocks"]:
             block = poolstats["btc"]["blocks"][key]
             if block["date_found"] > since_date:
-                todaytally = todaytally + int(float(block["user_reward"]) * 100000000)
+                sattally = sattally + int(float(block["user_reward"]) * 100000000)
             else:
                 break
-        value_today = str(todaytally) + " sats"
+        sattally2 = sattally
+        since_date = since_date + 86400
+        sattally = 0
+        for key in poolstats["btc"]["blocks"]:
+            block = poolstats["btc"]["blocks"][key]
+            if block["date_found"] > since_date:
+                sattally = sattally + int(float(block["user_reward"]) * 100000000)
+            else:
+                break
+        value_last_day = str(sattally2 - sattally) + " sats"
+        value_today = str(sattally) + " sats"
     drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad))
     drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colordatavalue)
     drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad))
