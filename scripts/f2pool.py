@@ -18,7 +18,7 @@ colorhashdotfillzero=ImageColor.getrgb("#ff4040")
 colorhashdotoutlinezero=ImageColor.getrgb("#ff0000")
 colorhashdotfilllow=ImageColor.getrgb("#ffff40")
 colorhashdotoutlinelow=ImageColor.getrgb("#ffff00")
-
+colorma=ImageColor.getrgb("#40ff40")
 colorgraphlinelight=ImageColor.getrgb("#a0a0a0")
 colorgraphlinedark=ImageColor.getrgb("#606060")
 
@@ -158,7 +158,7 @@ def drawlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
 def createimage(accountinfo, width=480, height=320):
     headerheight = 30
     footerheight = 15
-    hashheight = (height - headerheight - footerheight) * .5
+    hashheight = (height - headerheight - footerheight) * .4
     rewardheight = (height - headerheight - footerheight) * .5
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
@@ -169,7 +169,7 @@ def createimage(accountinfo, width=480, height=320):
     drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24))
     drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colordatavalue)
     # Yesterday and Today value
-    earningspad = 32
+    earningspad = 24
     value_last_day = str(int(float(accountinfo["value_last_day"]) * 100000000)) + " sats"
     value_today = str(int(float(accountinfo["value_today"]) * 100000000)) + " sats"
     drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad))
@@ -182,7 +182,7 @@ def createimage(accountinfo, width=480, height=320):
     labelwidth = math.floor(width / 5)
     graphedge = 3
     drawcenteredtext(draw, "24 Hour Hashrate", 16, int(width/2), (headerheight+hashheight))
-    charttop = headerheight + hashheight + 24
+    charttop = headerheight + hashheight + 12
     chartleft = labelwidth + graphedge
     chartright = width - graphedge
     chartbottom = height - footerheight - graphedge
@@ -219,7 +219,7 @@ def createimage(accountinfo, width=480, height=320):
         datawidthi = int(math.floor(datawidth))
         for key in accountinfo["hashrate_history"]:
             entrynum = entrynum + 1
-            dayx = chartleft + int(math.floor(entrynum * datawidth))
+            datax = chartleft + int(math.floor(entrynum * datawidth))
             datapct = 0
             value = accountinfo["hashrate_history"][key]
             if highesthashrate > lowesthashrate:
@@ -233,7 +233,36 @@ def createimage(accountinfo, width=480, height=320):
             if value == 0:
                 colordotfill = colorhashdotfillzero
                 colordotoutline = colorhashdotoutlinezero
-            draw.ellipse(xy=[(dayx-plotbuf,plottop-plotbuf),(dayx+datawidthi+plotbuf,plottop+datawidthi+plotbuf)],fill=colordotfill,outline=colordotoutline,width=1)
+            draw.ellipse(xy=[(datax-plotbuf,plottop-plotbuf),(datax+datawidthi+plotbuf,plottop+datawidthi+plotbuf)],fill=colordotfill,outline=colordotoutline,width=1)
+        # moving average line
+        entrynum = 0
+        ma = [-1,-1,-1]
+        olddatax = -1
+        olddatay = -1
+        for key in accountinfo["hashrate_history"]:
+            entrynum = entrynum + 1
+            value = accountinfo["hashrate_history"][key]
+            if ma[0] == -1:
+                ma[0] = value
+            elif ma[1] == -1:
+                ma[1] = value
+            else:
+                ma[2] = value
+                mavg = (ma[0] + ma[1] + ma[2]) / 3
+                datax = chartleft + int(math.floor(entrynum * datawidth))
+                datapct = 0
+                if highesthashrate > lowesthashrate:
+                    datapct = (mavg - lowesthashrate)/(highesthashrate - lowesthashrate)
+                datay = chartbottom - int(math.floor((chartbottom-charttop)*datapct))
+                if olddatax != -1:
+                    draw.line(xy=[(olddatax,olddatay),(datax,datay)],fill=colorma,width=3)
+                olddatax = datax
+                olddatay = datay
+                ma[0] = -1 #ma[1]
+                ma[1] = -1 #ma[2]
+                ma[2] = -1
+
+
     # Date and Time
     dt = "as of " + getdateandtime()
     drawbottomrighttext(draw, dt, 12, width, height)
