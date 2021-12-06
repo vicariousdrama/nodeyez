@@ -8,6 +8,15 @@ import time
 
 outputFile = "/home/bitcoin/images/slushpool.png"
 authtoken = "your-auth-token-here"
+price_url = "https://bisq.markets/bisq/api/markets/ticker"
+price_per_kwh = .12
+kw_per_hour_used = 1.000
+price_last=1
+price_high=1
+price_low=1
+price_countdown_height = 10800  # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
+price_countdown = 0
+sleep_time = 600 # controls how often this display panel is updated. 600 is once every 10 minutes
 # experimental. this value here is based on S9 running at 1kWh with electric cost of 12 cents/kWh and a market rate from bisq of $58,000 for 58k gang
 # 100,000,000 sats / $58,000 = 1724 sats/dollar.   1kWh * 24 hours * 12 cents = $2.88 electric cost / day.   1724 * 2.88 is 4965 sats
 # TODO: Fetch the market price and do this calculation dynamically
@@ -24,6 +33,7 @@ colorC0C0C0=ImageColor.getrgb("#c0c0c0")
 colorC0FFC0=ImageColor.getrgb("#40ff40")
 colorFF0000=ImageColor.getrgb("#ff0000")
 colorFFFF00=ImageColor.getrgb("#ffff00")
+color00FF00=ImageColor.getrgb("#00ff00")
 fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
 fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",16)
 fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",20)
@@ -35,7 +45,7 @@ def getdateandtime():
     return now.strftime("%Y-%m-%d %H:%M:%S")
 
 def getaccountprofile():
-    cmd = "curl -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/profile/json/btc/"
+    cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/profile/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
@@ -45,7 +55,7 @@ def getaccountprofile():
 
 def getaccountrewards():
     time.sleep(6)
-    cmd = "curl -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/rewards/json/btc/"
+    cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/rewards/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
@@ -55,13 +65,29 @@ def getaccountrewards():
 
 def getpoolstats():
     time.sleep(6)
-    cmd = "curl -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/stats/json/btc/"
+    cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/stats/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
         cmdoutput = "{\"btc\":{\"blocks\":{\"0\":{\"date_found\":0,\"mining_duration\":0,\"total_shares\":0,\"state\":\"confirmed\",\"confirmations_left\":0,\"value\": \"0.00000000\",\"user_reward\": \"0.00000000\",\"pool_scoring_hash_rate\": 0.000000}}}}"
     j = json.loads(cmdoutput)
     return j
+
+def getpriceinfo():
+    cmd = "torify curl --silent " + price_url
+    global price_last
+    global price_high
+    global price_low
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        if len(cmdoutput) > 0:
+            j = json.loads(cmdoutput)
+            price_last = int(math.floor(float(j["btc_usd"]["last"])))
+            price_high = int(math.floor(float(j["btc_usd"]["high"])))
+            price_low = int(math.floor(float(j["btc_usd"]["low"])))
+    except subprocess.CalledProcessError as e:
+        cmdoutput = "{\"error\":  }"
+    return (price_last,price_high,price_low)
 
 def getaccounthashrate(accountprofile):
     hashrate = accountprofile["btc"]["hash_rate_5m"]
@@ -172,7 +198,7 @@ def drawlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
     sh += oy
     draw.text(xy=(x,y-(sh/2)), text=s, font=thefont, fill=textcolor)
 
-def createimage(accountrewards, accountprofile, poolstats, width=480, height=320):
+def createimage(accountrewards, accountprofile, poolstats, price_last, width=480, height=320):
     headerheight = 30
     footerheight = 15
     hashheight = (height - headerheight - footerheight) * .4
@@ -213,13 +239,12 @@ def createimage(accountrewards, accountprofile, poolstats, width=480, height=320
     drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colordatavalue)
     drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad))
     drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colordatavalue)
-
     # 30 Days Rewards
     highestreward = gethighestreward(accountrewards)
     lowestreward = getlowestreward(accountrewards)
     labelwidth = math.floor(width / 5)
     graphedge = 3
-    charttop = headerheight + hashheight + 24
+    charttop = headerheight + hashheight + 32
     chartleft = labelwidth + graphedge
     chartright = width - graphedge
     chartbottom = height - footerheight - graphedge
@@ -266,10 +291,14 @@ def createimage(accountrewards, accountprofile, poolstats, width=480, height=320
     if days > 0:
         dailyavg = (overalltotal / days)
         # Warn if missing breakeven. TODO: Calculate dynamically based on electric cost vs bisq market rates
+        breakevendaily = int((100000000 / price_last) * (kw_per_hour_used * 24 * price_per_kwh))
+        breakevencolor = color00FF00
         if dailyavg < breakevendaily:
-            drawcenteredtext(draw, "Warning: Mining at a Loss.", 16, int(width/2), (headerheight + hashheight - 40), colorFF0000)
-            drawcenteredtext(draw, "Break Even is " + str(breakevendaily) + " sats Daily", 16, int(width/2), (headerheight + hashheight - 20), colorFF0000)
-        drawcenteredtext(draw, "Last 30 days (" + str(int(overalltotal)) + ") Daily Average (" + str(int(dailyavg)) + ")"  , 16, int(width/2), (headerheight + hashheight))
+            breakevencolor = colorFF0000
+            drawtoplefttext(draw, "Warning: Mining at a loss", 16, 0, (headerheight + hashheight + 16), breakevencolor)
+        drawtoplefttext(draw, "Last 30 days " + str(int(overalltotal)) + " sats", 16, 0, (headerheight + hashheight))
+        drawtoprighttext(draw, "Daily avg " + str(int(dailyavg)) + " sats", 16, width, (headerheight + hashheight))
+        drawtoprighttext(draw, "Break even " + str(int(breakevendaily)) + " sats", 16, width, (headerheight + hashheight + 16), breakevencolor)
     else:
         drawcenteredtext(draw, "Rewards will be graphed below once earnings are recorded"  , 16, int(width/2), (headerheight + hashheight))
 
@@ -284,5 +313,10 @@ while True:
     accountprofile = getaccountprofile()
     accountrewards = getaccountrewards()
     poolstats = getpoolstats()
-    createimage(accountrewards,accountprofile,poolstats)
-    time.sleep(600)
+    if price_countdown <= 0:
+        price_last, price_high, price_low = getpriceinfo()
+        price_countdown = price_countdown_height
+    else:
+        price_countdown = price_countdown - sleep_time
+    createimage(accountrewards,accountprofile,poolstats,price_last)
+    time.sleep(sleep_time)
