@@ -99,8 +99,9 @@ Before running the script, edit it to make changes
 ```
 nano scripts/blockheight.py
 ```
-You may want to change the location of the outputFile.
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 2 minutes).
+- You may want to change the location of the outputFile.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 2 minutes).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/blockheight.py`
@@ -121,8 +122,9 @@ Before running the script, edit it to make changes
 ```
 nano scripts/channelbalance.py
 ```
-You may want to change the location of the outputFile.  
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 minutes).
+- You may want to change the location of the outputFile.  
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 minutes).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/channelbalance.py`
@@ -143,8 +145,10 @@ Before running the script, edit it to make changes
 ```
 nano scripts/difficultyepoch.py
 ```
-You may want to change the location of the outputFile.  You can also alter the colors of mined and expected blocks, etc if you so desire.
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).
+- You may want to change the location of the outputFile.  
+- You can also alter the colors of mined and expected blocks, etc if you so desire.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/difficultyepoch.py`
@@ -165,11 +169,12 @@ Before running the script, you should review it
 ```
 nano scripts/f2pool.py
 ```
-You may want to change the location of the outputFile.
-You most definitely should change the account.
-You can set a string for the accountlabel which will be appended to the title
-The hashratelowthreshold affects when dots are plotted as yellow. By default it is set to 60 TH/s
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
+- You may want to change the location of the outputFile.
+- You most definitely should change the account.
+- You can set a string for the accountlabel which will be appended to the title
+- The hashratelowthreshold affects when dots are plotted as yellow. By default it is set to 60 TH/s
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/f2pool.py`
@@ -185,8 +190,9 @@ Before running the script, edit it to make changes
 ```
 nano scripts/ipaddress.py
 ```
-You may want to change the location of the outputFile.  
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+- You may want to change the location of the outputFile.  
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/ipaddress.py`
@@ -207,10 +213,11 @@ Before running the script, edit it to make changes
 ```
 nano scripts/mempool-blocks.py
 ```
-You may want to change the location of the outputFile.  
-If you have mempool viewer running locally, but a different location/port, then update urlmempool and urlfeerecs.
-If you dont have mempool viewer running locally, you can use the mempool.space website by commenting the existing values, and uncommenting the ones for mempool.space
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+- You may want to change the location of the outputFile.  
+- If you have mempool viewer running locally, but a different location/port, then update urlmempool and urlfeerecs.
+- If you dont have mempool viewer running locally, you can use the mempool.space website by commenting the existing values, and uncommenting the ones for mempool.space
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/mempool-blocks.py`
@@ -229,10 +236,11 @@ Before running the script, you should review it
 ```
 nano scripts/minerstatus.py
 ```
-You may want to change the location of the outputFile.
-You most definitely should change the mineraddress. Usually this should be an internal IP.
-Currently there is no authentication implemented, and it assumes root without a password.
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+- You may want to change the location of the outputFile.
+- You most definitely should change the mineraddress. Usually this should be an internal IP.
+- Currently there is no authentication implemented, and it assumes root without a password.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/minerstatus.py`
@@ -259,9 +267,15 @@ Now edit the rofstatus.json
 ```
 nano scripts/rofstatus.json
 ```
-You can adjust the frequency (default 900 seconds/15 minutes) if desired, but 15 minutes is actually quite aggressive. In general, no major changes to ring status should be transpiring this often, and its more helpful when diagnosing member outages.
-For each ring you are a member of, or what to monitor, collect the public keys for the nodes, the order they appear in, and some means to refer to the operator for convenience (twitter handles or emails are fine).
-In the `rings` array, an object has fields for `name`, `imagefilename`, `imagesettings`, and `nodes`.  The name is what appears as text in the middle of the ring when the graphic is created. The imagefilename is where to save the file to.  Each ring defined in the configuration file should get its own filename as it is overwritten each time.  The imagesettings allow fine tuning the colors, fonts and text sies.  With the public keys for nodes and operator information, provide a node object in the nested array.
+- You can adjust the frequency (default 900 seconds/15 minutes) if desired, but 15 minutes is actually quite aggressive. In general, no major changes to ring status should be transpiring this often, and its more helpful when diagnosing member outages.
+- For each ring you are a member of, or what to monitor, collect the public keys for the nodes, the order they appear in, and some means to refer to the operator for convenience (twitter handles or emails are fine).
+- In the `rings` array, an object has fields for `name`, `imagefilename`, `imagesettings`, and `nodes`.  
+  - The name is what appears as text in the middle of the ring when the graphic is created. 
+  - The imagefilename is where to save the file to.  
+  - Each ring defined in the configuration file should get its own filename as it is overwritten each time.  
+  - The imagesettings allow fine tuning the colors, fonts and text sies.  
+  - With the public keys for nodes and operator information, provide a node object in the nested array.
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `cd scripts ; python3 rofstatus.py`
@@ -281,8 +295,11 @@ Before running the script, edit it to make changes
 ```
 nano scripts/satsperusd.py
 ```
-You may want to change the location of the outputFile.  You can also alter the colors representing each sat if you so desire.
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 1 hour). This calls out to the bisq marketplace data, so an hour is likely sufficient.  It does report the low and high for the past day which gives you a nice range of current valuation.
+- You may want to change the location of the outputFile.  
+- You can also alter the colors representing each sat if you so desire.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 1 hour). This calls out to the bisq marketplace data, so an hour is likely sufficient.  
+- It does report the low and high for the past day which gives you a nice range of current valuation.
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/satsperusd.py`
@@ -329,10 +346,11 @@ Before running the script, edit it to make changes
 ```
 nano scripts/sysinfo.py
 ```
-You may want to change the location of the outputFile.  
-This script assumes you have a microsd card as the boot drive, and an external drive, like an SSD attached for the main drive.
-If your configuration is different you may need to adjust the drive devices referenced on 109,118 and 206,207
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+- You may want to change the location of the outputFile.  
+- This script assumes you have a microsd card as the boot drive, and an external drive, like an SSD attached for the main drive.
+- If your configuration is different you may need to adjust the drive devices referenced on 109,118 and 206,207
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/sysinfo.py`
@@ -348,7 +366,8 @@ Before running the script, edit it to make changes
 ```
 nano scripts/utcclock.py
 ```
-You may want to change the location of the outputFile.
+- You may want to change the location of the outputFile.
+
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/utcclock.py`
