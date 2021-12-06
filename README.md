@@ -297,16 +297,20 @@ This python script is useful if you have a Slushpool account.  To use it, you'll
 Dependencies:
 - An account on Slushpool
 - An access token for Slushpool (Limited read-only)
-- External calls to https://slushpool.com for "accounts/rewards" and "accounts/profile"
-  - Not using torify
+- External calls to https://slushpool.com for "accounts/rewards", "accounts/profile" and "stats" once every 10 minutes.
+  - Uses torify
+- External call to https://bisq.markets once every 3 hours. 
+  - Uses torify
 
 Before running the script, you should review it
 ```
 nano scripts/slushpool.py
 ```
-You may want to change the location of the outputFile.
-You most definitely should change the authtoken.
-If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
+- You may want to change the location of the outputFile.
+- You most definitely should change the authtoken.
+- If you want to adjust the frequency, alter the sleep_time parameter near the top of the script (default 10 minutes).  
+- There is an intentional delay between making API calls to avoid spamming the pool.
+- Price per killowatt and power used for your miner can be specified for dynamic profitability output
 Save (CTRL+O) and Exit (CTRL+X).
 
 Run it `python3 scripts/slushpool.py`
