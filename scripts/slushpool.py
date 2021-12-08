@@ -17,15 +17,14 @@ price_low=1
 price_countdown_height = 10800  # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
 price_countdown = 0
 sleep_time = 600 # controls how often this display panel is updated. 600 is once every 10 minutes
-# experimental. this value here is based on S9 running at 1kWh with electric cost of 12 cents/kWh and a market rate from bisq of $58,000 for 58k gang
-# 100,000,000 sats / $58,000 = 1724 sats/dollar.   1kWh * 24 hours * 12 cents = $2.88 electric cost / day.   1724 * 2.88 is 4965 sats
-# TODO: Fetch the market price and do this calculation dynamically
-breakevendaily = 4965
+breakevendaily = 9999999 # will get calculated below
+sats_per_btc = 100000000
 colorminingreward=ImageColor.getrgb("#6b50ff")
 colorbosreward=ImageColor.getrgb("#fb82a8")
 colorreferralreward=ImageColor.getrgb("#00bac5")
 colorgraphlinelight=ImageColor.getrgb("#a0a0a0")
 colorgraphlinedark=ImageColor.getrgb("#606060")
+colormaline=ImageColor.getrgb("#d69f06")
 colordatavalue=ImageColor.getrgb("#4040ff")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
 color000000=ImageColor.getrgb("#000000")
@@ -110,8 +109,8 @@ def gethighestreward(accountrewards):
     days = 0
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-        if days > 30:
-           break
+#        if days > 30:
+#           break
         currenttotal = float(reward["total_reward"])
         if currenttotal > highestreward:
             highestreward = currenttotal
@@ -122,8 +121,8 @@ def getlowestreward(accountrewards):
     days = 0
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-        if days > 30:
-           break
+#        if days > 30:
+#           break
         currenttotal = float(reward["total_reward"])
         if days == 1:
             lowestreward = currenttotal
@@ -221,7 +220,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
         for key in poolstats["btc"]["blocks"]:
             block = poolstats["btc"]["blocks"][key]
             if block["date_found"] > since_date:
-                sattally = sattally + int(float(block["user_reward"]) * 100000000)
+                sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
             else:
                 break
         sattally2 = sattally
@@ -230,7 +229,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
         for key in poolstats["btc"]["blocks"]:
             block = poolstats["btc"]["blocks"][key]
             if block["date_found"] > since_date:
-                sattally = sattally + int(float(block["user_reward"]) * 100000000)
+                sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
             else:
                 break
         value_last_day = str(sattally2 - sattally) + " sats"
@@ -262,36 +261,61 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
         draw.line(xy=[i,chart50,i+1,chart50],fill=colorgraphlinedark,width=1)
         draw.line(xy=[i,chart75,i+1,chart75],fill=colorgraphlinedark,width=1)
     # - left labels
-    reward25 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*3)) * 100000000))
-    reward50 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*2)) * 100000000))
-    reward75 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*1)) * 100000000))
+    reward25 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*3)) * sats_per_btc))
+    reward50 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*2)) * sats_per_btc))
+    reward75 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*1)) * sats_per_btc))
     drawrighttext(draw, str(reward25) + " sats", 12, labelwidth, chart25)
     drawrighttext(draw, str(reward50) + " sats", 12, labelwidth, chart50)
     drawrighttext(draw, str(reward75) + " sats", 12, labelwidth, chart75)
     # - 30 days of bars
     totaldays = 30
     days = 0
+    daystoskip = 1
     daywidth = int(math.floor((chartright - chartleft) / totaldays))
     barwidth = daywidth - 2
     overalltotal = 0
+    masize = 14 # days of simple moving average.
+    maoldx = -1
+    maoldy = -1
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-        if days > totaldays:
+        # skip the first day entry, something not right, and it doesnt show on slushpool.com
+        if days < (daystoskip + 1):
+           continue
+        if days > totaldays + 1:
            break
         currenttotal = float(reward["total_reward"])
         overalltotal = overalltotal + currenttotal
-        dayx = chartright - (days * daywidth)
+        dayx = chartright - ((days - daystoskip) * daywidth)
         barpct = 0
         if highestreward > lowestreward:
             barpct = (currenttotal-lowestreward)/(highestreward-lowestreward)
         bartop = chartbottom - int(math.floor((chartbottom-charttop)*barpct))
         draw.rectangle(xy=[dayx,bartop,dayx+barwidth,chartbottom-1],fill=colorminingreward)
-    overalltotal = overalltotal * 100000000
+        # moving average line
+        max = dayx + int(barwidth/2)
+        matotal = 0
+        for maidx in range(masize):
+            marewardidx = days + maidx
+            if len(accountrewards["btc"]["daily_rewards"]) > marewardidx:
+                mareward = accountrewards["btc"]["daily_rewards"][marewardidx]
+                marewardtotal = float(mareward["total_reward"])
+                matotal = matotal + marewardtotal
+        maavg = (matotal / masize)
+        mapct = 0
+        if highestreward > lowestreward:
+            mapct = (maavg-lowestreward)/(highestreward-lowestreward)
+        may = chartbottom - int(math.floor((chartbottom-charttop)*mapct))
+        if maoldx != -1:
+            draw.line(xy=[(max,may),(maoldx,maoldy)],fill=colormaline,width=2)
+        maoldx = max
+        maoldy = may
+    overalltotal = overalltotal * sats_per_btc
     # Chart header
     if days > 0:
         dailyavg = (overalltotal / days)
-        # Warn if missing breakeven. TODO: Calculate dynamically based on electric cost vs bisq market rates
-        breakevendaily = int((100000000 / price_last) * (kw_per_hour_used * 24 * price_per_kwh))
+        # Warn if missing breakeven.
+        breakevendaily = int((sats_per_btc / price_last) * (kw_per_hour_used * 24 * price_per_kwh))
         breakevencolor = color00FF00
         if dailyavg < breakevendaily:
             breakevencolor = colorFF0000
