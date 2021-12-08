@@ -11,6 +11,7 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 
 - [block height](#blockheightpy)
 - [channel balance](#channelbalancepy)
+- [compass mining status](#compassminingstatuspy)
 - [difficulty epoch](#difficultyepochpy)
 - [f2 pool](#f2poolpy)
 - [ip address](#ipaddresspy)
@@ -49,8 +50,9 @@ If neither PIL or Pillow is installed, then go ahead with `pip install Pillow`.
 
 You can upgrade Pillow to the latest using `python3 -m pip install --upgrade Pillow`
 
-4. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
-5. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
+4. Install Beautiful Soup pythong library using the command `python3 -m pip install beautifulsoup4`
+5. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
+6. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
 
 ### Prepare output folder and clone repository
 
@@ -130,6 +132,30 @@ Save (CTRL+O) and Exit (CTRL+X).
 Run it `python3 scripts/channelbalance.py`
 
 Press CTRL+C to stop the process to make any changes.  If you're node has channels, then one or more images will be output to /home/bitcoin/images by default.
+
+### compassminingstatus.py
+This python script will create an image denoting the high level status of facilities with Compass Mining as reported on their status page (https://status.compassmining.io).  This is useful if you have miner(s) hosted with Compass Mining, and need a way to quickly discern facility status for support purposes.
+
+![sample image of compass mining status](./images/compassminingstatus.png)
+
+Dependencies:
+- Uses Beautiful Soup for parsing (see installation guidance above)
+- External calls to https://status.compassmining.io
+  - Not using torify
+
+Before running the script, edit it to make changes
+```
+nano scripts/compassminingstatus.py
+```
+- You may want to change the location of the outputFile
+- You can also alter the colors of the reporting by status if you so desire.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
+
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it `python3 scripts/compassminingstatus.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
 ### difficultyepoch.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
@@ -405,6 +431,7 @@ And enable them
 ```sh
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
+sudo systemctl enable nodeyez-compassmining.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
 sudo systemctl enable nodeyez-ipaddress.service
@@ -423,6 +450,7 @@ And then start them
 ```sh
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
+sudo systemctl start nodeyez-compassmining.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
 sudo systemctl start nodeyez-ipaddress.service
