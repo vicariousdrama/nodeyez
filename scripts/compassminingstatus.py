@@ -104,22 +104,40 @@ def createimage(width=480, height=320):
     # incidents
     incidentcount = 0
     incidentrowheight = 40
-    # look for major incidents
-    incidents = soup.find_all(class_="impact-major")
-    for incident in incidents:
-        if incident.find(class_="actual-title") is not None:
-            text = incident.find(class_="actual-title").get_text()
-            incidentcount = incidentcount + 1
-            draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMajor)
-            drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
-    # look for maintenance
-    incidents = soup.find_all(class_="impact-maintenance")
-    for incident in incidents:
-        if incident.find(class_="actual-title") is not None:
-            text = incident.find(class_="actual-title").get_text()
-            incidentcount = incidentcount + 1
-            draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
-            drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+    # top block
+    if False:
+        # look for major incidents
+        incidents = soup.find_all(class_="impact-major")
+        for incident in incidents:
+            if incident.find(class_="actual-title") is not None:
+                text = incident.find(class_="actual-title").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMajor)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+        # look for maintenance
+        incidents = soup.find_all(class_="impact-maintenance")
+        for incident in incidents:
+            if incident.find(class_="actual-title") is not None:
+                text = incident.find(class_="actual-title").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+    # uptime svg block
+    if True:
+        incidents = soup.find_all(class_="status-red")
+        for incident in incidents:
+            if incident.find(class_="name") is not None:
+                text = incident.find(class_="name").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMajor)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+        incidents = soup.find_all(class_="status-blue")
+        for incident in incidents:
+            if incident.find(class_="name") is not None:
+                text = incident.find(class_="name").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
     # report if no incidents
     if incidentcount == 0:
         drawcenteredtext(draw, "No Known Incidents", 24, int(width/2), int(height/2), colorGood)
