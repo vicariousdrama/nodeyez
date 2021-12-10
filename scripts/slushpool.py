@@ -220,7 +220,8 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
         for key in poolstats["btc"]["blocks"]:
             block = poolstats["btc"]["blocks"][key]
             if block["date_found"] > since_date:
-                sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
+                if block["user_reward"] is not None:
+                    sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
             else:
                 break
         sattally2 = sattally
@@ -229,7 +230,8 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
         for key in poolstats["btc"]["blocks"]:
             block = poolstats["btc"]["blocks"][key]
             if block["date_found"] > since_date:
-                sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
+                if block["user_reward"] is not None:
+                    sattally = sattally + int(float(block["user_reward"]) * sats_per_btc)
             else:
                 break
         value_last_day = str(sattally2 - sattally) + " sats"
@@ -284,7 +286,9 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
            continue
         if days > totaldays + 1:
            break
-        currenttotal = float(reward["total_reward"])
+        currenttotal = 0
+        if reward["total_reward"] is not None:
+            currenttotal = float(reward["total_reward"])
         overalltotal = overalltotal + currenttotal
         dayx = chartright - ((days - daystoskip) * daywidth)
         barpct = 0
