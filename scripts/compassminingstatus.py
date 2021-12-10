@@ -16,6 +16,7 @@ statusurl="https://status.compassmining.io/"
 colorFFFFFF=ImageColor.getrgb("#ffffff")
 colorGood=ImageColor.getrgb("#40ff40")
 colorMaintenance=ImageColor.getrgb("#2020ff")
+colorCritical=ImageColor.getrgb("#ff7a00")
 colorMajor=ImageColor.getrgb("#ff2020")
 fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
 fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
@@ -105,7 +106,7 @@ def createimage(width=480, height=320):
     incidentcount = 0
     incidentrowheight = 40
     # top block
-    if False:
+    if True:
         # look for major incidents
         incidents = soup.find_all(class_="impact-major")
         for incident in incidents:
@@ -113,6 +114,14 @@ def createimage(width=480, height=320):
                 text = incident.find(class_="actual-title").get_text()
                 incidentcount = incidentcount + 1
                 draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMajor)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+        # look for critical incidents
+        incidents = soup.find_all(class_="impact-critical")
+        for incident in incidents:
+            if incident.find(class_="actual-title") is not None:
+                text = incident.find(class_="actual-title").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorCritical)
                 drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
         # look for maintenance
         incidents = soup.find_all(class_="impact-maintenance")
@@ -123,13 +132,20 @@ def createimage(width=480, height=320):
                 draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
                 drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
     # uptime svg block
-    if True:
+    if False:
         incidents = soup.find_all(class_="status-red")
         for incident in incidents:
             if incident.find(class_="name") is not None:
                 text = incident.find(class_="name").get_text()
                 incidentcount = incidentcount + 1
                 draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMajor)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+        incidents = soup.find_all(class_="status-orange")
+        for incident in incidents:
+            if incident.find(class_="name") is not None:
+                text = incident.find(class_="name").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorCritical)
                 drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
         incidents = soup.find_all(class_="status-blue")
         for incident in incidents:
