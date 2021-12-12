@@ -36,7 +36,12 @@ You'll also need to ensure dependencies are met for Python and assorted librarie
 1. Login to your node via SSH as admin
 2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the scripts asume Python 3. Use the command `sudo apt-get install python3`.
 3. Install the Python Pillow library. These scripts were created with the newer Pillow library, but may work with PIL as well. Its my understanding that you can't install both. So its worth doing a check before installing.  
- 
+
+Install dependencies needed for newer versions of Pillow
+   ```sh
+   sudo apt-get install libjpeg-dev zlib1g-dev
+   ```
+
 See if pil or pillow is installed `pip list | grep --ignore-case pi`. Sample output:
    ```sh
    googleapis-common-protos 1.52.0
@@ -49,6 +54,8 @@ See if pil or pillow is installed `pip list | grep --ignore-case pi`. Sample out
 If neither PIL or Pillow is installed, then go ahead with `pip install Pillow`. 
 
 You can upgrade Pillow to the latest using `python3 -m pip install --upgrade Pillow`
+
+Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or above.
 
 4. Install Beautiful Soup pythong library using the command `python3 -m pip install beautifulsoup4`
 5. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
