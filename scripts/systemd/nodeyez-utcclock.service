@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for UTC Clock panel generation
+# Nodeyez: systemd unit for UTC Clock panel generation
 # /etc/systemd/system/nodeyez-utcclock.service
 
 [Unit]
