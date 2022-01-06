@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Lightning Channel Balance panel generation
+# Nodeyez: systemd unit for Lightning Channel Balance panel generation
 # /etc/systemd/system/nodeyez-channelbalance.service
 
 [Unit]
