@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Ring of Fire Status panel generation
+# Nodeyez: systemd unit for Ring of Fire Status panel generation
 # /etc/systemd/system/nodeyez-rofstatus.service
 
 [Unit]
