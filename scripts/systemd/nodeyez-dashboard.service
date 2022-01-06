@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for HTTP service for generated images
+# /etc/systemd/system/nodeyez-dashboard.service
+
+[Unit]
+Description=HTTP service for generated images
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/images
+ExecStart=/usr/bin/python2.7 -m SimpleHTTPServer 906
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
