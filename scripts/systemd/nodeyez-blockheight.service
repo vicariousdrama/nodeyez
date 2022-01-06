@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Block Height panel generation
+# Nodeyez: systemd unit for Block Height panel generation
 # /etc/systemd/system/nodeyez-blockheight.service
 
 [Unit]
