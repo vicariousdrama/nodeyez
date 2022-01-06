@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for starting the Nodeyez Slideshow
+# Nodeyez: systemd unit for starting the Nodeyez Slideshow
 # /etc/systemd/system/nodeyez-slideshow.service
 
 [Unit]
