@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Miner Status panel generation
+# Nodeyez: systemd unit for Miner Status panel generation
 # /etc/systemd/system/nodeyez-minerstatus.service
 
 [Unit]
