@@ -1,4 +1,4 @@
-# systemd unit for F2 Pool Mining Summary panel generation
+# Nodeyez: systemd unit for F2 Pool Mining Summary panel generation
 # /etc/systemd/system/nodeyez-f2pool.service
 
 [Unit]
