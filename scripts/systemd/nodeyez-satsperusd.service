@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Sats per USD panel generation
+# Nodeyez: systemd unit for Sats per USD panel generation
 # /etc/systemd/system/nodeyez-satsperusd.service
 
 [Unit]
