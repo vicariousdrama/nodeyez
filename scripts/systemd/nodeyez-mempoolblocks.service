@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Mempool Blocks panel generation
+# Nodeyez: systemd unit for Mempool Blocks panel generation
 # /etc/systemd/system/nodeyez-mempoolblocks.service
 
 [Unit]
