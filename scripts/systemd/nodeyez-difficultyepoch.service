@@ -1,4 +1,4 @@
-# RaspiBolt: systemd unit for Difficulty Epoch panel generation
+# Nodeyez: systemd unit for Difficulty Epoch panel generation
 # /etc/systemd/system/nodeyez-difficultyepoch.service
 
 [Unit]
