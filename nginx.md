@@ -5,9 +5,9 @@ This guide assumes that you don't yet have NGINX installed, but guidance is prov
 
 ## Choose ONE (1) of the following
 
-- [Install for MyNodeBTC](#installformynodebtc)
-- [New Install of NGINX](#newinstallofnginx)
-- [Modifying Existing NGINX Setup](#modifyingexistingnginxsetup)
+- [Install for MyNodeBTC](#install-for-mynodebtc)
+- [New Install of NGINX](#new-install-of-nginx)
+- [Modifying Existing NGINX Setup](#modifying-existing-nginx-setup)
 
 ![sample image of dashboard](./images/websitedashboard.png)
 
