@@ -3,9 +3,51 @@
 Whether you are using a Raspberry Pi with a screen attached to GPIO pins or not, you can also setup a web based dashboard to display the images and have them checked for updates every 10 seconds. 
 This guide assumes that you don't yet have NGINX installed, but guidance is provided in later sections for [modifying existing NGINX install](#modifying-existing-nginx-setup).
 
+## Choose ONE (1) of the following
+
+- [Install for MyNodeBTC](#installformynodebtc)
+- [New Install of NGINX](#newinstallofnginx)
+- [Modifying Existing NGINX Setup](#modifyingexistingnginxsetup)
+
 ![sample image of dashboard](./images/websitedashboard.png)
 
-## Install NGINX
+## Install for MyNodeBTC
+
+If you are using [MyNodeBTC](https://mynodebtc.com/), then you should follow this section.  MyNodeBTC already comes with NGINX and will update over top of configuration files. Thankfully, it also makes use of the sites-enabled and [reverse-proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) features to make this a little easier.
+
+* Copy necessary files for NGINX
+
+  ```sh
+  $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+  $ sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+  ```
+  
+* Test the NGINX configuration and restart the service.
+
+  ```sh
+  $ sudo nginx -t
+  $ sudo systemctl restart nginx
+  ```
+
+* Copy necessary files for the Simple HTTP Server service, enable, and start
+
+  ```sh
+  $ sudo cp /home/bitcoin/nodeyez/scripts/systemd/nodeyez-dashboard.service /etc/system/systemd/nodeyez-dashboard.service
+  $ sudo systemctl enable nodeyez-dashboard.service
+  $ sudo systemctl start nodeyez-dashboard.service
+  ```
+  
+* Enable Access Through Firewall
+
+   ```sh
+   $ sudo ufw allow 907 comment 'allow access to node images over ssl'
+   ```
+ 
+Now see if you can access the dashboard at https://your-node-ip:907
+  
+
+
+## New Install of NGINX
 
   💡 _Hint: NGINX is pronounced "Engine X"_
 
@@ -28,10 +70,25 @@ This guide assumes that you don't yet have NGINX installed, but guidance is prov
   $ sudo chown root:root /etc/nginx/nginx.conf
   $ sudo chown root:root /etc/nginx/imagegallery.xslt
   ```
-  
+
+* Test the NGINX configuration and restart the service.
+
+  ```sh
+  $ sudo nginx -t
+  $ sudo systemctl restart nginx
+  ```
+
+* Enable Access Through Firewall
+
+   ```sh
+   $ sudo ufw allow 907 comment 'allow access to node images over ssl'
+   ```
+ 
+Now see if you can access the dashboard at https://your-node-ip:907
+
 ## Modifying Existing NGINX setup
 
-If you already have nginx installed, then you really just need to add a local server listening on a port, and an upstream node for optional SSL proxying.
+If you already have nginx installed, then you really just need to add a local server listening on a port, and an upstream node for optional SSL proxying.  Node that this is a very crude way of piggybacking the install.
 
 The premade configuration used in the prior section uses ports 906 for http, and 907 for SSL.  Why port 907? No reason other then its placement in the [BIP39 wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L907).
 
@@ -87,8 +144,6 @@ The premade configuration used in the prior section uses ports 906 for http, and
   
 * Save (CTRL+O) and exit (CTRL+X) the file
 
-## Restart NGINX
-
 * Test the NGINX configuration and restart the service.
 
   ```sh
@@ -96,14 +151,12 @@ The premade configuration used in the prior section uses ports 906 for http, and
   $ sudo systemctl restart nginx
   ```
 
-## Enable Access Through Firewall
-
-If you've setup the uncomplicated firewall to deny incoming and outgoing traffic by default, then you'll need to add a rule to allow access to the ports the web server is listening on.
-
-* To enable SSL access
+* Enable Access Through Firewall
 
    ```sh
    $ sudo ufw allow 907 comment 'allow access to node images over ssl'
    ```
  
 Now see if you can access the dashboard at https://your-node-ip:907
+
+
