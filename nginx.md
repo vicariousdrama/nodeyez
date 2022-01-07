@@ -17,28 +17,20 @@ If you are using [MyNodeBTC](https://mynodebtc.com/), then you should follow thi
 
 * Copy necessary files for NGINX
 
+  We want to enable the XSLT module, create a definition for the Nodeyez dashboard on port 907, and our template that generates the dashboard view
+
   ```sh
+  $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
   $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
   $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+  $ sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
   $ sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
   $ sudo chown root:root /etc/nginx/imagegallery.xslt
   ```
 
-* Modify the NGINX configuration
-
-  ```sh
-  $ sudo nano /etc/nginx/nginx.conf
-  ```
-  
-  Near the top of the file, load the XSLT module by adding this line
-  
-  ```
-  load_module /usr/lib/nginx/modules/ngx_http_xslt_filter_module.so;
-  ```
-
-* Save (CTRL+O) and exit (CTRL+X) the file
-
 * Test the NGINX configuration and restart the service.
+
+  There should be no errors when running the test with the first command.
 
   ```sh
   $ sudo nginx -t
