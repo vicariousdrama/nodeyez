@@ -19,22 +19,30 @@ If you are using [MyNodeBTC](https://mynodebtc.com/), then you should follow thi
 
   ```sh
   $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+  $ sudo cp /home/bitcoin/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
   $ sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+  $ sudo chown root:root /etc/nginx/imagegallery.xslt
+  ```
+
+* Modify the NGINX configuration
+
+  ```sh
+  $ sudo nano /etc/nginx/nginx.conf
   ```
   
+  Near the top of the file, load the XSLT module by adding this line
+  
+  ```
+  load_module /usr/lib/nginx/modules/ngx_http_xslt_filter_module.so;
+  ```
+
+* Save (CTRL+O) and exit (CTRL+X) the file
+
 * Test the NGINX configuration and restart the service.
 
   ```sh
   $ sudo nginx -t
   $ sudo systemctl restart nginx
-  ```
-
-* Copy necessary files for the Simple HTTP Server service, enable, and start
-
-  ```sh
-  $ sudo cp /home/bitcoin/nodeyez/scripts/systemd/nodeyez-dashboard.service /etc/system/systemd/nodeyez-dashboard.service
-  $ sudo systemctl enable nodeyez-dashboard.service
-  $ sudo systemctl start nodeyez-dashboard.service
   ```
   
 * Enable Access Through Firewall
