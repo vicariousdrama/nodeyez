@@ -10,7 +10,7 @@ outputFile = "/home/bitcoin/images/slushpool.png"
 authtoken = "your-auth-token-here"
 price_url = "https://bisq.markets/bisq/api/markets/ticker"
 price_per_kwh = .12
-kw_per_hour_used = 1.000
+kw_per_hour_used = 0.800
 price_last=1
 price_high=1
 price_low=1
@@ -48,6 +48,8 @@ def getaccountprofile():
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        cmdoutput = ""
+    if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"confirmed_reward\": null, \"unconfirmed_reward\": \"0.00000000\", \"estimated_reward\": \"0.00000000\", \"hash_rate_unit\": \"Gh/s\", \"hash_rate_5m\": 0.0000}}"
     j = json.loads(cmdoutput)
     return j
@@ -58,6 +60,8 @@ def getaccountrewards():
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        cmdoutput = ""
+    if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"daily_rewards\":[]}}"
     j = json.loads(cmdoutput)
     return j
@@ -68,6 +72,8 @@ def getpoolstats():
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        cmdoutput = ""
+    if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"blocks\":{\"0\":{\"date_found\":0,\"mining_duration\":0,\"total_shares\":0,\"state\":\"confirmed\",\"confirmations_left\":0,\"value\": \"0.00000000\",\"user_reward\": \"0.00000000\",\"pool_scoring_hash_rate\": 0.000000}}}}"
     j = json.loads(cmdoutput)
     return j
@@ -109,8 +115,6 @@ def gethighestreward(accountrewards):
     days = 0
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-#        if days > 30:
-#           break
         currenttotal = float(reward["total_reward"])
         if currenttotal > highestreward:
             highestreward = currenttotal
@@ -121,8 +125,6 @@ def getlowestreward(accountrewards):
     days = 0
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-#        if days > 30:
-#           break
         currenttotal = float(reward["total_reward"])
         if days == 1:
             lowestreward = currenttotal
