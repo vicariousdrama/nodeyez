@@ -18,6 +18,7 @@ colorGood=ImageColor.getrgb("#40ff40")
 colorMaintenance=ImageColor.getrgb("#2020ff")
 colorCritical=ImageColor.getrgb("#ff7a00")
 colorMajor=ImageColor.getrgb("#ff2020")
+colorNone=ImageColor.getrgb("#333333")
 fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
 fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
 fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
@@ -130,6 +131,14 @@ def createimage(width=480, height=320):
                 text = incident.find(class_="actual-title").get_text()
                 incidentcount = incidentcount + 1
                 draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
+                drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
+        # look for none
+        incidents = soup.find_all(class_="impact-none")
+        for incident in incidents:
+            if incident.find(class_="actual-title") is not None:
+                text = incident.find(class_="actual-title").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorNone)
                 drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2))
     # uptime svg block
     if False:
