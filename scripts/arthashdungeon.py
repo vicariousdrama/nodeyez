@@ -116,8 +116,14 @@ def createimage(blocknumber=1, width=480, height=320):
     draw     = ImageDraw.Draw(im)
     tileset  = Image.open(tilesetFile)
     iconsize = 32
-    maxcol   = 15
-    maxrow   = 9
+    maxcol   = int(width/iconsize)
+    maxrow   = int(height/iconsize)-1
+    if maxcol%2 == 0:
+        maxcol -= 1
+    if maxrow%2 == 0:
+        maxrow -= 1
+    xoffset  = int((width - (maxcol*iconsize))/2)
+    yoffset  = int((height - ((maxrow+1)*iconsize))/2)
     thingmap = []
     global maze
     byteidx  = 64
@@ -145,16 +151,17 @@ def createimage(blocknumber=1, width=480, height=320):
     basetileimage = tileset.crop((basetilex, themey, basetilex + iconsize, themey + iconsize))
     walltilex = themex + ((6 + walltile) * iconsize)
     walltileimage = tileset.crop((walltilex, themey, walltilex + iconsize, themey + iconsize))
-    alttilex = themex + (alttile * iconsize)
+    alttilex = themex + (alttile * iconsize) # alt tile is an alternate to base tile for floor
     alttileimage = tileset.crop((alttilex, themey, alttilex + iconsize, themey + iconsize))
     random.seed(altseed) # 0-15 as the seed is very small
     for fieldcolumn in range(maxcol):
         thingmap.append([])
         for fieldrow in range(maxrow):
             thingmap[fieldcolumn].append(0)
-            im.paste(basetileimage, ((fieldcolumn * iconsize), ((fieldrow+1) * iconsize)))
             if (random.random() * 10) > 6:
-                im.paste(alttileimage, ((fieldcolumn * iconsize), ((fieldrow+1) * iconsize)))
+                im.paste(alttileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
+            else:
+                im.paste(basetileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
     # draw walls based on bits in half a byte (we only use 1 hex char per byte here, ensuring gaps)
     bytenum = 0
     if 1 == 0:
@@ -174,7 +181,7 @@ def createimage(blocknumber=1, width=480, height=320):
                 bytebitval = (byteint >> bytebit) & int("00000001")
                 if bytebitval > 0:
                     thingmap[fieldcolumn][fieldrow] = 1
-                    im.paste(walltileimage, ((fieldcolumn * iconsize), ((fieldrow+1) * iconsize)))
+                    im.paste(walltileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
     # generate maze
     if 1 == 1:
         # improve the randomization by resetting the seed with a larger number
@@ -188,31 +195,33 @@ def createimage(blocknumber=1, width=480, height=320):
         dfsmazegen(0, 0, 'w')
     # draw walls based on generated maze
     if 1 == 1:
-        for mazerow in range(int(maxrow/2)):
+        mazerows = int(maxrow/2)
+        mazecolumns = int(maxcol/2)
+        for mazerow in range(mazerows):
             fieldrow = (mazerow*2)+1
-            for mazecolumn in range(int(maxcol/2)):
+            for mazecolumn in range(mazecolumns):
                 fieldcolumn = (mazecolumn*2)
-                im.paste(walltileimage, (((fieldcolumn+0)*iconsize), ((fieldrow+0)*iconsize)))
+                im.paste(walltileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+0)*iconsize)))
                 thingmap[fieldcolumn+0][fieldrow+0-1]=1
                 if not maze[mazecolumn][mazerow]['no']:
-                    im.paste(walltileimage, (((fieldcolumn+1)*iconsize), ((fieldrow+0)*iconsize)))
+                    im.paste(walltileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+0)*iconsize)))
                     thingmap[fieldcolumn+1][fieldrow+0-1]=1
                 if not maze[mazecolumn][mazerow]['wo']:
-                    im.paste(walltileimage, (((fieldcolumn+0)*iconsize), ((fieldrow+1)*iconsize)))
+                    im.paste(walltileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+1)*iconsize)))
                     thingmap[fieldcolumn+0][fieldrow+1-1]=1
                 if mazecolumn == int(maxcol/2) - 1:
-                    im.paste(walltileimage, (((fieldcolumn+2)*iconsize), ((fieldrow+0)*iconsize)))
+                    im.paste(walltileimage, (xoffset+((fieldcolumn+2)*iconsize), yoffset+((fieldrow+0)*iconsize)))
                     thingmap[fieldcolumn+2][fieldrow+0-1]=1
                     if mazerow < int(maxrow/2) - 1:
-                        im.paste(walltileimage, (((fieldcolumn+2)*iconsize), ((fieldrow+1)*iconsize)))
+                        im.paste(walltileimage, (xoffset+((fieldcolumn+2)*iconsize), yoffset+((fieldrow+1)*iconsize)))
                         thingmap[fieldcolumn+2][fieldrow+1-1]=1
                     else:
-                        im.paste(walltileimage, (((fieldcolumn+2)*iconsize), ((fieldrow+2)*iconsize)))
+                        im.paste(walltileimage, (xoffset+((fieldcolumn+2)*iconsize), yoffset+((fieldrow+2)*iconsize)))
                         thingmap[fieldcolumn+2][fieldrow+2-1]=1
                 if mazerow == int(maxrow/2) -1:
-                    im.paste(walltileimage, (((fieldcolumn+0)*iconsize), ((fieldrow+2)*iconsize)))
+                    im.paste(walltileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+2)*iconsize)))
                     thingmap[fieldcolumn+0][fieldrow+2-1]=1
-                    im.paste(walltileimage, (((fieldcolumn+1)*iconsize), ((fieldrow+2)*iconsize)))
+                    im.paste(walltileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+2)*iconsize)))
                     thingmap[fieldcolumn+1][fieldrow+2-1]=1
     # print it out (for debug purposes)
     if 1 == 0:
@@ -248,7 +257,7 @@ def createimage(blocknumber=1, width=480, height=320):
     byteidx -= bytenum
     # draw some characters
     tileyoffset = 16
-    for charnum in range(4):
+    for charnum in range(0):
         byteidx -= 2
         fieldcol = ((int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4)%maxcol
         fieldrow = ((int(blockhash[byteidx:byteidx+2],16) & int("00001111",2)))%maxrow
@@ -257,11 +266,11 @@ def createimage(blocknumber=1, width=480, height=320):
             tilex   = (int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4
             tiley   = (int(blockhash[byteidx:byteidx+2],16) & int("00001111",2))
             tileimage = tileset.crop((tilex*iconsize,(tiley+tileyoffset)*iconsize,(tilex+1)*iconsize,(tiley+tileyoffset+1)*iconsize))
-            im.paste(tileimage, (fieldcol*iconsize,(fieldrow+1)*iconsize), tileimage)
+            im.paste(tileimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), tileimage)
             thingmap[fieldcol][fieldrow] = 1
     # draw some items
     tileyoffset = 32
-    for charnum in range(4):
+    for charnum in range(0):
         byteidx -= 2
         fieldcol = ((int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4)%maxcol
         fieldrow = ((int(blockhash[byteidx:byteidx+2],16) & int("00001111",2)))%maxrow
@@ -270,7 +279,7 @@ def createimage(blocknumber=1, width=480, height=320):
             tilex   = (int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4
             tiley   = (int(blockhash[byteidx:byteidx+2],16) & int("00001111",2))
             tileimage = tileset.crop((tilex*iconsize,(tiley+tileyoffset)*iconsize,(tilex+1)*iconsize,(tiley+tileyoffset+1)*iconsize))
-            im.paste(tileimage, (fieldcol*iconsize,(fieldrow+1)*iconsize), tileimage)
+            im.paste(tileimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), tileimage)
             thingmap[fieldcol][fieldrow] = 1
     # draw stairs
     # draw top bar
@@ -300,7 +309,10 @@ def getblockhash(blocknumber=1):
         return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 if len(sys.argv) > 0:
-    createimage(int(sys.argv[1]))
+    if len(sys.argv) > 3:
+        createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+    else:
+        createimage(int(sys.argv[1]))
 else:
     while True:
         blocknumber = getcurrentblock()
