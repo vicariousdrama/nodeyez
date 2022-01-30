@@ -10,10 +10,8 @@ import subprocess
 import time
 import sys
 
-# This tileset is a subset of the ProjectUltimno_full.png from Dungeon Crawl Stone Soup
-# The images are available at https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
-# To find out more about Dungeon Crawl Stone Soup and how to play go to https://crawl.develz.org/wordpress/
-tilesetFile="/home/bitcoin/nodeyez/images/arthash-dungeon-tiles.png"
+bitcoinLogosFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-logos.png"
+bitcoinTilesFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
 outputFile="/home/bitcoin/images/arthashdungeon.png"
 color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
@@ -54,11 +52,17 @@ def drawbottomrighttext(draw, s, fontsize, x, y):
     sh += oy
     draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
 
-def dfsmazegen(x, y, d):
+def dfsmazegen(x, y, d, t):
     global maze
     mynode = maze[x][y]
     if not maze[x][y]['visited']:
         maze[x][y]['visited'] = True
+        r = t + (int(random.random() * 3) - 1)
+        if r < 0:
+            r = 0
+        if r > 6:
+            r = 6
+        maze[x][y]['t'] = r
         maze[x][y][d + 'o'] = True  # open where we came from
         maze[x][y][d + 'a'] = False # no longer available
         availabledirections = []
@@ -90,22 +94,22 @@ def dfsmazegen(x, y, d):
                 maze[x][y]['na'] = False
                 if not maze[x][y-1]['visited']:
                     maze[x][y]['no'] = True
-                    dfsmazegen(x,y-1,'s')
+                    dfsmazegen(x,y-1,'s',r)
             if chosendirection == 'ea':
                 maze[x][y]['ea'] = False
                 if not maze[x+1][y]['visited']:
                     maze[x][y]['eo'] = True
-                    dfsmazegen(x+1,y,'w')
+                    dfsmazegen(x+1,y,'w',r)
             if chosendirection == 'wa':
                 maze[x][y]['wa'] = False
                 if not maze[x-1][y]['visited']:
                     maze[x][y]['wo'] = True
-                    dfsmazegen(x-1,y,'e')
+                    dfsmazegen(x-1,y,'e',r)
             if chosendirection == 'sa':
                 maze[x][y]['sa'] = False
                 if not maze[x][y+1]['visited']:
                     maze[x][y]['so'] = True
-                    dfsmazegen(x,y+1,'n')
+                    dfsmazegen(x,y+1,'n',r)
         maze[x][y] = mynode
 
 def createimage(blocknumber=1, width=480, height=320):
@@ -114,8 +118,15 @@ def createimage(blocknumber=1, width=480, height=320):
     padtop=32
     im       = Image.new(mode="RGB", size=(width, height))
     draw     = ImageDraw.Draw(im)
-    tileset  = Image.open(tilesetFile)
     iconsize = 32
+    tileset  = Image.open(bitcoinTilesFile)
+    tilesetx = int(tileset.getbbox()[2] / iconsize)
+    tilesety = int(tileset.getbbox()[3] / iconsize)
+    logoset  = Image.open(bitcoinLogosFile)
+    logosetx = int(logoset.getbbox()[2] / iconsize)
+    logosety = int(logoset.getbbox()[3] / iconsize)
+    #print(f"tilesetx={tilesetx}, tilesety={tilesety}")
+    #print(f"logosetx={logosetx}, logosety={logosety}")
     maxcol   = int(width/iconsize)
     maxrow   = int(height/iconsize)-1
     if maxcol%2 == 0:
@@ -126,73 +137,43 @@ def createimage(blocknumber=1, width=480, height=320):
     yoffset  = int((height - ((maxrow+1)*iconsize))/2)
     thingmap = []
     global maze
-    byteidx  = 64
-    # draw the dungeon (playing field of base tile and alt tile, walls)
+    byteidx  = len(blockhash)
+    # get theme (currently assumes 2 themes wide in the tileset)
     byteidx  -= 2
-    theme    = (int(blockhash[byteidx:byteidx+2],16) & int("11111000",2)) >> 3
-    basetile = int(blockhash[byteidx:byteidx+2],16) & int("00000111",2)
-    byteidx  -= 2
-    walltile = (int(blockhash[byteidx:byteidx+2],16) & int("10000000",2)) >> 7
-    alttile  = (int(blockhash[byteidx:byteidx+2],16) & int("01110000",2)) >> 4
-    altseed  = int(blockhash[byteidx:byteidx+2],16) & int("00001111",2)
-    themex = 0
+    theme    = int(blockhash[byteidx:byteidx+2],16) % (tilesetx * tilesety / 8)
+    themex   = 0
     if theme%2 == 1:
         themex = iconsize * 8
     themey = int(theme / 2) * iconsize
-    if basetile == 6:
-        basetile = 0
-    if basetile == 7:
-        basetile = 5
-    if alttile == 6:
-        alttile = 0
-    if alttile == 7:
-        alttile = 5
+    # get starting basetile (0 .. 5)
+    byteidx  -= 2
+    basetile = int(blockhash[byteidx:byteidx+2],16) % 6
     basetilex = themex + (basetile * iconsize)
     basetileimage = tileset.crop((basetilex, themey, basetilex + iconsize, themey + iconsize))
+    # get wall tile (0 or 1)
+    byteidx  -= 2
+    walltile = int(blockhash[byteidx:byteidx+2],16) % 2
     walltilex = themex + ((6 + walltile) * iconsize)
     walltileimage = tileset.crop((walltilex, themey, walltilex + iconsize, themey + iconsize))
-    alttilex = themex + (alttile * iconsize) # alt tile is an alternate to base tile for floor
-    alttileimage = tileset.crop((alttilex, themey, alttilex + iconsize, themey + iconsize))
-    random.seed(altseed) # 0-15 as the seed is very small
+    # get randomization seed
+    byteidx  -= 6
+    altseed  = int(blockhash[byteidx:byteidx+6],16)
+    random.seed(altseed) # 0-16777215
+    # initialize the field and thingmap
     for fieldcolumn in range(maxcol):
         thingmap.append([])
         for fieldrow in range(maxrow):
             thingmap[fieldcolumn].append(0)
-            if (random.random() * 10) > 6:
-                im.paste(alttileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
-            else:
-                im.paste(basetileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
-    # draw walls based on bits in half a byte (we only use 1 hex char per byte here, ensuring gaps)
+            im.paste(basetileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
     bytenum = 0
-    if 1 == 0:
-        for fieldcolumn in range(maxcol):
-            for fieldrow in range(maxrow):
-                bitidx  = (fieldcolumn*maxrow)+fieldrow
-                bytenum = int(bitidx/8)
-                bytepos = int(byteidx - bytenum)
-                byteval = blockhash[bytepos:bytepos+1]
-                byteint = int(byteval,16)
-                # randomly add more gaps
-                # if (random.random() * 10) > 8:
-                #    byteint = byteint << 1
-                # always add more gaps
-                byteint = byteint >> 1
-                bytebit = int(bitidx%8)
-                bytebitval = (byteint >> bytebit) & int("00000001")
-                if bytebitval > 0:
-                    thingmap[fieldcolumn][fieldrow] = 1
-                    im.paste(walltileimage, (xoffset+(fieldcolumn * iconsize), yoffset+((fieldrow+1) * iconsize)))
     # generate maze
     if 1 == 1:
         # improve the randomization by resetting the seed with a larger number
-        byteidx  -= 4
-        altseed  = int(blockhash[byteidx:byteidx+4],16) & int("1111111111111111",2)
-        random.seed(altseed) # 0-65535
         for mazecolumn in range(int(maxcol/2)):
             maze.append([])
             for mazerow in range(int(maxrow/2)):
-                maze[mazecolumn].append({'visited':False,'no':False,'eo':False,'wo':False,'so':False,'na':True,'ea':True,'wa':True,'sa':True})
-        dfsmazegen(0, 0, 'w')
+                maze[mazecolumn].append({'visited':False,'no':False,'eo':False,'wo':False,'so':False,'na':True,'ea':True,'wa':True,'sa':True,'t':0})
+        dfsmazegen(0, 0, 'w', basetile)
     # draw walls based on generated maze
     if 1 == 1:
         mazerows = int(maxrow/2)
@@ -201,6 +182,12 @@ def createimage(blocknumber=1, width=480, height=320):
             fieldrow = (mazerow*2)+1
             for mazecolumn in range(mazecolumns):
                 fieldcolumn = (mazecolumn*2)
+                basetile = maze[mazecolumn][mazerow]['t'] % 6
+                basetilex = themex + (basetile * iconsize)
+                basetileimage = tileset.crop((basetilex, themey, basetilex + iconsize, themey + iconsize))
+                im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+0)*iconsize)))
+                im.paste(basetileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+1)*iconsize)))
+                im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+1)*iconsize)))
                 im.paste(walltileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+0)*iconsize)))
                 thingmap[fieldcolumn+0][fieldrow+0-1]=1
                 if not maze[mazecolumn][mazerow]['no']:
@@ -255,32 +242,24 @@ def createimage(blocknumber=1, width=480, height=320):
 
 
     byteidx -= bytenum
-    # draw some characters
-    tileyoffset = 16
-    for charnum in range(0):
-        byteidx -= 2
-        fieldcol = ((int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4)%maxcol
-        fieldrow = ((int(blockhash[byteidx:byteidx+2],16) & int("00001111",2)))%maxrow
+    # draw some logos
+    logostodraw = int(maxrow/2)
+    logostotry = 100
+    while logostodraw > 0 and logostotry > 0:
+        logostotry -= 1
+        byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 7))
+        fieldcol = int(blockhash[byteidx:byteidx+4],16) % maxcol
+        byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 11))
+        fieldrow = int(blockhash[byteidx:byteidx+4],16) % maxrow
         if thingmap[fieldcol][fieldrow] == 0:
-            byteidx -= 2
-            tilex   = (int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4
-            tiley   = (int(blockhash[byteidx:byteidx+2],16) & int("00001111",2))
-            tileimage = tileset.crop((tilex*iconsize,(tiley+tileyoffset)*iconsize,(tilex+1)*iconsize,(tiley+tileyoffset+1)*iconsize))
-            im.paste(tileimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), tileimage)
+            byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 3))
+            tilex   = int(blockhash[byteidx:byteidx+2],16) % logosetx
+            byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 5))
+            tiley   = int(blockhash[byteidx:byteidx+2],16) % logosety
+            logoimage = logoset.crop((tilex*iconsize,tiley*iconsize,(tilex+1)*iconsize,(tiley+1)*iconsize))
+            im.paste(logoimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), logoimage)
             thingmap[fieldcol][fieldrow] = 1
-    # draw some items
-    tileyoffset = 32
-    for charnum in range(0):
-        byteidx -= 2
-        fieldcol = ((int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4)%maxcol
-        fieldrow = ((int(blockhash[byteidx:byteidx+2],16) & int("00001111",2)))%maxrow
-        if thingmap[fieldcol][fieldrow] == 0:
-            byteidx -= 2
-            tilex   = (int(blockhash[byteidx:byteidx+2],16) & int("11110000",2)) >> 4
-            tiley   = (int(blockhash[byteidx:byteidx+2],16) & int("00001111",2))
-            tileimage = tileset.crop((tilex*iconsize,(tiley+tileyoffset)*iconsize,(tilex+1)*iconsize,(tiley+tileyoffset+1)*iconsize))
-            im.paste(tileimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), tileimage)
-            thingmap[fieldcol][fieldrow] = 1
+            logostodraw = logostodraw - 1
     # draw stairs
     # draw top bar
     #  - level
@@ -308,7 +287,7 @@ def getblockhash(blocknumber=1):
         print(e)
         return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
-if len(sys.argv) > 0:
+if len(sys.argv) > 1:
     if len(sys.argv) > 3:
         createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
     else:
