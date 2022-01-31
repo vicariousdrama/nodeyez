@@ -9,6 +9,7 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 
 ## Quick Menu of Info Panels
 
+- [art hash dungeon](#arthashdungeonpy)
 - [block height](#blockheightpy)
 - [channel balance](#channelbalancepy)
 - [compass mining status](#compassminingstatuspy)
@@ -93,6 +94,32 @@ Whether you are using a Raspberry Pi or not, you can also display the images via
 ## Available scripts
 
 You don't have to run all the scripts contained within.  Pick and choose the ones you like, configure and test them out.  Whichever ones you run will output to the common images folder to be displayed on an attached screen or website dashboard.
+
+### arthashdungeon.py
+This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block hash
+
+![sample image depicting a sample generated maze](./images/arthashdungeon.png)
+
+Dependencies:
+- A bitcoin node running locally and fully synched
+- bitcoin-cli tool available with appropriate macaroons granted to the user running the script
+  - calls "getblockchaininfo", "getblockhash"
+
+Before running the script, edit it to make changes
+```
+nano scripts/arthashdungeon.py
+```
+- You may want to change the location of the outputFile.
+- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 2 minutes).
+- This script uses files in the nodeyez/images folder for its tileset as referenced by the bitcoinLogosFile and bitcoinTilesFile near the top
+
+Save (CTRL+O) and Exit (CTRL+X).
+
+Run it `python3 scripts/arthashdungeon.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
+If you run the script without arguments, it will generate an image for the current block height.  You may pass arguments for the blockheight, width, and height
 
 ### blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
@@ -436,6 +463,7 @@ sudo cp ~/nodeyez/scripts/systemd/*.service /etc/systemd/system/
 And enable them
 
 ```sh
+sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-compassmining.service
@@ -455,6 +483,7 @@ sudo systemctl enable nodeyez-utcclock.service
 And then start them
 
 ```sh
+sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-compassmining.service
