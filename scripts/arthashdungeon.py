@@ -114,7 +114,9 @@ def dfsmazegen(x, y, d, t):
 
 def createimage(blocknumber=1, width=480, height=320):
     blockhash = getblockhash(blocknumber)
-    outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
+    outputFileBlock = outputFile
+    if len(sys.argv) > 1:
+        outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")       
     padtop=32
     im       = Image.new(mode="RGB", size=(width, height))
     draw     = ImageDraw.Draw(im)
