@@ -1,0 +1,20 @@
+# Nodeyez: systemd unit for Art Hash Dungeon panel generation
+# A generative visual maze created with bitcoin themed logos
+# and tileable art derived from the Bitcoin Blockhash of the
+# referened block (Dungeon Level) deterministically
+# /etc/systemd/system/nodeyez-arthashdungeon.service
+
+[Unit]
+Description=Image for Blockhash Dungeon
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/home/bitcoin/nodeyez/scripts/arthashdungeon.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
