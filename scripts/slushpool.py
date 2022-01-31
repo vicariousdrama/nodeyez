@@ -47,11 +47,12 @@ def getaccountprofile():
     cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/profile/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
     except subprocess.CalledProcessError as e:
         cmdoutput = ""
     if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"confirmed_reward\": null, \"unconfirmed_reward\": \"0.00000000\", \"estimated_reward\": \"0.00000000\", \"hash_rate_unit\": \"Gh/s\", \"hash_rate_5m\": 0.0000}}"
-    j = json.loads(cmdoutput)
+        j = json.loads(cmdoutput)
     return j
 
 def getaccountrewards():
@@ -59,11 +60,12 @@ def getaccountrewards():
     cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/rewards/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
     except subprocess.CalledProcessError as e:
         cmdoutput = ""
     if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"daily_rewards\":[]}}"
-    j = json.loads(cmdoutput)
+        j = json.loads(cmdoutput)
     return j
 
 def getpoolstats():
@@ -71,11 +73,12 @@ def getpoolstats():
     cmd = "torify curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/stats/json/btc/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
     except subprocess.CalledProcessError as e:
         cmdoutput = ""
     if len(cmdoutput) == 0:
         cmdoutput = "{\"btc\":{\"blocks\":{\"0\":{\"date_found\":0,\"mining_duration\":0,\"total_shares\":0,\"state\":\"confirmed\",\"confirmations_left\":0,\"value\": \"0.00000000\",\"user_reward\": \"0.00000000\",\"pool_scoring_hash_rate\": 0.000000}}}}"
-    j = json.loads(cmdoutput)
+        j = json.loads(cmdoutput)
     return j
 
 def getpriceinfo():
@@ -91,7 +94,7 @@ def getpriceinfo():
             price_high = int(math.floor(float(j["btc_usd"]["high"])))
             price_low = int(math.floor(float(j["btc_usd"]["low"])))
     except subprocess.CalledProcessError as e:
-        cmdoutput = "{\"error\":  }"
+        cmdoutput = "{\"error\": \"dont care\" }"
     return (price_last,price_high,price_low)
 
 def getaccounthashrate(accountprofile):
