@@ -1,0 +1,5 @@
+{
+  "mineraddress": "the ip address for your miner on your local lan, reachable from the host running this script",
+  "minerusername": "the username for the miner on your local lan",
+  "minerpassword": "the password for the miner on your local lan"
+}

@@ -230,12 +230,19 @@ Before running the script, you should review it
 nano scripts/f2pool.py
 ```
 - You may want to change the location of the outputFile.
-- You most definitely should change the account.
+- You most definitely should set the account in the external configuration file (see below)
 - You can set a string for the accountlabel which will be appended to the title
 - The hashratelowthreshold affects when dots are plotted as yellow. By default it is set to 60 TH/s
 - If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
 
 Save (CTRL+O) and Exit (CTRL+X).
+
+You will need to configure your account in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
+```
+mkdir -p config
+cp sample-config/f2pool.json config/f2pool.json
+nano config/f2pool.json
+```
 
 Run it `python3 scripts/f2pool.py`
 
@@ -297,11 +304,20 @@ Before running the script, you should review it
 nano scripts/minerstatus.py
 ```
 - You may want to change the location of the outputFile.
-- You most definitely should change the mineraddress. Usually this should be an internal IP.
+- You most definitely should change the mineraddress in the external configuration file (see below)
 - Currently there is no authentication implemented, and it assumes root without a password.
 - If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
 
 Save (CTRL+O) and Exit (CTRL+X).
+
+You will need to configure your miner information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
+```
+mkdir -p config
+cp sample-config/minerstatus.json config/minerstatus.json
+nano config/minerstatus.json
+```
+
+Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
 
 Run it `python3 scripts/minerstatus.py`
 
@@ -323,9 +339,12 @@ nano scripts/rofstatus.py
 ```
 This script relies on lncli, and gets its configuration from `rofstatus.json`.  When done reviewing, exit the file (CTRL+X)
 
-Now edit the rofstatus.json
+A sample rofstatus.json file is found in the sample-config folder.  
+You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
 ```
-nano scripts/rofstatus.json
+mkdir -p config
+cp sample-config/rofstatus.json config/rofstatus.json
+nano config/rofstatus.json
 ```
 - You can adjust the frequency (default 900 seconds/15 minutes) if desired, but 15 minutes is actually quite aggressive. In general, no major changes to ring status should be transpiring this often, and its more helpful when diagnosing member outages.
 - For each ring you are a member of, or what to monitor, collect the public keys for the nodes, the order they appear in, and some means to refer to the operator for convenience (twitter handles or emails are fine).
@@ -384,11 +403,21 @@ Before running the script, you should review it
 nano scripts/slushpool.py
 ```
 - You may want to change the location of the outputFile.
-- You most definitely should change the authtoken.
+- You most definitely should change the authtoken in the external configuration file
 - If you want to adjust the frequency, alter the sleep_time parameter near the top of the script (default 10 minutes).  
 - There is an intentional delay between making API calls to avoid spamming the pool.
 - Price per killowatt and power used for your miner can be specified for dynamic profitability output
 Save (CTRL+O) and Exit (CTRL+X).
+
+You will need to configure your slushpool information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
+```
+mkdir -p config
+cp sample-config/slushpool.json config/slushpool.json
+nano config/slushpool.json
+```
+
+Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
+
 
 Run it `python3 scripts/slushpool.py`
 

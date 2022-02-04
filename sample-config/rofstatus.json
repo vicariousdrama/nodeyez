@@ -9,20 +9,6 @@
       "onlinetext": "#000000",
       "text": "#ffffff",
       "textshadow": "#000000"
-    },
-    "fonts": {
-      "date": {
-        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "fontsize": 12
-      },
-      "notes": {
-        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "fontsize": 16
-      },
-      "ring": {
-        "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "fontsize": 24
-      }
     }
   },
   "rings":[
@@ -41,20 +27,6 @@
           "onlinetext": "#000000",
           "text": "#ffffff",
           "textshadow": "#000000"
-        },
-        "fonts": {
-          "date": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 12
-          },
-          "notes": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 16
-          },
-          "ring": {
-            "fontpath": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "fontsize": 24
-          }
         }
       },
       "nodes": [
