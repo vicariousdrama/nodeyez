@@ -1,6 +1,8 @@
 #! /usr/bin/python3
 from PIL import Image, ImageDraw, ImageColor
+import glob
 import math
+import os
 import time
 import vicariousbitcoin
 import vicarioustext
@@ -11,6 +13,21 @@ colorBackground=ImageColor.getrgb("#000000")
 colorBarOutline=ImageColor.getrgb("#770044")
 colorBarFilled=ImageColor.getrgb("#aa3377")
 
+def clearOldImages(pages):
+    # find all images matching 
+    imageMask = outputFile.replace(".png", "-*.png")
+    files=glob.glob(imageMask)
+    for filename in files:
+        fileisgood = False
+        for checkfilenumber in range(pages):
+            checkfilename = outputFile.replace(".png","-" + str(checkfilenumber+1) + ".png")
+            if checkfilename == filename:
+                #print(f"file {filename} is ok to keep")
+                fileisgood = True
+        if not fileisgood:
+            print(f"file {filename} is no longer needed and will be deleted")
+            os.remove(filename)
+
 def createimage(channels, firstidx, lastidx, pagenum, pagesize, width=480, height=320):
     padding=4
     outlinewidth=2
@@ -20,7 +37,7 @@ def createimage(channels, firstidx, lastidx, pagenum, pagesize, width=480, heigh
     dataheight = int(math.floor((height - (padtop+padbottom)) / pagesize))
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
-    pageoutputFile = ("-" + str(pagenum) + ".").join(outputFile.rsplit(".", 1))
+    pageoutputFile = outputFile.replace(".png","-" + str(pagenum) + ".png")
     # Header
     vicarioustext.drawcenteredtext(draw, "Lightning Channel Balances", 24, int(width/2), int(padtop/2), colorFFFFFF, True)
     # Channel info
@@ -60,6 +77,7 @@ while True:
     channelcount = len(channels)
     pagesize = 8
     pages = int(math.ceil(float(channelcount) / float(pagesize)))
+    clearOldImages(pages)
     for pagenum in range(1, (pages+1)):
         firstidx = ((pagenum-1)*pagesize)
         lastidx = (pagenum*pagesize)-1

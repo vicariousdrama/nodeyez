@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageColor
 import json
 import locale
 import math
@@ -9,48 +9,15 @@ import random
 import subprocess
 import time
 import sys
+import vicariousbitcoin
+import vicarioustext
 
 bitcoinLogosFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-logos.png"
 bitcoinTilesFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
 outputFile="/home/bitcoin/images/arthashdungeon.png"
 color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
 maze=[]
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 24:
-        return fontDeja24
-
-def drawcenteredtext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomlefttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomrighttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
 
 def dfsmazegen(x, y, d, t):
     global maze
@@ -113,7 +80,7 @@ def dfsmazegen(x, y, d, t):
         maze[x][y] = mynode
 
 def createimage(blocknumber=1, width=480, height=320):
-    blockhash = getblockhash(blocknumber)
+    blockhash = vicariousbitcoin.getblockhash(blocknumber)
     outputFileBlock = outputFile
     if len(sys.argv) > 1:
         outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
@@ -266,28 +233,9 @@ def createimage(blocknumber=1, width=480, height=320):
     # draw top bar
     #  - level
     #  - sats
-    drawcenteredtext(draw, "Blockhash Dungeon For Level " + str(blocknumber), 24, int(width/2), int(padtop/2))
+    vicarioustext.drawlefttext(draw, "Blockhash Dungeon", 24, 0, int(padtop/2), colorFFFFFF, True)
+    vicarioustext.drawrighttext(draw, "Level " + str(blocknumber), 24, width, int(padtop/2), colorFFFFFF, True)
     im.save(outputFileBlock)
-
-def getcurrentblock():
-    cmd = "bitcoin-cli getblockchaininfo"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        blockcurrent = int(j["blocks"])
-        return blockcurrent
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return 1
-
-def getblockhash(blocknumber=1):
-    cmd = "bitcoin-cli getblockhash " + str(blocknumber)
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 if len(sys.argv) > 1:
     if len(sys.argv) > 3:
@@ -296,6 +244,6 @@ if len(sys.argv) > 1:
         createimage(int(sys.argv[1]))
 else:
     while True:
-        blocknumber = getcurrentblock()
+        blocknumber = vicariousbitcoin.getcurrentblock()
         createimage(blocknumber)
         time.sleep(300)
