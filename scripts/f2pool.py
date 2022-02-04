@@ -5,12 +5,15 @@ import json
 import math
 import subprocess
 import time
+import vicariousbitcoin
+import vicarioustext
 
+configFile="/home/bitcoin/nodeyez/config/f2pool.json"
 outputFile = "/home/bitcoin/images/f2pool.png"
-account = "--your-account-name-here--"
+account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
 accountlabel = ""
 hashratelowthreshold = 60000000000000
-
+sleepInterval=600
 colordatavalue=ImageColor.getrgb("#4040ff")
 colorhashdotfill=ImageColor.getrgb("#4040ff")
 colorhashdotoutline=ImageColor.getrgb("#0000ff")
@@ -28,15 +31,6 @@ colorC0C0C0=ImageColor.getrgb("#c0c0c0")
 colorC0FFC0=ImageColor.getrgb("#40ff40")
 colorFF0000=ImageColor.getrgb("#ff0000")
 colorFFFF00=ImageColor.getrgb("#ffff00")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",16)
-fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",20)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",24)
-fontDeja48=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",48)
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
 
 def getaccountinfo():
     cmd = "curl https://api.f2pool.com/bitcoin/" + account
@@ -89,72 +83,6 @@ def getlowesthashrate(accountinfo):
             lowesthash = currentvalue
     return lowesthash
 
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 16:
-        return fontDeja16
-    if size == 24:
-        return fontDeja24
-    if size == 48:
-        return fontDeja48
-
-def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
-def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
-
-def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y), text=s, font=thefont, fill=textcolor)
-
-def drawtoprighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y), text=s, font=thefont, fill=textcolor)
-
-def drawrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
-def drawlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
 def createimage(accountinfo, width=480, height=320):
     headerheight = 30
     footerheight = 15
@@ -163,25 +91,25 @@ def createimage(accountinfo, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
     # Header
-    drawcenteredtext(draw, "F2 Pool Summary" + accountlabel, 24, int(width/2), int(headerheight/2))
+    vicarioustext.drawcenteredtext(draw, "F2 Pool Summary" + accountlabel, 24, int(width/2), int(headerheight/2), colorFFFFFF, True)
     # Hashrate
     hashrate = getaccounthashrate(accountinfo)
-    drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24))
-    drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colordatavalue)
+    vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24))
+    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colordatavalue)
     # Yesterday and Today value
     earningspad = 24
     value_last_day = str(int(float(accountinfo["value_last_day"]) * 100000000)) + " sats"
     value_today = str(int(float(accountinfo["value_today"]) * 100000000)) + " sats"
-    drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad))
-    drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colordatavalue)
-    drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad))
-    drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colordatavalue)
+    vicarioustext.drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad))
+    vicarioustext.drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colordatavalue)
+    vicarioustext.drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad))
+    vicarioustext.drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colordatavalue)
     # Hashrate History
     highesthashrate = gethighesthashrate(accountinfo)
     lowesthashrate = getlowesthashrate(accountinfo)
     labelwidth = math.floor(width / 5)
     graphedge = 3
-    drawcenteredtext(draw, "24 Hour Hashrate", 16, int(width/2), (headerheight+hashheight))
+    vicarioustext.drawcenteredtext(draw, "24 Hour Hashrate", 16, int(width/2), (headerheight+hashheight))
     charttop = headerheight + hashheight + 12
     chartleft = labelwidth + graphedge
     chartright = width - graphedge
@@ -205,11 +133,11 @@ def createimage(accountinfo, width=480, height=320):
     hashrate25 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*3)
     hashrate50 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*2)
     hashrate75 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*1)
-    drawrighttext(draw, gethashratestring(highesthashrate), 12, labelwidth, chart0)
-    drawrighttext(draw, gethashratestring(hashrate25), 12, labelwidth, chart25)
-    drawrighttext(draw, gethashratestring(hashrate50), 12, labelwidth, chart50)
-    drawrighttext(draw, gethashratestring(hashrate75), 12, labelwidth, chart75)
-    drawrighttext(draw, gethashratestring(lowesthashrate), 12, labelwidth, chart100)
+    vicarioustext.drawrighttext(draw, gethashratestring(highesthashrate), 12, labelwidth, chart0)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate25), 12, labelwidth, chart25)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate50), 12, labelwidth, chart50)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate75), 12, labelwidth, chart75)
+    vicarioustext.drawrighttext(draw, gethashratestring(lowesthashrate), 12, labelwidth, chart100)
     # - data plot
     entrynum = 0
     plotbuf=2
@@ -264,13 +192,18 @@ def createimage(accountinfo, width=480, height=320):
 
 
     # Date and Time
-    dt = "as of " + getdateandtime()
-    drawbottomrighttext(draw, dt, 12, width, height)
+    dt = "as of " + vicarioustext.getdateandtime()
+    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height)
     # Save to file
     im.save(outputFile)
 
 
 while True:
+    f = open(configFile)
+    config = json.load(f)
+    f.close()
+    if "account" in config:
+        account = config["account"]
     accountinfo = getaccountinfo()
     createimage(accountinfo)
-    time.sleep(600)
+    time.sleep(sleepInterval)

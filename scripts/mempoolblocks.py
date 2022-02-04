@@ -1,11 +1,12 @@
 #! /usr/bin/python3
 from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageColor
 import json
 import locale
 import math
 import subprocess
 import time
+import vicarioustext
 
 urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
 urlfeerecs="https://mempool.space/api/v1/fees/recommended"
@@ -21,12 +22,6 @@ color40C040=ImageColor.getrgb("#40C040")
 color40FF40=ImageColor.getrgb("#40FF40")
 color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja14=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",14)
-fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
-fontDeja18=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",18)
-fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",20)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
 
 def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
     satsleft = spf
@@ -65,58 +60,16 @@ def drawmempoolblock(draw,x,y,w,h,blockinfo,mpb):
     draw.polygon(xy=((x+pad+depth,y+pad+depth),(x+w-pad,y+pad+depth),(x+w-pad,y+h-pad),(x+pad+depth,y+h-pad)),outline=color202020,fill=blockcolor)
     centerx=x+depth+(int(math.floor((w-depth)/2)))
     descriptor="~" + str(int(math.floor(float(feemedian)))) + " sat/vB"
-    drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*2))
+    vicarioustext.drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*2))
     descriptor=str(int(math.floor(float(feelow)))) + " - " + str(int(math.floor(float(feehigh)))) + " sat/vB"
-    drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*3))
+    vicarioustext.drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*3))
     descriptor=convert_size(int(blocksize))
-    drawcenteredtext(draw, descriptor, 18, centerx, y+pad+(depth*4))
+    vicarioustext.drawcenteredtext(draw, descriptor, 18, centerx, y+pad+(depth*4))
     locale.setlocale(locale.LC_ALL, '')
     descriptor='{:n}'.format(int(transactions)) + " transactions"
-    drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*5))
+    vicarioustext.drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*5))
     descriptor="In ~" + str((mpb+1)*10) + " minutes"
-    drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*6))
-
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 14:
-        return fontDeja14
-    if size == 16:
-        return fontDeja16
-    if size == 18:
-        return fontDeja18
-    if size == 20:
-        return fontDeja20
-    if size == 24:
-        return fontDeja24
-
-def drawcenteredtext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomlefttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomrighttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
+    vicarioustext.drawcenteredtext(draw, descriptor, 14, centerx, y+pad+(depth*6))
 
 def createimage(width=480, height=320):
     mempoolblocks = getmempoolblocks()
@@ -131,12 +84,12 @@ def createimage(width=480, height=320):
         if mpb > 2:
             break
         drawmempoolblock(draw,(width-((mpb+1)*bw)),padtop,bw,bw,mpblist[mpb],mpb)
-    drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2))
-    drawcenteredtext(draw, "Next: " + str(feefastest), 20, int(width/8*1), height-padtop)
-    drawcenteredtext(draw, "30 Min: " + str(feehalfhour), 20, int(width/8*3), height-padtop)
-    drawcenteredtext(draw, "1 Hr: " + str(feehour), 20, int(width/8*5), height-padtop)
-    drawcenteredtext(draw, "Minimum: " + str(feeminimum), 20, int(width/8*7), height-padtop)
-    drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
+    vicarioustext.drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2), colorFFFFFF, True)
+    vicarioustext.drawcenteredtext(draw, "Next: " + str(feefastest), 20, int(width/8*1), height-padtop)
+    vicarioustext.drawcenteredtext(draw, "30 Min: " + str(feehalfhour), 20, int(width/8*3), height-padtop)
+    vicarioustext.drawcenteredtext(draw, "1 Hr: " + str(feehour), 20, int(width/8*5), height-padtop)
+    vicarioustext.drawcenteredtext(draw, "Minimum: " + str(feeminimum), 20, int(width/8*7), height-padtop)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFile)
 
 def getmempoolblocks():

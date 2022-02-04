@@ -1,10 +1,10 @@
 #! /usr/bin/python3
-from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
-import json
+from PIL import Image, ImageDraw, ImageColor
 import math
 import subprocess
 import time
+import vicariousbitcoin
+import vicarioustext
 
 outputFile="/home/bitcoin/images/difficultyepoch.png"
 colorgrid=ImageColor.getrgb("#404040")
@@ -13,80 +13,6 @@ colorbehind=ImageColor.getrgb("#FF0000")
 colormined=ImageColor.getrgb("#40FF40")
 color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja18=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",18)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 18:
-        return fontDeja18
-    if size == 24:
-        return fontDeja24
-
-def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
-def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
-
-def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y), text=s, font=thefont, fill=textcolor)
-
-def drawtoprighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y), text=s, font=thefont, fill=textcolor)
-
-
-def getcurrentblock():
-    cmd = "bitcoin-cli getblockchaininfo"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        blockcurrent = int(j["blocks"])
-        return blockcurrent
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return 1
-
-def getepochnum(blocknum):
-    return int(math.floor(blocknum / 2016))
-
-def getfirstblockforepoch(blocknum):
-    epochnum = getepochnum(blocknum)
-    return int(epochnum * 2016) + 1
 
 def getcurrenttimeinseconds():
     cmd = "date -u +%s"
@@ -97,20 +23,9 @@ def getcurrenttimeinseconds():
         print(e)
         return 1
 
-def getblock(blocknum):
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "`"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError() as e:
-        print(e)
-        fakejson = "{\"confirmations\": 1, \"time\": " + str(getcurrenttimeinseconds) + "\"}"
-        return json.loads(fakejson)
-
 def createimage(width=480, height=320):
-    currentblock = getcurrentblock()
-    j = getblock(getfirstblockforepoch(currentblock))
+    currentblock = vicariousbitcoin.getcurrentblock()
+    j = vicariousbitcoin.getblock(vicariousbitcoin.getfirstblockforepoch(currentblock))
     blocksmined = int(j["confirmations"])
     timebegan = int(j["time"])
     timenow = getcurrenttimeinseconds()
@@ -181,19 +96,19 @@ def createimage(width=480, height=320):
                 if epochblocknum <= expectedmined:
                     outlinecolor = colorbehind
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=outlinecolor)
-    drawcenteredtext(draw, "Blocks Mined This Difficulty Epoch", 24, int(width/2), int(padtop/2))
-    drawtoprighttext(draw, "Expected: ", 18, int(width/4*1), height-56)
-    drawtoplefttext(draw, str(expectedmined), 18, int(width/4*1), height-56)
-    drawtoprighttext(draw, "Mined: ", 18, int(width/4*1), height-32)
-    drawtoplefttext(draw, str(blocksmined), 18, int(width/4*1), height-32)
-    drawtoprighttext(draw, "Retarget: ", 18, int(width/10*6), height-56)
-    drawtoplefttext(draw, str(nextadjustment) + "%", 18, int(width/10*6), height-56, adjustcolor)
-    drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32)
-    drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32)
-    drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
+    vicarioustext.drawcenteredtext(draw, "Blocks Mined This Difficulty Epoch", 24, int(width/2), int(padtop/2), colorFFFFFF, True)
+    vicarioustext.drawtoprighttext(draw, "Expected: ", 18, int(width/4*1), height-56)
+    vicarioustext.drawtoplefttext(draw, str(expectedmined), 18, int(width/4*1), height-56)
+    vicarioustext.drawtoprighttext(draw, "Mined: ", 18, int(width/4*1), height-32)
+    vicarioustext.drawtoplefttext(draw, str(blocksmined), 18, int(width/4*1), height-32)
+    vicarioustext.drawtoprighttext(draw, "Retarget: ", 18, int(width/10*6), height-56)
+    vicarioustext.drawtoplefttext(draw, str(nextadjustment) + "%", 18, int(width/10*6), height-56, adjustcolor)
+    vicarioustext.drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32)
+    vicarioustext.drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFile)
-    of2=outputFile.replace("/difficulty","/"+str(currentblock)+"-difficulty")
-    im.save(of2)
+#    of2=outputFile.replace("/difficulty","/"+str(currentblock)+"-difficulty")
+#    im.save(of2)
 
 while True:
     createimage()

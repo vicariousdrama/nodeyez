@@ -1,55 +1,20 @@
 #! /usr/bin/python3
-from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
-import json
-import locale
+from PIL import Image, ImageDraw, ImageColor
 import math
-import subprocess
-import time
 import sys
+import time
+import vicariousbitcoin
+import vicarioustext
 
 outputFile="/home/bitcoin/images/arthash.png"
-color000000=ImageColor.getrgb("#000000")
 colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
 
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 24:
-        return fontDeja24
-
-def drawcenteredtext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomlefttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawbottomrighttext(draw, s, fontsize, x, y):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def createimage(width=480, height=320, blocknumber=1):
-    blockhash = getblockhash(blocknumber)
-    outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
+def createimage(blocknumber=1, width=480, height=320):
+    blockhash = vicariousbitcoin.getblockhash(blocknumber)
+    if len(sys.argv) > 1:
+        outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
+    else:
+        outputFileBlock = outputFile
     padtop=40
     # our art canvas and offsets
     artheight=200
@@ -86,7 +51,6 @@ def createimage(width=480, height=320, blocknumber=1):
             draw.polygon(((artleft+triblen,y+arttop+triclen-trialen),(artleft+triclen,y+arttop+triclen),(artleft+triblen+triclen,y+arttop+triclen-trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor)
         if j == 2:
             draw.polygon(((artleft+triclen,y+arttop+triclen),(artleft+triblen+triclen,y+arttop+triclen-trialen),(artleft+(triclen*2),y+arttop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor)
-#            draw.chord(((artleft+triclen-trialen,y+arttop+triclen-trialen),(artleft+triclen+trialen,y+arttop+triclen+trialen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),width=2)
             draw.chord(((artleft+triblen,y+arttop+triblen),(artleft+triclen+triblen,y+arttop+triclen+triblen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),width=2)
         if j == 3:
             draw.polygon(((artleft+(triclen*2)+triblen,y+arttop+triclen-trialen),(artleft+(triclen*2),y+arttop+triclen),(artleft+(triclen*3),y+arttop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor)
@@ -109,34 +73,14 @@ def createimage(width=480, height=320, blocknumber=1):
         if j == 11:
             draw.polygon(((artleft+(triclen*3),y+arttop+triclen),(artleft+(triclen*3)+triblen,y+arttop+triclen+trialen),(artleft+(triclen*4),y+arttop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor)
             draw.chord(((artleft+triblen+(triclen*2),y+arttop+triblen),(artleft+triclen+triblen+(triclen*2),y+arttop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),width=2)
-    drawcenteredtext(draw, "Blockhash Art For Block " + str(blocknumber), 24, int(width/2), int(padtop/2))
-    drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
+    vicarioustext.drawcenteredtext(draw, "Blockhash Art For Block " + str(blocknumber), 24, int(width/2), int(padtop/2), colorFFFFFF, True)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFileBlock)
 
-def getcurrentblock():
-    cmd = "bitcoin-cli getblockchaininfo"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        blockcurrent = int(j["blocks"])
-        return blockcurrent
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return 1
-
-def getblockhash(blocknumber=1):
-    cmd = "bitcoin-cli getblockhash " + str(blocknumber)
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return "0000000000000000000000000000000000000000000000000000000000000000"
-
-if len(sys.argv) > 0:
-    createimage(480, 320, int(sys.argv[1]))
+if len(sys.argv) > 1:
+    createimage(int(sys.argv[1]), 480, 320)
 else:
     while True:
-        blocknumber = getcurrentblock()
-        createimage(480, 320, blocknumber)
+        blocknumber = vicariousbitcoin.getcurrentblock()
+        createimage(blocknumber, 480, 320)
         time.sleep(300)

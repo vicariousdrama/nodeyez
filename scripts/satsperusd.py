@@ -1,22 +1,24 @@
 #! /usr/bin/python3
-from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageColor
 import json
 import math
 import subprocess
 import time
+import vicarioustext
 
-priceurl="https://bisq.markets/bisq/api/markets/ticker"
 outputFile="/home/bitcoin/images/satsperusd.png"
-color404040=ImageColor.getrgb("#404040")
-color40FF40=ImageColor.getrgb("#40FF40")
-color000000=ImageColor.getrgb("#000000")
-colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
-fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",20)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
-fontDeja128=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",128)
+priceurl="https://bisq.markets/bisq/api/markets/ticker"
+useTor=True
+satshape="square" # may be one of these: ['square','circle']
+sleepInterval=3600
+showBigText=True
+showBigTextOnTop=True
+colorBisq=ImageColor.getrgb("#40FF40")
+colorHeader=ImageColor.getrgb("#ffffff")
+colorSatShape=ImageColor.getrgb("#ff7f00")
+colorSatAmount=ImageColor.getrgb("#4040407f")
+colorSatAmountShadow=ImageColor.getrgb("#ffffff7f")
+
 last=1
 low=1
 high=1
@@ -30,47 +32,11 @@ def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
                 tly = (bpy + (dr*11*satw) + (y*satw))
                 brx = tlx+satw-2
                 bry = tly+satw-2
-                draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=color40FF40)
+                if satshape == "square":
+                    draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=colorSatShape)
+                if satshape == "circle":
+                    draw.ellipse(xy=((tlx,tly),(brx,bry)),fill=colorSatShape)
             satsleft = satsleft - 1
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 16:
-        return fontDeja16
-    if size == 20:
-        return fontDeja20
-    if size == 24:
-        return fontDeja24
-    if size == 128:
-        return fontDeja128
-
-def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
-def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
-
-def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=textcolor)
 
 def createimage(width=480, height=320):
     last,high,low = getpriceinfo()
@@ -83,8 +49,9 @@ def createimage(width=480, height=320):
     padtop=40
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
-    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorFFFFFF)
-    drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, color404040)
+    if showBigText and not showBigTextOnTop:
+        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorSatAmountShadow)
+        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, colorSatAmount)
     dc = 0
     dr = 0
     while satsleft > 100:
@@ -95,16 +62,22 @@ def createimage(width=480, height=320):
             dr = dr + 1
             dc = 0
     drawsatssquare(draw,dc,dr,satsleft,satw,padleft,padtop)
-    drawcenteredtext(draw, "Sats Per USD", 24, int(width/2), int(padtop/2))
-    drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
-    drawcenteredtext(draw, "High: " + str(satsperfiatunitlow), 20, int(width/8*7), height-padtop)
-    drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
-    drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, color40FF40)
-    drawbottomrighttext(draw, "as of " + getdateandtime(), 12, width, height)
+    if showBigText and showBigTextOnTop:
+        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorSatAmountShadow)
+        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, colorSatAmount)
+    vicarioustext.drawcenteredtext(draw, "Sats Per USD", 24, int(width/2), int(padtop/2), colorHeader, True)
+    if not showBigText:
+        vicarioustext.drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
+    vicarioustext.drawcenteredtext(draw, "High: " + str(satsperfiatunitlow), 20, int(width/8*7), height-padtop)
+    vicarioustext.drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
+    vicarioustext.drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, colorBisq)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFile)
 
 def getpriceinfo():
-    cmd = "torify curl --silent " + priceurl
+    cmd = "curl --silent " + priceurl
+    if useTor:
+        cmd = "torify " + cmd
     global last
     global high
     global low
@@ -121,4 +94,4 @@ def getpriceinfo():
 
 while True:
     createimage()
-    time.sleep(3600)
+    time.sleep(sleepInterval)

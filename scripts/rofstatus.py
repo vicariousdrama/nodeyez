@@ -5,6 +5,10 @@ import json
 import math
 import subprocess
 import time
+import vicariousbitcoin
+import vicarioustext
+
+configFile="/home/bitcoin/nodeyez/config/rofstatus.json"
 
 def xy4nodeindex(index, total, center, radius):
     degrees=360/total
@@ -13,10 +17,6 @@ def xy4nodeindex(index, total, center, radius):
     x = center[0] + radius * math.cos(angle * math.pi / 180)
     y = center[1] + radius * math.sin(angle * math.pi / 180)
     return (x,y)
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
 
 def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=320):
     padding=height/10
@@ -33,11 +33,11 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     # for non-existant channels between nodes
     breaksize=20
     breakcolor=coloroffline
-    btt="X"
-    btw,bth=draw.textsize(btt,ringfont)
-    ox,oy=ringfont.getoffset(btt)
-    btw+=ox
-    bth+=oy
+    #btt="X"
+    #btw,bth=draw.textsize(btt,ringfont)
+    #ox,oy=ringfont.getoffset(btt)
+    #btw+=ox
+    #bth+=oy
     # draw the main ring
     draw.ellipse(xy=(padding, padding, height-padding, height-padding), outline=colorcircle, width=thickness)
     # draw the crosscutting from channels
@@ -81,38 +81,22 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
             bxy=xy4nodeindex(((nodenumber*2)+1), nodecount*2, (cx,cy), radius)
             bx=xy[0]
             by=xy[1]
-            draw.text((bx-(btw/2),by-(bth/2)), btt, font=ringfont, fill=breakcolor)
+            #draw.text((bx-(btw/2),by-(bth/2)), btt, font=ringfont, fill=breakcolor)
+#            vicarioustext.drawcenteredtext(draw,btt,24,bx,by,breakcolor)
         # sidebar text
         operator = str(nodenumber) + ". " + nodes[nodenumber]["operator"]
-        w,h = draw.textsize(operator, notesfont)
-        ox,oy = notesfont.getoffset(operator)
-        w += ox
-        h += oy
-        draw.text((height,nodenumber*(height/nodecount)), operator, font=notesfont, fill=nodecolor)
+        vicarioustext.drawtoplefttext(draw, operator, 16, height, int(nodenumber*(height/nodecount)), nodecolor)
         # node circle and text label
         draw.ellipse(xy=(x-(nodesize/2), y-(nodesize/2), x+(nodesize/2), y+(nodesize/2)), fill=nodecolor, outline=colorcircle, width=1)
         if nodestatus == 0:
             draw.ellipse(xy=(x-((nodesize/2)+3), y-((nodesize/2)+3), x+((nodesize/2)+3), y+((nodesize/2)+3)), fill=None, outline=nodecolor, width=1)
             draw.ellipse(xy=(x-((nodesize/2)+6), y-((nodesize/2)+6), x+((nodesize/2)+6), y+((nodesize/2)+6)), fill=None, outline=nodecolor, width=1)
-        w,h = draw.textsize(str(nodenumber), ringfont)
-        ox,oy = ringfont.getoffset(str(nodenumber))
-        w += ox
-        h += oy
-        draw.text((x-(w/2),y-(h/2)), str(nodenumber), font=ringfont, fill=nodecolortext)
+        vicarioustext.drawcenteredtext(draw, str(nodenumber), 24, x, y, nodecolortext)
     # Ring name
-    w,h = draw.textsize(ringname, ringfont)
-    ox,oy = ringfont.getoffset(ringname)
-    w += ox
-    h += oy
-    draw.text((cx-(w/2)+1,cy-(h/2)+1), ringname, font=ringfont, fill=colortextshadow)
-    draw.text((cx-(w/2)-1,cy-(h/2)-1), ringname, font=ringfont, fill=colortext)
+    vicarioustext.drawcenteredtext(draw, ringname, 24, cx+1, cy+1, colortextshadow)
+    vicarioustext.drawcenteredtext(draw, ringname, 24, cx-1, cy-1, colortext)
     # Date and Time
-    dt = "as of " + getdateandtime()
-    w,h = draw.textsize(dt, datefont)
-    ox,oy = datefont.getoffset(dt)
-    w += ox
-    h += oy
-    draw.text((width-w,height-h), dt, font=datefont, fill=colortext)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     # Save to file
     im.save(outputFile)
 
@@ -231,17 +215,8 @@ def getcolorconfig(config, colorid):
     colors = config["imagesettings"]["colors"]
     return ImageColor.getrgb(colors[colorid])
 
-def getfontconfig(config, fontid):
-    fontconfig = config["imagesettings"]["fonts"][fontid]
-    return ImageFont.truetype(fontconfig["fontpath"], fontconfig["fontsize"])
-
 def setfontandcolor(config):
-    global ringfont, datefont, notesfont
     global colorcircle, coloroffline, coloronline, colorofflinetext, coloronlinetext, colortext, colortextshadow
-    # font config
-    ringfont = getfontconfig(config, "ring")
-    datefont = getfontconfig(config, "date")
-    notesfont = getfontconfig(config, "notes")
     # color config
     colorcircle = getcolorconfig(config, "circle")
     coloroffline = getcolorconfig(config, "offline")
@@ -254,7 +229,7 @@ def setfontandcolor(config):
 while True:
     # each pass through, we re-read configuration in case anything gets added/changed
     # this way, we dont have to stop/start the service for config changes
-    f = open('rofstatus.json')
+    f = open(configFile)
     config = json.load(f)
     f.close()
     # iterate the rings

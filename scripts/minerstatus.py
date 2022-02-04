@@ -1,31 +1,20 @@
 #! /usr/bin/python3
-from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageColor
 import json
-import math
 import subprocess
 import time
+import vicarioustext
 
+configFile="/home/bitcoin/nodeyez/config/minerstatus.json"
 outputFile = "/home/bitcoin/images/minerstatus.png"
-mineraddress = "69.69.69.69"
-minerusername = "root"
+mineraddress = "--put-the-ip-address-for-your-miner-in--nodeyez/config/minerstatus.json"
+minerusername = "--put-the-username-for-your-miner-in--nodeyez/config/minerstatus.json"
+sleepInterval=30
 colorFFFFFF=ImageColor.getrgb("#ffffff")
-colorHasboardLine=ImageColor.getrgb("#808080")
-
-color000000=ImageColor.getrgb("#000000")
-colorC0C0C0=ImageColor.getrgb("#c0c0c0")
-colorC0FFC0=ImageColor.getrgb("#40ff40")
-colorFF0000=ImageColor.getrgb("#ff0000")
-colorFFFF00=ImageColor.getrgb("#ffff00")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",16)
-fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",20)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",24)
-fontDeja48=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",48)
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
+colorHashboardLine=ImageColor.getrgb("#808080")
+colorWarn=ImageColor.getrgb("#ffaa00")
+tempwarning=88.0
+fanwarning=3000
 
 def getcookiefilename():
     cmd = "echo '" + mineraddress + "' | sha256sum | awk '{print $1}'"
@@ -85,87 +74,43 @@ def gethighesttemp(minerinfo):
                 highesttemp = innertemp["Chip"]
     return str(format(highesttemp, ".2f")) + "°C"
 
-def getfont(size):
-    if size == 12:
-        return fontDeja12
-    if size == 16:
-        return fontDeja16
-    if size == 24:
-        return fontDeja24
-    if size == 48:
-        return fontDeja48
-
-def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
-
-def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
-
-def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
-
-def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x,y), text=s, font=thefont, fill=textcolor)
-
-def drawtoprighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF):
-    thefont = getfont(fontsize)
-    sw,sh = draw.textsize(s, thefont)
-    ox,oy = thefont.getoffset(s)
-    sw += ox
-    sh += oy
-    draw.text(xy=(x-sw,y), text=s, font=thefont, fill=textcolor)
-
 def drawicon(draw,icon,x,y,w,h,v=None):
+    colorArcBorder=ImageColor.getrgb("#c0c0c0")
+    colorArcBackground=ImageColor.getrgb("#000000")  # arc background/blank
+    colorArcDefault=ImageColor.getrgb("#40ff40")  # green arc color (default)
+    colorArcRedAlert=ImageColor.getrgb("#ff0000")  # when percent > 75
+    colorArcWarn=ImageColor.getrgb("#ffff00")  # when percent > 50
+
+
     if icon == "fan":
         l = list(v.split())[0]
         p = list(v.split())[1]
         pad = 20
-        draw.arc(xy=(x+pad,y+pad,x+w-pad,y+h-pad),start=120,end=420,fill=colorC0C0C0,width=20)
-        draw.arc(xy=(x+pad+2,y+pad+2,x+w-pad-2,y+h-pad-2),start=120+1,end=420-1,fill=color000000,width=16)
-        arccolor=colorC0FFC0
+        draw.arc(xy=(x+pad,y+pad,x+w-pad,y+h-pad),start=120,end=420,fill=colorArcBorder,width=20)
+        draw.arc(xy=(x+pad+2,y+pad+2,x+w-pad-2,y+h-pad-2),start=120+1,end=420-1,fill=colorArcBackground,width=16)
+        arccolor=colorArcDefault
         if int(p) == 0:
             p = "1"
         if int(p) > 50:
-            arccolor=colorFFFF00
+            arccolor=colorArcWarn
         if int(p) > 75:
-            arccolor=colorFF0000
+            arccolor=colorArcRedAlert
         ea=120+int((420-120)*(float(p)/100))
         draw.arc(xy=(x+pad+2,y+pad+2,x+w-pad-2,y+h-pad-2),start=120,end=ea,fill=arccolor,width=16)
         # draw percentage
-        tt = p + "%"
-        ttw,tth = draw.textsize(tt, fontDeja20)
-        ox,oy = fontDeja20.getoffset(tt)
-        ttw += ox
-        tth += oy
-        #draw.text(xy=(x+(w/2)-(ttw/2)+1,y+((h/8)*4)-(tth/2)+1),text=tt,font=fontDeja20,fill=color000000)
-        #draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*4)-(tth/2)),text=tt,font=fontDeja20,fill=colorFFFFFF)
+        #tt = p + "%"
+        #ttw,tth = draw.textsize(tt, fontDeja20)
+        #ox,oy = fontDeja20.getoffset(tt)
+        #ttw += ox
+        #tth += oy
         # draw label (fan RPM)
-        tt = l
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja20.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*7)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
+        vicarioustext.drawcenteredtext(draw,l,16,x+(w/2),y+((h/8)*7))
+#        tt = l
+#        ttw,tth = draw.textsize(tt, fontDeja16)
+#        ox,oy = fontDeja20.getoffset(tt)
+#        ttw += ox
+#        tth += oy
+#        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*7)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
 
 def createimage(minerinfo, width=480, height=320):
     headerheight = 30
@@ -176,16 +121,19 @@ def createimage(minerinfo, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
     # Header
-    drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2))
+    vicarioustext.drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2),colorFFFFFF,True)
     # Get TH rate
     hashrate = gethashrate(minerinfo)
-    drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + footerheight + (thheight/2)))
+    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + footerheight + (thheight/2)))
     # Get Highest Temp
     hightemp = gethighesttemp(minerinfo)
-    drawcenteredtext(draw, hightemp, 24, (width/4*3), (headerheight + footerheight + (thheight/2)))
+    colorTemp = colorFFFFFF
+    if hightemp > str(format(tempwarning,".2f"))+"°C":
+        colorTemp = colorWarn
+    vicarioustext.drawcenteredtext(draw, hightemp, 24, (width/4*3), (headerheight + footerheight + (thheight/2)),colorTemp)
     # Board info
-    drawcenteredtext(draw, "Board Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*3)))
-    drawcenteredtext(draw, "Chip Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*5)))
+    vicarioustext.drawcenteredtext(draw, "Board Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*3)))
+    vicarioustext.drawcenteredtext(draw, "Chip Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*5)))
     hbcount = 0
     for temps in minerinfo["temps"]:
         for hashboard in temps["TEMPS"]:
@@ -193,13 +141,19 @@ def createimage(minerinfo, width=480, height=320):
             if hbcount > 3:
                 break
             hashboardid = str(hashboard["ID"])
+            vicarioustext.drawcenteredtext(draw, hashboardid, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*1)))
             hashboardtemp = str(format(hashboard["Board"],".2f")) + "°C"
+            colorTemp = colorFFFFFF
+            if format(hashboard["Board"],".2f") > format(tempwarning,".2f"):
+                colorTemp = colorWarn
+            vicarioustext.drawcenteredtext(draw, hashboardtemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*3)),colorTemp)
             hashboardchiptemp = str(format(hashboard["Chip"],".2f")) + "°C"
-            drawcenteredtext(draw, hashboardid, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*1)))
-            drawcenteredtext(draw, hashboardtemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*3)))
-            drawcenteredtext(draw, hashboardchiptemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*5)))
-    draw.line(xy=[0+20,headerheight+footerheight+thheight+(hbheight/3*1),width-20,headerheight+footerheight+thheight+(hbheight/3*1)],fill=colorHasboardLine,width=2)
-    draw.line(xy=[0+20,headerheight+footerheight+thheight+(hbheight/3*2),width-20,headerheight+footerheight+thheight+(hbheight/3*2)],fill=colorHasboardLine,width=2)
+            colorTemp = colorFFFFFF
+            if format(hashboard["Chip"],".2f") > format(tempwarning,".2f"):
+                colorTemp = colorWarn
+            vicarioustext.drawcenteredtext(draw, hashboardchiptemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*5)),colorTemp)
+    draw.line(xy=[0+20,headerheight+footerheight+thheight+(hbheight/3*1),width-20,headerheight+footerheight+thheight+(hbheight/3*1)],fill=colorHashboardLine,width=2)
+    draw.line(xy=[0+20,headerheight+footerheight+thheight+(hbheight/3*2),width-20,headerheight+footerheight+thheight+(hbheight/3*2)],fill=colorHashboardLine,width=2)
     # Fan info
     fancount = 0
     for fan in minerinfo["fans"]:
@@ -216,13 +170,20 @@ def createimage(minerinfo, width=480, height=320):
             fanh = fanheight
             drawicon(draw, "fan", fanx, fany, fanw, fanh, str(fanrpm) + "RPM " + str(fanspeed))
     # Date and Time
-    dt = "as of " + getdateandtime()
-    drawbottomrighttext(draw, dt, 12, width, height)
+    dt = "as of " + vicarioustext.getdateandtime()
+    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height)
     # Save to file
     im.save(outputFile)
 
 
 while True:
+    f = open(configFile)
+    config = json.load(f)
+    f.close()
+    if "mineraddress" in config:
+        mineraddress = config["mineraddress"]
+    if "minerusername" in config:
+        minerusername = config["minerusername"]
     minerinfo = getminerinfo()
     createimage(minerinfo)
-    time.sleep(30)
+    time.sleep(sleepInterval)

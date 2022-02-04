@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 
 import json
+import math
 import subprocess
 
 # ------ Bitcoin Core Related ------------------------------------------------------
@@ -84,3 +85,8 @@ def getnodeinfo(pubkey):
         cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
     j = json.loads(cmdoutput)
     return j
+
+
+
+
+

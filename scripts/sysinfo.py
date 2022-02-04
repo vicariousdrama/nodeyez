@@ -1,62 +1,71 @@
 #! /usr/bin/python3
 from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
-import json
+from PIL import Image, ImageDraw, ImageColor
 import math
 import subprocess
 import time
+import vicarioustext
 
-color000000=ImageColor.getrgb("#000000")
-color8080FF=ImageColor.getrgb("#8080ff")
-colorC0C0C0=ImageColor.getrgb("#c0c0c0")
-colorC0C0FF=ImageColor.getrgb("#c0c0ff")
-#colorC0FFC0=ImageColor.getrgb("#c0ffc0")
-colorC0FFC0=ImageColor.getrgb("#40ff40")
-colorFF0000=ImageColor.getrgb("#ff0000")
-colorFFFF00=ImageColor.getrgb("#ffff00")
-colorFFFFFF=ImageColor.getrgb("#ffffff")
-fontDeja12=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",12)
-fontDeja16=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
-fontDeja18=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",18)
-fontDeja20=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",20)
-fontDeja24=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
-fontDeja48=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",48)
-fontDeja64=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",64)
 outputFile="/home/bitcoin/images/sysinfo.png"
+sleepInterval=30
+
+colorHeader=ImageColor.getrgb("#ffffff")
+
+colorThermometerUnfilled=ImageColor.getrgb("#000000")
+colorThermometerOutline=ImageColor.getrgb("#c0c0c0")
+colorThermometerBar=ImageColor.getrgb("#40ff40")
+colorThermometerBarWarn=ImageColor.getrgb("#ffff00")
+colorThermometerBarHot=ImageColor.getrgb("#ff0000")
+
+colorPieOutline=ImageColor.getrgb("#c0c0c0")
+colorPieEmpty=ImageColor.getrgb("#000000")
+colorPieEmptyText=ImageColor.getrgb("#ffffff")
+colorPieGood=ImageColor.getrgb("#40ff40")
+colorPieGoodText=ImageColor.getrgb("#000000")
+colorPieWarn=ImageColor.getrgb("#ffff00")
+colorPieWarnText=ImageColor.getrgb("#000000")
+colorPieDanger=ImageColor.getrgb("#ff0000")
+colorPieDangerText=ImageColor.getrgb("#ffffff")
+colorPieLabelText=ImageColor.getrgb("#ffffff")
+
+colorCPUOutline=ImageColor.getrgb("#c0c0c0")
+colorCPUEmpty=ImageColor.getrgb("#000000")
+colorCPUGood=ImageColor.getrgb("#40ff40")
+colorCPUWarn=ImageColor.getrgb("#ffff00")
+colorCPUDanger=ImageColor.getrgb("#ff0000")
+colorCPULabelText=ImageColor.getrgb("#ffffff")
+
+colorMEMOutline=ImageColor.getrgb("#c0c0c0")
+colorMEMEmpty=ImageColor.getrgb("#000000")
+colorMEMGood=ImageColor.getrgb("#40ff40")
+colorMEMWarn=ImageColor.getrgb("#ffff00")
+colorMEMDanger=ImageColor.getrgb("#ff0000")
+colorMEMLabelText=ImageColor.getrgb("#ffffff")
 
 def drawicon(draw,icon,x,y,w,h,v=None):
     if icon == "thermometer":
         tw=w/3
-        draw.ellipse(xy=(x,y+((h-y)/4*3),tw,h),fill=colorC0C0C0,outline=None,width=1)
-        draw.ellipse(xy=(x+((tw-x)/4*1),y,x+((tw-x)/4*3),y+((h-y)/4*1)),fill=colorC0C0C0,outline=None,width=1)
-        draw.rectangle(xy=(x+((tw-x)/4*1),y+((h-y)/8*1),x+((tw-x)/4*3),y+((h-y)/8*7)),fill=colorC0C0C0,outline=None,width=1)
-        draw.ellipse(xy=(x+2,y+2+((h-y)/4*3),tw-2,h-2),fill=color000000,outline=None,width=1)
-        draw.ellipse(xy=(x+2+((tw-x)/4*1),y+2,x-2+((tw-x)/4*3),y-2+((h-y)/4*1)),fill=color000000,outline=None,width=1)
-        draw.rectangle(xy=(x+2+((tw-x)/4*1),y+2+((h-y)/8*1),x-2+((tw-x)/4*3),y-2+((h-y)/8*7)),fill=color000000,outline=None,width=1)
-        barcolor=colorC0FFC0
+        draw.ellipse(xy=(x,y+((h-y)/4*3),tw,h),fill=colorThermometerOutline,outline=None,width=1)
+        draw.ellipse(xy=(x+((tw-x)/4*1),y,x+((tw-x)/4*3),y+((h-y)/4*1)),fill=colorThermometerOutline,outline=None,width=1)
+        draw.rectangle(xy=(x+((tw-x)/4*1),y+((h-y)/8*1),x+((tw-x)/4*3),y+((h-y)/8*7)),fill=colorThermometerOutline,outline=None,width=1)
+        draw.ellipse(xy=(x+2,y+2+((h-y)/4*3),tw-2,h-2),fill=colorThermometerUnfilled,outline=None,width=1)
+        draw.ellipse(xy=(x+2+((tw-x)/4*1),y+2,x-2+((tw-x)/4*3),y-2+((h-y)/4*1)),fill=colorThermometerUnfilled,outline=None,width=1)
+        draw.rectangle(xy=(x+2+((tw-x)/4*1),y+2+((h-y)/8*1),x-2+((tw-x)/4*3),y-2+((h-y)/8*7)),fill=colorThermometerUnfilled,outline=None,width=1)
+        barcolor=colorThermometerBar
         barpos=3
         if int(v) > 55:
-            barcolor=colorFFFF00
+            barcolor=colorThermometerBarWarn
             barpos=2
         if int(v) > 65:
-            barcolor=colorFF0000
+            barcolor=colorThermometerBarHot
             barpos=1
         draw.ellipse(xy=(x+4,y+4+(h/4*3),tw-4,h-4),fill=barcolor,outline=None,width=1)
         draw.rectangle(xy=(x+4+((tw-x)/4*1),y+4+(h/8*barpos),x-4+((tw-x)/4*3),y-4+(h/8*7)),fill=barcolor,outline=None,width=1)
+        # lines
         for j in range(8):
-            draw.rectangle(xy=(x+6+((tw-x)/4*3),y+(h/4)+((h/2/8)*j),x+26+((tw-x)/4*3),y+(h/4)+((h/2/8)*j)),fill=colorC0C0C0,outline=colorC0C0C0,width=3)
-        tt = v + "°"
-        ttw,tth = draw.textsize(tt, fontDeja48)
-        ox,oy = fontDeja48.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text((x+w-ttw,y+(h/2)),tt,font=fontDeja48,fill=colorFFFFFF,stroke_width=1)
-        tt = "Temp"
-        ttw,tth = draw.textsize(tt, fontDeja24)
-        ox,oy = fontDeja24.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*1)-(tth/2)),text=tt,font=fontDeja24,fill=colorFFFFFF,stroke_width=1)
+            draw.rectangle(xy=(x+6+((tw-x)/4*3),y+(h/4)+((h/2/8)*j),x+26+((tw-x)/4*3),y+(h/4)+((h/2/8)*j)),fill=colorThermometerOutline,outline=colorThermometerOutline,width=3)
+        vicarioustext.drawtoprighttext(draw, v + "°", 48, x+w, y+(h/2), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, "Temp", 24, x+(w/2), y+20, colorHeader, True)
     if icon == "piestorage":
         if list(v.split())[5] == "error":
             drawicon(draw,"pieerror",x,y,w,h)
@@ -72,131 +81,64 @@ def drawicon(draw,icon,x,y,w,h,v=None):
             ox = ox * -1
         sa = 0
         ea = sa + math.floor(pct*3.6)
-        slicecolor = colorC0FFC0
-        textcolor = color000000
+        slicecolor = colorPieGood
+        textcolor = colorPieGoodText
         if pct > 80:
-            slicecolor = colorFFFF00
-            textcolor = color000000
+            slicecolor = colorPieWarn
+            textcolor = colorPieWarnText
         if pct > 90:
-            slicecolor = colorFF0000
-            textcolor = colorFFFFFF
-        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=slicecolor,outline=colorC0C0C0,width=2)
-        tt = "used"
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja16.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2),y+(h/2)+(tth/2)),text=tt,font=fontDeja16,fill=textcolor)
+            slicecolor = colorPieDanger
+            textcolor = colorPieDangerText
+        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=slicecolor,outline=colorPieOutline,width=2)
+        vicarioustext.drawtoplefttext(draw, "used", 16, x+(w/2), y+(h/2)+8, textcolor)
         ox = ox * -1
         oy = oy * -1
         sa = ea
         ea = 360
-        textcolor = colorFFFFFF
-        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=color000000,outline=colorC0C0C0,width=2)
-        tt = "free"
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja16.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2),y+(h/2)-(tth/2)+oy-pad),text=tt,font=fontDeja16,fill=textcolor)
-        tt = gbf + " free"
-        ttw,tth = draw.textsize(tt, fontDeja20)
-        ox,oy = fontDeja20.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2),y+h-(tth/2)-10),text=tt,font=fontDeja20,fill=colorFFFFFF)
+        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=colorPieEmpty,outline=colorPieOutline,width=2)
+        vicarioustext.drawbottomlefttext(draw, "free", 16, x+(w/2), y+(h/2)-8, colorPieEmptyText)
+        vicarioustext.drawcenteredtext(draw, gbf + " free", 20, x+(w/2), y+h-10, colorPieLabelText)
     if icon == "sdcard":
         drawicon(draw,"piestorage",x,y,w,h,v)
-        tt = "/dev/root"
-        ttw,tth = draw.textsize(tt, fontDeja24)
-        ox,oy = fontDeja24.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+((w/2)-(ttw/2))+1,y+(tth/2)+1-10),text=tt,font=fontDeja24,fill=color000000,stroke_width=3)
-        draw.text(xy=(x+((w/2)-(ttw/2)),y+(tth/2)-10),text=tt,font=fontDeja24,fill=colorFFFFFF,stroke_width=1)
+        vicarioustext.drawcenteredtext(draw, "/dev/root", 24, x+(w/2), y+20, colorHeader, True)
     if icon == "hdd":
         drawicon(draw,"piestorage",x,y,w,h,v)
-        tt = "/dev/sda1"
-        ttw,tth = draw.textsize(tt, fontDeja24)
-        ox,oy = fontDeja24.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+((w/2)-(ttw/2))+1,y+(tth/2)+1-10),text=tt,font=fontDeja24,fill=color000000,stroke_width=3)
-        draw.text(xy=(x+((w/2)-(ttw/2)),y+(tth/2)-10),text=tt,font=fontDeja24,fill=colorFFFFFF,stroke_width=1)
+        vicarioustext.drawcenteredtext(draw, "/dev/sda1", 24, x+(w/2), y+20, colorHeader, True)
     if icon == "cpuload":
-        tt = "CPU Load"
-        ttw,tth = draw.textsize(tt, fontDeja24)
-        ox,oy = fontDeja24.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*1)-(tth/2)),text=tt,font=fontDeja24,fill=colorFFFFFF,stroke_width=1)
-        tt = "1 min"
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja16.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x,y+((h/8)*3)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
-        tt = "5 min"
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja16.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x,y+((h/8)*5)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
-        tt = "15 min"
-        ttw,tth = draw.textsize(tt, fontDeja16)
-        ox,oy = fontDeja16.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x,y+((h/8)*7)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
+        vicarioustext.drawcenteredtext(draw, "CPU Load", 24, x+(w/2), y+20, colorHeader, True)
+        vicarioustext.drawlefttext(draw, "1 min", 16, x+6, y+((h/8)*3), colorCPULabelText)
+        vicarioustext.drawlefttext(draw, "5 min", 16, x+6, y+((h/8)*5), colorCPULabelText)
+        vicarioustext.drawlefttext(draw, "15 min", 16, x+6, y+((h/8)*7), colorCPULabelText)
+        ttw = 72
         for j in range(3):
-            draw.rounded_rectangle(xy=(x+ttw+3,y+((h/8)*((j*2)+2))+3,x+w,y+((h/8)*((j*2)+4))-3),radius=4,outline=colorC0C0C0,width=2)
+            draw.rounded_rectangle(xy=(x+ttw+3,y+((h/8)*((j*2)+2))+3,x+w,y+((h/8)*((j*2)+4))-3),radius=4,outline=colorCPUOutline,width=2)
             ld = list(v.split())[j]
             ldw = int(((x+w)-(x+ttw+3)) * (float(ld)/float(getprocessorcount())))
-            barcolor=colorC0FFC0
+            barcolor=colorCPUGood
             if float(ld) > .50:
-                barcolor=colorFFFF00
+                barcolor=colorCPUWarn
             if float(ld) > .75:
-                barcolor=colorFF0000
+                barcolor=colorCPUDanger
             draw.rounded_rectangle(xy=(x+ttw+3+1,y+((h/8)*((j*2)+2))+4,x+ttw+3+1+ldw,y+((h/8)*((j*2)+4))-3-1),radius=4,fill=barcolor,width=1)
     if icon == "memory":
         l = list(v.split())[0]
         p = list(v.split())[1]
         pad = 20
-        draw.arc(xy=(x+pad,y+(pad*2),x+w-pad,y+h),start=120,end=420,fill=colorC0C0C0,width=20)
-        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=color000000,width=16)
-        arccolor=colorC0FFC0
+        draw.arc(xy=(x+pad,y+(pad*2),x+w-pad,y+h),start=120,end=420,fill=colorMEMOutline,width=20)
+        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=colorMEMEmpty,width=16)
+        arccolor=colorMEMGood
         if int(p) == 0:
             p = "1"
         if int(p) > 75:
-            arccolor=colorFFFF00
+            arccolor=colorMEMWarn
         if int(p) > 90:
-            arccolor=colorFF0000
+            arccolor=colorMEMDanger
         ea=120+int((420-120)*(float(p)/100))
         draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120,end=ea,fill=arccolor,width=16)
-        tt = l
-        ttw,tth = draw.textsize(tt, fontDeja24)
-        ox,oy = fontDeja24.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*1)-(tth/2)),text=tt,font=fontDeja24,fill=colorFFFFFF,stroke_width=1)
-        tt = p + "%"
-        ttw,tth = draw.textsize(tt, fontDeja20)
-        ox,oy = fontDeja20.getoffset(tt)
-        ttw += ox
-        tth += oy
-        draw.text(xy=(x+(w/2)-(ttw/2)+1,y+((h/8)*5)-(tth/2)+1),text=tt,font=fontDeja20,fill=color000000)
-        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*5)-(tth/2)),text=tt,font=fontDeja20,fill=colorFFFFFF)
+        vicarioustext.drawcenteredtext(draw, l, 24, x+(w/2), y+20, colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, p + "%", 20, x+(w/2), y+(h/2)+20, colorMEMLabelText)
     if icon == "datetime":
-        dt = "as of " + getdateandtime()
-        dtw,dth = draw.textsize(dt, fontDeja12)
-        ox,oy = fontDeja12.getoffset(dt)
-        dtw += ox
-        dth += oy
-        draw.text((w-dtw,h-dth), dt, font=fontDeja12, fill=colorFFFFFF)
-
-def getdateandtime():
-    now = datetime.utcnow()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
+        vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, w, h)
 
 def createimage(width=480, height=320):
     bw=width/3
@@ -253,8 +195,6 @@ def getmemusage(memtype,label):
     except subprocess.CalledProcessError as e:
         return label + " ?"
 
-
-
 while True:
     createimage()
-    time.sleep(30)
+    time.sleep(sleepInterval)
