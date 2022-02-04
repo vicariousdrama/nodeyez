@@ -22,20 +22,21 @@ def checkimageage(imagename="debug.png", threshold=monitorage):
 
 def checkforoldimages():
     output = ""
-#    output = output + checkimageage("blockheight*.png", 2)
+    output = output + checkimageage("arthashdungeon*.png", 15)
+    output = output + checkimageage("blockheight*.png", 2)
     output = output + checkimageage("channelbalance*.png", 30)
     output = output + checkimageage("compassminingstatus*.png", 5)
     output = output + checkimageage("debug*.png", 1)
     output = output + checkimageage("difficultyepoch*.png", 9)
     output = output + checkimageage("f2pool*.png", 10)
-#    output = output + checkimageage("ipaddress*.png", 2)
+    output = output + checkimageage("ipaddress*.png", 2)
     output = output + checkimageage("mempoolblocks*.png", 5)
     output = output + checkimageage("minerstatus*.png", 1)
     output = output + checkimageage("rof*.png", 15)
     output = output + checkimageage("satsperusd*.png", 60)
     output = output + checkimageage("slushpool*.png", 10)
     output = output + checkimageage("sysinfo*.png", 1)
-#    output = output + checkimageage("utcclock*.png", 1)
+    output = output + checkimageage("utcclock*.png", 1)
     return output
 
 def getoldimages():

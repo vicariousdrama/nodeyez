@@ -25,7 +25,7 @@ def createimage(width=480, height=320):
     currentip = getcurrentip()
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
-    vicarioustext.drawcenteredtext(draw, str(currentip), 48, int(width/2), int(height/2))
+    vicarioustext.drawcenteredtext(draw, str(currentip), 36, int(width/2), int(height/2), colorFFFFFF, True)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFile)
 

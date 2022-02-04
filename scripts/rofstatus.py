@@ -33,11 +33,6 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     # for non-existant channels between nodes
     breaksize=20
     breakcolor=coloroffline
-    #btt="X"
-    #btw,bth=draw.textsize(btt,ringfont)
-    #ox,oy=ringfont.getoffset(btt)
-    #btw+=ox
-    #bth+=oy
     # draw the main ring
     draw.ellipse(xy=(padding, padding, height-padding, height-padding), outline=colorcircle, width=thickness)
     # draw the crosscutting from channels
@@ -81,7 +76,6 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
             bxy=xy4nodeindex(((nodenumber*2)+1), nodecount*2, (cx,cy), radius)
             bx=xy[0]
             by=xy[1]
-            #draw.text((bx-(btw/2),by-(bth/2)), btt, font=ringfont, fill=breakcolor)
 #            vicarioustext.drawcenteredtext(draw,btt,24,bx,by,breakcolor)
         # sidebar text
         operator = str(nodenumber) + ". " + nodes[nodenumber]["operator"]
