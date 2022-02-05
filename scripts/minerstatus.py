@@ -6,7 +6,8 @@ import time
 import vicarioustext
 
 configFile="/home/bitcoin/nodeyez/config/minerstatus.json"
-outputFile = "/home/bitcoin/images/minerstatus.png"
+outputFile="/home/bitcoin/images/minerstatus.png"
+cookieFile="/home/bitcoin/nodeyez/data/minercookiefile"
 mineraddress = "--put-the-ip-address-for-your-miner-in--nodeyez/config/minerstatus.json"
 minerusername = "--put-the-username-for-your-miner-in--nodeyez/config/minerstatus.json"
 sleepInterval=30
@@ -23,7 +24,7 @@ def getcookiefilename():
     except subprocess.CalledProcessError as e:
         cmdoutput = "tmp"
     cmdoutput = cmdoutput.replace("\n", "")
-    return "~/minercookiefile-" + cmdoutput
+    return cookieFile + "-" + cmdoutput
 
 def getminerinfo():
     cookiefilename = getcookiefilename()
@@ -177,13 +178,10 @@ def createimage(minerinfo, width=480, height=320):
 
 
 while True:
-    f = open(configFile)
-    config = json.load(f)
-    f.close()
-    if "mineraddress" in config:
-        mineraddress = config["mineraddress"]
-    if "minerusername" in config:
-        minerusername = config["minerusername"]
+    with open(configFile) as f:
+        config = json.load(f)
+    mineraddress = config["mineraddress"]
+    minerusername = config["minerusername"]
     minerinfo = getminerinfo()
     createimage(minerinfo)
     time.sleep(sleepInterval)

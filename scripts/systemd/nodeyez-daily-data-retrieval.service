@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for running the daily data retrieval
+# /etc/systemd/system/nodeyez-daily-data-retrieval.service
+
+[Unit]
+Description=Retrieve background data for Nodeyez
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/bitcoin/nodeyez/scripts
+ExecStart=/usr/local/bin/python3 /home/bitcoin/nodeyez/scripts/daily-data-retrieval.py
+User=bitcoin
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

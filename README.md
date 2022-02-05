@@ -16,7 +16,8 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 - [difficulty epoch](#difficultyepochpy)
 - [f2 pool](#f2poolpy)
 - [ip address](#ipaddresspy)
-- [mempool blocks](#mempool-blockspy)
+- [luxor pool](#luxor-mining-hashratepy)
+- [mempool blocks](#mempoolblockspy)
 - [miner status](#minerstatuspy)
 - [ring of fire](#rofstatuspy)
 - [sats per usd](#satsperusdpy)
@@ -266,10 +267,50 @@ Run it `python3 scripts/ipaddress.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
-### mempool-blocks.py
+### luxor-mining-hashrate.py
+This python script can query the Luxor API to retrieve hashrate history for your account and create images for each month of data collected.
+Currently this script is in beta, and does not run at an interval.  If you run it once every month or so, you should be able to keep up to date.
+See also the daily-data-retrieval.py script which retrieves the same information as a service but doesn't produce the images.
+In time this script will be updated to use that common data.
+
+![sample image of luxor hashrate](./images/luxor-mining-hashrate-2021-12.png)
+
+Dependencies:
+- An account with Luxor (https://beta.luxor.tech/)
+- An API Key with your account
+- At time of writing, this script uses a modified version of the Luxor Python Client (https://github.com/LuxorLabs/graphql-python-client)
+  - The files (luxor.py and resolvers.py) are already copied into this repo so no additional action is required
+  - A Pull Request has been opened with the upstream repository to include the change (forced sort order for the data)
+- The Luxor Python client uses Pandas, which needs to be installed once if you haven't yet done so
+  - From the scripts folder, run `pip3 install pandas` and wait until it completes
+- External calls to https://api.beta.luxor.tech/graphql whenever the script is run. These are not torified
+
+Before running the script, you should review it
+```
+nano scripts/luxor-mining-hashrate.py
+```
+- You may want to change the location or base name of the outputFile.  This file will serve as the basis for a suffix pattern (-YYYY-MM)
+- You most definitely should change the apikey and username in the external configuration file
+Save (CTRL+O) and Exit (CTRL+X).
+
+You will need to configure your Luxor information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
+```
+mkdir -p config
+cp sample-config/luxor.json config/luxor.json
+nano config/luxor.json
+```
+
+Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
+
+
+Run it `python3 scripts/luxor-mining-hashrate.py`
+
+Press CTRL+C to stop the process to make any changes.  If you've had hashrate with Luxor it should produce one or more images to /home/bitcoin/images by default.
+
+### mempoolblocks.py
 This python script will query the mempool.space service. By default it assumes the usage of mempool space viewer on a local MyNodeBTC instance, but the script can be altered to use the public [mempool.space](https://mempool.space) website.  It will display up to 3 upcoming blocks in a similar way as mempool space website renders.
 
-![sample image of mempool blocks](./images/mempool-blocks.png)
+![sample image of mempool blocks](./images/mempoolblocks.png)
 
 Dependencies:
 - A locally running instance of [Mempool](https://github.com/mempool/mempool) or configure script to call external service
@@ -278,7 +319,7 @@ Dependencies:
 
 Before running the script, edit it to make changes
 ```
-nano scripts/mempool-blocks.py
+nano scripts/mempoolblocks.py
 ```
 - You may want to change the location of the outputFile.  
 - If you have mempool viewer running locally, but a different location/port, then update urlmempool and urlfeerecs.
@@ -287,7 +328,7 @@ nano scripts/mempool-blocks.py
 
 Save (CTRL+O) and Exit (CTRL+X).
 
-Run it `python3 scripts/mempool-blocks.py`
+Run it `python3 scripts/mempoolblocks.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
@@ -496,6 +537,7 @@ sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-compassmining.service
+sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
 sudo systemctl enable nodeyez-ipaddress.service
@@ -516,6 +558,7 @@ sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-compassmining.service
+sudo systemctl start nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
 sudo systemctl start nodeyez-ipaddress.service

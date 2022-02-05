@@ -281,11 +281,9 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     im.save(outputFile)
 
 while True:
-    f = open(configFile)
-    config = json.load(f)
-    f.close()
-    if "authtoken" in config:
-        authtoken = config["authtoken"]
+    with open(configFile) as f:
+        config = json.load(f)
+    authtoken = config["authtoken"]
     accountprofile = getaccountprofile()
     accountrewards = getaccountrewards()
     poolstats = getpoolstats()

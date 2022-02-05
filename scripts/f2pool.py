@@ -199,11 +199,9 @@ def createimage(accountinfo, width=480, height=320):
 
 
 while True:
-    f = open(configFile)
-    config = json.load(f)
-    f.close()
-    if "account" in config:
-        account = config["account"]
+    with open(configFile) as f:
+        config = json.load(f)
+    account = config["account"]
     accountinfo = getaccountinfo()
     createimage(accountinfo)
     time.sleep(sleepInterval)

@@ -223,9 +223,8 @@ def setfontandcolor(config):
 while True:
     # each pass through, we re-read configuration in case anything gets added/changed
     # this way, we dont have to stop/start the service for config changes
-    f = open(configFile)
-    config = json.load(f)
-    f.close()
+    with open(configFile) as f:
+        config = json.load(f)
     # iterate the rings
     for ring in config["rings"]:
         outputFile = ring["imagefilename"]
