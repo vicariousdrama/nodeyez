@@ -1,9 +1,11 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
-This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node.  The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
+This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node, market rates, mining and more..  
 
-STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin user).  There may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.
+The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
+
+STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.  Moving forward for the final 1.0.0 release, configuration will be externalized to facilitate easier updates. 
 
 ![image strip](./images/nodeyez-4x4-layout.png)
 
@@ -33,7 +35,7 @@ To use the scripts in this project, you'll need a Bitcoin Node.  An easy low cos
 
 You'll also need to ensure dependencies are met for Python and assorted libraries
 
-### Setting up Python, Git and Torify
+### Setting up Python, Git, and Torify
 
 1. Login to your node via SSH as admin
 2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the scripts asume Python 3. Use the command `sudo apt-get install python3`.
@@ -59,9 +61,10 @@ You can upgrade Pillow to the latest using `python3 -m pip install --upgrade Pil
 
 Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or above.
 
-4. Install Beautiful Soup pythong library using the command `python3 -m pip install beautifulsoup4`
-5. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
-6. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
+4. Install Beautiful Soup python library using the command `python3 -m pip install beautifulsoup4`
+5. Install Pandas python library using the command `python3 -m pip install pandas`
+6. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
+7. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
 
 ### Prepare output folder and clone repository
 
@@ -72,7 +75,9 @@ The assorted python scripts each create image files.  We want them all in a sing
 3. Create the folder for images `mkdir /home/bitcoin/images`
 4. Clone this repo `cd /home/bitcoin ; git clone https://github.com/vicariousdrama/nodeyez.git`
 5. Mark the scripts as executable `chmod +x ~/nodeyez/scripts/*`
-6. Exit the shell from the bitcoin user, returning to admin `exit`
+6. Create folders for configuration files `mkdir -p ~/nodeyez/config`
+7. Create folders for data files `mkdir -p ~/nodeyez/data`
+8. Exit the shell from the bitcoin user, returning to admin `exit`
 
 
 ### Display to a screen attached to GPIO
@@ -219,7 +224,7 @@ Press CTRL+C to stop the process to make any changes.  An image will be output t
 ### f2pool.py
 This python script is useful if you have a F2 Pool account.  This is based on having a read only account setup.  You'll need your account name.
 
-![sample image of f2pool](./images/f2pool.png)
+![sample image of f2pool recent hashrate](./images/f2pool.png)
 
 Dependencies:
 - An account on F2 Pool
@@ -273,7 +278,7 @@ Currently this script is in beta, and does not run at an interval.  If you run i
 See also the daily-data-retrieval.py script which retrieves the same information as a service but doesn't produce the images.
 In time this script will be updated to use that common data.
 
-![sample image of luxor hashrate](./images/luxor-mining-hashrate-2021-12.png)
+![sample image of luxor hashrate for a month](./images/luxor-mining-hashrate-2021-12.png)
 
 Dependencies:
 - An account with Luxor (https://beta.luxor.tech/)
@@ -519,8 +524,6 @@ sudo ./slideshow.sh &
 ```
 
 You should start seeing images display on your screen.  If you dont see any images, then edit the slideshow.sh file, and remove the part at the end `> /dev/null 2>&1` and rerun. Any errors should be reported to help diagnose.
-
-
 
 ## Run At Startup
 
