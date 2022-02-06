@@ -5,7 +5,7 @@ This repository contains simple [scripts](./scripts) that can be run with Python
 
 STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin user).  There may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.
 
-![image strip](./images/nodeyez-4x3-layout.png)
+![image strip](./images/nodeyez-4x4-layout.png)
 
 ## Quick Menu of Info Panels
 
