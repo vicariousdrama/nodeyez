@@ -95,6 +95,7 @@ if __name__ == '__main__':
             colorBarFilled = ImageColor.getrgb(config["colorBarFilled"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
         if "pageSize" in config:
             pageSize = int(config["pageSize"])
     # Check for single run
@@ -114,7 +115,7 @@ if __name__ == '__main__':
         clearOldImages(pages)
         for pagenum in range(1, (pages+1)):
             firstidx = ((pagenum-1)*pageSize)
-            lastidx = (pagenum*pageWize)-1
+            lastidx = (pagenum*pageSize)-1
             if lastidx > channelcount-1:
                 lastidx = channelcount-1
             createimage(channels, firstidx, lastidx, pagenum, pageSize)

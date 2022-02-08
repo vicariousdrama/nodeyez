@@ -224,6 +224,7 @@ def setfontandcolor(config):
 if __name__ == '__main__':
     # Defaults
     configFile="/home/bitcoin/nodeyez/config/rofstatus.json"
+    sleepInterval = 900
     # Require configuration
     if not exists(configFile):
         print(f"You need to make a config file at {configFile}")
@@ -231,6 +232,9 @@ if __name__ == '__main__':
     # Load configuration (there is no defaults, everything is in the config)
     with open(configFile) as f:
         config = json.load(f)
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
     # Loop
     while True:
         # iterate the rings
@@ -243,4 +247,4 @@ if __name__ == '__main__':
             else:
                 setfontandcolor(config)
             checknodestatus(ring["nodes"])
-        time.sleep(int(config["sleepInterval"]))
+        time.sleep(sleepInterval)

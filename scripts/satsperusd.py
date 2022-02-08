@@ -119,6 +119,7 @@ if __name__ == '__main__':
             satshape = config["satshape"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 600 if sleepInterval < 600 else sleepInterval # minimum 10 minutes, access others
         if "showBigText" in config:
             showBigText = config["showBigText"]
         if "showBigTextOnTop" in config:
@@ -140,10 +141,10 @@ if __name__ == '__main__':
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass an argument other than -h or --help to run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
-            exit(0)
+        else:
+            createimage()
+        exit(0)
     # Loop
     while True:
         createimage()
-        if len(sys.argv) > 1:
-            exit(0)
         time.sleep(sleepInterval)

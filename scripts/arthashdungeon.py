@@ -258,6 +258,7 @@ if __name__ == '__main__':
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

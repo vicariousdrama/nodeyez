@@ -189,8 +189,10 @@ if __name__ == '__main__':
             overlayText = config["overlayText"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
         if "userinfoInterval" in config:
             userinfoInterval = int(config["userinfoInterval"])
+            userinfoInterval = 300 if userinfoInterval < 300 else userinfoInterval # minimum 5 minutes, remote access
     # Data directories
     if not os.path.exists(dataDirectory):
         os.makedirs(dataDirectory)

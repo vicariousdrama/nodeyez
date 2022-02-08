@@ -205,6 +205,7 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 10 if sleepInterval < 10 else sleepInterval # minimum 10 seconds, local only
         if "colorHeader" in config:
             colorHeader = ImageColor.getrgb(config["colorHeader"])
         if "colorThermometerUnfilled" in config:
@@ -269,10 +270,10 @@ if __name__ == '__main__':
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass an argument other than -h or --help to run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
-            exit(0)
+        else:
+            createimage()
+        exit(0)
     # Loop
     while True:
         createimage()
-        if len(sys.argv) > 1:
-            exit(0)
         time.sleep(sleepInterval)

@@ -241,6 +241,7 @@ if __name__ == '__main__':
             hashrateLowThreshold = config["hashrateLowThreshold"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
         if "colorDataValue" in config:
             colorDataValue = ImageColor.getrgb(config["colorDataValue"])
         if "colorHashDotFill" in config:
@@ -281,6 +282,7 @@ if __name__ == '__main__':
                 date_prefix = entry["date"][:7]
                 print(f"Creating image for {date_prefix}")
                 createimage(hashrate_history, date_prefix)
+        # only run once if an argument was passed
         if len(sys.argv) > 1:
-            exit(0)
+            break
         time.sleep(sleepInterval)

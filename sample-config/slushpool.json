@@ -4,7 +4,7 @@
   "useTor": false,
   "priceUrl": "https://bisq.markets/bisq/api/markets/ticker",
   "priceCheckInterval": 10800,
-  "kwhPrice": .12,
+  "kwhPrice": 0.12,
   "khwUsed": 1.100,
   "sleepInterval": 600,
   "colorHeader": "#ffffff",
