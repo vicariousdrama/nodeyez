@@ -1,14 +1,14 @@
 #! /usr/bin/python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from os.path import exists
 import json
 import math
 import subprocess
+import sys
 import time
 import vicariousbitcoin
 import vicarioustext
-
-configFile="/home/bitcoin/nodeyez/config/rofstatus.json"
 
 def xy4nodeindex(index, total, center, radius):
     degrees=360/total
@@ -220,18 +220,27 @@ def setfontandcolor(config):
     colortext = getcolorconfig(config, "text")
     colortextshadow = getcolorconfig(config, "textshadow")
 
-while True:
-    # each pass through, we re-read configuration in case anything gets added/changed
-    # this way, we dont have to stop/start the service for config changes
+
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/rofstatus.json"
+    # Require configuration
+    if not exists(configFile):
+        print(f"You need to make a config file at {configFile}")
+        exit(1)
+    # Load configuration (there is no defaults, everything is in the config)
     with open(configFile) as f:
         config = json.load(f)
-    # iterate the rings
-    for ring in config["rings"]:
-        outputFile = ring["imagefilename"]
-        ringname = ring["name"]
-        if "imagesettings" in ring:
-            setfontandcolor(ring)
-        else:
-            setfontandcolor(config)
-        checknodestatus(ring["nodes"])
-    time.sleep(int(config["sleeptime"]))
+    # Loop
+    while True:
+        # iterate the rings
+        for ring in config["rings"]:
+            outputFile = ring["imagefilename"]
+            ringname = ring["name"]
+            print(f"Creating ring of fire image for ring {ringname} at {outputFile}")
+            if "imagesettings" in ring:
+                setfontandcolor(ring)
+            else:
+                setfontandcolor(config)
+            checknodestatus(ring["nodes"])
+        time.sleep(int(config["sleepInterval"]))

@@ -19,6 +19,7 @@ STATUS: ALPHA.  Scripts are functional, may require adjustment (admin vs bitcoin
 - [luxor pool](#luxor-mining-hashratepy)
 - [mempool blocks](#mempoolblockspy)
 - [miner status](#minerstatuspy)
+- [raretoshi](#raretoshipy)
 - [ring of fire](#rofstatuspy)
 - [sats per usd](#satsperusdpy)
 - [slushpool](#slushpoolpy)
@@ -59,9 +60,10 @@ You can upgrade Pillow to the latest using `python3 -m pip install --upgrade Pil
 
 Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or above.
 
-4. Install Beautiful Soup pythong library using the command `python3 -m pip install beautifulsoup4`
+4. Install Beautiful Soup python library using the command `python3 -m pip install beautifulsoup4`
 5. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
 6. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
+7. Install pandas using the command `python3 -m pip install pandas`. This is used by the luxor related scripts
 
 ### Prepare output folder and clone repository
 
@@ -94,10 +96,41 @@ Whether you are using a Raspberry Pi or not, you can also display the images via
 
 ## Available scripts
 
-You don't have to run all the scripts contained within.  Pick and choose the ones you like, configure and test them out.  Whichever ones you run will output to the common images folder to be displayed on an attached screen or website dashboard.
+You don't have to run all the scripts contained within.  Pick and choose the ones you like, 
+configure and test them out.  Whichever ones you run will output to the common images folder 
+to be displayed on an attached screen or website dashboard.
+
+Before running any of the scripts, you are strongly encouraged to review them.  Most are
+fairly straight forward, but if you have questions about what a part of the code is doing,
+feel free to ask by opening an issue on github.
+
+Scripts should be run as the `bitcoin` user. This is essential for permissions to access
+information from the Bitcoin node, Lightning service, and permissions for config files.
+There is no need to run the scripts as root, other than the slideshow script for video 
+group access.
+
+
+### arthash.py
+This python script produces artwork deterministically based on Bitcoin Blockhash values.
+
+![sample image depicting hash as colored triangles](./images/arthash.png)
+
+Dependencies:
+- A bitcoin node running locally and fully synched
+- bitcoin-cli tool available with appropriate macaroons granted to the user running the script
+  - calls "getblockchaininfo", "getblockhash"
+
+You may override default configuration by copying the nodeyez/sample-config/arthash.json to nodeyez/config/arthash.json
+The configuration allows setting text and outline colors and interval settings.
+
+Run it `python3 scripts/arthash.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 
 ### arthashdungeon.py
-This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block hash
+This python script will query the local bitcoin node using bitcoin-cli and prepare an 
+image representing the block hash
 
 ![sample image depicting a sample generated maze](./images/arthashdungeon.png)
 
@@ -106,21 +139,13 @@ Dependencies:
 - bitcoin-cli tool available with appropriate macaroons granted to the user running the script
   - calls "getblockchaininfo", "getblockhash"
 
-Before running the script, edit it to make changes
-```
-nano scripts/arthashdungeon.py
-```
-- You may want to change the location of the outputFile.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 2 minutes).
-- This script uses files in the nodeyez/images folder for its tileset as referenced by the bitcoinLogosFile and bitcoinTilesFile near the top
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/arthashdungeon.json to nodeyez/config/arthashdungeon.json
+The configuration allows setting text colors, and path to images used for theme tilesets and logos.
 
 Run it `python3 scripts/arthashdungeon.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
-If you run the script without arguments, it will generate an image for the current block height.  You may pass arguments for the blockheight, width, and height
 
 ### blockheight.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the block height
@@ -132,18 +157,13 @@ Dependencies:
 - bitcoin-cli tool available with appropriate macaroons granted to the user running the script
   - calls "getblockchaininfo"
 
-Before running the script, edit it to make changes
-```
-nano scripts/blockheight.py
-```
-- You may want to change the location of the outputFile.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 2 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/blockheight.json to nodeyez/config/blockheight.json
+The configuration allows setting text colors and sleep timeouts.
 
 Run it `python3 scripts/blockheight.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 
 ### channelbalance.py
 This python script will create images depicting your nodes lightning channel balances. Multiple images may be created (8 per page), and a bar graph shows relative percentage of the balance on your end or the remote..
@@ -155,21 +175,19 @@ Dependencies:
 - lncli tool available with appropriate macaroons granted to the user running the script
   - calls "getnodeinfo", "listchannels"
 
-Before running the script, edit it to make changes
-```
-nano scripts/channelbalance.py
-```
-- You may want to change the location of the outputFile.  
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/channelbalance.json to nodeyez/config/channelbalance.json
+The configuration allows setting text colors, bar colors for satoshi balance, and sleep timeouts.
 
 Run it `python3 scripts/channelbalance.py`
 
-Press CTRL+C to stop the process to make any changes.  If you're node has channels, then one or more images will be output to /home/bitcoin/images by default.
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
+
 
 ### compassminingstatus.py
-This python script will create an image denoting the high level status of facilities with Compass Mining as reported on their status page (https://status.compassmining.io).  This is useful if you have miner(s) hosted with Compass Mining, and need a way to quickly discern facility status for support purposes.
+This python script will create an image denoting the high level status of facilities 
+with Compass Mining as reported on their status page (https://status.compassmining.io).  
+This is useful if you have miner(s) hosted with Compass Mining, and need a way to quickly
+discern facility status for support purposes.
 
 ![sample image of compass mining status](./images/compassminingstatus.png)
 
@@ -178,22 +196,19 @@ Dependencies:
 - External calls to https://status.compassmining.io
   - Not using torify
 
-Before running the script, edit it to make changes
-```
-nano scripts/compassminingstatus.py
-```
-- You may want to change the location of the outputFile
-- You can also alter the colors of the reporting by status if you so desire.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/compassminingstatus.json to nodeyez/config/compassminingstatus.json
+The configuration allows setting the status background and text colors, and sleep timeouts.
 
 Run it `python3 scripts/compassminingstatus.py`
 
-Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
+
 
 ### difficultyepoch.py
-This python script will query the local bitcoin node using bitcoin-cli and prepare an image representing the number of blocks that have been mined thus far in this difficulty epoch, and indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when the next epoch begins.  A difficulty epoch consists of 2016 blocks.
+This python script will query the local bitcoin node using bitcoin-cli and prepare an image 
+representing the number of blocks that have been mined thus far in this difficulty epoch, and 
+indicate if ahead of schedule or behind, with an estimated difficulty adjustment to occur when 
+the next epoch begins.  A difficulty epoch consists of 2016 blocks.
 
 ![difficulty epoch image sample showing several blocks mined, and ahead of schedule](./images/difficultyepoch.png)
 
@@ -202,19 +217,14 @@ Dependencies:
 - bitcoin-cli tool available with appropriate macaroons granted to the user running the script
   - calls "getblock", "getblockchaininfo", "getblockhash"
 
-Before running the script, edit it to make changes
-```
-nano scripts/difficultyepoch.py
-```
-- You may want to change the location of the outputFile.  
-- You can also alter the colors of mined and expected blocks, etc if you so desire.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/difficultyepoch.json to nodeyez/config/difficultyepoch.json
+The configuration allows setting the text colors and the colors for mined, expected, and blocks
+that are ahead or behind, and sleep timeouts.
 
 Run it `python3 scripts/difficultyepoch.py`
 
-Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
+
 
 ### f2pool.py
 This python script is useful if you have a F2 Pool account.  This is based on having a read only account setup.  You'll need your account name.
@@ -226,52 +236,35 @@ Dependencies:
 - External calls to https://api.f2pool.com
   - Not using torify
 
-Before running the script, you should review it
-```
-nano scripts/f2pool.py
-```
-- You may want to change the location of the outputFile.
-- You most definitely should set the account in the external configuration file (see below)
-- You can set a string for the accountlabel which will be appended to the title
-- The hashratelowthreshold affects when dots are plotted as yellow. By default it is set to 60 TH/s
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 10 minutes).  There is an intentional delay between making API calls to avoid spamming the pool.
-
-Save (CTRL+O) and Exit (CTRL+X).
-
-You will need to configure your account in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
-```
-mkdir -p config
-cp sample-config/f2pool.json config/f2pool.json
-nano config/f2pool.json
-```
+You must override default configuration by copying the nodeyez/sample-config/f2pool.json to nodeyez/config/f2pool.json
+at a minimum you will need to specify the account name.
+The configuration also allows setting  assorted colors for the graphical charting.
 
 Run it `python3 scripts/f2pool.py`
 
-Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
+
 
 ### ipaddress.py
-This python script will report the current IP addresses of the node.  Values longer than 15 characters in length are eliminated, so this should only display IPv4 addresses.
+This python script will report the current IP addresses of the node.  Values longer than 15 characters 
+in length are eliminated, so this should only display IPv4 addresses.
 
 ![sample image of ip address](./images/ipaddress.png)
 
-Before running the script, edit it to make changes
-```
-nano scripts/ipaddress.py
-```
-- You may want to change the location of the outputFile.  
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/ipaddress.json to nodeyez/config/ipaddress.json
+The configuration allows setting the color for text and the sleep interval
 
 Run it `python3 scripts/ipaddress.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+
 ### luxor-mining-hashrate.py
-This python script can query the Luxor API to retrieve hashrate history for your account and create images for each month of data collected.
-Currently this script is in beta, and does not run at an interval.  If you run it once every month or so, you should be able to keep up to date.
-See also the daily-data-retrieval.py script which retrieves the same information as a service but doesn't produce the images.
-In time this script will be updated to use that common data.
+This python script can query the Luxor API to retrieve hashrate history for your account and create images 
+for each month of data collected. Currently this script is in beta, and does not run at an interval.  If 
+you run it once every month or so, you should be able to keep up to date. See also the daily-data-retrieval.py 
+script which retrieves the same information as a service but doesn't produce the images. In time this script 
+will be updated to use that common data.
 
 ![sample image of luxor hashrate](./images/luxor-mining-hashrate-2021-12.png)
 
@@ -285,30 +278,20 @@ Dependencies:
   - From the scripts folder, run `pip3 install pandas` and wait until it completes
 - External calls to https://api.beta.luxor.tech/graphql whenever the script is run. These are not torified
 
-Before running the script, you should review it
-```
-nano scripts/luxor-mining-hashrate.py
-```
-- You may want to change the location or base name of the outputFile.  This file will serve as the basis for a suffix pattern (-YYYY-MM)
-- You most definitely should change the apikey and username in the external configuration file
-Save (CTRL+O) and Exit (CTRL+X).
-
-You will need to configure your Luxor information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
-```
-mkdir -p config
-cp sample-config/luxor.json config/luxor.json
-nano config/luxor.json
-```
-
-Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
-
+You must override default configuration by copying the nodeyez/sample-config/luxor.json to nodeyez/config/luxor.json
+At a minimum you need to specify the apikey and username for your Luxor account.
+You can also specify assorted color overrides for the graphical charts produced.
 
 Run it `python3 scripts/luxor-mining-hashrate.py`
 
-Press CTRL+C to stop the process to make any changes.  If you've had hashrate with Luxor it should produce one or more images to /home/bitcoin/images by default.
+This script automatically ends once completed.  Images will be output to /home/bitcoin/images by default.
+
 
 ### mempoolblocks.py
-This python script will query the mempool.space service. By default it assumes the usage of mempool space viewer on a local MyNodeBTC instance, but the script can be altered to use the public [mempool.space](https://mempool.space) website.  It will display up to 3 upcoming blocks in a similar way as mempool space website renders.
+This python script will query the mempool.space service. By default it assumes the usage of 
+mempool space viewer from the public [mempool.space](https://mempool.space) website.  If you
+have your own MyNodeBTC instance, or another popular node package running mempool service
+locally, you can configure that instance instead for more privacy.
 
 ![sample image of mempool blocks](./images/mempoolblocks.png)
 
@@ -317,55 +300,57 @@ Dependencies:
 - If calling external service https://mempool.space
   - Not using torify
 
-Before running the script, edit it to make changes
-```
-nano scripts/mempoolblocks.py
-```
-- You may want to change the location of the outputFile.  
-- If you have mempool viewer running locally, but a different location/port, then update urlmempool and urlfeerecs.
-- If you dont have mempool viewer running locally, you can use the mempool.space website by commenting the existing values, and uncommenting the ones for mempool.space
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 5 minutes).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/mempoolblocks.json to nodeyez/config/mempoolblocks.json
+The configuration allows setting assorted color settings and the address for the blocks and fee recommendations
 
 Run it `python3 scripts/mempoolblocks.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+
 ### minerstatus.py
-This python script is useful if you are using a miner running Braiins OS.  This is built with an Antminer S9 in mind, so you may need to modify it for your particular miner.
+This python script is useful if you are using a miner running Braiins OS.  This is built with an 
+Antminer S9 in mind, so you may need to modify it for your particular miner.
 
 ![sample image of miner status](./images/minerstatus.png)
 
 Dependencies:
 - A Miner (script only tested on Antminer S9) running [BraiinsOS+](https://braiins.com/os/plus)
- 
-Before running the script, you should review it
-```
-nano scripts/minerstatus.py
-```
-- You may want to change the location of the outputFile.
-- You most definitely should change the mineraddress in the external configuration file (see below)
-- Currently there is no authentication implemented, and it assumes root without a password.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
 
-Save (CTRL+O) and Exit (CTRL+X).
-
-You will need to configure your miner information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
-```
-mkdir -p config
-cp sample-config/minerstatus.json config/minerstatus.json
-nano config/minerstatus.json
-```
-
-Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
+You must override default configuration by copying the nodeyez/sample-config/minerstatus.json to nodeyez/config/minerstatus.json
+You must set the mineraddress and minerusername. You can optionally override the color settings.
 
 Run it `python3 scripts/minerstatus.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+
+### raretoshi.py
+The Raretoshi python script provides for a local rendering of NFTs posted to Raretoshi, with overlays showing the title of the work, author, edition and owner information.
+Files downloaded are stored locally as a psuedo IPFS cache to avoid redownloading over and over.  Only PNG and JPEG files are supported at this time.
+
+![sample raretoshi rendering showing Bitcoinavatars- - Satoshi image by glowleaf](./images/raretoshi.png)
+
+Dependencies:
+- External calls to raretoshi.com to get user profile and media metadata
+- External calls to ipfs.io to retrieve referenced media
+
+You may override default configuration by copying the nodeyez/sample-config/raretoshi.json to nodeyez/config/raretoshi.json
+The configuration allows setting the user collection to generate images from, output location, text colors, and parameters for how the image should scale
+
+Run it `python3 scripts/raretoshi.py`
+
+Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 ### rofstatus.py
-The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node in the preordained sequence and the script will provide a useful image showing its present state.  If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  Node operator contact list appears to the right of the ring.  You can define as many ring of fire configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
+The Ring of Fire python script provides renderings of configured Lightning Ring of Fire groups.  
+If you have a lightning node and participate in a Ring of Fire, you can configure the pubkeys for each node
+in the preordained sequence and the script will provide a useful image showing its present state.  
+If channels dont exist on the ring between nodes, then an X will be displayed.  Offline nodes are colored 
+red (or whatever configurable color per rofstatus.json) and have rings around them to draw attention.  
+Node operator contact list appears to the right of the ring.  You can define as many ring of fire 
+configurations as you want in the rofstatus.json, and each can have unique colors, labels, and fonts.
+To avoid spamming the lightning network with connection attempts, there is a delay between each ring being processed.
 
 ![sample ring of fire rendering showing 5 nodes](./images/rof-sample.png)
 
@@ -374,36 +359,18 @@ Dependencies:
 - lncli tool available with appropriate macaroons granted to the user running the script
   - calls "connect", "disconnect", "getnodeinfo", "listpeers"
 
-Before running the script, you should review it
-```
-nano scripts/rofstatus.py
-```
-This script relies on lncli, and gets its configuration from `rofstatus.json`.  When done reviewing, exit the file (CTRL+X)
+A sample configuration may be copied from nodeyez/sample-config/rofstatus.json to nodeyez/config/rofstatus.json
+The configuration allows setting one ore more rings, and each with their own settings for ring members and the
+colors used.  
 
-A sample rofstatus.json file is found in the sample-config folder.  
-You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
-```
-mkdir -p config
-cp sample-config/rofstatus.json config/rofstatus.json
-nano config/rofstatus.json
-```
-- You can adjust the frequency (default 900 seconds/15 minutes) if desired, but 15 minutes is actually quite aggressive. In general, no major changes to ring status should be transpiring this often, and its more helpful when diagnosing member outages.
-- For each ring you are a member of, or what to monitor, collect the public keys for the nodes, the order they appear in, and some means to refer to the operator for convenience (twitter handles or emails are fine).
-- In the `rings` array, an object has fields for `name`, `imagefilename`, `imagesettings`, and `nodes`.  
-  - The name is what appears as text in the middle of the ring when the graphic is created. 
-  - The imagefilename is where to save the file to.  
-  - Each ring defined in the configuration file should get its own filename as it is overwritten each time.  
-  - The imagesettings allow fine tuning the colors, fonts and text sies.  
-  - With the public keys for nodes and operator information, provide a node object in the nested array.
+Run it `python3 scripts/rofstatus.py`
 
-Save (CTRL+O) and Exit (CTRL+X).
+Press CTRL+C to stop the process to make any changes.  Generated image(s) will be saved to /home/bitcoin/images by default.
 
-Run it `cd scripts ; python3 rofstatus.py`
-
-Press CTRL+C to stop the process to make any changes.  Depending on the number of rings defined, and how long the script was allowed to run, one or more images will be output to  /home/bitcoin/images by default.  To avoid spamming the lightning network with connection attempts, there is a delay between each ring being processed.
 
 ### satsperusd.py
-This python script calls upon the bisq marketplace to get the current fiat valuation of Bitcoin in US Dollar terms, and then calculates the sats per dollar and displays graphically
+This python script calls upon the bisq marketplace to get the current fiat valuation of Bitcoin in 
+US Dollar terms, and then calculates the sats per dollar and displays graphically
 
 ![sample sats per usd display](./images/satsperusd.png)
 
@@ -411,23 +378,18 @@ Dependencies:
 - External call to https://bisq.markets. 
   - Uses torify
 
-Before running the script, edit it to make changes
-```
-nano scripts/satsperusd.py
-```
-- You may want to change the location of the outputFile.  
-- You can also alter the colors representing each sat if you so desire.
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 1 hour). This calls out to the bisq marketplace data, so an hour is likely sufficient.  
-- It does report the low and high for the past day which gives you a nice range of current valuation.
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/satsperusd.json to nodeyez/config/satsperusd.json
+The configuration allows setting colors, and and some text characteristics for overlay
 
 Run it `python3 scripts/satsperusd.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+
 ### slushpool.py
-This python script is useful if you have a Slushpool account.  To use it, you'll want to add a profile for monitoring with read access. You can do that on the [Access Profiles page](https://slushpool.com/settings/access/).  The Limited read-only permission is sufficient for the API calls made.
+This python script is useful if you have a Slushpool account.  To use it, you'll want to add a profile 
+for monitoring with read access. You can do that on the [Access Profiles page](https://slushpool.com/settings/access/).  
+The Limited read-only permission is sufficient for the API calls made.
 
 ![sample image of slushpool](./images/slushpool.png)
 
@@ -439,70 +401,45 @@ Dependencies:
 - External call to https://bisq.markets once every 3 hours. 
   - Uses torify
 
-Before running the script, you should review it
-```
-nano scripts/slushpool.py
-```
-- You may want to change the location of the outputFile.
-- You most definitely should change the authtoken in the external configuration file
-- If you want to adjust the frequency, alter the sleep_time parameter near the top of the script (default 10 minutes).  
-- There is an intentional delay between making API calls to avoid spamming the pool.
-- Price per killowatt and power used for your miner can be specified for dynamic profitability output
-Save (CTRL+O) and Exit (CTRL+X).
-
-You will need to configure your slushpool information in a configuration file. A sample configuration file is found in the sample-config folder.  You may follow these steps to copy the sample file and then edit it with your information.  The .gitignore file in the root of the nodeyez project will ensure changes in the config folder are not overwritten by subsequent updates.  From the root of the nodeyez project do the following
-```
-mkdir -p config
-cp sample-config/slushpool.json config/slushpool.json
-nano config/slushpool.json
-```
-
-Make your settings, then Save (CTRL+O) and Exit (CTRL+X).  
-
+A configuration file must be defined. You can copy the nodeyez/sample-config/slushpool.json to nodeyez/config/slushpool.json
+At a minimum you must set the accout information but you may also override the color settings.
 
 Run it `python3 scripts/slushpool.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
+
 ### sysinfo.py
-A useful python script that reports the CPU temperature and load, drive space in use and free, as well as memory usage.  Color coding follows green/yellow/red for ranging from all OK to heavy usage to warning.
+A useful python script that reports the CPU temperature and load, drive space in use and free, 
+as well as memory usage.  Color coding follows green/yellow/red for ranging from all OK to 
+heavy usage to warning.
 
 ![sample system info panel](./images/sysinfo.png)
 
 Dependencies:
-- Assumes a Raspberry Pi setup using a MicroSD card for the OS (/dev/root), and external storage (/dev/sda1) for data files for Bitcoin, LND, etc.
+- Assumes a Raspberry Pi setup using a MicroSD card for the OS (/dev/root), and external storage 
+(/dev/sda1) for data files for Bitcoin, LND, etc.
 
-Before running the script, edit it to make changes
-```
-nano scripts/sysinfo.py
-```
-- You may want to change the location of the outputFile.  
-- This script assumes you have a microsd card as the boot drive, and an external drive, like an SSD attached for the main drive.
-- If your configuration is different you may need to adjust the drive devices referenced on 109,118 and 206,207
-- If you want to adjust the frequency, alter the sleeptime parameter near the bottom of the script (default 30 seconds).
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/sysinfo.json to nodeyez/config/sysinfo.json
+The configuration allows setting colors.
 
 Run it `python3 scripts/sysinfo.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 
 ### utcclock.py
 This script provides a simple rendering of the current date and time
 
 ![sample date and time display](./images/utcclock.png)
 
-Before running the script, edit it to make changes
-```
-nano scripts/utcclock.py
-```
-- You may want to change the location of the outputFile.
-
-Save (CTRL+O) and Exit (CTRL+X).
+You may override default configuration by copying the nodeyez/sample-config/utcclock.json to nodeyez/config/utcclock.json
+The configuration allows setting colors for each of the 3 text fields rendered.
 
 Run it `python3 scripts/utcclock.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
+
 
 ## Running the Slideshow
 
@@ -543,6 +480,7 @@ sudo systemctl enable nodeyez-f2pool.service
 sudo systemctl enable nodeyez-ipaddress.service
 sudo systemctl enable nodeyez-mempoolblocks.service
 sudo systemctl enable nodeyez-minerstatus.service
+sudo systemctl enable nodeyez-raretoshi.service
 sudo systemctl enable nodeyez-rofstatus.service
 sudo systemctl enable nodeyez-satsperusd.service
 sudo systemctl enable nodeyez-slideshow.service
@@ -564,6 +502,7 @@ sudo systemctl start nodeyez-f2pool.service
 sudo systemctl start nodeyez-ipaddress.service
 sudo systemctl start nodeyez-mempoolblocks.service
 sudo systemctl start nodeyez-minerstatus.service
+sudo systemctl start nodeyez-raretoshi.service
 sudo systemctl start nodeyez-rofstatus.service
 sudo systemctl start nodeyez-satsperusd.service
 sudo systemctl start nodeyez-slideshow.service

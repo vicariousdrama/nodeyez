@@ -1,13 +1,12 @@
 #! /usr/bin/python3
 from PIL import Image, ImageDraw, ImageColor
+from os.path import exists
+import json
 import math
 import sys
 import time
 import vicariousbitcoin
 import vicarioustext
-
-outputFile="/home/bitcoin/images/arthash.png"
-colorFFFFFF=ImageColor.getrgb("#ffffff")
 
 def createimage(blocknumber=1, width=480, height=320):
     blockhash = vicariousbitcoin.getblockhash(blocknumber)
@@ -22,7 +21,7 @@ def createimage(blocknumber=1, width=480, height=320):
     arttop=(height/2)-(artheight/2)
     artleft=(width/2)-(artwidth/2)
     lwidth=2
-    outlinecolor=colorFFFFFF
+    outlinecolor=colorShapeOutline
     # basic pythagoras theorem math
     triclen=artwidth/4  # hypotenuese
     triblen=artwidth/8  # base
@@ -73,14 +72,52 @@ def createimage(blocknumber=1, width=480, height=320):
         if j == 11:
             draw.polygon(((artleft+(triclen*3),y+arttop+triclen),(artleft+(triclen*3)+triblen,y+arttop+triclen+trialen),(artleft+(triclen*4),y+arttop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor)
             draw.chord(((artleft+triblen+(triclen*2),y+arttop+triblen),(artleft+triclen+triblen+(triclen*2),y+arttop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),width=2)
-    vicarioustext.drawcenteredtext(draw, "Blockhash Art For Block " + str(blocknumber), 24, int(width/2), int(padtop/2), colorFFFFFF, True)
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
+    vicarioustext.drawcenteredtext(draw, "Blockhash Art For Block " + str(blocknumber), 24, int(width/2), int(padtop/2), colorTextFG, True)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFileBlock)
 
-if len(sys.argv) > 1:
-    createimage(int(sys.argv[1]), 480, 320)
-else:
+
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/arthash.json"
+    outputFile="/home/bitcoin/images/arthash.png"
+    colorTextFG=ImageColor.getrgb("#ffffff")
+    colorShapeOutline=ImageColor.getrgb("#ffffff")
+    sleepInterval=300
+    # Override config
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "arthash" in config:
+            config = config["arthash"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorShapeOutline" in config:
+            colorShapeOutline = ImageColor.getrgb(config["colorShapeOutline"])
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Produces artwork deterministically based on Bitcoin Blockhash values")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass the desired block number as an argument as follows")
+            arg0 = sys.argv[0]
+            print(f"   {arg0} 722231")
+            print(f"3) Pass the desired block number, width and height as arguments")
+            print(f"   {arg0} 722231 1920 1080")
+            print(f"You may specify a custom configuration file at {configFile}")
+            exit(0)
+        if len(sys.argv) > 3:
+            createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+        else:
+            createimage(int(sys.argv[1]))
+        exit(0)
+    # Loop
     while True:
         blocknumber = vicariousbitcoin.getcurrentblock()
         createimage(blocknumber, 480, 320)
-        time.sleep(300)
+        time.sleep(sleepInterval)

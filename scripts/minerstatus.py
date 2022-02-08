@@ -1,21 +1,11 @@
 #! /usr/bin/python3
 from PIL import Image, ImageDraw, ImageColor
+from os.path import exists
 import json
 import subprocess
+import sys
 import time
 import vicarioustext
-
-configFile="/home/bitcoin/nodeyez/config/minerstatus.json"
-outputFile="/home/bitcoin/images/minerstatus.png"
-cookieFile="/home/bitcoin/nodeyez/data/minercookiefile"
-mineraddress = "--put-the-ip-address-for-your-miner-in--nodeyez/config/minerstatus.json"
-minerusername = "--put-the-username-for-your-miner-in--nodeyez/config/minerstatus.json"
-sleepInterval=30
-colorFFFFFF=ImageColor.getrgb("#ffffff")
-colorHashboardLine=ImageColor.getrgb("#808080")
-colorWarn=ImageColor.getrgb("#ffaa00")
-tempwarning=88.0
-fanwarning=3000
 
 def getcookiefilename():
     cmd = "echo '" + mineraddress + "' | sha256sum | awk '{print $1}'"
@@ -81,8 +71,6 @@ def drawicon(draw,icon,x,y,w,h,v=None):
     colorArcDefault=ImageColor.getrgb("#40ff40")  # green arc color (default)
     colorArcRedAlert=ImageColor.getrgb("#ff0000")  # when percent > 75
     colorArcWarn=ImageColor.getrgb("#ffff00")  # when percent > 50
-
-
     if icon == "fan":
         l = list(v.split())[0]
         p = list(v.split())[1]
@@ -98,20 +86,8 @@ def drawicon(draw,icon,x,y,w,h,v=None):
             arccolor=colorArcRedAlert
         ea=120+int((420-120)*(float(p)/100))
         draw.arc(xy=(x+pad+2,y+pad+2,x+w-pad-2,y+h-pad-2),start=120,end=ea,fill=arccolor,width=16)
-        # draw percentage
-        #tt = p + "%"
-        #ttw,tth = draw.textsize(tt, fontDeja20)
-        #ox,oy = fontDeja20.getoffset(tt)
-        #ttw += ox
-        #tth += oy
         # draw label (fan RPM)
         vicarioustext.drawcenteredtext(draw,l,16,x+(w/2),y+((h/8)*7))
-#        tt = l
-#        ttw,tth = draw.textsize(tt, fontDeja16)
-#        ox,oy = fontDeja20.getoffset(tt)
-#        ttw += ox
-#        tth += oy
-#        draw.text(xy=(x+(w/2)-(ttw/2),y+((h/8)*7)-(tth/2)),text=tt,font=fontDeja16,fill=colorFFFFFF)
 
 def createimage(minerinfo, width=480, height=320):
     headerheight = 30
@@ -122,19 +98,19 @@ def createimage(minerinfo, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
     # Header
-    vicarioustext.drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2),colorFFFFFF,True)
+    vicarioustext.drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2),colorTextFG,True)
     # Get TH rate
     hashrate = gethashrate(minerinfo)
-    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + footerheight + (thheight/2)))
+    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + footerheight + (thheight/2)), colorTextFG)
     # Get Highest Temp
     hightemp = gethighesttemp(minerinfo)
-    colorTemp = colorFFFFFF
-    if hightemp > str(format(tempwarning,".2f"))+"°C":
+    colorTemp = colorTextFG
+    if hightemp > str(format(tempWarning,".2f"))+"°C":
         colorTemp = colorWarn
     vicarioustext.drawcenteredtext(draw, hightemp, 24, (width/4*3), (headerheight + footerheight + (thheight/2)),colorTemp)
     # Board info
-    vicarioustext.drawcenteredtext(draw, "Board Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*3)))
-    vicarioustext.drawcenteredtext(draw, "Chip Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*5)))
+    vicarioustext.drawcenteredtext(draw, "Board Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*3)),colorTextFG)
+    vicarioustext.drawcenteredtext(draw, "Chip Temp", 16, (width/8*1), (headerheight + footerheight + thheight + (hbheight/6*5)),colorTextFG)
     hbcount = 0
     for temps in minerinfo["temps"]:
         for hashboard in temps["TEMPS"]:
@@ -142,15 +118,15 @@ def createimage(minerinfo, width=480, height=320):
             if hbcount > 3:
                 break
             hashboardid = str(hashboard["ID"])
-            vicarioustext.drawcenteredtext(draw, hashboardid, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*1)))
+            vicarioustext.drawcenteredtext(draw, hashboardid, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*1)),colorTextFG)
             hashboardtemp = str(format(hashboard["Board"],".2f")) + "°C"
-            colorTemp = colorFFFFFF
-            if format(hashboard["Board"],".2f") > format(tempwarning,".2f"):
+            colorTemp = colorTextFG
+            if format(hashboard["Board"],".2f") > format(tempWarning,".2f"):
                 colorTemp = colorWarn
             vicarioustext.drawcenteredtext(draw, hashboardtemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*3)),colorTemp)
             hashboardchiptemp = str(format(hashboard["Chip"],".2f")) + "°C"
-            colorTemp = colorFFFFFF
-            if format(hashboard["Chip"],".2f") > format(tempwarning,".2f"):
+            colorTemp = colorTextFG
+            if format(hashboard["Chip"],".2f") > format(tempWarning,".2f"):
                 colorTemp = colorWarn
             vicarioustext.drawcenteredtext(draw, hashboardchiptemp, 16, (width/8*(1+(hbcount*2))), (headerheight + footerheight + thheight + (hbheight/6*5)),colorTemp)
     draw.line(xy=[0+20,headerheight+footerheight+thheight+(hbheight/3*1),width-20,headerheight+footerheight+thheight+(hbheight/3*1)],fill=colorHashboardLine,width=2)
@@ -172,16 +148,66 @@ def createimage(minerinfo, width=480, height=320):
             drawicon(draw, "fan", fanx, fany, fanw, fanh, str(fanrpm) + "RPM " + str(fanspeed))
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
-    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height)
+    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
     im.save(outputFile)
 
 
-while True:
-    with open(configFile) as f:
-        config = json.load(f)
-    mineraddress = config["mineraddress"]
-    minerusername = config["minerusername"]
-    minerinfo = getminerinfo()
-    createimage(minerinfo)
-    time.sleep(sleepInterval)
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/minerstatus.json"
+    outputFile="/home/bitcoin/images/minerstatus.png"
+    dataDirectory="/home/bitcoin/nodeyez/data/"
+    mineraddress = "--put-the-ip-address-for-your-miner-in--nodeyez/config/minerstatus.json"
+    minerusername = "--put-the-username-for-your-miner-in--nodeyez/config/minerstatus.json"
+    sleepInterval=30
+    colorTextFG=ImageColor.getrgb("#ffffff")
+    colorHashboardLine=ImageColor.getrgb("#808080")
+    colorWarn=ImageColor.getrgb("#ffaa00")
+    tempWarning=88.0
+    # Inits
+    cookieFile=dataDirectory + "minercookiefile"
+    # Require config
+    if not exists(configFile):
+        print(f"You need to make a config file at {configFile} to set your miner address and login information")
+        exit(1)
+    # Override config
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "minerstatus" in config:
+            config = config["minerstatus"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "dataDirectory" in config:
+            dataDirectory = config["dataDirectory"]
+        if "mineraddress" in config:
+            mineraddress = config["mineraddress"]
+        if "minerusername" in config:
+            minerusername = config["minerusername"]
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorHashboardLine" in config:
+            colorHashboardLine = ImageColor.getrgb(config["colorHashboardLine"])
+        if "colorWarn" in config:
+            colorWarn = ImageColor.getrgb(config["colorWarn"])
+        if "tempWarning" in config:
+            tempWarning = float(config["tempWarning"])
+    # Data directories
+    if not exists(dataDirectory):
+        os.makedirs(dataDirectory)
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Creates an image reflecting the miner status with hashrate, temp and fan state")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"You may specify a custom configuration file at {configFile}")
+        exit(0)
+    # Loop
+    while True:
+        minerinfo = getminerinfo()
+        createimage(minerinfo)
+        time.sleep(sleepInterval)

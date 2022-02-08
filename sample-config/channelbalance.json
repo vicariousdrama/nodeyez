@@ -1,0 +1,9 @@
+{
+  "outputFile": "/home/bitcoin/images/channelbalance.png",
+  "colorTextFG": "#ffff00",
+  "colorBackground": "#202020",
+  "colorBarOutline": "#07695a",
+  "colorBarFilled": "#41c1b0",
+  "sleepInterval": 600,
+  "pageSize": 6
+}

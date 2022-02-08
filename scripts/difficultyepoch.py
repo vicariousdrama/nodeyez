@@ -1,18 +1,13 @@
 #! /usr/bin/python3
 from PIL import Image, ImageDraw, ImageColor
+from os.path import exists
+import json
 import math
 import subprocess
+import sys
 import time
 import vicariousbitcoin
 import vicarioustext
-
-outputFile="/home/bitcoin/images/difficultyepoch.png"
-colorgrid=ImageColor.getrgb("#404040")
-colorahead=ImageColor.getrgb("#FFFF40")
-colorbehind=ImageColor.getrgb("#FF0000")
-colormined=ImageColor.getrgb("#40FF40")
-color000000=ImageColor.getrgb("#000000")
-colorFFFFFF=ImageColor.getrgb("#ffffff")
 
 def getcurrenttimeinseconds():
     cmd = "date -u +%s"
@@ -36,10 +31,10 @@ def createimage(width=480, height=320):
     nextadjustment = "0.0"
     if float(expectedmined) > 0 and float(blocksmined) > 0:
         nextadjustment = str(float("%.2f" % (((float(blocksmined) / float(expectedmined)) - 1.0) * 100)))
-    adjustcolor = colorbehind
+    adjustcolor = colorBehind
     if "-" not in nextadjustment:
         nextadjustment = "+" + nextadjustment
-        adjustcolor = colormined
+        adjustcolor = colorMined
     estimateepochend = timebegan + (2016*600)
     if float(blocksmined) > 0:
         estimateepochend = int(math.floor((float(secondspassed) / float(blocksmined))*2016)) + timebegan
@@ -87,29 +82,75 @@ def createimage(width=480, height=320):
             brx = tlx+blockw-2
             bry = tly+blockw-2
             if epochblocknum <= blocksmined:
-                fillcolor = colormined
+                fillcolor = colorMined
                 if epochblocknum > expectedmined:
-                    fillcolor = colorahead
+                    fillcolor = colorAhead
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor)
             else:
-                outlinecolor = colorgrid
+                outlinecolor = colorGrid
                 if epochblocknum <= expectedmined:
-                    outlinecolor = colorbehind
+                    outlinecolor = colorBehind
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=outlinecolor)
-    vicarioustext.drawcenteredtext(draw, "Blocks Mined This Difficulty Epoch", 24, int(width/2), int(padtop/2), colorFFFFFF, True)
-    vicarioustext.drawtoprighttext(draw, "Expected: ", 18, int(width/4*1), height-56)
-    vicarioustext.drawtoplefttext(draw, str(expectedmined), 18, int(width/4*1), height-56)
-    vicarioustext.drawtoprighttext(draw, "Mined: ", 18, int(width/4*1), height-32)
-    vicarioustext.drawtoplefttext(draw, str(blocksmined), 18, int(width/4*1), height-32)
-    vicarioustext.drawtoprighttext(draw, "Retarget: ", 18, int(width/10*6), height-56)
+    vicarioustext.drawcenteredtext(draw, "Blocks Mined This Difficulty Epoch", 24, int(width/2), int(padtop/2), colorTextFG, True)
+    vicarioustext.drawtoprighttext(draw, "Expected: ", 18, int(width/4*1), height-56, colorTextFG)
+    vicarioustext.drawtoplefttext(draw, str(expectedmined), 18, int(width/4*1), height-56, colorTextFG)
+    vicarioustext.drawtoprighttext(draw, "Mined: ", 18, int(width/4*1), height-32, colorTextFG)
+    vicarioustext.drawtoplefttext(draw, str(blocksmined), 18, int(width/4*1), height-32, colorTextFG)
+    vicarioustext.drawtoprighttext(draw, "Retarget: ", 18, int(width/10*6), height-56, colorTextFG)
     vicarioustext.drawtoplefttext(draw, str(nextadjustment) + "%", 18, int(width/10*6), height-56, adjustcolor)
-    vicarioustext.drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32)
-    vicarioustext.drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32)
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
+    vicarioustext.drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32, colorTextFG)
+    vicarioustext.drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32, colorTextFG)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFile)
-#    of2=outputFile.replace("/difficulty","/"+str(currentblock)+"-difficulty")
-#    im.save(of2)
+    if saveEachBlock:
+        of2=outputFile.replace(".png","-" + str(currentblock) + ".png")
+        im.save(of2)
 
-while True:
-    createimage()
-    time.sleep(540)
+
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/difficultyepoch.json"
+    outputFile="/home/bitcoin/images/difficultyepoch.png"
+    colorGrid=ImageColor.getrgb("#404040")
+    colorAhead=ImageColor.getrgb("#FFFF40")
+    colorBehind=ImageColor.getrgb("#FF0000")
+    colorMined=ImageColor.getrgb("#40FF40")
+    colorTextFG=ImageColor.getrgb("#ffffff")
+    saveEachBlock=False
+    sleepInterval=540
+    # Override config
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "difficultyepoch" in config:
+            config = config["difficultyepoch"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "colorGrid" in config:
+            colorGrid = ImageColor.getrgb(config["colorGrid"])
+        if "colorAhead" in config:
+            colorAhead = ImageColor.getrgb(config["colorAhead"])
+        if "colorBehind" in config:
+            colorBehind = ImageColor.getrgb(config["colorBehind"])
+        if "colorMined" in config:
+            colorMined = ImageColor.getrgb(config["colorMined"])
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "saveEachBlock" in config:
+            saveEachBlock = config["saveEachBlock"]
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Renders a representation of progress through the current difficulty epoch")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"You may specify a custom configuration file at {configFile}")
+        else:
+            createimage()
+        exit(0)
+    # Loop
+    while True:
+        createimage()
+        time.sleep(sleepInterval)

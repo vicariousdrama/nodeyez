@@ -1,5 +1,12 @@
 {
+  "outputFile": "/home/bitcoin/images/minerstatus.png",
+  "dataDirectory": "/home/bitcoin/nodeyez/data/",
   "mineraddress": "the ip address for your miner on your local lan, reachable from the host running this script",
   "minerusername": "the username for the miner on your local lan",
-  "minerpassword": "the password for the miner on your local lan"
+  "minerpassword": "the password for the miner on your local lan",
+  "sleepInterval": 30,
+  "colorTextFG": "#ffffff",
+  "colorHashboardLine": "#808080",
+  "colorWarn": "#ffaa00",
+  "tempWarning": 88.0
 }

@@ -1,0 +1,10 @@
+{
+  "outputFile": "/home/bitcoin/images/difficultyepoch.png",
+  "colorGrid": "#404040",
+  "colorAhead": "#ffff40",
+  "colorBehind": "#ff0000",
+  "colorMined": "#40ff40",
+  "colorTextFG": "#ffffff",
+  "saveEachBlock": false,
+  "sleepInterval": 540
+}

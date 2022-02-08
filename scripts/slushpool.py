@@ -1,37 +1,13 @@
 #! /usr/bin/python3
 from datetime import datetime
+from os.path import exists
 from PIL import Image, ImageDraw, ImageColor
 import json
 import math
 import subprocess
+import sys
 import time
 import vicarioustext
-
-configFile = "/home/bitcoin/nodeyez/config/slushpool.json"
-outputFile = "/home/bitcoin/images/slushpool.png"
-authtoken = "--put-your-auth-token-in-nodeyez/config/slushpool.json--"
-useTor=False
-price_url = "https://bisq.markets/bisq/api/markets/ticker"
-price_per_kwh = .12
-kw_per_hour_used = 1.100
-price_last=1
-price_high=1
-price_low=1
-price_countdown_height = 10800	# controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
-price_countdown = 0
-sleepInterval = 600                               # controls how often this display panel is updated. 600 is once every 10 minutes
-breakevendaily = 9999999                          # will get calculated below
-sats_per_btc = 100000000
-colorHeader=ImageColor.getrgb("#ffffff")          # The header text color. Need to pass to also specify bolding
-colorMiningReward=ImageColor.getrgb("#6b50ff")    # Slushpool mining rewards color
-colorBOSReward=ImageColor.getrgb("#fb82a8")       # Slushpool BOS rewards color
-colorReferralReward=ImageColor.getrgb("#00bac5")  # Slushpool referral rewards color
-colorGraphLineLight=ImageColor.getrgb("#a0a0a0")  # Chart border left and bottom
-colorGraphLineDark=ImageColor.getrgb("#606060")   # Chart border top and right
-colorMALine=ImageColor.getrgb("#d69f06")          # The moving average line
-colorDataValue=ImageColor.getrgb("#4040ff")       # Color for hashrate, yesterday and today's earnings
-colorBreakEvenMiss=ImageColor.getrgb("#ff0000")   # The break even color when the average is at or above the value
-colorBreakEvenGood=ImageColor.getrgb("#00ff00")   # Break even color when average is below the value (cheaper to buy than mine)
 
 def getaccountprofile():
     cmd = "curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/profile/json/btc/"
@@ -78,7 +54,7 @@ def getpoolstats():
     return j
 
 def getpriceinfo():
-    cmd = "curl --silent " + price_url
+    cmd = "curl -s " + priceUrl
     if useTor:
         cmd = "torify " + cmd
     global price_last
@@ -145,7 +121,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     vicarioustext.drawcenteredtext(draw, "SlushPool Mining Summary", 24, int(width/2), int(headerheight/2), colorHeader, True)
     # Hashrate
     hashrate = getaccounthashrate(accountprofile)
-    vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24))
+    vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24), colorTextFG)
     vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colorDataValue)
     # Yesterday and Today value
     earningspad = 24
@@ -173,9 +149,9 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
                 break
         value_last_day = str(sattally2 - sattally) + " sats"
         value_today = str(sattally) + " sats"
-    vicarioustext.drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 22 - earningspad))
+    vicarioustext.drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 22 - earningspad), colorTextFG)
     vicarioustext.drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colorDataValue)
-    vicarioustext.drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 22 + earningspad))
+    vicarioustext.drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 22 + earningspad), colorTextFG)
     vicarioustext.drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colorDataValue)
     # 30 Days Rewards
     highestreward = gethighestreward(accountrewards)
@@ -203,9 +179,9 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     reward25 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*3)) * sats_per_btc))
     reward50 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*2)) * sats_per_btc))
     reward75 = int(math.floor((lowestreward + ((highestreward - lowestreward)/4*1)) * sats_per_btc))
-    vicarioustext.drawrighttext(draw, str(reward25) + " sats", 12, labelwidth, chart25)
-    vicarioustext.drawrighttext(draw, str(reward50) + " sats", 12, labelwidth, chart50)
-    vicarioustext.drawrighttext(draw, str(reward75) + " sats", 12, labelwidth, chart75)
+    vicarioustext.drawrighttext(draw, str(reward25) + " sats", 12, labelwidth, chart25, colorTextFG)
+    vicarioustext.drawrighttext(draw, str(reward50) + " sats", 12, labelwidth, chart50, colorTextFG)
+    vicarioustext.drawrighttext(draw, str(reward75) + " sats", 12, labelwidth, chart75, colorTextFG)
     # - 30 days of bars
     totaldays = 31
     days = 0
@@ -256,7 +232,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
             mapct = (maavg-lowestreward)/(highestreward-lowestreward)
         may = chartbottom - int(math.floor((chartbottom-charttop)*mapct))
         if maoldx != -1:
-            draw.line(xy=[(max,may),(maoldx,maoldy)],fill=colorMALine,width=2)
+            draw.line(xy=[(max,may),(maoldx,maoldy)],fill=colorMovingAverage,width=2)
         maoldx = max
         maoldy = may
     overalltotal = overalltotal * sats_per_btc
@@ -264,33 +240,131 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     if days > 0:
         dailyavg = (overalltotal / days)
         # Warn if missing breakeven. 
-        breakevendaily = int((sats_per_btc / price_last) * (kw_per_hour_used * 24 * price_per_kwh))
+        breakevendaily = int((sats_per_btc / price_last) * (kwhUsed * 24 * kwhPrice))
         breakevencolor = colorBreakEvenGood
         if dailyavg < breakevendaily:
             breakevencolor = colorBreakEvenMiss
             vicarioustext.drawtoplefttext(draw, "Warning: Mining at a loss", 16, 0, (headerheight + hashheight + 16), breakevencolor)
-        vicarioustext.drawtoplefttext(draw, "Last 30 days " + str(int(overalltotal)) + " sats", 16, 0, (headerheight + hashheight))
-        vicarioustext.drawtoprighttext(draw, "Daily avg " + str(int(dailyavg)) + " sats", 16, width, (headerheight + hashheight))
+        vicarioustext.drawtoplefttext(draw, "Last 30 days " + str(int(overalltotal)) + " sats", 16, 0, (headerheight + hashheight), colorTextFG)
+        vicarioustext.drawtoprighttext(draw, "Daily avg " + str(int(dailyavg)) + " sats", 16, width, (headerheight + hashheight), colorTextFG)
         vicarioustext.drawtoprighttext(draw, "Break even " + str(int(breakevendaily)) + " sats", 16, width, (headerheight + hashheight + 16), breakevencolor)
     else:
         vicarioustext.drawcenteredtext(draw, "Rewards will be graphed below once earnings are recorded"  , 16, int(width/2), (headerheight + hashheight))
 
     # Date and Time
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     # Save to file
     im.save(outputFile)
 
-while True:
-    with open(configFile) as f:
-        config = json.load(f)
-    authtoken = config["authtoken"]
-    accountprofile = getaccountprofile()
-    accountrewards = getaccountrewards()
-    poolstats = getpoolstats()
-    if price_countdown <= 0:
-        price_last, price_high, price_low = getpriceinfo()
-        price_countdown = price_countdown_height
-    else:
-        price_countdown = price_countdown - sleep_time
-    createimage(accountrewards,accountprofile,poolstats,price_last)
-    time.sleep(sleepInterval)
+
+
+if __name__ == '__main__':
+    # Defaults
+    configFile = "/home/bitcoin/nodeyez/config/slushpool.json"
+    outputFile = "/home/bitcoin/images/slushpool.png"
+    authtoken = "--put-your-auth-token-in-nodeyez/config/slushpool.json--"
+    useTor=False
+    priceUrl = "https://bisq.markets/bisq/api/markets/ticker"
+    priceCheckInterval = 10800	                      # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
+    kwhPrice = .12                                    # price per killowatt hour, in dollars
+    kwhUsed = 1.100                                   # amount of killowatts used per hour for miners on the account
+    sleepInterval = 600                               # controls how often this display panel is updated. 600 is once every 10 minutes
+    colorHeader=ImageColor.getrgb("#ffffff")          # The header text color. Need to pass to also specify bolding
+    colorMiningReward=ImageColor.getrgb("#6b50ff")    # Slushpool mining rewards color
+    colorBOSReward=ImageColor.getrgb("#fb82a8")       # Slushpool BOS rewards color
+    colorReferralReward=ImageColor.getrgb("#00bac5")  # Slushpool referral rewards color
+    colorGraphLineLight=ImageColor.getrgb("#a0a0a0")  # Chart border left and bottom
+    colorGraphLineDark=ImageColor.getrgb("#606060")   # Chart border top and right
+    colorMovingAverage=ImageColor.getrgb("#d69f06")   # The moving average line
+    colorDataValue=ImageColor.getrgb("#4040ff")       # Color for hashrate, yesterday and today's earnings
+    colorBreakEvenMiss=ImageColor.getrgb("#ff0000")   # The break even color when the average is at or above the value
+    colorBreakEvenGood=ImageColor.getrgb("#00ff00")   # Break even color when average is below the value (cheaper to buy than mine)
+    colorTextFG=ImageColor.getrgb("#ffffff")          # General text color other than header and data values
+    # Inits
+    sats_per_btc = 100000000                          # useful constant
+    price_last=1
+    price_high=1
+    price_low=1
+    breakevendaily = 9999999                          # will get calculated below
+    price_countdown = 0
+    # Require config
+    if not exists(configFile):
+        print(f"You must specify configuration including authtoken in {configFile}")
+        exit(1)
+    # Overide defaults
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "slushpool" in config:
+            config = config["slushpool"]
+        if "authtoken" in config:
+            authtoken = config["authtoken"]
+        else:
+            print(f"You must configure an authorization token in {configFile}")
+            exit(1)
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "useTor" in config:
+            useTor = config["useTor"]
+        if "priceUrl" in config:
+            priceUrl = config["priceUrl"]
+        if "priceCheckInterval" in config:
+            priceCheckInterval = int(config["priceCheckInterval"])
+        if "kwhPrice" in config:
+            kwhPrice = float(config["kwhPrice"])
+        if "kwhUsed" in config:
+            kwhUsed = float(config["kwhUsed"])
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+        if "colorHeader" in config:
+            colorHeader = ImageColor.getrgb(config["colorHeader"])
+        if "colorMiningReward" in config:
+            colorMiningReward = ImageColor.getrgb(config["colorMiningReward"])
+        if "colorBOSReward" in config:
+            colorBOSReward = ImageColor.getrgb(config["colorBOSReward"])
+        if "colorReferralReward" in config:
+            colorReferralReward = ImageColor.getrgb(config["colorReferralReward"])
+        if "colorGraphLineLight" in config:
+            colorGraphLineLight = ImageColor.getrgb(config["colorGraphLineLight"])
+        if "colorGraphLineDark" in config:
+            colorGraphLineDark = ImageColor.getrgb(config["colorGraphLineDark"])
+        if "colorMovingAverage" in config:
+            colorMovingAverage = ImageColor.getrgb(config["colorMovingAverage"])
+        if "colorDataValue" in config:
+            colorDataValue = ImageColor.getrgb(config["colorDataValue"])
+        if "colorBreakEvenMiss" in config:
+            colorBreakEvenMiss = ImageColor.getrgb(config["colorBreakEvenMiss"])
+        if "colorBreakEvenGood" in config:
+            colorBreakEvenGood = ImageColor.getrgb(config["colorBreakEvenGood"])
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Creates a summary image of Slushpool account with the current hashrate, and the")
+            print(f"account earnings depicted for yesterday and today, and a graph of past 30 days")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass with an argument other than -h or --help to run once and exit.")
+            print(f"You must specify a custom configuration file at {configFile}")
+            exit(0)
+        else:
+            print(f"Running once and exiting")
+    # Loop
+    while True:
+        print("Getting account profile and rewards")
+        accountprofile = getaccountprofile()
+        accountrewards = getaccountrewards()
+        poolstats = getpoolstats()
+        if price_countdown <= 0:
+            print("Getting updated prices")
+            price_last, price_high, price_low = getpriceinfo()
+            price_countdown = priceCheckInterval
+        else:
+            price_countdown = price_countdown - sleepInterval
+        print("Creating image")
+        createimage(accountrewards,accountprofile,poolstats,price_last)
+        if len(sys.argv) > 1:
+            exit(0)
+        time.sleep(sleepInterval)

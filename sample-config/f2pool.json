@@ -1,3 +1,17 @@
 {
-  "account": "--your-account-name-on-f2pool--"
+  "account": "--your-account-name-on-f2pool--",
+  "outputFile": "/home/bitcoin/images/f2pool.png",
+  "hashrateLowThreshold": 60000000000000,
+  "sleepInterval": 600,
+  "colorDataValue": "#4040ff",
+  "colorHashDotFill": "#4040ff",
+  "colorHashDotFillZero": "#ff4040",
+  "colorHashDotFillLow": "#ffff40",
+  "colorHashDotOutline": "#0000ff",
+  "colorHashDotOutlineZero": "#ff0000",
+  "colorHashDotOutlineLow": "#ffff00",
+  "colorMovingAverage": "#40ff40",
+  "colorGraphLineLight": "#a0a0a0",
+  "colorGraphLineDark": "#606060",
+  "colorTextFG": "#ffffff"
 }

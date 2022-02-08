@@ -1,19 +1,14 @@
 #! /usr/bin/python3
 from datetime import datetime
+from os.path import exists
 import json
 import subprocess
+import sys
 import time
 from luxor import API
 
-dataDirectory="/home/bitcoin/nodeyez/data/"
-
-configFileF2Pool="/home/bitcoin/nodeyez/config/f2pool.json"
-configFileLuxor="/home/bitcoin/nodeyez/config/luxor.json"
-
-sleepInterval=82800 #  82800 = every 23 hours, 86400 is a full day.  We use the lower value to ensure no missing data, despite the overlap
-
 def getdatefile():
-    return datetime.utcnow().strftime("%Y-%m-%d") + ".json"
+    return datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
 
 # --------------------------------------------------------------------------------------------------------------------
 # getAndSaveF2PoolAccountInfo
@@ -59,7 +54,7 @@ def getAndSaveLuxorHashrateInfo():
     try:
         with open(configFileLuxor) as f:
             config = json.load(f)
-        filename = dataDirectory + "luxor/" + datetime.utcnow().strftime("%Y-%m-%d") + ".json"
+        filename = dataDirectory + "luxor/" + datefile
         apikey = config["apikey"]
         username = config["username"]
         LUXORAPI = API(host = 'https://api.beta.luxor.tech/graphql', method='POST', org='luxor', key=apikey)
@@ -71,7 +66,53 @@ def getAndSaveLuxorHashrateInfo():
         print("error\n")
         print(e)
 
-while True:
-    getAndSaveF2PoolAccountInfo()
-    getAndSaveLuxorHashrateInfo()
-    time.sleep(sleepInterval)
+
+if __name__ == '__main__':
+    # Defaults
+    configFileF2Pool="/home/bitcoin/nodeyez/config/f2pool.json"
+    configFileLuxor="/home/bitcoin/nodeyez/config/luxor.json"
+    dataDirectory="/home/bitcoin/nodeyez/data/"
+    sleepInterval=82800 #  82800 = every 23 hours, 86400 is a full day.  We use the lower value to ensure no missing data, despite the overlap
+    # Check for config
+    if not exists(configFileF2Pool):
+        print(f"You must have a F2Pool configuration file defined at {configFileF2Pool}")
+        exit(1)
+    if not exists(configFileLuxor):
+        print(f"You must have a Luxor configuration file defined at {configFileLuxor}")
+        exit(1)
+    # Data directories
+    if not exists(dataDirectory):
+        os.makedirs(dataDirectory)
+    f2PoolDataDirectory = dataDirectory + "f2pool/"
+    if not exists(f2PoolDataDirectory):
+        os.makedirs(f2PoolDataDirectory)
+    luxorDataDirectory = dataDirectory + "luxor/"
+    if not exists(luxorDataDirectory):
+        os.makedirs(luxorDataDirectory)
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Retrieves API information and stores in the data directory for later user")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass the desired API identifier to retrieve and exit")
+            arg0 = sys.argv[0]
+            print(f"   {arg0} f2pool")
+            print(f"  or")
+            print(f"   {arg0} luxor")
+            print(f"You may specify a custom configuration file at {configFile}")
+        else:
+            apistub = sys.argv[1]
+            if apistub == 'f2pool':
+                getAndSaveF2PoolAccountInfo()
+            elif apistub == 'luxor':
+                getAndSaveLuxorHashrateInfo()
+            else:
+                print("Value not recognized. Call the program with --help for more guidance")
+                exit(1)
+        exit(0)
+    # Loop
+    while True:
+        getAndSaveF2PoolAccountInfo()
+        getAndSaveLuxorHashrateInfo()
+        time.sleep(sleepInterval)

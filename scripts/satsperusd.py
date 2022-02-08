@@ -1,27 +1,12 @@
 #! /usr/bin/python3
 from PIL import Image, ImageDraw, ImageColor
+from os.path import exists
 import json
 import math
 import subprocess
+import sys
 import time
 import vicarioustext
-
-outputFile="/home/bitcoin/images/satsperusd.png"
-priceurl="https://bisq.markets/bisq/api/markets/ticker"
-useTor=True
-satshape="square" # may be one of these: ['square','circle']
-sleepInterval=3600
-showBigText=True
-showBigTextOnTop=True
-colorBisq=ImageColor.getrgb("#40FF40")
-colorHeader=ImageColor.getrgb("#ffffff")
-colorSatShape=ImageColor.getrgb("#ff7f00")
-colorSatAmount=ImageColor.getrgb("#4040407f")
-colorSatAmountShadow=ImageColor.getrgb("#ffffff7f")
-
-last=1
-low=1
-high=1
 
 def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
     satsleft = spf
@@ -47,8 +32,10 @@ def createimage(width=480, height=320):
     satw=int(math.floor(width/87))
     padleft=int(math.floor((width-(87*satw))/2))
     padtop=40
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGBA", size=(width, height), color=(0,0,0,255))
     draw = ImageDraw.Draw(im)
+    alpha_img = Image.new(mode="RGBA", size=(width, height), color=(0,0,0,0))
+    drawa = ImageDraw.Draw(alpha_img)
     if showBigText and not showBigTextOnTop:
         vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorSatAmountShadow)
         vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, colorSatAmount)
@@ -63,8 +50,8 @@ def createimage(width=480, height=320):
             dc = 0
     drawsatssquare(draw,dc,dr,satsleft,satw,padleft,padtop)
     if showBigText and showBigTextOnTop:
-        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2), int(height/2), colorSatAmountShadow)
-        vicarioustext.drawcenteredtext(draw, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, colorSatAmount)
+        vicarioustext.drawcenteredtext(drawa, str(satsperfiatunit), 128, int(width/2), int(height/2), colorSatAmountShadow)
+        vicarioustext.drawcenteredtext(drawa, str(satsperfiatunit), 128, int(width/2)-2, int(height/2)-2, colorSatAmount)
     vicarioustext.drawcenteredtext(draw, "Sats Per USD", 24, int(width/2), int(padtop/2), colorHeader, True)
     if not showBigText:
         vicarioustext.drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
@@ -72,9 +59,13 @@ def createimage(width=480, height=320):
     vicarioustext.drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
     vicarioustext.drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, colorBisq)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
-    im.save(outputFile)
+    # Combine and save
+    composite = Image.alpha_composite(im, alpha_img)
+    print(f"Saving file to {outputFile}")
+    composite.save(outputFile)
 
 def getpriceinfo():
+    print("Retrieving updated price information")
     cmd = "curl --silent " + priceurl
     if useTor:
         cmd = "torify " + cmd
@@ -92,6 +83,67 @@ def getpriceinfo():
         cmdoutput = "{\"error\":  }"
     return (last,high,low)
 
-while True:
-    createimage()
-    time.sleep(sleepInterval)
+
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/satsperusd.json"
+    outputFile="/home/bitcoin/images/satsperusd.png"
+    priceurl="https://bisq.markets/bisq/api/markets/ticker"
+    useTor=False
+    satshape="square" # may be one of these: ['square','circle']
+    sleepInterval=3600
+    showBigText=True
+    showBigTextOnTop=True
+    colorBisq=ImageColor.getrgb("#40FF40")
+    colorHeader=ImageColor.getrgb("#ffffff")
+    colorSatShape=ImageColor.getrgb("#ff7f00")
+    colorSatAmount=ImageColor.getrgb("#4040407f")
+    colorSatAmountShadow=ImageColor.getrgb("#ffffff7f")
+    # Inits
+    last=1
+    low=1
+    high=1
+    # Override defaults
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "satsperusd" in config:
+            config = config["satsperusd"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "priceurl" in config:
+            priceurl = config["priceurl"]
+        if "useTor" in config:
+            useTor = config["useTor"]
+        if "satshape" in config:
+            satshape = config["satshape"]
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+        if "showBigText" in config:
+            showBigText = config["showBigText"]
+        if "showBigTextOnTop" in config:
+            showBigTextOnTop = config["showBigTextOnTop"]
+        if "colorBisq" in config:
+            colorBisq = ImageColor.getrgb(config["colorBisq"])
+        if "colorHeader" in config:
+            colorHeader = ImageColor.getrgb(config["colorHeader"])
+        if "colorSatShape" in config:
+            colorSatShape = ImageColor.getrgb(config["colorSatShape"])
+        if "colorSatAmount" in config:
+            colorSatAmount = ImageColor.getrgb(config["colorSatAmount"])
+        if "colorSatAmountShadow" in config:
+            colorSatAmountShadow = ImageColor.getrgb(config["colorSatAmountShadow"])
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Retrieves the market rate of BTC from Bisq and renders number of Sats per dollar")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass an argument other than -h or --help to run once and exit")
+            print(f"You may specify a custom configuration file at {configFile}")
+            exit(0)
+    # Loop
+    while True:
+        createimage()
+        if len(sys.argv) > 1:
+            exit(0)
+        time.sleep(sleepInterval)

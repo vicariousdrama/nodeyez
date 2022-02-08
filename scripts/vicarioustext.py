@@ -16,57 +16,55 @@ def getfont(size, isbold=False):
     else:
         return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",size)
 
-def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
+def gettextdimensions(draw, s, fontsize, isbold=False):
     thefont = getfont(fontsize, isbold)
     sw,sh = draw.textsize(s, thefont)
+    return sw,sh,thefont
+
+def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
 
 def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
 
 def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
 
 def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x,y), text=s, font=thefont, fill=textcolor)
 
 def drawtoprighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y), text=s, font=thefont, fill=textcolor)
 
 def drawrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y-(sh/2)), text=s, font=thefont, fill=textcolor)
 
 def drawlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
-    thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
