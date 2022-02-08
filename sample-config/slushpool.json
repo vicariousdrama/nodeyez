@@ -1,3 +1,21 @@
 {
-  "authtoken":"Create an API Access token (not Web Access) at https://slushpool.com/settings/access/ with limited read-only access permissions"
+  "authtoken-comment": "Create your API access  token at https://slushpool.com/settings/access/ with limited read-only access, and not web access",
+  "authtoken": "--put-your-auth-token-here--",
+  "useTor": false,
+  "priceUrl": "https://bisq.markets/bisq/api/markets/ticker",
+  "priceCheckInterval": 10800,
+  "kwhPrice": .12,
+  "khwUsed": 1.100,
+  "sleepInterval": 600,
+  "colorHeader": "#ffffff",
+  "colorMiningReward": "#6b50ff",
+  "colorBOSReward": "#fb82a8",
+  "colorReferralReward": "#00bac5",
+  "colorGraphLineLight": "#a0a0a0",
+  "colorGraphLineDark": "#606060",
+  "colorMovingAverage": "#d69f06",
+  "colorDataValue": "#4040ff",
+  "colorBreakEvenMiss": "#ff0000",
+  "colorBreakEvenGood": "#00ff00",
+  "colorTextFG": "#ffffff"
 }

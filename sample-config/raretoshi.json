@@ -1,0 +1,12 @@
+{
+  "raretoshiuser": "Bitsi",
+  "outputFile": "/home/bitcoin/images/raretoshi.png",
+  "dataDirectory": "/home/bitcoin/nodeyez/data/",
+  "colorTextBG": "#00000080",
+  "colorTextFG": "#ffffff",
+  "stretchEdge": true,
+  "stretchSpacing": 30,
+  "overlayText": true,
+  "sleepInterval": 30,
+  "userinfoInterval": 3600
+}

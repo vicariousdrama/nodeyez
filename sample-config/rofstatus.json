@@ -1,5 +1,5 @@
 {
-  "sleeptime": "900",
+  "sleepInterval": 900,
   "imagesettings": {
     "colors": {
       "circle": "#404040",

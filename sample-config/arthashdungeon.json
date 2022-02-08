@@ -1,0 +1,7 @@
+{
+  "bitcoinLogosFile": "/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-logos.png",
+  "bitcoinTilesFile": "/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png",
+  "outputFile": "/home/bitcoin/images/arthashdungeon.png",
+  "colorTextFG": "#ffffff",
+  "sleepInterval": 300
+}

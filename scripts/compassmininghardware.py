@@ -11,6 +11,8 @@ import vicarioustext
 # Depends on 
 #    pip install beautifulsoup4
 
+# https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc
+
 outputFile="/home/bitcoin/images/compassmininghardware.png"
 infourl="https://compassmining.io/hardware"
 colorFFFFFF=ImageColor.getrgb("#ffffff")

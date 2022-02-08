@@ -1,0 +1,14 @@
+{
+  "outputFile": "/home/bitcoin/images/satsperusd.png",
+  "priceurl": "https://bisq.markets/bisq/api/markets/ticker",
+  "useTor": false,
+  "satshape": "square",
+  "sleepInterval": 3600,
+  "showBigText": true,
+  "showBigTextOnTop": true,
+  "colorBisq": "#40FF40",
+  "colorHeader": "#ffffff",
+  "colorSatShape": "#ff7f00",
+  "colorSatAmount": "#4040407f",
+  "colorSatAmountShadow": "#ffffff7f"
+}

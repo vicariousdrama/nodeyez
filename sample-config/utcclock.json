@@ -1,0 +1,7 @@
+{
+  "outputFile": "/home/bitcoin/images/utcclock.png",
+  "sleepInterval": 30,
+  "colorTextDayOfWeek": "#e69138",
+  "colorTextDate": "#f1c232",
+  "colorTextTime": "#6aa84f"
+}

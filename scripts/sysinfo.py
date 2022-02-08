@@ -1,46 +1,13 @@
 #! /usr/bin/python3
 from datetime import datetime
+from os.path import exists
 from PIL import Image, ImageDraw, ImageColor
+import json
 import math
 import subprocess
+import sys
 import time
 import vicarioustext
-
-outputFile="/home/bitcoin/images/sysinfo.png"
-sleepInterval=30
-
-colorHeader=ImageColor.getrgb("#ffffff")
-
-colorThermometerUnfilled=ImageColor.getrgb("#000000")
-colorThermometerOutline=ImageColor.getrgb("#c0c0c0")
-colorThermometerBar=ImageColor.getrgb("#40ff40")
-colorThermometerBarWarn=ImageColor.getrgb("#ffff00")
-colorThermometerBarHot=ImageColor.getrgb("#ff0000")
-
-colorPieOutline=ImageColor.getrgb("#c0c0c0")
-colorPieEmpty=ImageColor.getrgb("#000000")
-colorPieEmptyText=ImageColor.getrgb("#ffffff")
-colorPieGood=ImageColor.getrgb("#40ff40")
-colorPieGoodText=ImageColor.getrgb("#000000")
-colorPieWarn=ImageColor.getrgb("#ffff00")
-colorPieWarnText=ImageColor.getrgb("#000000")
-colorPieDanger=ImageColor.getrgb("#ff0000")
-colorPieDangerText=ImageColor.getrgb("#ffffff")
-colorPieLabelText=ImageColor.getrgb("#ffffff")
-
-colorCPUOutline=ImageColor.getrgb("#c0c0c0")
-colorCPUEmpty=ImageColor.getrgb("#000000")
-colorCPUGood=ImageColor.getrgb("#40ff40")
-colorCPUWarn=ImageColor.getrgb("#ffff00")
-colorCPUDanger=ImageColor.getrgb("#ff0000")
-colorCPULabelText=ImageColor.getrgb("#ffffff")
-
-colorMEMOutline=ImageColor.getrgb("#c0c0c0")
-colorMEMEmpty=ImageColor.getrgb("#000000")
-colorMEMGood=ImageColor.getrgb("#40ff40")
-colorMEMWarn=ImageColor.getrgb("#ffff00")
-colorMEMDanger=ImageColor.getrgb("#ff0000")
-colorMEMLabelText=ImageColor.getrgb("#ffffff")
 
 def drawicon(draw,icon,x,y,w,h,v=None):
     if icon == "thermometer":
@@ -195,6 +162,117 @@ def getmemusage(memtype,label):
     except subprocess.CalledProcessError as e:
         return label + " ?"
 
-while True:
-    createimage()
-    time.sleep(sleepInterval)
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/sysinfo.json"
+    outputFile="/home/bitcoin/images/sysinfo.png"
+    sleepInterval=30
+    colorHeader=ImageColor.getrgb("#ffffff")
+    colorThermometerUnfilled=ImageColor.getrgb("#000000")
+    colorThermometerOutline=ImageColor.getrgb("#c0c0c0")
+    colorThermometerBar=ImageColor.getrgb("#40ff40")
+    colorThermometerBarWarn=ImageColor.getrgb("#ffff00")
+    colorThermometerBarHot=ImageColor.getrgb("#ff0000")
+    colorPieOutline=ImageColor.getrgb("#c0c0c0")
+    colorPieEmpty=ImageColor.getrgb("#000000")
+    colorPieEmptyText=ImageColor.getrgb("#ffffff")
+    colorPieGood=ImageColor.getrgb("#40ff40")
+    colorPieGoodText=ImageColor.getrgb("#000000")
+    colorPieWarn=ImageColor.getrgb("#ffff00")
+    colorPieWarnText=ImageColor.getrgb("#000000")
+    colorPieDanger=ImageColor.getrgb("#ff0000")
+    colorPieDangerText=ImageColor.getrgb("#ffffff")
+    colorPieLabelText=ImageColor.getrgb("#ffffff")
+    colorCPUOutline=ImageColor.getrgb("#c0c0c0")
+    colorCPUEmpty=ImageColor.getrgb("#000000")
+    colorCPUGood=ImageColor.getrgb("#40ff40")
+    colorCPUWarn=ImageColor.getrgb("#ffff00")
+    colorCPUDanger=ImageColor.getrgb("#ff0000")
+    colorCPULabelText=ImageColor.getrgb("#ffffff")
+    colorMEMOutline=ImageColor.getrgb("#c0c0c0")
+    colorMEMEmpty=ImageColor.getrgb("#000000")
+    colorMEMGood=ImageColor.getrgb("#40ff40")
+    colorMEMWarn=ImageColor.getrgb("#ffff00")
+    colorMEMDanger=ImageColor.getrgb("#ff0000")
+    colorMEMLabelText=ImageColor.getrgb("#ffffff")
+    # Override defaults
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "sysinfo" in config:
+            config = config["sysinfo"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+        if "colorHeader" in config:
+            colorHeader = ImageColor.getrgb(config["colorHeader"])
+        if "colorThermometerUnfilled" in config:
+            colorThermometerUnfilled = ImageColor.getrgb(config["colorThermometerUnfilled"])
+        if "colorThermometerOutline" in config:
+            colorThermometerOutline = ImageColor.getrgb(config["colorThermometerOutline"])
+        if "colorThermometerBar" in config:
+            colorThermometerBar = ImageColor.getrgb(config["colorThermometerBar"])
+        if "colorThermometerBarWarn" in config:
+            colorThermometerBarWarn = ImageColor.getrgb(config["colorThermometerBarWarn"])
+        if "colorThermometerBarHot" in config:
+            colorThermometerBarHot = ImageColor.getrgb(config["colorThermometerBarHot"])
+        if "colorPieOutline" in config:
+            colorPieOutline = ImageColor.getrgb(config["colorPieOutline"])
+        if "colorPieEmpty" in config:
+            colorPieEmpty = ImageColor.getrgb(config["colorPieEmpty"])
+        if "colorPieEmptyText" in config:
+            colorPieEmptyText = ImageColor.getrgb(config["colorPieEmptyText"])
+        if "colorPieGood" in config:
+            colorPieGood = ImageColor.getrgb(config["colorPieGood"])
+        if "colorPieGoodText" in config:
+            colorPieGoodText = ImageColor.getrgb(config["colorPieGoodText"])
+        if "colorPieWarn" in config:
+            colorPieWarn = ImageColor.getrgb(config["colorPieWarn"])
+        if "colorPieWarnText" in config:
+            colorPieWarnText = ImageColor.getrgb(config["colorPieWarnText"])
+        if "colorPieDanger" in config:
+            colorPieDanger = ImageColor.getrgb(config["colorPieDanger"])
+        if "colorPieDangerText" in config:
+            colorPieDangerText = ImageColor.getrgb(config["colorPieDangerText"])
+        if "colorPieLabelText" in config:
+            colorPieLabelText = ImageColor.getrgb(config["colorPieLabelText"])
+        if "colorCPUOutline" in config:
+            colorCPUOutline = ImageColor.getrgb(config["colorCPUOutline"])
+        if "colorCPUEmpty" in config:
+            colorCPUEmpty = ImageColor.getrgb(config["colorCPUEmpty"])
+        if "colorCPUGood" in config:
+            colorCPUGood = ImageColor.getrgb(config["colorCPUGood"])
+        if "colorCPUWarn" in config:
+            colorCPUWarn = ImageColor.getrgb(config["colorCPUWarn"])
+        if "colorCPUDanger" in config:
+            colorCPUDanger = ImageColor.getrgb(config["colorCPUDanger"])
+        if "colorCPULabelText" in config:
+            colorCPULabelText = ImageColor.getrgb(config["colorCPULabelText"])
+        if "colorMEMOutline" in config:
+            colorMEMOutline = ImageColor.getrgb(config["colorMEMOutline"])
+        if "colorMEMEmpty" in config:
+            colorMEMEmpty = ImageColor.getrgb(config["colorMEMEmpty"])
+        if "colorMEMGood" in config:
+            colorMEMGood = ImageColor.getrgb(config["colorMEMGood"])
+        if "colorMEMWarn" in config:
+            colorMEMWarn = ImageColor.getrgb(config["colorMEMWarn"])
+        if "colorMEMDanger" in config:
+            colorMEMDanger = ImageColor.getrgb(config["colorMEMDanger"])
+        if "colorMEMLabelText" in config:
+            colorMEMLabelText = ImageColor.getrgb(config["colorMEMLabelText"])
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Generates a visual of the system running state with temp, memory, storage used")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass an argument other than -h or --help to run once and exit")
+            print(f"You may specify a custom configuration file at {configFile}")
+            exit(0)
+    # Loop
+    while True:
+        createimage()
+        if len(sys.argv) > 1:
+            exit(0)
+        time.sleep(sleepInterval)

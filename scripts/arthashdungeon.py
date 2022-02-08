@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 from datetime import datetime
+from os.path import exists
 from PIL import Image, ImageDraw, ImageColor
 import json
 import locale
@@ -11,13 +12,6 @@ import time
 import sys
 import vicariousbitcoin
 import vicarioustext
-
-bitcoinLogosFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-logos.png"
-bitcoinTilesFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
-outputFile="/home/bitcoin/images/arthashdungeon.png"
-color000000=ImageColor.getrgb("#000000")
-colorFFFFFF=ImageColor.getrgb("#ffffff")
-maze=[]
 
 def dfsmazegen(x, y, d, t):
     global maze
@@ -233,17 +227,57 @@ def createimage(blocknumber=1, width=480, height=320):
     # draw top bar
     #  - level
     #  - sats
-    vicarioustext.drawlefttext(draw, "Blockhash Dungeon", 24, 0, int(padtop/2), colorFFFFFF, True)
-    vicarioustext.drawrighttext(draw, "Level " + str(blocknumber), 24, width, int(padtop/2), colorFFFFFF, True)
+    vicarioustext.drawlefttext(draw, "Blockhash Dungeon", 24, 0, int(padtop/2), colorTextFG, True)
+    vicarioustext.drawrighttext(draw, "Level " + str(blocknumber), 24, width, int(padtop/2), colorTextFG, True)
     im.save(outputFileBlock)
 
-if len(sys.argv) > 1:
-    if len(sys.argv) > 3:
-        createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
-    else:
-        createimage(int(sys.argv[1]))
-else:
+
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/arthashdungeon.json"
+    bitcoinLogosFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-logos.png"
+    bitcoinTilesFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
+    outputFile="/home/bitcoin/images/arthashdungeon.png"
+    colorTextFG=ImageColor.getrgb("#ffffff")
+    sleepInterval=300
+    # Inits
+    maze=[]
+    # Override config
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "arthashdungeon" in config:
+            config = config["arthashdungeon"]
+        if "bitcoinLogosFile" in config:
+            bitcoinLogosFile = config["bitcoinLogosFile"]
+        if "bitcoinTilesFile" in config:
+            bitcoinTilesFile = config["bitcoinTilesFile"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Produces artwork deterministically based on Bitcoin Blockhash values")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Pass the desired block number as an argument as follows")
+            arg0 = sys.argv[0]
+            print(f"   {arg0} 722231")
+            print(f"3) Pass the desired block number, width and height as arguments")
+            print(f"   {arg0} 722231 1920 1080")
+            print(f"You may specify a custom configuration file at {configFile}")
+            exit(0)
+        if len(sys.argv) > 3:
+            createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+        else:
+            createimage(int(sys.argv[1]))
+        exit(0)
+    # Loop
     while True:
         blocknumber = vicariousbitcoin.getcurrentblock()
         createimage(blocknumber)
-        time.sleep(300)
+        time.sleep(sleepInterval)

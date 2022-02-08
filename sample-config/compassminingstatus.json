@@ -1,0 +1,15 @@
+{
+  "outputFile": "/home/bitcoin/images/compassminingstatus.png",
+  "statusurl": "https://status.compassmining.io/",
+  "colorTextFG": "#ffffff",
+  "colorGoodText": "#40ff40",
+  "colorMaintenance": "#2020ff",
+  "colorMaintenanceText": "#ffffff",
+  "colorCritical": "#ff7a00",
+  "colorCriticalText": "#ffffff",
+  "colorMajor": "#ff2020",
+  "colorMajorText": "#ffffff",
+  "colorNone": "#333333",
+  "colorNoneText": "#ffffff",
+  "sleepInterval": 300
+}

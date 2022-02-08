@@ -1,36 +1,14 @@
 #! /usr/bin/python3
 from datetime import datetime
-from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageColor
+from os.path import exists
 import json
 import math
 import subprocess
+import sys
 import time
 import vicariousbitcoin
 import vicarioustext
-
-configFile="/home/bitcoin/nodeyez/config/f2pool.json"
-outputFile = "/home/bitcoin/images/f2pool.png"
-account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
-accountlabel = ""
-hashratelowthreshold = 60000000000000
-sleepInterval=600
-colordatavalue=ImageColor.getrgb("#4040ff")
-colorhashdotfill=ImageColor.getrgb("#4040ff")
-colorhashdotoutline=ImageColor.getrgb("#0000ff")
-colorhashdotfillzero=ImageColor.getrgb("#ff4040")
-colorhashdotoutlinezero=ImageColor.getrgb("#ff0000")
-colorhashdotfilllow=ImageColor.getrgb("#ffff40")
-colorhashdotoutlinelow=ImageColor.getrgb("#ffff00")
-colorma=ImageColor.getrgb("#40ff40")
-colorgraphlinelight=ImageColor.getrgb("#a0a0a0")
-colorgraphlinedark=ImageColor.getrgb("#606060")
-
-colorFFFFFF=ImageColor.getrgb("#ffffff")
-color000000=ImageColor.getrgb("#000000")
-colorC0C0C0=ImageColor.getrgb("#c0c0c0")
-colorC0FFC0=ImageColor.getrgb("#40ff40")
-colorFF0000=ImageColor.getrgb("#ff0000")
-colorFFFF00=ImageColor.getrgb("#ffff00")
 
 def getaccountinfo():
     cmd = "curl https://api.f2pool.com/bitcoin/" + account
@@ -91,34 +69,34 @@ def createimage(accountinfo, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height))
     draw = ImageDraw.Draw(im)
     # Header
-    vicarioustext.drawcenteredtext(draw, "F2 Pool Summary" + accountlabel, 24, int(width/2), int(headerheight/2), colorFFFFFF, True)
+    vicarioustext.drawcenteredtext(draw, "F2 Pool Summary", 24, int(width/2), int(headerheight/2), colorTextFG, True)
     # Hashrate
     hashrate = getaccounthashrate(accountinfo)
-    vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24))
-    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colordatavalue)
+    vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24), colorTextFG)
+    vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + (hashheight/2)), colorDataValue)
     # Yesterday and Today value
     earningspad = 24
     value_last_day = str(int(float(accountinfo["value_last_day"]) * 100000000)) + " sats"
     value_today = str(int(float(accountinfo["value_today"]) * 100000000)) + " sats"
-    vicarioustext.drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad))
-    vicarioustext.drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colordatavalue)
-    vicarioustext.drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad))
-    vicarioustext.drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colordatavalue)
+    vicarioustext.drawcenteredtext(draw, "Earnings Yesterday", 16, (width/4*3), (headerheight + (hashheight/2) - 24 - earningspad), colorTextFG)
+    vicarioustext.drawcenteredtext(draw, value_last_day, 24, (width/4*3), (headerheight + (hashheight/2) - earningspad), colorDataValue)
+    vicarioustext.drawcenteredtext(draw, "Earnings Today", 16, (width/4*3), (headerheight + (hashheight/2) - 24 + earningspad), colorTextFG)
+    vicarioustext.drawcenteredtext(draw, value_today, 24, (width/4*3), (headerheight + (hashheight/2) + earningspad), colorDataValue)
     # Hashrate History
     highesthashrate = gethighesthashrate(accountinfo)
     lowesthashrate = getlowesthashrate(accountinfo)
     labelwidth = math.floor(width / 5)
     graphedge = 3
-    vicarioustext.drawcenteredtext(draw, "24 Hour Hashrate", 16, int(width/2), (headerheight+hashheight))
+    vicarioustext.drawcenteredtext(draw, "24 Hour Hashrate", 16, int(width/2), (headerheight+hashheight), colorTextFG)
     charttop = headerheight + hashheight + 12
     chartleft = labelwidth + graphedge
     chartright = width - graphedge
     chartbottom = height - footerheight - graphedge
     # - chart border
-    draw.line(xy=[chartleft, charttop, chartleft, chartbottom],fill=colorgraphlinelight,width=1)
-    draw.line(xy=[chartleft, chartbottom, chartright, chartbottom],fill=colorgraphlinelight,width=1)
-    draw.line(xy=[chartleft, charttop, chartright, charttop],fill=colorgraphlinedark,width=1)
-    draw.line(xy=[chartright, charttop, chartright, chartbottom],fill=colorgraphlinedark,width=1)
+    draw.line(xy=[chartleft, charttop, chartleft, chartbottom],fill=colorGraphLineLight,width=1)
+    draw.line(xy=[chartleft, chartbottom, chartright, chartbottom],fill=colorGraphLineLight,width=1)
+    draw.line(xy=[chartleft, charttop, chartright, charttop],fill=colorGraphLineDark,width=1)
+    draw.line(xy=[chartright, charttop, chartright, chartbottom],fill=colorGraphLineDark,width=1)
     # - dashed line background
     chart0  = int(math.floor(charttop))
     chart25 = int(math.floor(charttop + ((chartbottom - charttop)/4*1)))
@@ -126,18 +104,18 @@ def createimage(accountinfo, width=480, height=320):
     chart75 = int(math.floor(charttop + ((chartbottom - charttop)/4*3)))
     chart100  = int(math.floor(charttop + ((chartbottom - charttop))))
     for i in range(chartleft, chartright, 10):
-        draw.line(xy=[i,chart25,i+1,chart25],fill=colorgraphlinedark,width=1)
-        draw.line(xy=[i,chart50,i+1,chart50],fill=colorgraphlinedark,width=1)
-        draw.line(xy=[i,chart75,i+1,chart75],fill=colorgraphlinedark,width=1)
+        draw.line(xy=[i,chart25,i+1,chart25],fill=colorGraphLineDark,width=1)
+        draw.line(xy=[i,chart50,i+1,chart50],fill=colorGraphLineDark,width=1)
+        draw.line(xy=[i,chart75,i+1,chart75],fill=colorGraphLineDark,width=1)
     # - left labels
     hashrate25 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*3)
     hashrate50 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*2)
     hashrate75 = lowesthashrate + ((highesthashrate - lowesthashrate)/4*1)
-    vicarioustext.drawrighttext(draw, gethashratestring(highesthashrate), 12, labelwidth, chart0)
-    vicarioustext.drawrighttext(draw, gethashratestring(hashrate25), 12, labelwidth, chart25)
-    vicarioustext.drawrighttext(draw, gethashratestring(hashrate50), 12, labelwidth, chart50)
-    vicarioustext.drawrighttext(draw, gethashratestring(hashrate75), 12, labelwidth, chart75)
-    vicarioustext.drawrighttext(draw, gethashratestring(lowesthashrate), 12, labelwidth, chart100)
+    vicarioustext.drawrighttext(draw, gethashratestring(highesthashrate), 12, labelwidth, chart0, colorTextFG)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate25), 12, labelwidth, chart25, colorTextFG)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate50), 12, labelwidth, chart50, colorTextFG)
+    vicarioustext.drawrighttext(draw, gethashratestring(hashrate75), 12, labelwidth, chart75, colorTextFG)
+    vicarioustext.drawrighttext(draw, gethashratestring(lowesthashrate), 12, labelwidth, chart100, colorTextFG)
     # - data plot
     entrynum = 0
     plotbuf=2
@@ -153,15 +131,15 @@ def createimage(accountinfo, width=480, height=320):
             if highesthashrate > lowesthashrate:
                 datapct = (value - lowesthashrate)/(highesthashrate - lowesthashrate)
             plottop = chartbottom - int(math.floor((chartbottom-charttop)*datapct))
-            colordotfill = colorhashdotfill
-            colordotoutline = colorhashdotoutline
-            if value < hashratelowthreshold:
-                colordotfill = colorhashdotfilllow
-                colordotoutline = colorhashdotoutlinelow
+            colorDotFill = colorHashDotFill
+            colorDotOutline = colorHashDotOutline
+            if value < hashrateLowThreshold:
+                colorDotFill = colorHashDotFillLow
+                colorDotOutline = colorHashDotOutlineLow
             if value == 0:
-                colordotfill = colorhashdotfillzero
-                colordotoutline = colorhashdotoutlinezero
-            draw.ellipse(xy=[(datax-plotbuf,plottop-plotbuf),(datax+datawidthi+plotbuf,plottop+datawidthi+plotbuf)],fill=colordotfill,outline=colordotoutline,width=1)
+                colorDotFill = colorHashDotFillZero
+                colorDotOutline = colorHashDotOutlineZero
+            draw.ellipse(xy=[(datax-plotbuf,plottop-plotbuf),(datax+datawidthi+plotbuf,plottop+datawidthi+plotbuf)],fill=colorDotFill,outline=colorDotOutline,width=1)
         # moving average line
         entrynum = 0
         ma = [-1,-1,-1]
@@ -183,7 +161,7 @@ def createimage(accountinfo, width=480, height=320):
                     datapct = (mavg - lowesthashrate)/(highesthashrate - lowesthashrate)
                 datay = chartbottom - int(math.floor((chartbottom-charttop)*datapct))
                 if olddatax != -1:
-                    draw.line(xy=[(olddatax,olddatay),(datax,datay)],fill=colorma,width=3)
+                    draw.line(xy=[(olddatax,olddatay),(datax,datay)],fill=colorMovingAverage,width=3)
                 olddatax = datax
                 olddatay = datay
                 ma[0] = -1 #ma[1]
@@ -193,15 +171,81 @@ def createimage(accountinfo, width=480, height=320):
 
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
-    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height)
+    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
     im.save(outputFile)
 
 
-while True:
-    with open(configFile) as f:
-        config = json.load(f)
-    account = config["account"]
-    accountinfo = getaccountinfo()
-    createimage(accountinfo)
-    time.sleep(sleepInterval)
+if __name__ == '__main__':
+    # Defaults
+    configFile="/home/bitcoin/nodeyez/config/f2pool.json"
+    outputFile = "/home/bitcoin/images/f2pool.png"
+    account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
+    hashrateLowThreshold = 60000000000000 # 60 TH is 60,000,000,000,000 or 60 followed by 12 zeros
+    sleepInterval=600
+    colorDataValue=ImageColor.getrgb("#4040ff")
+    colorHashDotFill=ImageColor.getrgb("#4040ff")
+    colorHashDotFillZero=ImageColor.getrgb("#ff4040")
+    colorHashDotFillLow=ImageColor.getrgb("#ffff40")
+    colorHashDotOutline=ImageColor.getrgb("#0000ff")
+    colorHashDotOutlineZero=ImageColor.getrgb("#ff0000")
+    colorHashDotOutlineLow=ImageColor.getrgb("#ffff00")
+    colorMovingAverage=ImageColor.getrgb("#40ff40")
+    colorGraphLineLight=ImageColor.getrgb("#a0a0a0")
+    colorGraphLineDark=ImageColor.getrgb("#606060")
+    colorTextFG=ImageColor.getrgb("#ffffff")
+    # Require config
+    if not exists(configFile):
+        print(f"You need to make a config file at {configFile} to set your account information")
+        exit(1)
+    # Override config
+    if exists(configFile):
+        with open(configFile) as f:
+            config = json.load(f)
+        if "account" in config:
+            account = config["account"]
+        if "outputFile" in config:
+            outputFile = config["outputFile"]
+        if "hashrateLowThreshold" in config:
+            hashrateLowThreshold = config["hashrateLowThreshold"]
+        if "sleepInterval" in config:
+            sleepInterval = int(config["sleepInterval"])
+        if "colorDataValue" in config:
+            colorDataValue = ImageColor.getrgb(config["colorDataValue"])
+        if "colorHashDotFill" in config:
+            colorHashDotFill = ImageColor.getrgb(config["colorHashDotFill"])
+        if "colorHashDotFillZero" in config:
+            colorHashDotFillZero = ImageColor.getrgb(config["colorHashDotFillZero"])
+        if "colorHashDotFillLow" in config:
+            colorHashDotFillLow = ImageColor.getrgb(config["colorHashDotFillLow"])
+        if "colorHashDotOutline" in config:
+            colorHashDotOutline = ImageColor.getrgb(config["colorHashDotOutline"])
+        if "colorHashDotOutlineZero" in config:
+            colorHashDotOutlineZero = ImageColor.getrgb(config["colorHashDotOutlineZero"])
+        if "colorHashDotOutlineLow" in config:
+            colorHashDotOutlineLow = ImageColor.getrgb(config["colorHashDotOutlineLow"])
+        if "colorMovingAverage" in config:
+            colorMovingAverage = ImageColor.getrgb(config["colorMovingAverage"])
+        if "colorGraphLineLight" in config:
+            colorGraphLineLight = ImageColor.getrgb(config["colorGraphLineLight"])
+        if "colorGraphLineDark" in config:
+            colorGraphLineDark = ImageColor.getrgb(config["colorGraphLineDark"])
+        if "colorTextFG" in config:
+            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+    # Check for single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Prepares a summary of F2 Pool hashing and earnings for 24 hours")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Passing any arguments other then -h or --help will run once and exit")
+            print(f"You may specify a custom configuration file at {configFile}")
+        else:
+            accountinfo = getaccountinfo()
+            createimage(accountinfo)
+        exit(0)
+    # Loop
+    while True:
+        accountinfo = getaccountinfo()
+        createimage(accountinfo)
+        time.sleep(sleepInterval)
