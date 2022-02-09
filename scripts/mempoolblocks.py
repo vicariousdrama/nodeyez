@@ -164,6 +164,7 @@ if __name__ == '__main__':
             urlfeerecs = config["urlfeerecs"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if (sleepInterval < 300 and "mempool.space" in urlmempool) else sleepInterval # 5 minutes minimum when accessing others
         if "blocksToRender" in config:
             blocksToRender = int(config["blocksToRender"])
         if "colorBlockEdgeOutline" in config:

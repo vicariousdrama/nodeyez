@@ -187,6 +187,7 @@ if __name__ == '__main__':
             minerusername = config["minerusername"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 15 if sleepInterval < 15 else sleepInterval # 15 seconds minimum, local only
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorHashboardLine" in config:

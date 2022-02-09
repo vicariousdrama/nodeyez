@@ -115,6 +115,7 @@ if __name__ == '__main__':
             colorNoneText = ImageColor.getrgb(config["colorNoneText"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

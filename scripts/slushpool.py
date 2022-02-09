@@ -316,6 +316,7 @@ if __name__ == '__main__':
             kwhUsed = float(config["kwhUsed"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
+            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
         if "colorHeader" in config:
             colorHeader = ImageColor.getrgb(config["colorHeader"])
         if "colorMiningReward" in config:
