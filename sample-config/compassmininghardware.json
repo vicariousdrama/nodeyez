@@ -1,0 +1,14 @@
+{
+  "outputFile": "/home/bitcoin/images/compassmininghardware.png",
+  "hardwareurl": "https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc",
+  "colorTextFG": "#ffffff",
+  "colorTextWarn": "#ff0000",
+  "colorEntryLabel": "#a0a0ff",
+  "colorEntryName": "#ff8000",
+  "colorEntryPrice": "#ffffff",
+  "colorEntryPower": "#808080",
+  "sizeEntryLabel": 20,
+  "sizeEntryName": 18,
+  "sizeEntryInfo": 14,
+  "sleepInterval": 3600
+}

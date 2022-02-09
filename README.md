@@ -14,6 +14,7 @@ STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled excep
 - [art hash dungeon](#arthashdungeonpy)
 - [block height](#blockheightpy)
 - [channel balance](#channelbalancepy)
+- [compass mining hardware](#compassmininghardwarepy)
 - [compass mining status](#compassminingstatuspy)
 - [difficulty epoch](#difficultyepochpy)
 - [f2 pool](#f2poolpy)
@@ -183,6 +184,25 @@ You may override default configuration by copying the nodeyez/sample-config/chan
 The configuration allows setting text colors, bar colors for satoshi balance, and sleep timeouts.
 
 Run it `python3 scripts/channelbalance.py`
+
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
+
+
+### compassmininghardware.py
+This python script will create an image focusing on the lowest priced, highest hashrate,
+cheapest hashrate, and efficient hashrate machines currently for sale in the Compass
+Mining reseller marketplace
+
+![sample image of compass mining status](./images/compassmininghardware.png)
+
+Dependencies:
+- External calls to https://us-central1-hashr8-compass.cloudfunctions.net
+  - Not using torify
+
+You may override default configuration by copying the nodeyez/sample-config/compassmininghardware.json to nodeyez/config/compassmininghardware.json
+The configuration allows setting assorted text colors, size and sleep timeouts.
+
+Run it `python3 scripts/compassmininghardware.py`
 
 Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
 
@@ -475,7 +495,8 @@ And enable them
 sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
-sudo systemctl enable nodeyez-compassmining.service
+sudo systemctl enable nodeyez-compassmininghardware.service
+sudo systemctl enable nodeyez-compassminingstatus.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
@@ -497,7 +518,8 @@ And then start them
 sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
-sudo systemctl start nodeyez-compassmining.service
+sudo systemctl start nodeyez-compassmininghardware.service
+sudo systemctl start nodeyez-compassminingstatus.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
