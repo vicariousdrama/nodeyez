@@ -3,9 +3,18 @@ Display panels to get the most from your node
 
 # CHANGELOG
 
+## Unreleased main development branch
+
+- Externalized configuration from scripts to json files
+- New panel: Raretoshi
+- Fixed some loop timeouts
+- New panel: Compass Mining Hardware
+- Panel for Compass Mining Status now supports minor status
+
 ## 1.0.0-beta
 
 - Released: 2022-02-06
+- Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](https://github.com/vicariousdrama/nodeyez/commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
 
 ### Features
 - Added Github-pages at https://vicariousdrama.github.io/nodeyez/
@@ -30,7 +39,7 @@ Display panels to get the most from your node
 ## 1.0.0-alpha
 
 - Released: 2021-07-29
-- Tagged Commit: 81073d0d8720f6ae77bd209d20fa3d7db59e33a4
+- Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](https://github.com/vicariousdrama/nodeyez/commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
 
 ### Features
 - New panel: Block Height
