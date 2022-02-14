@@ -11,5 +11,7 @@
   "colorMajorText": "#ffffff",
   "colorNone": "#333333",
   "colorNoneText": "#ffffff",
+  "colorMinor": "#2020ff",
+  "colorMinorText": "#ffffff",
   "sleepInterval": 300
 }

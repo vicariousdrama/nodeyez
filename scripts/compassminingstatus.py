@@ -49,6 +49,14 @@ def createimage(width=480, height=320):
                 incidentcount = incidentcount + 1
                 draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMaintenance)
                 vicarioustext.drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2),colorMaintenanceText)
+        # look for minor
+        incidents = soup.find_all(class_="impact-minor")
+        for incident in incidents:
+            if incident.find(class_="actual-title") is not None:
+                text = incident.find(class_="actual-title").get_text()
+                incidentcount = incidentcount + 1
+                draw.rectangle(xy=[0,headerheight+int((incidentcount-1)*incidentrowheight)+1,width,headerheight+int((incidentcount)*incidentrowheight)-1],fill=colorMinor)
+                vicarioustext.drawcenteredtext(draw, text, 24, int(width/2), headerheight + int((incidentcount-1) * incidentrowheight) + (incidentrowheight/2),colorMinorText)
         # look for none
         incidents = soup.find_all(class_="impact-none")
         for incident in incidents:
@@ -82,6 +90,8 @@ if __name__ == '__main__':
     colorMajorText=ImageColor.getrgb("#ffffff")
     colorNone=ImageColor.getrgb("#333333")
     colorNoneText=ImageColor.getrgb("#ffffff")
+    colorMinor=ImageColor.getrgb("#2020ff")
+    colorMinorText=ImageColor.getrgb("#ffffff")
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -113,6 +123,10 @@ if __name__ == '__main__':
             colorNone = ImageColor.getrgb(config["colorNone"])
         if "colorNoneText" in config:
             colorNoneText = ImageColor.getrgb(config["colorNoneText"])
+        if "colorMinor" in config:
+            colorMinor = ImageColor.getrgb(config["colorMinor"])
+        if "colorMinorText" in config:
+            colorMinorText = ImageColor.getrgb(config["colorMinorText"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
