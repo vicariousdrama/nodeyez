@@ -11,11 +11,15 @@ import vicariousbitcoin
 import vicarioustext
 
 def getaccountinfo():
+    emptyresult = '{"hashrate":0,"hashrate_history":{},"value_last_date":0.00,"value_today":0.00}'
     cmd = "curl https://api.f2pool.com/bitcoin/" + account
+    cmdoutput = ""
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
-        cmdoutput = "{\"hashrate\":0,\"hashrate_history\":{},\"value_last_day\":0.00,\"value_today\":0.00}"
+        cmdoutput = emptyresult
+    if len(cmdoutput) == 0:
+        cmdoutput = emptyresult
     j = json.loads(cmdoutput)
     return j
 
