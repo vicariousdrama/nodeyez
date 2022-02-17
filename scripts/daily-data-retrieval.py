@@ -2,6 +2,7 @@
 from datetime import datetime
 from os.path import exists
 import json
+import os
 import subprocess
 import sys
 import time
@@ -66,11 +67,45 @@ def getAndSaveLuxorHashrateInfo():
         print("error\n")
         print(e)
 
+# --------------------------------------------------------------------------------------------------------------------
+# getAndSaveCompassMiningHardwareInfo
+#
+# Provides details about the hardware for sale available from compass mining as a snapshot.
+# Some relevant fields are
+#   payload.hardwareIsFeatured       array of new asics to be hosted at facilities new contract
+#   payload.hardwareGrouped          array of reseller asics to stay in facilities new contract
+#   payload.hardwareAtHome           array of new asics available to ship to home
+#
+# Within the hardwareGrouped, structure of an item has these fields
+#   manufacturer, baseModelName, name, hashrate, description, algorithm, imageURL, images [ url, order], minCost,
+#   maxCost, isPSP, power, compass_finance, pricePerHashrate, pricePerHashrateForSorting, 
+#   minOnlineDateFormattedSeconds, maxOnlineDateFormattedSeconds, hashrateSorting
+# Within the hardwareAtHome, structure of an item has these fields
+#   manuracturer, batch, baseModelName, id, name, shipping_date, costPrice, prift, type, condition, available_stock,
+#   deposit_months, images [order, url], hostingFacility, salePrice, weight_lbs, location, shipping_min_order,
+#   photoURL, is_bundle, hashrate, cost, power, algorithm, power_watts, online_date, description, is_reseller,
+#   max_items_per_user, monthly_bundle_price, pricePerHashrate, pricePerHashrateForSorting, hashrateSorting
+# --------------------------------------------------------------------------------------------------------------------
+def getAndSaveCompassMiningHardwareInfo():
+    datefile = getdatefile()
+    print(f"Retrieving and saving Compass Mining Hardware info to {datefile}")
+    with open(configFileCompassHardware) as f:
+        config = json.load(f)
+    filename = dataDirectory + "compassmininghardware/" + datefile
+    cmd = "curl -s -o " + filename + " " + config["hardwareurl"]
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        print("ok.\n")
+    except subprocess.CalledProcessError as e:
+        print("error\n")
+        print(e)
+
 
 if __name__ == '__main__':
     # Defaults
     configFileF2Pool="/home/bitcoin/nodeyez/config/f2pool.json"
     configFileLuxor="/home/bitcoin/nodeyez/config/luxor.json"
+    configFileCompassHardware="/home/bitcoin/nodeyez/config/compassmininghardware.json"
     dataDirectory="/home/bitcoin/nodeyez/data/"
     sleepInterval=82800 #  82800 = every 23 hours, 86400 is a full day.  We use the lower value to ensure no missing data, despite the overlap
     # Check for config
@@ -79,6 +114,9 @@ if __name__ == '__main__':
         exit(1)
     if not exists(configFileLuxor):
         print(f"You must have a Luxor configuration file defined at {configFileLuxor}")
+        exit(1)
+    if not exists(configFileCompassHardware):
+        print(f"You must have a Compass Mining Hardware configuration file defined at {configFileCompassHardware}")
         exit(1)
     # Data directories
     if not exists(dataDirectory):
@@ -89,6 +127,9 @@ if __name__ == '__main__':
     luxorDataDirectory = dataDirectory + "luxor/"
     if not exists(luxorDataDirectory):
         os.makedirs(luxorDataDirectory)
+    compassHardwareDataDirectory = dataDirectory + "compassmininghardware/"
+    if not exists(compassHardwareDataDirectory):
+        os.makedirs(compassHardwareDataDirectory)
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
@@ -107,6 +148,8 @@ if __name__ == '__main__':
                 getAndSaveF2PoolAccountInfo()
             elif apistub == 'luxor':
                 getAndSaveLuxorHashrateInfo()
+            elif apistub == 'compassmininghardware':
+                getAndSaveCompassMiningHardwareInfo()
             else:
                 print("Value not recognized. Call the program with --help for more guidance")
                 exit(1)
@@ -115,4 +158,5 @@ if __name__ == '__main__':
     while True:
         getAndSaveF2PoolAccountInfo()
         getAndSaveLuxorHashrateInfo()
+        getAndSaveCompassMiningHardwareInfo()
         time.sleep(sleepInterval)
