@@ -1,49 +1,126 @@
 {
+  "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
+  "sleepInterval.type": "integer",
   "sleepInterval": 900,
+  "imagesettings.comment": "The default settings to apply to images generated unless overridden within a ring",
+  "imagesettings.type": "object",
   "imagesettings": {
+    "colors.comment": "The default color settings to apply to images generated unless overridden within a ring",
+    "colors.type": "object",
     "colors": {
+      "circle.comment": "The default color of the outer circle of the ring expressed as a Hexadecimal color specifier",
+      "circle.type": "string",
       "circle": "#404040",
+      "offline.comment": "The default color of a node when its offline expressed as a Hexadecimal color specifier",
+      "offline.type": "string",
       "offline": "#ff4040",
+      "online.comment": "The default color of a node when its online expressed as a Hexadecimal color specifier",
+      "online.type": "string",
       "online": "#40ff40",
+      "offlinetext.comment": "The default color of the text for an offline node expressed as a Hexadecimal color specifier",
+      "offlinetext.type": "string",
       "offlinetext": "#ffffff",
+      "onlinetext.comment": "The default color of the text for an online node expressed as a Hexadecimal color specifier",
+      "onlinetext.type": "string",
       "onlinetext": "#000000",
+      "text.comment": "The default color of the text for the ring name expressed as a Hexadecimal color specifier",
+      "text.type": "string",
       "text": "#ffffff",
+      "textshadow.comment": "The default color of the text shadow for the ring name expressed as a Hexadecimal color specifier",
+      "textshadow.type": "string",
       "textshadow": "#000000"
     }
   },
+  "rings.comment": "The collection of defined rings to monitor",
+  "rings.type": "array",
   "rings":[
     {
+      "name.comment": "The name of the ring",
+      "name.type": "string",
       "name": "Sample Ring",
+      "shortlabel.comment": "A short label for the ring to be displayed on the generated image",
+      "shortlabel.type": "string",
       "shortlabel": "Sample",
+      "imagefilename.comment": "The path to save the generated image for this ring",
+      "imagefilename.type": "string",
       "imagefilename": "/home/bitcoin/images/rof-sample.png",
+      "telegramgroup.comment": "An arbitrary field value for information about the ring",
+      "telegramgroup.type": "string",
       "telegramgroup": "",
+      "telegramadmin.comment": "An arbitrary field value specifying the coordinator of the ring",
+      "telegramadmin.type": "string",
       "telegramadmin": "",
+      "imagesettings.comment": "Settings for this ring that override the defaults",
+      "imagesettings.type": "object",
       "imagesettings": {
+        "colors.comment": "Colors for this ring that will override the defaults",
+        "colors.type": "object",
         "colors": {
+          "circle.comment": "The color of the outer circle of the ring expressed as a Hexadecimal color specifier",
+          "circle.type": "string",
           "circle": "#404040",
+          "offline.comment": "The color of a node when it is offline expressed as a Hexadecimal color specifier",
+          "offline.type": "string",
           "offline": "#ff4040",
+          "online.comment": "The color of a node when it is online expressed as a Hexadecimal color specifier",
+          "online.type": "string",
           "online": "#40ff40",
+          "offlinetext.comment": "The color of the text for a node when it is offline expressed as a Hexadecimal color specifier",
+          "offlinetext.type": "string",
           "offlinetext": "#ffffff",
+          "onlinetext.comment": "The color of the text for a node when it is offline expressed as a Hexadecimal color specifier",
+          "onlinetext.type": "string",
           "onlinetext": "#000000",
+          "text.comment": "The color of the text for the ring name expressed as a Hexadecimal color specifier",
+          "text.type": "string",
           "text": "#ffffff",
+          "textshadow.comment": "The color of the text shadow for the ring name expressed as a Hexadecimal color specifier",
+          "textshadow.type": "string",
           "textshadow": "#000000"
         }
       },
+      "nodes.comment": "The list of nodes that are participants in this ring, in order",
+      "nodes.type": "array",
       "nodes": [
-        {"pubkey": "0311e4ee7e18ebd68b4e1c425da78a5a8af4d5825ece596d9258d152bd962a7e2b",
-         "operator": "Warpedspace-PLEBNET.org"
+        {
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "0311e4ee7e18ebd68b4e1c425da78a5a8af4d5825ece596d9258d152bd962a7e2b",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "Warpedspace-PLEBNET.org"
         },
-        {"pubkey": "03bb88ccc444534da7b5b64b4f7b15e1eccb18e102db0e400d4b9cfe93763aa26d",
-         "operator": "ln2me.com"
+        {
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "03bb88ccc444534da7b5b64b4f7b15e1eccb18e102db0e400d4b9cfe93763aa26d",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "ln2me.com"
         },
-        {"pubkey": "03d2e20bc19d995098ba357157a9cfbfbfdff4b78fce5ec713128e988e0115d776",
-         "operator": "DARTHNODE-PLEBNET.org"
+        {
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "03d2e20bc19d995098ba357157a9cfbfbfdff4b78fce5ec713128e988e0115d776",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "DARTHNODE-PLEBNET.org"
         },
-        {"pubkey": "02a7225838d63a99cf7f967805624d915775cfe96a5dfdd95f23b63ae157a63a70",
-         "operator": "LiveLongAndProsper"
+        {
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "02a7225838d63a99cf7f967805624d915775cfe96a5dfdd95f23b63ae157a63a70",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "LiveLongAndProsper"
         },
-        {"pubkey": "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f",
-         "operator": "ACINQ"
+        {
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "ACINQ"
         }
       ]
     }
