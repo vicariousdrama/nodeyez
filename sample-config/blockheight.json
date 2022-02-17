@@ -1,5 +1,11 @@
 {
+  "outputFile.comment": "The path to save the generated image",
+  "outputFile.type": "string",
   "outputFile": "/home/bitcoin/images/blockheight.png",
+  "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
+  "colorTextFG.type": "string",
   "colorTextFG": "#ffffff",
+  "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
+  "sleepInterval.type": "integer",
   "sleepInterval": 120
 }

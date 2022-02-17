@@ -1,9 +1,23 @@
 {
+  "outputFile.comment": "The base path to save the generated image. A numeric suffix will automatically be created before the .png file extension.",
+  "outputFile.type": "string",
   "outputFile": "/home/bitcoin/images/channelbalance.png",
+  "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
+  "colorTextFG.type": "string",
   "colorTextFG": "#ffff00",
+  "colorBackground.comment": "The color of the background for the channel balance bar expressed as a Hexadecimal color specifier",
+  "colorBackground.type": "string",
   "colorBackground": "#202020",
+  "colorBarOutline.comment": "The color of the outline for the channel balance bar expressed as a Hexadecimal color specifier",
+  "colorBarOutline.type": "string",
   "colorBarOutline": "#07695a",
+  "colorBarFilled.comment": "The color of the filled portion representing the local balance of the channel expressed as a Hexadecimal color specifier",
+  "colorBarFilled.type": "string",
   "colorBarFilled": "#41c1b0",
+  "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
+  "sleepInterval.type": "integer",
   "sleepInterval": 600,
+  "pageSize.comment": "The number of channels to represent per page rendered",
+  "pageSize.type": "integer",
   "pageSize": 6
 }

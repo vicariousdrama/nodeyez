@@ -1,7 +1,17 @@
 {
+  "outputFile.comment": "The path to save the generated image",
+  "outputFile.type": "string",
   "outputFile": "/home/bitcoin/images/utcclock.png",
+  "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
+  "sleepInterval.type": "integer",
   "sleepInterval": 30,
+  "colorTextDayOfWeek.comment": "The color to render the day of the week expressed as a Hexadecimal color specifier",
+  "colorTextDayOfWeek.type": "string",
   "colorTextDayOfWeek": "#e69138",
+  "colorTextDate.comment": "The color to render the current date expressed as a Hexadecimal color specifier",
+  "colorTextDate.type": "string",
   "colorTextDate": "#f1c232",
+  "colorTextTime.comment": "The color to render the current time expressed as a Hexadecimal color specifier",
+  "colorTextTime.type": "string",
   "colorTextTime": "#6aa84f"
 }
