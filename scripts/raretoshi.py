@@ -24,7 +24,7 @@ def getRaretoshiUserinfo():
         print(f"Calling raretoshi website for user data")
         userinfoLast = int(time.time())
         url = "https://raretoshi.com/" + userfilename
-        cmd = "curl -o " + tempfilename + " " + url
+        cmd = "curl -s -o " + tempfilename + " --max-time 5 " + url
         try:
             cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
             with open(tempfilename) as f:
@@ -65,12 +65,22 @@ def downloadIPFSfile(ipfshash):
     else:
         url = "https://ipfs.io/ipfs/" + ipfshash
     print(f"Downloading from {url}")
-    cmd = "curl -s -o " + saveto + " " + url
+    cmd = "curl -s -o " + saveto + " --max-time 5 " + url
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         print(f"IPFS Downloaded to {saveto}")
     except subprocess.CalledProcessError as e:
         print(f"error {e}")
+        # If we were originally hitting IPFS, we can try fallback to raretoshi
+        if url.startswith("https://ipfs.io/"):
+            url = url.replace("https://ipfs.io/", "https://raretoshi.com/api/")
+            print(f"Retrying with {url}")
+            cmd = "curl -s -o " + saveto + " --max-time 5 " + url
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                print(f"IPFS Downloaded to {saveto}")
+            except:
+                print(f"error {e}")
 
 def createimage(width=480, height=320):
     # Setup alpha layer
@@ -109,6 +119,12 @@ def createimage(width=480, height=320):
     owner = holding["owner"]["username"]
     downloadIPFSfile(holding["owner"]["avatar_url"])
     sourceFile = getIPFSLocalFilename(ipfshash)
+    if not exists(sourceFile):
+        print(f"The file was not found at {sourceFile}")
+        print(f"There may be a problem with the IPFS servers")
+        slug = holding["slug"]
+        print(f"This is for https://raretoshi.com/a/{slug}")
+        return
     sourceImage=Image.open(sourceFile).convert("RGBA")
     sourceWidth=int(sourceImage.getbbox()[2])
     sourceHeight=int(sourceImage.getbbox()[3])
