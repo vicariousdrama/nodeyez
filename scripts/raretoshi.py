@@ -12,16 +12,35 @@ import vicarioustext
 def getRaretoshiUserinfo():
     global userinfo
     global userinfoLast
+    userfilename = raretoshiuser + ".json"
+    localfilename = raretoshiDataDirectory + userfilename
+    tempfilename = localfilename + ".tmp"
+    refreshUser = False
+    if not exists(localfilename):
+        refreshUser = True
     if userinfoInterval + userinfoLast < int(time.time()):
+        refreshUser = True
+    if refreshUser:
         print(f"Calling raretoshi website for user data")
         userinfoLast = int(time.time())
-        url = "https://raretoshi.com/" + raretoshiuser + ".json"
-        cmd = "curl " + url
+        url = "https://raretoshi.com/" + userfilename
+        cmd = "curl -o " + tempfilename + " " + url
         try:
             cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            with open(tempfilename) as f:
+                userinfo = json.load(f)
+            if exists(localfilename):
+                os.remove(localfilename)
+            os.rename(tempfilename, localfilename)
         except subprocess.CalledProcessError as e:
-            cmdoutput = '{"subject":{"holdings":[]}}'
-        userinfo = json.loads(cmdoutput)
+            print(f"Error downloading and loading file {tempfilename}. Error is {e}")
+            if exists(localfilename):
+                print("Attempting to reload from cached result {localfilename}")
+                try:
+                    with open(localfilename) as f:
+                        userinfo = json.load(f)
+                except:
+                    print("Error raised reading {localfilename} as json")
     else:
         print(f"Using cached data from {userinfoLast}")
     return userinfo
@@ -30,12 +49,22 @@ def getIPFSLocalFilename(ipfshash):
     return ipfsDataDirectory + ipfshash
 
 def downloadIPFSfile(ipfshash):
+    downloadFromRaretoshi = False
+    if ipfshash.endswith(".png") or ipfshash.endswith(".jpeg"):
+        # seems that avatar_url for artist and owner may not be in ipfs.io.
+        # these urls also contain the file extension, which needs to be removed
+        downloadFromRaretoshi = True
+        ipfshash = ipfshash.replace(".png", "")
+        ipfshash = ipfshash.replace(".jpeg", "")
     saveto = getIPFSLocalFilename(ipfshash)
     if exists(saveto):
         print(f"Skipping IPFS download. File already exists at {saveto}")
         return
-    url = "https://raretoshi.com/api/ipfs/" + ipfshash
-    #url = "https://ipfs.io/ipfs/" + ipfshash
+    if downloadFromRaretoshi:
+        url = "https://raretoshi.com/api/ipfs/" + ipfshash
+    else:
+        url = "https://ipfs.io/ipfs/" + ipfshash
+    print(f"Downloading from {url}")
     cmd = "curl -s -o " + saveto + " " + url
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -199,6 +228,9 @@ if __name__ == '__main__':
     ipfsDataDirectory = dataDirectory + "ipfs/"
     if not os.path.exists(ipfsDataDirectory):
         os.makedirs(ipfsDataDirectory)
+    raretoshiDataDirectory = dataDirectory + "raretoshi/"
+    if not os.path.exists(raretoshiDataDirectory):
+        os.makedirs(raretoshiDataDirectory)
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
