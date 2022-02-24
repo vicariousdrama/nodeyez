@@ -1,11 +1,14 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
-This repository contains simple [scripts](./scripts) that can be run with Python to generate images representing different state about your node, market rates, mining and more..  
+This repository contains simple [scripts](./scripts) that can be run with Python to generate images 
+representing different state about your node, market rates, mining and more.
 
-The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
+The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) 
+script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
 
-STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled exceptions may be raised that cause related wrapper service to terminate.  Please test and provide feedback.  Moving forward for the final 1.0.0 release, configuration will be externalized to facilitate easier updates. 
+STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled exceptions may be raised
+that cause related wrapper service to terminate.  Please test and provide feedback.  
 
 ![image strip](./images/nodeyez-4x4-layout.png)
 
@@ -33,15 +36,22 @@ You can also [run as services at startup](#run-at-startup)
 
 ## Pre-requisites
 
-To use most of the the scripts in this project, you'll need a Bitcoin Node.  An easy low cost option is a Raspberry Pi based node. Consider following the helpful guidance at [node.guide](https://node.guide) on different nodes available.  Personally I like [Stadicus Raspibolt](https://github.com/Stadicus/RaspiBolt) and [MyNodeBTC](https://github.com/mynodebtc/mynode), but nearly any Raspberry Pi based node should be sufficient provided you have access to the GPIO pins.
+To use most of the the scripts in this project, you'll need a Bitcoin Node.  
+An easy low cost option is a Raspberry Pi based node. 
+Consider following the helpful guidance at [node.guide](https://node.guide) on different nodes available.
+Personally I like [Stadicus Raspibolt](https://github.com/Stadicus/RaspiBolt) 
+and [MyNodeBTC](https://github.com/mynodebtc/mynode), but nearly any Raspberry Pi based node 
+should be sufficient provided you have access to the GPIO pins.
 
 You'll also need to ensure dependencies are met for Python and assorted libraries
 
 ### Setting up Python, Git, and Torify
 
 1. Login to your node via SSH as admin
-2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the scripts asume Python 3. Use the command `sudo apt-get install python3`.
-3. Install the Python Pillow library. These scripts were created with the newer Pillow library, but may work with PIL as well. Its my understanding that you can't install both. So its worth doing a check before installing.  
+2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the scripts require Python 3. 
+   Use the command `sudo apt-get install python3`.
+3. Install the Python Pillow library. These scripts were created with the newer Pillow library. 
+   While some may work with PIL, you'll be better off installing Pillow.
 
 Install dependencies needed for newer versions of Pillow
    ```sh
@@ -65,8 +75,9 @@ Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or above.
 
 4. Install Beautiful Soup python library using the command `python3 -m pip install beautifulsoup4`
 5. Install git using the command `sudo apt install git`. This will get used later to clone the repo.
-6. Install torify using the command `sudo apt-get install apt-transport-tor`. This may be used when calling external services like Bisq or Mempool.space to improve privacy.
-7. Install pandas using the command `python3 -m pip install pandas`. This is used by the luxor related scripts
+6. Install torify using the command `sudo apt-get install apt-transport-tor`. 
+   This may be used when calling external services like Bisq or Mempool.space to improve privacy.
+7. Install pandas using the command `python3 -m pip install pandas`. This is used by the luxor related scripts.
 
 ### Prepare output folder and clone repository
 
@@ -78,26 +89,46 @@ The assorted python scripts each create image files.  We want them all in a sing
 4. Clone this repo `cd /home/bitcoin ; git clone https://github.com/vicariousdrama/nodeyez.git`
 5. Mark the scripts as executable `chmod +x ~/nodeyez/scripts/*`
 6. Create folders for configuration files `mkdir -p ~/nodeyez/config`
-7. Create folders for data files `mkdir -p ~/nodeyez/data`
-8. Exit the shell from the bitcoin user, returning to admin `exit`
+7. Copy sample configuration files `cp ~/nodeyez/sample-config/*.json ~/nodeyez/config`
+8. Create folders for data files `mkdir -p ~/nodeyez/data`
+9. Exit the shell from the bitcoin user, returning to admin `exit`
 
 
 ### Display to a screen attached to GPIO
 
-If you are using a Raspberry Pi, you can acquire and install a 3.5" TFT screen to display the images created. The resolution is 480x320 and should be based on the XPT2046 chip.  The one I've used I got from a local electronics store.  It looks like this and generally costs between $15 and $30. You can get one from [amazon here](https://amzn.to/3f7QbgJ)
+If you are using a Raspberry Pi, you can acquire and install a 3.5" TFT screen to display the images created. 
+The resolution is 480x320 and should be based on the XPT2046 chip.  
+The one I've used I got from a local electronics store.  It looks like this and generally costs between $15 and $30. 
+You can get one from amazon [here](https://www.amazon.com/gp/product/B07V9WW96D) 
+  or [here](https://www.amazon.com/gp/product/B07L414LZP)
+  or [here](https://www.amazon.com/gp/product/B08KZXSJW2)
+  or [here](https://www.amazon.com/gp/product/B083C12N57)
+
 
 ![image of the 3.5" TFT screen for raspberry pi](./images/xpt2046-tft-piscreen.jpg)
 
 **To setup the screen**
 
 1. Login to your pi, and do `sudo raspi-config` (menu 3 Interface Options / P4 SPI). Save and exit.
-2. Edit the /boot/config.txt via `sudo nano /boot/config.txt`.  Verify that it has a line reading `dtpararm=spi=on`.  You'll need to add a line at the bottom of the file for the screen as `dtoverlay=piscreen,speed=16000000,rotate=270`.  The 270 rotation is a landscape mode with the ports for USB and ethernet to the right.  All images created by the scripts are in landscape mode, so you're rotation should be either 90 or 270 depending on preferred orientation.  Save (CTRL+O) and Exit (CTRL+X).
+2. Edit the /boot/config.txt via `sudo nano /boot/config.txt`.  
+   Verify that it has a line reading `dtpararm=spi=on`.  
+   You'll need to add a line at the bottom of the file for the screen as `dtoverlay=piscreen,speed=16000000,rotate=270`.  
+   The 270 rotation is a landscape mode with the ports for USB and ethernet to the right.  
+   All images created by the scripts are in landscape mode, so you're rotation should be either 90 or 270 depending on preferred orientation.  
+   Save (CTRL+O) and Exit (CTRL+X).
 3. Next, install the framebuffer image viewer using the command `sudo apt-get install fbi`. 
-4. Reboot. You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  Do a safe shutdown. If you're running a node package like MyNodeBTC, then use the console to power cycle the device cleanly.  Use the command `sudo init 6`.
+4. Reboot. You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  
+   Do a safe shutdown. 
+   If you're running a node package like MyNodeBTC, then use the console to power cycle the device cleanly.  
+   You can use the command `sudo init 6`.
 
 ### Displaying to a Website Dashboard
 
-Whether you are using a Raspberry Pi or not, you can also display the images via website dashboard.  You can prepare that by setting up [nginx](./nginx.md).  The dashboard view will automatically cycle through the same images at 10 second intervals, showing smaller versions at the top of the screen.  Clicking on an image will automatically advance the view to the full size version of that one.
+Whether you are using a Raspberry Pi or not, you can also display the images via website dashboard.  
+You can prepare that by setting up [nginx](./nginx.md).  
+The dashboard view will automatically cycle through the same images at 10 second intervals, showing 
+smaller versions at the top of the screen.  
+Clicking on an image will automatically advance the view to the full size version of that one.
 
 ## Available scripts
 
@@ -144,7 +175,8 @@ Dependencies:
 - bitcoin-cli tool available with appropriate macaroons granted to the user running the script
   - calls "getblockchaininfo", "getblockhash"
 
-You may override default configuration by copying the nodeyez/sample-config/arthashdungeon.json to nodeyez/config/arthashdungeon.json
+You may override default configuration by copying the nodeyez/sample-config/arthashdungeon.json 
+to nodeyez/config/arthashdungeon.json
 The configuration allows setting text colors, and path to images used for theme tilesets and logos.
 
 Run it `python3 scripts/arthashdungeon.py`
@@ -171,7 +203,8 @@ Press CTRL+C to stop the process to make any changes.  An image will be output t
 
 
 ### channelbalance.py
-This python script will create images depicting your nodes lightning channel balances. Multiple images may be created (8 per page), and a bar graph shows relative percentage of the balance on your end or the remote..
+This python script will create images depicting your nodes lightning channel balances. Multiple images may 
+be created, and a bar graph shows relative percentage of the balance on your end or the remote..
 
 ![sample image of channel balance](./images/channelbalance.png)
 

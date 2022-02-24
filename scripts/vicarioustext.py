@@ -1,5 +1,4 @@
-#! /usr/bin/python3
-
+# import packages
 from datetime import datetime
 from PIL import ImageColor, ImageFont
 import time
