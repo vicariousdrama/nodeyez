@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 from PIL import Image, ImageDraw, ImageColor
 from bs4 import BeautifulSoup
 from os.path import exists

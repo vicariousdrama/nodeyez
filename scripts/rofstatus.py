@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 from datetime import datetime
 from PIL import Image, ImageFilter, ImageDraw, ImageFont, ImageColor
 from os.path import exists

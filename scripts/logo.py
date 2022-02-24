@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 from PIL import Image, ImageDraw
 
 sourceFile="/home/bitcoin/nodeyez/images/nodeyez-catseyes.png"

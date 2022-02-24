@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # the framebuffer image viewer (fbi) needs root so run this script with sudo
 # install fbi via  `sudo apt-get -y install fbi`

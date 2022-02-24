@@ -1,5 +1,4 @@
-#! /usr/bin/python3
-
+# import packages
 import json
 import math
 import subprocess
