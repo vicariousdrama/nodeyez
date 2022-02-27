@@ -14,14 +14,19 @@ def getdatefile():
 def isFirstOfTheMonth():
     return (int(datetime.utcnow().strftime("%e")) == 1)
 
-def getAndSaveFile(url, savetofile):
-    cmd = "curl -s -o " + savetofile + " " + url
+def getAndSaveFile(url, savetofile, extra=""):
+    cmd = "curl -s " + extra + " -o " + savetofile + " " + url
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         print(f"file saved to {savetofile}\n")
     except subprocess.CalledProcessError as e:
         print(f"error saving file {savetofile} from url {url}\n")
         print(e)
+
+def makeDirIfNotExists(path):
+    if not exists(path):
+        print(f"Creating folder {path}")
+        os.makedirs(path)
 
 # --------------------------------------------------------------------------------------------------------------------
 # getAndSaveBisqInfo
@@ -32,11 +37,14 @@ def getAndSaveFile(url, savetofile):
 #   bsq_btc <last, high, low, volume_left, volume_right, buy, sell>
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveBisqInfo():
+    if not enableBisq:
+        print("WARNING: Call to getAndSaveBisqInfo made but enableBisq is False")
+        return
     datefile = getdatefile()
-    print(f"Retrieving and saving Bisq Mark Price info to {datefile}")
+    print(f"Retrieving and saving Bisq Market Price info to {datefile}")
     with open(configFileBisq) as f:
         config = json.load(f)
-    filename = dataDirectory + "bisq/" + datefile
+    filename = bisqDataDirectory + datefile
     getAndSaveFile(config["priceurl"], filename)
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -59,11 +67,14 @@ def getAndSaveBisqInfo():
 #   max_items_per_user, monthly_bundle_price, pricePerHashrate, pricePerHashrateForSorting, hashrateSorting
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveCompassMiningHardwareInfo():
+    if not enableCompassHardware:
+        print("WARNING: Call to getAndSaveCompassMiningHardwareInfo made but enableCompassHardware is False")
+        return
     datefile = getdatefile()
     print(f"Retrieving and saving Compass Mining Hardware info to {datefile}")
     with open(configFileCompassHardware) as f:
         config = json.load(f)
-    filename = dataDirectory + "compassmininghardware/" + datefile
+    filename = compassHardwareDataDirectory + datefile
     getAndSaveFile(config["hardwareurl"], filename)
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -74,11 +85,14 @@ def getAndSaveCompassMiningHardwareInfo():
 # In addition, saving snapshots for details for individual facilities
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveCompassMiningStatusInfo():
+    if not enableCompassStatus:
+        print("WARNING: Call to getAndSaveCompassMiningStatusInfo made but enableCompassStatus is False")
+        return
     datefile = getdatefile().replace(".json", ".html")
     print(f"Retrieving and saving Compass Mining Status info to {datefile}")
     with open(configFileCompassStatus) as f:
         config = json.load(f)
-    filename = dataDirectory + "compassminingstatus/" + datefile
+    filename = compassStatusDataDirectory + datefile
     baseurl = config["statusurl"]
     getAndSaveFile(baseurl, filename)
     if isFirstOfTheMonth():
@@ -114,9 +128,11 @@ def getAndSaveCompassMiningStatusInfo():
 # Helper method to build directories as needed and download multiple pages of reported status for a facility over time
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveCompassFacilityStatus(baseurl, facilityname, facilityid, pages):
-    folder = dataDirectory + "compassminingstatus/" + facilityname + "-" + facilityid + "/"
-    if not exists(folder):
-        os.makedirs(folder)
+    if not enableCompassStatus:
+        print("WARNING: Call to getAndSaveCompassFacilityStatus made but enableCompassStatus is False")
+        return
+    folder = compassStatusDataDirectory + facilityname + "-" + facilityid + "/"
+    makeDirIfNotExists(folder)
     for page in range(pages):
         strpage = str(int(page+1))
         filename = folder + "page" + strpage + ".html"
@@ -141,11 +157,14 @@ def getAndSaveCompassFacilityStatus(baseurl, facilityname, facilityid, pages):
 #								<address> bitcoin address sent to
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveF2PoolAccountInfo():
+    if not enableF2Pool:
+        print("WARNING: Call to getAndSaveF2PoolAccountInfo made but enableF2Pool is False")
+        return
     datefile = getdatefile()
     print(f"Retrieving and saving F2Pool info to {datefile}")
     with open(configFileF2Pool) as f:
         config = json.load(f)
-    filename = dataDirectory + "f2pool/" + datefile
+    filename = f2PoolDataDirectory + datefile
     fileurl = "https://api.f2pool.com/bitcoin/" + config["account"]
     getAndSaveFile(fileurl, filename)
 
@@ -157,12 +176,15 @@ def getAndSaveF2PoolAccountInfo():
 # Using Python library from https://github.com/LuxorLabs/graphql-python-client
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveLuxorHashrateInfo():
+    if not enableLuxor:
+        print("WARNING: Call to getAndSaveLuxorHashrateInfo made but enableLuxor is False")
+        return
     datefile = getdatefile()
     print(f"Retrieving and saving Luxor Hashrate info to {datefile}")
     try:
         with open(configFileLuxor) as f:
             config = json.load(f)
-        filename = dataDirectory + "luxor/" + datefile
+        filename = luxorDataDirectory + datefile
         apikey = config["apikey"]
         username = config["username"]
         LUXORAPI = API(host = 'https://api.beta.luxor.tech/graphql', method='POST', org='luxor', key=apikey)
@@ -175,16 +197,57 @@ def getAndSaveLuxorHashrateInfo():
         print(e)
 
 # --------------------------------------------------------------------------------------------------------------------
+# getAndSaveSlushpoolInfo
+#
+# Retrieves information from Slushpool for an account via REST
+# API documentation at https://help.slushpool.com/en/support/solutions/articles/77000433512-api-configuration-guide
+# --------------------------------------------------------------------------------------------------------------------
+def getAndSaveSlushpoolInfo():
+    if not enableSlushpool:
+        print("WARNING: Call to getAndSaveSlushpoolInfo made but enableSlushpool is False")
+        return
+    with open(configFileSlushpool) as f:
+        config = json.load(f)
+    extraargs = " -H \"Slushpool-Auth-Token: " + config["authtoken"] + "\" "
+    getAndSaveSlushpoolFile("pool stats", "poolstats/", "https://slushpool.com/stats/json/btc", extraargs)
+    getAndSaveSlushpoolFile("user performance", "userprofile/", "https://slushpool.com/accounts/profile/json/btc", extraargs)
+    getAndSaveSlushpoolFile("90 day daily rewards", "dailyreward/", "https://slushpool.com/accounts/reward/json/btc", extraargs)
+    getAndSaveSlushpoolFile("worker performance", "workers/", "https://slushpool.com/accounts/workers/json/btc", extraargs)
+
+# --------------------------------------------------------------------------------------------------------------------
+# getAndSaveSlushpoolFile
+#
+# Helper method to build directories as needed, log what being done, and download respective file
+# --------------------------------------------------------------------------------------------------------------------
+def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, extraargs):
+    datefile = getdatefile()
+    folder=slushpoolDataDirectory + subdirectory
+    makeDirIfNotExists(folder)
+    filename=folder + datefile
+    print(f"Retrieving and saving Slushpool {comment} to {filename}")
+    time.sleep(6)  # slushpool throttles/blocks if more than 1 per 5 seconds
+    getAndSaveFile(fileurl, filename, extraargs)
+
+
+# --------------------------------------------------------------------------------------------------------------------
 # Main program entry point
 # --------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Defaults
-    configFileBisq="/home/bitcoin/nodeyez/config/satsperusd.json"
-    configFileCompassHardware="/home/bitcoin/nodeyez/config/compassmininghardware.json"
-    configFileCompassStatus="/home/bitcoin/nodeyez/config/compassminingstatus.json"
-    configFileF2Pool="/home/bitcoin/nodeyez/config/f2pool.json"
-    configFileLuxor="/home/bitcoin/nodeyez/config/luxor.json"
+    enableBisq = True
+    enableCompassHardware = True
+    enableCompassStatus = True
+    enableF2Pool = True
+    enableLuxor = True
+    enableSlushpool = True
     dataDirectory="/home/bitcoin/nodeyez/data/"
+    configFolder="/home/bitcoin/nodeyez/config/"
+    configFileBisq=configFolder + "satsperusd.json"
+    configFileCompassHardware=configFolder + "compassmininghardware.json"
+    configFileCompassStatus=configFolder + "compassminingstatus.json"
+    configFileF2Pool=configFolder + "f2pool.json"
+    configFileLuxor=configFolder + "luxor.json"
+    configFileSlushpool=configFolder + "slushpool.json"
     sleepInterval=300 # This is for the main loop controller
     # Time Intervals for remote data pulls
     sleepIntervalBisq=3600
@@ -192,45 +255,59 @@ if __name__ == '__main__':
     sleepIntervalCompassStatus=82800
     sleepIntervalF2Pool=82800
     sleepIntervalLuxor=82800
+    sleepIntervalSlushpool=82800
     lastTimeBisq=0
     lastTimeCompassHardware=0
     lastTimeCompassStatus=0
     lastTimeF2Pool=0
     lastTimeLuxor=0
+    lastSlushpool=0
     # Check that config exists
-    if not exists(configFileBisq):
-        print(f"You must have a Bisq or SatsPerUSD configuration file defined at {configFileBisq}")
-        exit(1)
-    if not exists(configFileCompassHardware):
-        print(f"You must have a Compass Mining Hardware configuration file defined at {configFileCompassHardware}")
-        exit(1)
-    if not exists(configFileCompassStatus):
-        print(f"You must have a Compass Mining Status configuration file defined at {configFileCompassStatus}")
-        exit(1)
-    if not exists(configFileF2Pool):
-        print(f"You must have a F2Pool configuration file defined at {configFileF2Pool}")
-        exit(1)
-    if not exists(configFileLuxor):
-        print(f"You must have a Luxor configuration file defined at {configFileLuxor}")
-        exit(1)
+    if enableBisq and not exists(configFileBisq):
+        enableBisq = False
+        print(f"The Bisq Sats per USD configuration file was not defined at {configFileBisq}")
+        print(f"Bisq data will not be downloaded")
+    if enableCompassHardware and not exists(configFileCompassHardware):
+        enableCompassHardware = False
+        print(f"The Compass Mining Hardware configuration file was not defined at {configFileCompassHardware}")
+        print(f"Compass Mining Hardware data will not be downloaded")
+    if enableCompassStatus and not exists(configFileCompassStatus):
+        enableCompassStatus = False
+        print(f"The Compass Mining Status configuration file was not defined at {configFileCompassStatus}")
+        print(f"Compass Mining Status will not be downloaded")
+    if enableF2Pool and not exists(configFileF2Pool):
+        enableF2Pool = False
+        print(f"The F2Pool configuration file was not defined at {configFileF2Pool}")
+        print(f"F2Pool data will not be downloaded")
+    if enableLuxor and not exists(configFileLuxor):
+        enableLuxor = False
+        print(f"The Luxor configuration file was not defined at {configFileLuxor}")
+        print(f"Luxor data will not be downloaded")
+    if enableSlushpool and not exists(configFileSlushpool):
+        enableSlushpool = False
+        print(f"The Slushpool configuration file was not defined at {configFileSlushpool}")
+        print(f"Slushpool data will not be downloaded")
     # Data directories
     if not exists(dataDirectory):
         os.makedirs(dataDirectory)
     bisqDataDirectory = dataDirectory + "bisq/"
-    if not exists(bisqDataDirectory):
-        os.makedirs(bisqDataDirectory)
+    if enableBisq:
+        makeDirIfNotExists(bisqDataDirectory)
     compassHardwareDataDirectory = dataDirectory + "compassmininghardware/"
-    if not exists(compassHardwareDataDirectory):
-        os.makedirs(compassHardwareDataDirectory)
+    if enableCompassHardware:
+        makeDirIfNotExists(compassHardwareDataDirectory)
     compassStatusDataDirectory = dataDirectory + "compassminingstatus/"
-    if not exists(compassStatusDataDirectory):
-        os.makedirs(compassStatusDataDirectory)
+    if enableCompassStatus:
+        makeDirIfNotExists(compassStatusDataDirectory)
     f2PoolDataDirectory = dataDirectory + "f2pool/"
-    if not exists(f2PoolDataDirectory):
-        os.makedirs(f2PoolDataDirectory)
+    if enableF2Pool:
+        makeDirIfNotExists(f2PoolDataDirectory)
     luxorDataDirectory = dataDirectory + "luxor/"
-    if not exists(luxorDataDirectory):
-        os.makedirs(luxorDataDirectory)
+    if enableLuxor:
+        makeDirIfNotExists(luxorDataDirectory)
+    slushpoolDataDirectory = dataDirectory + "slushpool/"
+    if enableSlushpool:
+        makeDirIfNotExists(slushpoolDataDirectory)
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
@@ -239,22 +316,32 @@ if __name__ == '__main__':
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass the desired API identifier to retrieve and exit")
             arg0 = sys.argv[0]
+            print(f"   {arg0} bisq")
+            print(f"   {arg0} compassmininghardware")
+            print(f"   {arg0} compsasminingstatus")
             print(f"   {arg0} f2pool")
-            print(f"  or")
             print(f"   {arg0} luxor")
-            print(f"You may specify a custom configuration file at {configFile}")
+            print(f"   {arg0} slushpool")
         else:
             apistub = sys.argv[1]
             if apistub == 'bisq':
-                getAndSaveBisqInfo()
+                if enableBisq:
+                    getAndSaveBisqInfo()
             elif apistub == 'compassmininghardware':
-                getAndSaveCompassMiningHardwareInfo()
+                if enableCompassHardware:
+                    getAndSaveCompassMiningHardwareInfo()
             elif apistub == 'compassminingstatus':
-                getAndSaveCompassMiningStatusInfo()
+                if enableCompassStatus:
+                    getAndSaveCompassMiningStatusInfo()
             elif apistub == 'f2pool':
-                getAndSaveF2PoolAccountInfo()
+                if enableF2Pool:
+                    getAndSaveF2PoolAccountInfo()
             elif apistub == 'luxor':
-                getAndSaveLuxorHashrateInfo()
+                if enableLuxor:
+                    getAndSaveLuxorHashrateInfo()
+            elif apistub == 'slushpool':
+                if enableSlushpool:
+                    getAndSaveSlushpoolInfo()
             else:
                 print("Value not recognized. Call the program with --help for more guidance")
                 exit(1)
@@ -262,19 +349,19 @@ if __name__ == '__main__':
     # Loop
     while True:
         currentTime = int(time.time())
-        if currentTime > lastTimeBisq + sleepIntervalBisq:
+        if enableBisq and currentTime > lastTimeBisq + sleepIntervalBisq:
             getAndSaveBisqInfo()
             lastTimeBisq = currentTime if lastTimeBisq == 0 else lastTimeBisq + sleepIntervalBisq
-        if currentTime > lastTimeCompassHardware + sleepIntervalCompassHardware:
+        if enableCompassHardware and currentTime > lastTimeCompassHardware + sleepIntervalCompassHardware:
             getAndSaveCompassMiningHardwareInfo()
             lastTimeCompassHardware = currentTime if lastTimeCompassHardware == 0 else lastTimeCompassHardware + sleepIntervalCompassHardware
-        if currentTime > lastTimeCompassStatus + sleepIntervalCompassStatus:
+        if enableCompassStatus and currentTime > lastTimeCompassStatus + sleepIntervalCompassStatus:
             getAndSaveCompassMiningStatusInfo()
             lastTimeCompassStatus = currentTime if lastTimeCompassStatus == 0 else lastTimeCompassStatus + sleepIntervalCompassStatus
-        if currentTime > lastTimeF2Pool + sleepIntervalF2Pool:
+        if enableF2Pool and currentTime > lastTimeF2Pool + sleepIntervalF2Pool:
             getAndSaveF2PoolAccountInfo()
             lastTimeF2Pool = currentTime if lastTimeF2Pool == 0 else lastTimeF2Pool + sleepIntervalF2Pool
-        if currentTime > lastTimeLuxor + sleepIntervalLuxor:
+        if enableLuxor and currentTime > lastTimeLuxor + sleepIntervalLuxor:
             getAndSaveLuxorHashrateInfo()
             lastTimeLuxor = currentTime if lastTimeLuxor == 0 else lastTimeLuxor + sleepIntervalLuxor
         time.sleep(sleepInterval)
