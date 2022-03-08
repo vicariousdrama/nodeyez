@@ -28,7 +28,10 @@
       "text": "#ffffff",
       "textshadow.comment": "The default color of the text shadow for the ring name expressed as a Hexadecimal color specifier",
       "textshadow.type": "string",
-      "textshadow": "#000000"
+      "textshadow": "#000000",
+      "background.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+      "background.type": "string",
+      "background": "#000000"
     }
   },
   "rings.comment": "The collection of defined rings to monitor",
@@ -76,7 +79,10 @@
           "text": "#ffffff",
           "textshadow.comment": "The color of the text shadow for the ring name expressed as a Hexadecimal color specifier",
           "textshadow.type": "string",
-          "textshadow": "#000000"
+          "textshadow": "#000000",
+          "background.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+          "background.type": "string",
+          "background": "#000000"
         }
       },
       "nodes.comment": "The list of nodes that are participants in this ring, in order",

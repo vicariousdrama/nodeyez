@@ -110,7 +110,7 @@ def drawicon(draw,icon,x,y,w,h,v=None):
 def createimage(width=480, height=320):
     bw=width/3
     bh=height/2
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     drawicon(draw,"thermometer",5,5,bw-10,bh-10,v=str(gettemp()))
     drawicon(draw,"sdcard",5+bw,5,bw-10,bh-10,v=str(getdrivefree("/dev/root")))
@@ -195,6 +195,7 @@ if __name__ == '__main__':
     colorMEMWarn=ImageColor.getrgb("#ffff00")
     colorMEMDanger=ImageColor.getrgb("#ff0000")
     colorMEMLabelText=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     # Override defaults
     if exists(configFile):
         with open(configFile) as f:
@@ -262,6 +263,8 @@ if __name__ == '__main__':
             colorMEMDanger = ImageColor.getrgb(config["colorMEMDanger"])
         if "colorMEMLabelText" in config:
             colorMEMLabelText = ImageColor.getrgb(config["colorMEMLabelText"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

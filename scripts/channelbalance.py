@@ -32,7 +32,7 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, width=480, heigh
     padbottom = 40
     aliaswidth = width/3
     dataheight = int(math.floor((height - (padtop+padbottom)) / pageSize))
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     pageoutputFile = outputFile.replace(".png","-" + str(pagenum) + ".png")
     # Header
@@ -50,8 +50,8 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, width=480, heigh
         alias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
         datarowbottom = padtop + (linesdrawn * dataheight)
         datarowtop = datarowbottom - dataheight
-        vicarioustext.drawbottomlefttext(draw, alias, 16, 0, datarowbottom, colorTextFG)
-        draw.rounded_rectangle(xy=(aliaswidth,datarowtop+padding,width,datarowbottom),radius=4,fill=colorBackground,outline=colorBarOutline,width=outlinewidth)
+        vicarioustext.drawlefttext(draw, alias, 16, 0, datarowbottom - (dataheight/2), colorTextFG)
+        draw.rounded_rectangle(xy=(aliaswidth,datarowtop+padding,width,datarowbottom),radius=4,fill=colorBarEmpty,outline=colorBarOutline,width=outlinewidth)
         percentage = float(local_balance)/float(capacity)
         barwidth = int(math.floor(float(width-aliaswidth)*percentage))
         draw.rounded_rectangle(xy=(aliaswidth+outlinewidth,datarowtop+padding+outlinewidth,aliaswidth+outlinewidth+barwidth,datarowbottom-outlinewidth),radius=4,fill=colorBarFilled)
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     colorBackground=ImageColor.getrgb("#000000")
     colorBarOutline=ImageColor.getrgb("#770044")
     colorBarFilled=ImageColor.getrgb("#aa3377")
+    colorBarEmpty=ImageColor.getrgb("#202020")
     sleepInterval=1800
     pageSize=8
     # Override config
@@ -93,6 +94,8 @@ if __name__ == '__main__':
             colorBarOutline = ImageColor.getrgb(config["colorBarOutline"])
         if "colorBarFilled" in config:
             colorBarFilled = ImageColor.getrgb(config["colorBarFilled"])
+        if "colorBarEmpty" in config:
+            colorBarEmpty = ImageColor.getrgb(config["colorBarEmpty"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others

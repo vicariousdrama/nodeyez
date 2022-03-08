@@ -67,7 +67,7 @@ def gethighesttemp(minerinfo):
 
 def drawicon(draw,icon,x,y,w,h,v=None):
     colorArcBorder=ImageColor.getrgb("#c0c0c0")
-    colorArcBackground=ImageColor.getrgb("#000000")  # arc background/blank
+    colorArcBackground=colorBackground # ImageColor.getrgb("#000000")  # arc background/blank
     colorArcDefault=ImageColor.getrgb("#40ff40")  # green arc color (default)
     colorArcRedAlert=ImageColor.getrgb("#ff0000")  # when percent > 75
     colorArcWarn=ImageColor.getrgb("#ffff00")  # when percent > 50
@@ -95,7 +95,7 @@ def createimage(minerinfo, width=480, height=320):
     thheight = (height - headerheight - footerheight) * .18
     hbheight = (height - headerheight - footerheight) * .41
     fanheight = (height - headerheight - footerheight) * .41
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
     vicarioustext.drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2),colorTextFG,True)
@@ -164,6 +164,7 @@ if __name__ == '__main__':
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorHashboardLine=ImageColor.getrgb("#808080")
     colorWarn=ImageColor.getrgb("#ffaa00")
+    colorBackground=ImageColor.getrgb("#000000")
     tempWarning=88.0
     # Inits
     cookieFile=dataDirectory + "minercookiefile"
@@ -194,6 +195,8 @@ if __name__ == '__main__':
             colorHashboardLine = ImageColor.getrgb(config["colorHashboardLine"])
         if "colorWarn" in config:
             colorWarn = ImageColor.getrgb(config["colorWarn"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "tempWarning" in config:
             tempWarning = float(config["tempWarning"])
     # Data directories

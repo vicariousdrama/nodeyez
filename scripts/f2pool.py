@@ -70,7 +70,7 @@ def createimage(accountinfo, width=480, height=320):
     footerheight = 15
     hashheight = (height - headerheight - footerheight) * .4
     rewardheight = (height - headerheight - footerheight) * .5
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
     vicarioustext.drawcenteredtext(draw, "F2 Pool Summary", 24, int(width/2), int(headerheight/2), colorTextFG, True)
@@ -198,6 +198,7 @@ if __name__ == '__main__':
     colorGraphLineLight=ImageColor.getrgb("#a0a0a0")
     colorGraphLineDark=ImageColor.getrgb("#606060")
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     # Require config
     if not exists(configFile):
         print(f"You need to make a config file at {configFile} to set your account information")
@@ -237,6 +238,8 @@ if __name__ == '__main__':
             colorGraphLineDark = ImageColor.getrgb(config["colorGraphLineDark"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

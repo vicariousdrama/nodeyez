@@ -92,7 +92,7 @@ def createimage(width=480, height=320):
     feefastest, feehalfhour, feehour, feeminimum = getrecommendedfees()
     bw = width/blocksToRender
     padtop=40
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     mpblist=list(mempoolblocks)
     mpblen=len(mpblist)
@@ -145,6 +145,7 @@ if __name__ == '__main__':
     colorBlock3=ImageColor.getrgb("#f4511e")
     colorBlock4=ImageColor.getrgb("#b71c1c")
     colorBlock5=ImageColor.getrgb("#4a148c")
+    colorBackground=ImageColor.getrgb("#000000")
     satLevel1=10
     satLevel2=30
     satLevel3=60
@@ -187,6 +188,8 @@ if __name__ == '__main__':
             colorBlock4 = ImageColor.getrgb(config["colorBlock4"])
         if "colorBlock5" in config:
             colorBlock6 = ImageColor.getrgb(config["colorBlock5"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "satLevel1" in config:
             satLevel1 = int(config["satLevel1"])
         if "satLevel2" in config:

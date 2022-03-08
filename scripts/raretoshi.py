@@ -135,7 +135,7 @@ def createimage(width=480, height=320):
         newSourceHeight=int(sourceWidth/imageRatio)
         print(f"Original width x height is {sourceWidth} x {sourceHeight}.  New ratio height {newSourceHeight}")
         offset = int((newSourceHeight-sourceHeight)/2)
-        imTaller = Image.new(mode="RGBA", size=(sourceWidth, newSourceHeight))
+        imTaller = Image.new(mode="RGBA", size=(sourceWidth, newSourceHeight), color=colorBackground)
         imTaller.paste(sourceImage, (0, offset))
         if stretchEdge:
             # top side
@@ -153,7 +153,7 @@ def createimage(width=480, height=320):
         newSourceWidth=int(sourceHeight * imageRatio)
         print(f"Original width x height is {sourceWidth} x {sourceHeight}.  New ratio width {newSourceWidth}")
         offset = int((newSourceWidth-sourceWidth)/2)
-        imWider = Image.new(mode="RGBA", size=(newSourceWidth, sourceHeight))
+        imWider = Image.new(mode="RGBA", size=(newSourceWidth, sourceHeight), color=colorBackground)
         imWider.paste(sourceImage, (offset, 0))
         if stretchEdge:
             # left side
@@ -202,6 +202,7 @@ if __name__ == '__main__':
     dataDirectory="/home/bitcoin/nodeyez/data/"
     colorTextBG=ImageColor.getrgb("#00000080")
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     stretchEdge=True
     stretchSpacing=30
     overlayText=True
@@ -226,6 +227,8 @@ if __name__ == '__main__':
             colorTextBG = ImageColor.getrgb(config["colorTextBG"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "stretchEdge" in config:
             stretchEdge = config["stretchEdge"]
         if "stretchSpacing" in config:

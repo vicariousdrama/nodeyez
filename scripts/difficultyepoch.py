@@ -72,7 +72,7 @@ def createimage(width=480, height=320):
     blockw=int(math.floor(width/63))
     padleft=int(math.floor((width-(63*blockw))/2))
     padtop=36
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     for dc in range(63):
         for dr in range(32):
@@ -116,6 +116,7 @@ if __name__ == '__main__':
     colorBehind=ImageColor.getrgb("#FF0000")
     colorMined=ImageColor.getrgb("#40FF40")
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     saveEachBlock=False
     sleepInterval=540
     # Override config
@@ -136,6 +137,8 @@ if __name__ == '__main__':
             colorMined = ImageColor.getrgb(config["colorMined"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "saveEachBlock" in config:
             saveEachBlock = config["saveEachBlock"]
         if "sleepInterval" in config:
