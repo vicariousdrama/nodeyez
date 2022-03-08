@@ -39,7 +39,7 @@ def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=F
     ox,oy = thefont.getoffset(s)
     sw += ox
     sh += oy
-    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=colorFFFFFF)
+    draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=textcolor)
 
 def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)

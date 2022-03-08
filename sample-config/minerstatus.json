@@ -26,6 +26,9 @@
   "colorWarn.comment": "The color to show the temperature exceeding the tempWarning threshold expressed as a Hexadecimal color specifier",
   "colorWarn.type": "string",
   "colorWarn": "#ffaa00",
+  "colorBackground.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+  "colorBackground.type": "string",
+  "colorBackground": "#000000",
   "tempWarning.comment": "The temperature at which values above it will be reported in warning state",
   "tempWarning.type": "float",
   "tempWarning": 88.0

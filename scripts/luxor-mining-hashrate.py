@@ -82,7 +82,7 @@ def createimage(hashrate_history, date_prefix, width=480, height=320):
     datedOutputFile = outputFile.replace(".png","-" + date_prefix + ".png")
     infoheight = (height - headerheight - footerheight) * .3
     chartheight = (height - headerheight - footerheight) * .7
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
     vicarioustext.drawcenteredtext(draw, "Luxor Hashrate Output", 24, int(width/2), int(headerheight/2), colorTextFG, True)
@@ -213,6 +213,7 @@ if __name__ == '__main__':
     colorGraphLineLight=ImageColor.getrgb("#a0a0a0")
     colorGraphLineDark=ImageColor.getrgb("#606060")
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     # Require config
     if not exists(configFile):
         print(f"You need to make a config file at {configFile} to set your apikey and username information")
@@ -264,6 +265,8 @@ if __name__ == '__main__':
             colorGraphLineDark = ImageColor.getrgb(config["colorGraphLineDark"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

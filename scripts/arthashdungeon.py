@@ -79,7 +79,7 @@ def createimage(blocknumber=1, width=480, height=320):
     if len(sys.argv) > 1:
         outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
     padtop=32
-    im       = Image.new(mode="RGB", size=(width, height))
+    im       = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw     = ImageDraw.Draw(im)
     iconsize = 32
     tileset  = Image.open(bitcoinTilesFile)
@@ -239,6 +239,7 @@ if __name__ == '__main__':
     bitcoinTilesFile="/home/bitcoin/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
     outputFile="/home/bitcoin/images/arthashdungeon.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=300
     # Inits
     maze=[]
@@ -256,6 +257,8 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only

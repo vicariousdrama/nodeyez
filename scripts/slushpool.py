@@ -115,7 +115,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     footerheight = 15
     hashheight = (height - headerheight - footerheight) * .4
     rewardheight = (height - headerheight - footerheight) * .5
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
     vicarioustext.drawcenteredtext(draw, "SlushPool Mining Summary", 24, int(width/2), int(headerheight/2), colorHeader, True)
@@ -280,6 +280,7 @@ if __name__ == '__main__':
     colorBreakEvenMiss=ImageColor.getrgb("#ff0000")   # The break even color when the average is at or above the value
     colorBreakEvenGood=ImageColor.getrgb("#00ff00")   # Break even color when average is below the value (cheaper to buy than mine)
     colorTextFG=ImageColor.getrgb("#ffffff")          # General text color other than header and data values
+    colorBackground=ImageColor.getrgb("#000000")      # Background color
     # Inits
     sats_per_btc = 100000000                          # useful constant
     price_last=1
@@ -339,6 +340,8 @@ if __name__ == '__main__':
             colorBreakEvenGood = ImageColor.getrgb(config["colorBreakEvenGood"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
 
     # Check for single run
     if len(sys.argv) > 1:

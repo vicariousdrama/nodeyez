@@ -52,5 +52,8 @@
   "colorBreakEvenGood": "#00ff00",
   "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
   "colorTextFG.type": "string",
-  "colorTextFG": "#ffffff"
+  "colorTextFG": "#ffffff",
+  "colorBackground.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+  "colorBackground.type": "string",
+  "colorBackground": "#000000"
 }

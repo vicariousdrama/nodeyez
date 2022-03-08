@@ -88,6 +88,9 @@
   "colorMEMDanger": "#ff0000",
   "colorMEMLabelText.comment": "The color of the labels for the memory arc displays expressed as a Hexadecimal color specifier",
   "colorMEMLabelText.type": "string",
-  "colorMEMLabelText": "#ffffff"
+  "colorMEMLabelText": "#ffffff",
+  "colorBackground.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+  "colorBackground.type": "string",
+  "colorBackground": "#000000"
 }
 

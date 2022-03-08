@@ -26,7 +26,7 @@ def createimage(blocknumber=1, width=480, height=320):
     triclen=artwidth/4  # hypotenuese
     triblen=artwidth/8  # base
     trialen=int(math.sqrt((triclen*triclen)-(triblen*triblen))) # height
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # iterate over last 24 bytes of the blockhash
     for i in range(24):
@@ -83,6 +83,7 @@ if __name__ == '__main__':
     outputFile="/home/bitcoin/images/arthash.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorShapeOutline=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -96,6 +97,8 @@ if __name__ == '__main__':
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorShapeOutline" in config:
             colorShapeOutline = ImageColor.getrgb(config["colorShapeOutline"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only

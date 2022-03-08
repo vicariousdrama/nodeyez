@@ -28,7 +28,7 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     nodecount=len(nodes)
     degrees=360/nodecount
     degreeso=-90+(degrees/2)
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorbackground)
     draw = ImageDraw.Draw(im)
     # for non-existant channels between nodes
     breaksize=20
@@ -205,20 +205,25 @@ def checknodestatus(nodes):
         nodeinfos.append(nodeas[3])
     createimage(nodeonline, nodechannel, nodeinfos, nodes)
 
-def getcolorconfig(config, colorid):
-    colors = config["imagesettings"]["colors"]
-    return ImageColor.getrgb(colors[colorid])
+def getcolorconfig(config, colorid, defaultcolor):
+    if "imagesettings" in config:
+        if "colors" in config["imagesettings"]:
+            colors = config["imagesettings"]["colors"]
+            if colorid in colors:
+                return ImageColor.getrgb(colors[colorid])
+    return ImageColor.getrgb(defaultcolor)
 
 def setfontandcolor(config):
     global colorcircle, coloroffline, coloronline, colorofflinetext, coloronlinetext, colortext, colortextshadow
     # color config
-    colorcircle = getcolorconfig(config, "circle")
-    coloroffline = getcolorconfig(config, "offline")
-    coloronline = getcolorconfig(config, "online")
-    colorofflinetext = getcolorconfig(config, "offlinetext")
-    coloronlinetext = getcolorconfig(config, "onlinetext")
-    colortext = getcolorconfig(config, "text")
-    colortextshadow = getcolorconfig(config, "textshadow")
+    colorcircle = getcolorconfig(config, "circle", "#c0c0c0")
+    coloroffline = getcolorconfig(config, "offline", "#ff4040")
+    coloronline = getcolorconfig(config, "online", "#40ff40")
+    colorofflinetext = getcolorconfig(config, "offlinetext", "#ffffff")
+    coloronlinetext = getcolorconfig(config, "onlinetext", "#000000")
+    colortext = getcolorconfig(config, "text", "#ffffff")
+    colortextshadow = getcolorconfig(config, "textshadow", "#000000")
+    colorbackground = getcolorconfig(config, "background", "#000000")
 
 
 if __name__ == '__main__':

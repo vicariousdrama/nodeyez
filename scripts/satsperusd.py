@@ -32,7 +32,7 @@ def createimage(width=480, height=320):
     satw=int(math.floor(width/87))
     padleft=int(math.floor((width-(87*satw))/2))
     padtop=40
-    im = Image.new(mode="RGBA", size=(width, height), color=(0,0,0,255))
+    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     alpha_img = Image.new(mode="RGBA", size=(width, height), color=(0,0,0,0))
     drawa = ImageDraw.Draw(alpha_img)
@@ -99,6 +99,7 @@ if __name__ == '__main__':
     colorSatShape=ImageColor.getrgb("#ff7f00")
     colorSatAmount=ImageColor.getrgb("#4040407f")
     colorSatAmountShadow=ImageColor.getrgb("#ffffff7f")
+    colorBackground=ImageColor.getrgb("#000000")
     # Inits
     last=1
     low=1
@@ -134,6 +135,8 @@ if __name__ == '__main__':
             colorSatAmount = ImageColor.getrgb(config["colorSatAmount"])
         if "colorSatAmountShadow" in config:
             colorSatAmountShadow = ImageColor.getrgb(config["colorSatAmountShadow"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
             print(f"Retrieves the market rate of BTC from Bisq and renders number of Sats per dollar")

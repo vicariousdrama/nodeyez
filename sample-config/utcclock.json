@@ -13,5 +13,8 @@
   "colorTextDate": "#f1c232",
   "colorTextTime.comment": "The color to render the current time expressed as a Hexadecimal color specifier",
   "colorTextTime.type": "string",
-  "colorTextTime": "#6aa84f"
+  "colorTextTime": "#6aa84f",
+  "colorBackground.comment": "The background color of the image expressed as a Hexadecimal color specifier",
+  "colorBackground.type": "string",
+  "colorBackground": "#000000"
 }

@@ -22,7 +22,7 @@ def gettime():
     return now.strftime("%H:%M:%S")
 
 def createimage(width=480, height=320):
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     vicarioustext.drawcenteredtext(draw, getdayofweek(), 72, int(width/2), int(height/2)-120, colorTextDayOfWeek)
     vicarioustext.drawcenteredtext(draw, getdate(), 72, int(width/2), int(height/2), colorTextDate)
@@ -37,6 +37,7 @@ if __name__ == '__main__':
     colorTextDayOfWeek=ImageColor.getrgb("#ffffff")
     colorTextDate=ImageColor.getrgb("#ffffff")
     colorTextTime=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     # Override defaults
     if exists(configFile):
         with open(configFile) as f:
@@ -54,6 +55,8 @@ if __name__ == '__main__':
             colorTextDate = ImageColor.getrgb(config["colorTextDate"])
         if "colorTextTime" in config:
             colorTextTime = ImageColor.getrgb(config["colorTextTime"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

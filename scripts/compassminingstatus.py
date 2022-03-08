@@ -16,7 +16,7 @@ def getstatuspage():
 def createimage(width=480, height=320):
     soup = getstatuspage()
     headerheight = 30
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # header
     vicarioustext.drawcenteredtext(draw, "Compass Mining Status", 24, int(width/2), int(headerheight/2), colorTextFG, True)
@@ -92,6 +92,7 @@ if __name__ == '__main__':
     colorNoneText=ImageColor.getrgb("#ffffff")
     colorMinor=ImageColor.getrgb("#2020ff")
     colorMinorText=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -127,6 +128,8 @@ if __name__ == '__main__':
             colorMinor = ImageColor.getrgb(config["colorMinor"])
         if "colorMinorText" in config:
             colorMinorText = ImageColor.getrgb(config["colorMinorText"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others

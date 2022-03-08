@@ -85,7 +85,7 @@ def createimage(width=480, height=320):
     hwGrouped = getHardwareGrouped(hardwareinfo)
     headerheight = 50
     footerheight = 18
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # header
     vicarioustext.drawcenteredtext(draw, "Compass Mining Hardware Prices", 24, int(width/2), 15, colorTextFG, True)
@@ -111,8 +111,6 @@ def createimage(width=480, height=320):
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFile)
 
-
-
 if __name__ == '__main__':
     # Defaults
     configFile="/home/bitcoin/nodeyez/config/compassmininghardware.json"
@@ -120,6 +118,7 @@ if __name__ == '__main__':
     hardwareurl="https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorTextWarn=ImageColor.getrgb("#ff0000")
+    colorBackground=ImageColor.getrgb("#000000")
     colorEntryLabel=ImageColor.getrgb("#8080ff")
     colorEntryName=ImageColor.getrgb("#ff8000")
     colorEntryPrice=ImageColor.getrgb("#ffffff")
@@ -142,6 +141,8 @@ if __name__ == '__main__':
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorTextWarn" in config:
             colorTextWarn = ImageColor.getrgb(config["colorTextWarn"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "colorEntryLabel" in config:
             colorEntryLabel = ImageColor.getrgb(config["colorEntryLabel"])
         if "colorEntryName" in config:

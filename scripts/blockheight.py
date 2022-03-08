@@ -9,7 +9,7 @@ import vicarioustext
 
 def createimage(width=480, height=320):
     currentblock = vicariousbitcoin.getcurrentblock()
-    im = Image.new(mode="RGB", size=(width, height))
+    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     vicarioustext.drawcenteredtext(draw, str(currentblock), 96, int(width/2), int(height/2), colorTextFG)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
@@ -20,6 +20,7 @@ if __name__ == '__main__':
     configFile="/home/bitcoin/nodeyez/config/blockheight.json"
     outputFile="/home/bitcoin/images/blockheight.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=120
     # Override config
     if exists(configFile):
@@ -31,6 +32,8 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorBackground" in config:
+            colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
