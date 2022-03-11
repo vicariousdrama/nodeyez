@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageColor
 from os.path import exists
 import json
 import os
+import qrcode
 import random
 import subprocess
 import sys
@@ -46,12 +47,10 @@ def getRaretoshiUserinfo():
     return userinfo
 
 def pickRaretoshiUser(raretoshiinfo):
-#    global userinfoLast
     global randomuserLast
     global raretoshiuser
     if randomuserInterval + randomuserLast < int(time.time()):
         # pick new user
- #       userinfoLast=0
         randomuserLast=int(time.time())
         userlist=[]
         # look at holdings and favorites
@@ -223,6 +222,22 @@ def createimage(width=480, height=320):
         vicarioustext.drawbottomlefttext(draw, "Artist:" + artist, 12, 0, height-12, colorTextFG)
         vicarioustext.drawbottomlefttext(draw, "Edition:" + str(holding["edition"]) + "/" + str(holding["editions"]), 12, 0, height, colorTextFG)
         vicarioustext.drawbottomrighttext(draw, "Owner:" + owner, 12, width, height, colorTextFG)
+    # Show QR code?
+    if showQRCode:
+        print("Creating QR code")
+        slug=holding["slug"]
+        raretoshiurl="https://raretoshi.com/a/" + slug
+        qr = qrcode.QRCode(box_size=1)
+        qr.add_data(raretoshiurl)
+        qr.make()
+        img_qr = qr.make_image()
+        # determine position for bottom left, but not over the artist info
+        qrx = 0
+        qry = height - img_qr.size[1]
+        if overlayText:
+            qry = qry - 28 #bottom overlay
+        qrpos = (qrx, qry)
+        im.paste(img_qr, qrpos)
     # Combine and save
     composite = Image.alpha_composite(im, alpha_img)
     print(f"Done. Saving image to {outputFile}")
@@ -245,6 +260,7 @@ if __name__ == '__main__':
     overlayText=True
     randomuser=True
     sleepInterval=30
+    showQRCode=True
     userinfoInterval=3600
     randomuserInterval=300
     # Inits
@@ -280,6 +296,8 @@ if __name__ == '__main__':
         if "randomuserInterval" in config:
             randomuserInterval = int(config["randomuserInterval"])
             randomuserInterval = 30 if randomuserInterval < 30 else randomuserInterval # minimum 30 seconds, remote access
+        if "showQRCode" in config:
+            showQRCode = config["showQRCode"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
