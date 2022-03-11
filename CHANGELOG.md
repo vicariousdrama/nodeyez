@@ -5,11 +5,28 @@ Display panels to get the most from your node
 
 ## Unreleased main development branch
 
-- Externalized configuration from scripts to json files
+New Panels and Enhancements
 - New panel: Raretoshi
-- Fixed some loop timeouts
 - New panel: Compass Mining Hardware
-- Panel for Compass Mining Status now supports minor status
+- Enhanced Compass Mining Status - now supports minor status level
+- Enhanced Miner Status - support configuration of multiple miners
+- Enhanced Raretoshi - Set download timeout to 5 seconds
+- Enhanced Daily Data Retrieval - support for slushpool data 
+- Enhanced Raretoshi panel to allow for traversing user randomly
+
+General
+- Externalized configuration from scripts to json files
+- New script to retrieve/parse compass mining historical status
+- Added rudimentary mock-data support for Bitcoin and LND calls
+- Added support for colorBackground in panels via config
+
+Bugfixes
+- Fixed some loop timeouts
+- Fixed f2pool crashing if account info could not be retrieved
+- Fixed daily data retrieval eixsts checks
+- Fixed extension and urls for IPFS resources only available on raretoshi
+- Fixed bottomrighttext handler to allow specifying color
+- Fixed Miner Status panel support for password
 
 ## 1.0.0-beta
 

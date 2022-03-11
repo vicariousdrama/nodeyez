@@ -45,6 +45,40 @@ def getRaretoshiUserinfo():
         print(f"Using cached data from {userinfoLast}")
     return userinfo
 
+def pickRaretoshiUser(raretoshiinfo):
+#    global userinfoLast
+    global randomuserLast
+    global raretoshiuser
+    if randomuserInterval + randomuserLast < int(time.time()):
+        # pick new user
+ #       userinfoLast=0
+        randomuserLast=int(time.time())
+        userlist=[]
+        # look at holdings and favorites
+        if "subject" in raretoshiinfo:
+            if "holdings" in raretoshiinfo["subject"]:
+                for holding in raretoshiinfo["subject"]["holdings"]:
+                    owner = holding["owner"]["username"]
+                    if not owner in userlist:
+                        userlist.append(owner)
+                    artist = holding["artist"]["username"]
+                    if not artist in userlist:
+                        userlist.append(artist)
+            if "favorites" in raretoshiinfo["subject"]:
+                for favorite in raretoshiinfo["subject"]["favorites"]:
+                    if "artwork" in favorite:
+                        owner = favorite["artwork"]["owner"]["username"]
+                        if not owner in userlist:
+                            userlist.append(owner)
+                        artist = favorite["artwork"]["artist"]["username"]
+                        if not artist in userlist:
+                            userlist.append(artist)
+        # pick random index
+        usercount = len(userlist)
+        userindex = int(random.random() * usercount)
+        raretoshiuser = userlist[userindex]
+
+
 def getIPFSLocalFilename(ipfshash):
     return ipfsDataDirectory + ipfshash
 
@@ -193,6 +227,9 @@ def createimage(width=480, height=320):
     composite = Image.alpha_composite(im, alpha_img)
     print(f"Done. Saving image to {outputFile}")
     composite.save(outputFile)
+    # Set new raretoshiuser?
+    if randomuser:
+        pickRaretoshiUser(raretoshiinfo)
 
 if __name__ == '__main__':
     # Defaults
@@ -206,11 +243,14 @@ if __name__ == '__main__':
     stretchEdge=True
     stretchSpacing=30
     overlayText=True
+    randomuser=True
     sleepInterval=30
     userinfoInterval=3600
+    randomuserInterval=300
     # Inits
     userinfoLast=0
     userinfo=json.loads('{"subject":{"holdings":[]}}')
+    randomuserLast=0
     # Override config
     if exists(configFile):
         with open(configFile) as f:
@@ -235,6 +275,11 @@ if __name__ == '__main__':
             stretchSpacing = int(config["stretchSpacing"])
         if "overlayText" in config:
             overlayText = config["overlayText"]
+        if "randomuser" in config:
+            randomuser = config["randomuser"]
+        if "randomuserInterval" in config:
+            randomuserInterval = int(config["randomuserInterval"])
+            randomuserInterval = 30 if randomuserInterval < 30 else randomuserInterval # minimum 30 seconds, remote access
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
