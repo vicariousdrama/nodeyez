@@ -13,6 +13,7 @@ New Panels and Enhancements
 - Enhanced Raretoshi - Set download timeout to 5 seconds
 - Enhanced Daily Data Retrieval - support for slushpool data 
 - Enhanced Raretoshi panel to allow for traversing user randomly
+- Enhanced Raretoshi panel to support QR code hyperlink
 
 General
 - Externalized configuration from scripts to json files

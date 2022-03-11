@@ -78,6 +78,7 @@ Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or above.
 6. Install torify using the command `sudo apt-get install apt-transport-tor`. 
    This may be used when calling external services like Bisq or Mempool.space to improve privacy.
 7. Install pandas using the command `python3 -m pip install pandas`. This is used by the luxor related scripts.
+8. Install qr code using the command `python3 -m pip install qrcode`. This is used by raretoshi scripts
 
 ### Prepare output folder and clone repository
 
