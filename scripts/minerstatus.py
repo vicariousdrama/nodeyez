@@ -19,7 +19,11 @@ def getcookiefilename():
 def getminerinfo():
     cookiefilename = getcookiefilename()
     # login
-    cmd = "curl -b " + cookiefilename + " -c " + cookiefilename + " -F 'luci_username=" + minerusername + "' http://" + mineraddress + "/cgi-bin/luci/admin/miner/api_status/"
+    cmd = "curl -b " + cookiefilename + " -c " + cookiefilename
+    cmd = cmd + " -F 'luci_username=" + minerusername + "' "
+    if len(minerpassword) > 0:
+        cmd = cmd + " -F 'luci_password=" + minerpassword + "' "
+    cmd = cmd + "http://" + mineraddress + "/cgi-bin/luci/admin/miner/api_status/"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
@@ -98,7 +102,10 @@ def createimage(minerinfo, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
-    vicarioustext.drawcenteredtext(draw, "Miner Status", 24, int(width/2), int(headerheight/2),colorTextFG,True)
+    headerText = "Miner"
+    if len(minerlabel) > 0:
+        headerText = headerText + ": " + minerlabel
+    vicarioustext.drawcenteredtext(draw, headerText, 24, int(width/2), int(headerheight/2),colorTextFG,True)
     # Get TH rate
     hashrate = gethashrate(minerinfo)
     vicarioustext.drawcenteredtext(draw, hashrate, 24, (width/4*1), (headerheight + footerheight + (thheight/2)), colorTextFG)
@@ -150,16 +157,31 @@ def createimage(minerinfo, width=480, height=320):
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
-    im.save(outputFile)
+    outputFileMiner = outputFile
+    if len(minerlabel) > 0:
+        outputFileMiner = outputFileMiner.replace(".png", "-" + minerlabel + ".png")
+    im.save(outputFileMiner)
 
+
+def isvalidminer():
+    if len(mineraddress) == 0:
+        return False
+    if len(minerusername) == 0:
+        return False
+    if "miners" in config:
+        if len(config["miners"]) > 1 and len(minerlabel) == 0:
+            return False
+    return True
 
 if __name__ == '__main__':
     # Defaults
     configFile="/home/bitcoin/nodeyez/config/minerstatus.json"
     outputFile="/home/bitcoin/images/minerstatus.png"
     dataDirectory="/home/bitcoin/nodeyez/data/"
-    mineraddress = "--put-the-ip-address-for-your-miner-in--nodeyez/config/minerstatus.json"
-    minerusername = "--put-the-username-for-your-miner-in--nodeyez/config/minerstatus.json"
+    minerlabel=""
+    mineraddress=""
+    minerusername=""
+    minerpassword=""
     sleepInterval=30
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorHashboardLine=ImageColor.getrgb("#808080")
@@ -182,10 +204,14 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "dataDirectory" in config:
             dataDirectory = config["dataDirectory"]
+        if "minerlabel" in config:
+            minerlabel = config["minerlabel"]
         if "mineraddress" in config:
             mineraddress = config["mineraddress"]
         if "minerusername" in config:
             minerusername = config["minerusername"]
+        if "minerpassword" in config:
+            minerpassword = config["minerpassword"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 15 if sleepInterval < 15 else sleepInterval # 15 seconds minimum, local only
@@ -212,6 +238,31 @@ if __name__ == '__main__':
         exit(0)
     # Loop
     while True:
-        minerinfo = getminerinfo()
-        createimage(minerinfo)
+        if "miners" in config:
+            miners = config["miners"]
+            for miner in miners:
+                minerlabel=""
+                mineraddress=""
+                minerusername=""
+                minerpassword=""
+                if "minerlabel" in miner:
+                    minerlabel = miner["minerlabel"]
+                if "mineraddress" in miner:
+                    mineraddress = miner["mineraddress"]
+                if "minerusername" in miner:
+                    minerusername = miner["minerusername"]
+                if "minerpassword" in miner:
+                    minerpassword = miner["minerpassword"]
+                if isvalidminer():
+                    minerinfo = getminerinfo()
+                    createimage(minerinfo)
+                else:
+                    print(f"One or more miners is missing information in {configFile}. Skipping.")
+        else:
+            if isvalidminer():
+                minerinfo = getminerinfo()
+                createimage(minerinfo)
+            else:
+                print(f"Inadequate configuration for miner. Set minerlabel, mineraddress, minerusername, and minerpassword for each miner in {configFile}.")
+                exit(1)
         time.sleep(sleepInterval)
