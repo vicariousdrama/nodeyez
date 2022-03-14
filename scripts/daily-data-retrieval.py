@@ -47,6 +47,30 @@ def getAndSaveBisqInfo():
     filename = bisqDataDirectory + datefile
     getAndSaveFile(config["priceurl"], filename)
 
+def getAndSaveCollectAPIInfo():
+    if not enableCollectAPI:
+        print("WARNING: Call to getAndSaveCollectAPIInfo made but enableCollectAPI is False")
+        return
+    datefile = getdatefile()
+    with open(configFileCollectAPI) as f:
+        config = json.load(f)
+    if "dailyretrieve" in config:
+        for dailyretrieve in config["dailyretrieve"]:
+            url = dailyretrieve["url"]
+            subfolder = dailyretrieve["saveToSubfolder"]
+            targetfolder = collectAPIDataDirectory + subfolder + "/"
+            makeDirIfNotExists(targetfolder)
+            filename = targetfolder + datefile
+            if not os.path.exists(filename):
+                extraargs = ""
+                if "headers" in dailyretrieve:
+                    for header in dailyretrieve["headers"]:
+                        extraargs = extraargs + " -H \"" + header + "\" "
+                getAndSaveFile(url, filename, extraargs)
+                time.sleep(5)
+            else:
+                print(f"Skipping download of {filename} as it already exists")
+
 # --------------------------------------------------------------------------------------------------------------------
 # getAndSaveCompassMiningHardwareInfo
 #
@@ -235,6 +259,7 @@ def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, extraargs):
 if __name__ == '__main__':
     # Defaults
     enableBisq = True
+    enableCollectAPI = True
     enableCompassHardware = True
     enableCompassStatus = True
     enableF2Pool = True
@@ -243,6 +268,7 @@ if __name__ == '__main__':
     dataDirectory="/home/bitcoin/nodeyez/data/"
     configFolder="/home/bitcoin/nodeyez/config/"
     configFileBisq=configFolder + "satsperusd.json"
+    configFileCollectAPI=configFolder + "collectapi.json"
     configFileCompassHardware=configFolder + "compassmininghardware.json"
     configFileCompassStatus=configFolder + "compassminingstatus.json"
     configFileF2Pool=configFolder + "f2pool.json"
@@ -251,12 +277,14 @@ if __name__ == '__main__':
     sleepInterval=300 # This is for the main loop controller
     # Time Intervals for remote data pulls
     sleepIntervalBisq=3600
+    sleepIntervalCollectAPI=86400
     sleepIntervalCompassHardware=3600
     sleepIntervalCompassStatus=82800
     sleepIntervalF2Pool=82800
     sleepIntervalLuxor=82800
     sleepIntervalSlushpool=82800
     lastTimeBisq=0
+    lastTimeCollectAPI=0
     lastTimeCompassHardware=0
     lastTimeCompassStatus=0
     lastTimeF2Pool=0
@@ -267,6 +295,10 @@ if __name__ == '__main__':
         enableBisq = False
         print(f"The Bisq Sats per USD configuration file was not defined at {configFileBisq}")
         print(f"Bisq data will not be downloaded")
+    if enableCollectAPI and not exists(configFileCollectAPI):
+        enableCollectAPI = False
+        print(f"The Collect API configuration file was not defined at {configFileCollectAPI}")
+        print(f"Collect API data will not be downloaded")
     if enableCompassHardware and not exists(configFileCompassHardware):
         enableCompassHardware = False
         print(f"The Compass Mining Hardware configuration file was not defined at {configFileCompassHardware}")
@@ -293,6 +325,9 @@ if __name__ == '__main__':
     bisqDataDirectory = dataDirectory + "bisq/"
     if enableBisq:
         makeDirIfNotExists(bisqDataDirectory)
+    collectAPIDataDirectory = dataDirectory + "collectapi/"
+    if enableCollectAPI:
+        makeDirIfNotExists(collectAPIDataDirectory)
     compassHardwareDataDirectory = dataDirectory + "compassmininghardware/"
     if enableCompassHardware:
         makeDirIfNotExists(compassHardwareDataDirectory)
@@ -317,6 +352,7 @@ if __name__ == '__main__':
             print(f"2) Pass the desired API identifier to retrieve and exit")
             arg0 = sys.argv[0]
             print(f"   {arg0} bisq")
+            print(f"   {arg0} collectapi")
             print(f"   {arg0} compassmininghardware")
             print(f"   {arg0} compsasminingstatus")
             print(f"   {arg0} f2pool")
@@ -327,6 +363,9 @@ if __name__ == '__main__':
             if apistub == 'bisq':
                 if enableBisq:
                     getAndSaveBisqInfo()
+            elif apistub == 'collectapi':
+                if enableCollectAPI:
+                    getAndSaveCollectAPIInfo()
             elif apistub == 'compassmininghardware':
                 if enableCompassHardware:
                     getAndSaveCompassMiningHardwareInfo()
@@ -352,6 +391,9 @@ if __name__ == '__main__':
         if enableBisq and currentTime > lastTimeBisq + sleepIntervalBisq:
             getAndSaveBisqInfo()
             lastTimeBisq = currentTime if lastTimeBisq == 0 else lastTimeBisq + sleepIntervalBisq
+        if enableCollectAPI and currentTime > lastTimeCollectAPI + sleepIntervalCollectAPI:
+            getAndSaveCollectAPIInfo()
+            lastTimeCollectAPI = currentTime if lastTimeCollectAPI == 0 else lastTimeCollectAPI + sleepIntervalCollectAPI
         if enableCompassHardware and currentTime > lastTimeCompassHardware + sleepIntervalCompassHardware:
             getAndSaveCompassMiningHardwareInfo()
             lastTimeCompassHardware = currentTime if lastTimeCompassHardware == 0 else lastTimeCompassHardware + sleepIntervalCompassHardware

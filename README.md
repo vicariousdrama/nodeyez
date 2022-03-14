@@ -10,6 +10,12 @@ script or service, or to a [web site dashboard](#displaying-to-a-website-dashboa
 STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled exceptions may be raised
 that cause related wrapper service to terminate.  Please test and provide feedback.  
 
+__Attention Umbrel users__: I don't have an umbrel node, and don't know what the account names are
+in that environment.  This guide will need to be adapted in the following way
+- references to `admin` should be changed to whichever account you would SSH into the system to do administrative tasks
+- references to `bitcoin` user should be changed to whichever account has the bitcoin and lnd macaroon access to call bitcoin-cli and lncli
+- Because of username differences, paths in scripts may need to be altered for data directories, image output paths, and nginx dashboard paths
+
 ![image strip](./images/nodeyez-4x4-layout.png)
 
 ## Quick Menu of Info Panels
@@ -21,6 +27,7 @@ that cause related wrapper service to terminate.  Please test and provide feedba
 - [compass mining status](#compassminingstatuspy)
 - [difficulty epoch](#difficultyepochpy)
 - [f2 pool](#f2poolpy)
+- [gas price](#gaspricepy)
 - [ip address](#ipaddresspy)
 - [luxor pool](#luxor-mining-hashratepy)
 - [mempool blocks](#mempoolblockspy)
@@ -47,7 +54,7 @@ You'll also need to ensure dependencies are met for Python and assorted librarie
 
 ### Setting up Python, Git, and Torify
 
-1. Login to your node via SSH as admin
+1. For MyNodeBTC and Raspibolt, login to your node via SSH as admin.  
 2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the scripts require Python 3. 
    Use the command `sudo apt-get install python3`.
 3. Install the Python Pillow library. These scripts were created with the newer Pillow library. 
@@ -262,6 +269,15 @@ Run it `python3 scripts/compassminingstatus.py`
 Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
 
 
+### daily-data-retrieval.py
+This python script can be used to gather information on a periodic basis to drive historical information.
+
+Traditionally, nodeyez was strictly snapshot based. Whatever the information was at a point in time.
+
+The goal of this script is to eventually have one place that retrieves all remote information via API calls, and for
+scripts to use local data store of that information.  In time this will allow for more robust reports.
+
+
 ### difficultyepoch.py
 This python script will query the local bitcoin node using bitcoin-cli and prepare an image 
 representing the number of blocks that have been mined thus far in this difficulty epoch, and 
@@ -302,6 +318,23 @@ Run it `python3 scripts/f2pool.py`
 
 Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
 
+
+### gasprice.py
+This python script can display the current average price of gas for a province or state in Canada or the United States.
+
+![sample image of gas price](./images/gasprice.png)
+
+This depends on data gathered from collectapi.com, and you should use the [daily-data-retrieval](#daily-data-retrievalpy) 
+script and service to get this information if you intend to run this service.
+
+You may override the default configuration by copying the nodeyez/sample-config/gasprice.json to nodeyez/config/gasprice.json
+The configuration allows setting the color for text and sleep interval, as well as whether results should be reported to
+a blockclock on your network.  You can also selectively choose whether the country and province should be chosen at
+random, or whether you want it to always report for the same area.
+
+Run it `python3 scripts/gasprice.py`
+
+Press CTRL+C to stop the process to make any changes.  Images will be output to /home/bitcoin/images by default.
 
 ### ipaddress.py
 This python script will report the current IP addresses of the node.  Values longer than 15 characters 
@@ -534,6 +567,7 @@ sudo systemctl enable nodeyez-compassminingstatus.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
+sudo systemctl enable nodeyez-gasprice.service
 sudo systemctl enable nodeyez-ipaddress.service
 sudo systemctl enable nodeyez-mempoolblocks.service
 sudo systemctl enable nodeyez-minerstatus.service
@@ -557,6 +591,7 @@ sudo systemctl start nodeyez-compassminingstatus.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
+sudo systemctl start nodeyez-gasprice.service
 sudo systemctl start nodeyez-ipaddress.service
 sudo systemctl start nodeyez-mempoolblocks.service
 sudo systemctl start nodeyez-minerstatus.service
