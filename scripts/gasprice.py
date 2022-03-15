@@ -73,8 +73,13 @@ def createImage(name, currency, price, width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     vicarioustext.drawcenteredtext(draw, "GAS Prices", 72, int(width/2), int(height/2)-120, colorTextGas)
-    vicarioustext.drawcenteredtext(draw, name, 72, int(width/2), int(height/2), colorTextLocation)
-    vicarioustext.drawcenteredtext(draw, "$" + price + "/gallon", 72, int(width/2), int(height/2)+120, colorTextPrice)
+    vicarioustext.drawcenteredtext(draw, name, 64, int(width/2), int(height/2), colorTextLocation)
+    pricelabel = "$" + price
+    if dataCountry == "USA":
+        pricelabel = pricelabel + "/gallon"
+    else:
+        pricelabel = pricelabel + "/liter"
+    vicarioustext.drawcenteredtext(draw, pricelabel, 72, int(width/2), int(height/2)+120, colorTextPrice)
     im.save(outputFile)
 
 def getUSAbbrev(name):
@@ -128,6 +133,8 @@ def blockclockReport(name, currency, price):
     blockclockAPICall(baseapi + "ou_text/6/" + abbrev + "/" + dataCountry)
 
 def processdata():
+    global randomCountry
+    global randomState
     #1. get newest file in folder
     newestfile = getNewestFile()
     #2. get the length of items in result
@@ -176,6 +183,14 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "dataDirectory" in config:
             dataDirectory = config["dataDirectory"]
+        if "dataCountry" in config:
+            dataCountry = config["dataCountry"]
+        if "dataState" in config:
+            dataState = config["dataState"]
+        if "randomCountry" in config:
+            randomCountry = config["randomCountry"]
+        if "randomState" in config:
+            randomState = config["randomState"]
         if "blockclockEnabled" in config:
             blockclockEnabled = config["blockclockEnabled"]
         if "blockclockAddress" in config:
@@ -192,6 +207,8 @@ if __name__ == '__main__':
             colorTextPrice = ImageColor.getrgb(config["colorTextPrice"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
+    else:
+        print(f"Config file not found. Using defaults")
     # Data directories
     if not os.path.exists(dataDirectory):
         os.makedirs(dataDirectory)

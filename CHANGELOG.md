@@ -8,6 +8,7 @@ Display panels to get the most from your node
 New Panels and Enhancements
 - New panel: Raretoshi
 - New panel: Compass Mining Hardware
+- New panel: Gas Price
 - Enhanced Compass Mining Status - now supports minor status level
 - Enhanced Miner Status - support configuration of multiple miners
 - Enhanced Raretoshi - Set download timeout to 5 seconds
