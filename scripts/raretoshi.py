@@ -10,61 +10,66 @@ import sys
 import time
 import vicarioustext
 
+def getConnectTimeouts():
+    global downloadConnectTimeout
+    global downloadMaxTimeout
+    return " --connect-timeout " + str(downloadConnectTimeout) + " --max-time " + str(downloadMaxTimeout) + " "
+
 def getRaretoshiUserinfo():
-    global userinfo
-    global userinfoLast
-    userfilename = raretoshiuser + ".json"
-    localfilename = raretoshiDataDirectory + userfilename
-    tempfilename = localfilename + ".tmp"
+    global userInfo
+    global userInfoLast
+    userFilename = raretoshiUser + ".json"
+    localFilename = raretoshiDataDirectory + userFilename
+    tempFilename = localFilename + ".tmp"
     refreshUser = False
-    if not exists(localfilename):
+    if not exists(localFilename):
         refreshUser = True
-    if userinfoInterval + userinfoLast < int(time.time()):
+    if userInfoInterval + userInfoLast < int(time.time()):
         refreshUser = True
     if refreshUser:
         print(f"Calling raretoshi website for user data")
-        userinfoLast = int(time.time())
-        url = "https://raretoshi.com/" + userfilename
-        cmd = "curl -s -o " + tempfilename + " --max-time 5 " + url
+        userInfoLast = int(time.time())
+        url = "https://raretoshi.com/" + userFilename
+        cmd = "curl -s -o " + tempFilename + getConnectTimeouts() + url
         try:
             cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-            with open(tempfilename) as f:
-                userinfo = json.load(f)
-            if exists(localfilename):
-                os.remove(localfilename)
-            os.rename(tempfilename, localfilename)
+            with open(tempFilename) as f:
+                userInfo = json.load(f)
+            if exists(localFilename):
+                os.remove(localFilename)
+            os.rename(tempFilename, localFilename)
         except subprocess.CalledProcessError as e:
-            print(f"Error downloading and loading file {tempfilename}. Error is {e}")
-            if exists(localfilename):
-                print("Attempting to reload from cached result {localfilename}")
+            print(f"Error downloading and loading file {tempFilename}. Error is {e}")
+            if exists(localFilename):
+                print("Attempting to reload from cached result {localFilename}")
                 try:
-                    with open(localfilename) as f:
-                        userinfo = json.load(f)
+                    with open(localFilename) as f:
+                        userInfo = json.load(f)
                 except:
-                    print("Error raised reading {localfilename} as json")
+                    print("Error raised reading {localFilename} as json")
     else:
-        print(f"Using cached data from {userinfoLast}")
-    return userinfo
+        print(f"Using cached data from {userInfoLast}")
+    return userInfo
 
-def pickRaretoshiUser(raretoshiinfo):
-    global randomuserLast
-    global raretoshiuser
-    if randomuserInterval + randomuserLast < int(time.time()):
+def pickRaretoshiUser(raretoshiInfo):
+    global randomUserLast
+    global raretoshiUser
+    if randomUserInterval + randomUserLast < int(time.time()):
         # pick new user
-        randomuserLast=int(time.time())
+        randomUserLast=int(time.time())
         userlist=[]
         # look at holdings and favorites
-        if "subject" in raretoshiinfo:
-            if "holdings" in raretoshiinfo["subject"]:
-                for holding in raretoshiinfo["subject"]["holdings"]:
+        if "subject" in raretoshiInfo:
+            if "holdings" in raretoshiInfo["subject"]:
+                for holding in raretoshiInfo["subject"]["holdings"]:
                     owner = holding["owner"]["username"]
                     if not owner in userlist:
                         userlist.append(owner)
                     artist = holding["artist"]["username"]
                     if not artist in userlist:
                         userlist.append(artist)
-            if "favorites" in raretoshiinfo["subject"]:
-                for favorite in raretoshiinfo["subject"]["favorites"]:
+            if "favorites" in raretoshiInfo["subject"]:
+                for favorite in raretoshiInfo["subject"]["favorites"]:
                     if "artwork" in favorite:
                         owner = favorite["artwork"]["owner"]["username"]
                         if not owner in userlist:
@@ -75,7 +80,7 @@ def pickRaretoshiUser(raretoshiinfo):
         # pick random index
         usercount = len(userlist)
         userindex = int(random.random() * usercount)
-        raretoshiuser = userlist[userindex]
+        raretoshiUser = userlist[userindex]
 
 
 def getIPFSLocalFilename(ipfshash):
@@ -98,7 +103,7 @@ def downloadIPFSfile(ipfshash):
     else:
         url = "https://ipfs.io/ipfs/" + ipfshash
     print(f"Downloading from {url}")
-    cmd = "curl -s -o " + saveto + " --max-time 5 " + url
+    cmd = "curl -s -o " + saveto + getConnectTimeouts() + url
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         print(f"IPFS Downloaded to {saveto}")
@@ -108,7 +113,7 @@ def downloadIPFSfile(ipfshash):
         if url.startswith("https://ipfs.io/"):
             url = url.replace("https://ipfs.io/", "https://raretoshi.com/api/")
             print(f"Retrying with {url}")
-            cmd = "curl -s -o " + saveto + " --max-time 5 " + url
+            cmd = "curl -s -o " + saveto + getConnectTimeouts() + url
             try:
                 cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
                 print(f"IPFS Downloaded to {saveto}")
@@ -119,9 +124,9 @@ def createimage(width=480, height=320):
     # Setup alpha layer
     alpha_img = Image.new(mode="RGBA", size=(width, height), color=(255,255,255,0))
     draw = ImageDraw.Draw(alpha_img)
-    print(f"Getting Raretoshi information for user {raretoshiuser}")
-    raretoshiinfo = getRaretoshiUserinfo()
-    holdingscount = len(raretoshiinfo["subject"]["holdings"])
+    print(f"Getting Raretoshi information for user {raretoshiUser}")
+    raretoshiInfo = getRaretoshiUserinfo()
+    holdingscount = len(raretoshiInfo["subject"]["holdings"])
     # quick bail if no holdings
     if holdingscount == 0:
         print("User has no holdings on raretoshi")
@@ -135,7 +140,7 @@ def createimage(width=480, height=320):
         holdingindex = int(random.random() * holdingscount)
         if len(sys.argv) > 2:
             holdingindex = int(sys.argv[2])
-        holding = raretoshiinfo["subject"]["holdings"][holdingindex]
+        holding = raretoshiInfo["subject"]["holdings"][holdingindex]
         filetype = holding["filetype"]
         if filetype not in allowedfiletypes:
             print(f"Holding {holdingindex} is {filetype} which is unsupported.")
@@ -170,15 +175,15 @@ def createimage(width=480, height=320):
         offset = int((newSourceHeight-sourceHeight)/2)
         imTaller = Image.new(mode="RGBA", size=(sourceWidth, newSourceHeight), color=colorBackground)
         imTaller.paste(sourceImage, (0, offset))
-        if stretchEdge:
+        if stretchEdgeEnabled:
             # top side
             imLine = sourceImage.crop((0,0,sourceWidth,1))
-            for y in range(offset-stretchSpacing):
+            for y in range(offset-stretchEdgeSpacing):
                 imTaller.paste(imLine, (0, y))
             # bottom side
-            imLine = sourceImage.crop((0,sourceHeight-stretchSpacing,sourceWidth,sourceHeight))
-            for y in range(offset-stretchSpacing):
-                imTaller.paste(imLine, (0, y+offset+sourceHeight+stretchSpacing))
+            imLine = sourceImage.crop((0,sourceHeight-stretchEdgeSpacing,sourceWidth,sourceHeight))
+            for y in range(offset-stretchEdgeSpacing):
+                imTaller.paste(imLine, (0, y+offset+sourceHeight+stretchEdgeSpacing))
         print(f"Resizing to {width} x {height}")
         im = imTaller.resize(size=(width,height))
     if imageRatio > sourceRatio:
@@ -188,15 +193,15 @@ def createimage(width=480, height=320):
         offset = int((newSourceWidth-sourceWidth)/2)
         imWider = Image.new(mode="RGBA", size=(newSourceWidth, sourceHeight), color=colorBackground)
         imWider.paste(sourceImage, (offset, 0))
-        if stretchEdge:
+        if stretchEdgeEnabled:
             # left side
             imLine = sourceImage.crop((0,0,1,sourceHeight))
-            for x in range(offset-stretchSpacing):
+            for x in range(offset-stretchEdgeSpacing):
                 imWider.paste(imLine, (x, 0))
             # right side
             imLine = sourceImage.crop((sourceWidth-1,0,sourceWidth,sourceHeight))
-            for x in range(offset-stretchSpacing):
-                imWider.paste(imLine, (x+offset+sourceWidth+stretchSpacing, 0))
+            for x in range(offset-stretchEdgeSpacing):
+                imWider.paste(imLine, (x+offset+sourceWidth+stretchEdgeSpacing, 0))
         print(f"Resizing to {width} x {height}")
         im = imWider.resize(size=(width,height))
 
@@ -204,38 +209,46 @@ def createimage(width=480, height=320):
         print("Same ratio")
         im = sourceImage.resize(size=(width,height))
     # Labeling
-    if overlayText:
+    overlayTextBottomHeight=0
+    if overlayTextEnabled:
         print("Writing overlay text")
         bgoffset=1
-        draw.rectangle(xy=((0,0),(width,24)),fill=colorTextBG)
-        titlewidth = width + 2
-        titlefontsize=16
-        while (titlewidth > width) and titlefontsize > 6:
-            titlewidth,titleheight,titlefont=vicarioustext.gettextdimensions(draw, title, titlefontsize, True)
-            if titlewidth > width:
-                titlefontsize -= 1
-        if titlefontsize > 6:
-            vicarioustext.drawcenteredtext(draw, title, titlefontsize, int(width/2), 12, colorTextFG, True)
+        overlayTextTopHeight=24
+        titleWidth = width + 2
+        titleFontSize=int(overlayTextTopHeight * 2/3)
+        while (titleWidth > width) and titleFontSize > 6:
+            titleWidth,titleHeight,titleFont=vicarioustext.gettextdimensions(draw, title, titleFontSize, True)
+            if titleWidth > width:
+                titleFontSize -= 1
+        overlayTextTopHeight = int(titleFontSize * 1.5)
+        draw.rectangle(xy=((0,0),(width,overlayTextTopHeight)),fill=overlayTextColorBG)
+        if titleFontSize > 6:
+            vicarioustext.drawcenteredtext(draw, title, titleFontSize, int(width/2), int(overlayTextTopHeight/2), overlayTextColorFG, True)
         else:
-            vicarioustext.drawlefttext(draw, title, titlefontsize, 0, 12, colorTextFG, True)
-        draw.rectangle(xy=((0,height-28),(width,height)),fill=colorTextBG)
-        vicarioustext.drawbottomlefttext(draw, "Artist:" + artist, 12, 0, height-12, colorTextFG)
-        vicarioustext.drawbottomlefttext(draw, "Edition:" + str(holding["edition"]) + "/" + str(holding["editions"]), 12, 0, height, colorTextFG)
-        vicarioustext.drawbottomrighttext(draw, "Owner:" + owner, 12, width, height, colorTextFG)
+            vicarioustext.drawlefttext(draw, title, titleFontSize, 0, int(overlayTextTopHeight/2), overlayTextColorFG, True)
+        overlayTextBottomHeight=28
+        metaFontSize=12
+        draw.rectangle(xy=((0,height-overlayTextBottomHeight),(width,height)),fill=overlayTextColorBG)
+        vicarioustext.drawbottomlefttext(draw, "Artist:" + artist, metaFontSize, 0, height-12, overlayTextColorFG)
+        editionText = "Edition:" + str(holding["edition"]) + "/" + str(holding["editions"])
+        if holding["editions"] == 1:
+            editionText = "Edition: One of a Kind"
+        vicarioustext.drawbottomlefttext(draw, editionText, metaFontSize, 0, height, overlayTextColorFG)
+        vicarioustext.drawbottomrighttext(draw, "Owner:" + owner, metaFontSize, width, height, overlayTextColorFG)
     # Show QR code?
-    if showQRCode:
+    if qrCodeEnabled:
         print("Creating QR code")
         slug=holding["slug"]
         raretoshiurl="https://raretoshi.com/a/" + slug
-        qr = qrcode.QRCode(box_size=1)
+        qr = qrcode.QRCode(box_size=qrCodeSize)
         qr.add_data(raretoshiurl)
         qr.make()
         img_qr = qr.make_image()
         # determine position for bottom left, but not over the artist info
         qrx = 0
         qry = height - img_qr.size[1]
-        if overlayText:
-            qry = qry - 28 #bottom overlay
+        if overlayTextEnabled:
+            qry = qry - overlayTextBottomHeight #bottom overlay
         qrpos = (qrx, qry)
         im.paste(img_qr, qrpos)
     # Combine and save
@@ -243,67 +256,76 @@ def createimage(width=480, height=320):
     print(f"Done. Saving image to {outputFile}")
     composite.save(outputFile)
     # Set new raretoshiuser?
-    if randomuser:
-        pickRaretoshiUser(raretoshiinfo)
+    if randomUserEnabled:
+        pickRaretoshiUser(raretoshiInfo)
 
 if __name__ == '__main__':
     # Defaults
     configFile="/home/bitcoin/nodeyez/config/raretoshi.json"
-    raretoshiuser="BTCTKVR"
+    raretoshiUser="BTCTKVR"
     outputFile="/home/bitcoin/images/raretoshi.png"
     dataDirectory="/home/bitcoin/nodeyez/data/"
-    colorTextBG=ImageColor.getrgb("#00000080")
-    colorTextFG=ImageColor.getrgb("#ffffff")
+    downloadConnectTimeout=5
+    downloadMaxTimeout=20
+    overlayTextEnabled=True
+    overlayTextColorBG=ImageColor.getrgb("#00000080")
+    overlayTextColorFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
-    stretchEdge=True
-    stretchSpacing=30
-    overlayText=True
-    randomuser=True
+    stretchEdgeEnabled=True
+    stretchEdgeSpacing=30
+    randomUserEnabled=True
+    randomUserInterval=300
     sleepInterval=30
-    showQRCode=True
-    userinfoInterval=3600
-    randomuserInterval=300
+    qrCodeEnabled=True
+    qrCodeSize=2
+    userInfoInterval=3600
     # Inits
-    userinfoLast=0
-    userinfo=json.loads('{"subject":{"holdings":[]}}')
-    randomuserLast=0
+    userInfoLast=0
+    userInfo=json.loads('{"subject":{"holdings":[]}}')
+    randomUserLast=0
     # Override config
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
         if "raretoshi" in config:
             config = config["raretoshi"]
-        if "raretoshiuser" in config:
-            raretoshiuser = config["raretoshiuser"]
+        if "raretoshiUser" in config:
+            raretoshiUser = config["raretoshiUser"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
         if "dataDirectory" in config:
             dataDirectory = config["dataDirectory"]
-        if "colorTextBG" in config:
-            colorTextBG = ImageColor.getrgb(config["colorTextBG"])
-        if "colorTextFG" in config:
-            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "downloadConnectTimeout" in config:
+            downloadConnectTimeout = config["downloadConnectTimeout"]
+        if "downloadMaxTimeout" in config:
+            downloadMaxTimeout = config["downloadMaxTimeout"]
+        if "overlayTextEnabled" in config:
+            overlayTextEnabled = config["overlayTextEnabled"]
+        if "overlayTextColorBG" in config:
+            overlayTextColorBG = ImageColor.getrgb(config["overlayTextColorBG"])
+        if "overlayTextColorFG" in config:
+            overlayTextColorFG = ImageColor.getrgb(config["overlayTextColorFG"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
-        if "stretchEdge" in config:
-            stretchEdge = config["stretchEdge"]
-        if "stretchSpacing" in config:
-            stretchSpacing = int(config["stretchSpacing"])
-        if "overlayText" in config:
-            overlayText = config["overlayText"]
-        if "randomuser" in config:
-            randomuser = config["randomuser"]
-        if "randomuserInterval" in config:
-            randomuserInterval = int(config["randomuserInterval"])
-            randomuserInterval = 30 if randomuserInterval < 30 else randomuserInterval # minimum 30 seconds, remote access
-        if "showQRCode" in config:
-            showQRCode = config["showQRCode"]
+        if "stretchEdgeEnabled" in config:
+            stretchEdgeEnabled = config["stretchEdgeEnabled"]
+        if "stretchEdgeSpacing" in config:
+            stretchEdgeSpacing = int(config["stretchEdgeSpacing"])
+        if "randomUserEnabled" in config:
+            randomUserEnabled = config["randomUserEnabled"]
+        if "randomUserInterval" in config:
+            randomUserInterval = int(config["randomUserInterval"])
+            randomUserInterval = 30 if randomUserInterval < 30 else randomUserInterval # minimum 30 seconds, remote access
+        if "qrCodeEnabled" in config:
+            qrCodeEnabled = config["qrCodeEnabled"]
+        if "qrCodeSize" in config:
+            qrCodeSize = config["qrCodeSize"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
-        if "userinfoInterval" in config:
-            userinfoInterval = int(config["userinfoInterval"])
-            userinfoInterval = 300 if userinfoInterval < 300 else userinfoInterval # minimum 5 minutes, remote access
+        if "userInfoInterval" in config:
+            userInfoInterval = int(config["userInfoInterval"])
+            userInfoInterval = 300 if userInfoInterval < 300 else userInfoInterval # minimum 5 minutes, remote access
     # Data directories
     if not os.path.exists(dataDirectory):
         os.makedirs(dataDirectory)
@@ -326,7 +348,7 @@ if __name__ == '__main__':
             print(f"   {arg0} valeriyageorg 3")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            raretoshiuser = sys.argv[1]
+            raretoshiUser = sys.argv[1]
             createimage()
         exit(0)
     # Loop
