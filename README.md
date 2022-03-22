@@ -31,7 +31,7 @@ in that environment.  This guide will need to be adapted in the following way
 - [ip address](#ipaddresspy)
 - [luxor pool](#luxor-mining-hashratepy)
 - [mempool blocks](#mempoolblockspy)
-- [miner status](#minerstatuspy)
+- [miner - braiins](#minerbraiinspy)
 - [raretoshi](#raretoshipy)
 - [ring of fire](#rofstatuspy)
 - [sats per usd](#satsperusdpy)
@@ -399,19 +399,19 @@ Run it `python3 scripts/mempoolblocks.py`
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
 
-### minerstatus.py
+### minerbraiins.py
 This python script is useful if you are using a miner running Braiins OS.  This is built with an 
 Antminer S9 in mind, so you may need to modify it for your particular miner.
 
-![sample image of miner status](./images/minerstatus.png)
+![sample image of miner status](./images/minerbraiins.png)
 
 Dependencies:
 - A Miner (script only tested on Antminer S9) running [BraiinsOS+](https://braiins.com/os/plus)
 
 You must override default configuration by copying the nodeyez/sample-config/minerstatus.json to nodeyez/config/minerstatus.json
-You must set the mineraddress and minerusername. You can optionally override the color settings.
+You must set the mineraddress. You can optionally override the color settings.
 
-Run it `python3 scripts/minerstatus.py`
+Run it `python3 scripts/minerbraiins.py`
 
 Press CTRL+C to stop the process to make any changes.  An image will be output to /home/bitcoin/images by default.
 
@@ -570,7 +570,7 @@ sudo systemctl enable nodeyez-f2pool.service
 sudo systemctl enable nodeyez-gasprice.service
 sudo systemctl enable nodeyez-ipaddress.service
 sudo systemctl enable nodeyez-mempoolblocks.service
-sudo systemctl enable nodeyez-minerstatus.service
+sudo systemctl enable nodeyez-minerbraiins.service
 sudo systemctl enable nodeyez-raretoshi.service
 sudo systemctl enable nodeyez-rofstatus.service
 sudo systemctl enable nodeyez-satsperusd.service
@@ -594,7 +594,7 @@ sudo systemctl start nodeyez-f2pool.service
 sudo systemctl start nodeyez-gasprice.service
 sudo systemctl start nodeyez-ipaddress.service
 sudo systemctl start nodeyez-mempoolblocks.service
-sudo systemctl start nodeyez-minerstatus.service
+sudo systemctl start nodeyez-minerbraiins.service
 sudo systemctl start nodeyez-raretoshi.service
 sudo systemctl start nodeyez-rofstatus.service
 sudo systemctl start nodeyez-satsperusd.service

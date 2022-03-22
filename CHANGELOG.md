@@ -9,6 +9,7 @@ New Panels and Enhancements
 - New panel: Raretoshi
 - New panel: Compass Mining Hardware
 - New panel: Gas Price
+- New panel: Miner - Braiins
 - Enhanced Compass Mining Status - now supports minor status level
 - Enhanced Miner Status - support configuration of multiple miners
 - Enhanced Raretoshi - Set download timeout to 5 seconds
@@ -29,6 +30,7 @@ Bugfixes
 - Fixed extension and urls for IPFS resources only available on raretoshi
 - Fixed bottomrighttext handler to allow specifying color
 - Fixed Miner Status panel support for password
+- Fixed ring of fire panel handling of background color
 
 ## 1.0.0-beta
 

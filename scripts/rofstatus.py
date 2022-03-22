@@ -214,7 +214,7 @@ def getcolorconfig(config, colorid, defaultcolor):
     return ImageColor.getrgb(defaultcolor)
 
 def setfontandcolor(config):
-    global colorcircle, coloroffline, coloronline, colorofflinetext, coloronlinetext, colortext, colortextshadow
+    global colorcircle, coloroffline, coloronline, colorofflinetext, coloronlinetext, colortext, colortextshadow, colorbackground
     # color config
     colorcircle = getcolorconfig(config, "circle", "#c0c0c0")
     coloroffline = getcolorconfig(config, "offline", "#ff4040")
