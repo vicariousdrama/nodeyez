@@ -2,6 +2,7 @@
 from PIL import Image, ImageDraw, ImageColor
 from os.path import exists
 import json
+import os
 import subprocess
 import sys
 import time
@@ -9,21 +10,25 @@ import vicarioustext
 
 def getMinerInfo():
     print(f"Retrieving miner info for {mineraddress}")
+    emptyresponse = '{"tunerstatus":[],"tempctrl":[],"fans":[],"temps":[],"summary":[],"pools":[]}'
     cmd = "echo '{\"command\":\"fans+tempctrl+temps+tunerstatus+summary+pools\"}' | nc " + mineraddress + " 4028 | jq ."
+    cmdoutput = ""
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
         print(f"error in getminerinfo: {e}")
-        cmdoutput = '{"tunerstatus":[],"tempctrl":[],"fans":[],"temps":[]}'
+        cmdoutput = emptyresponse
+    if len(cmdoutput) == 0:
+        cmdoutput = emptyresponse
     j = json.loads(cmdoutput)
     return j
 
 def getPowerInfo(minerinfo):
-    powerlimit = 1300
-    powerused = 1300
-    powerchain = 0
-    powerminer = 1300
-    powerunused = 0
+    powerlimit = 9999
+    powerused = 9999
+    powerchain = 9999
+    powerminer = 9999
+    powerunused = 9999
     if "tunerstatus" in minerinfo:
         for tunerstatus in minerinfo["tunerstatus"]:
             for innertuner in tunerstatus["TUNERSTATUS"]:
@@ -59,12 +64,12 @@ def getHashrate(minerinfo, historylength):
             for innersummary in summary["SUMMARY"]:
                 if innersummary["MHS 1m"] > hashrate:
                     hashrate = innersummary["MHS 1m"]
-                    if minerlabel not in minerhashhistory:
-                        minerhashhistory[minerlabel] = []
-                    hashrategh = int(hashrate/1000.0)
-                    minerhashhistory[minerlabel].append(hashrategh)
-                    if len(minerhashhistory[minerlabel]) > historylength:
-                        del minerhashhistory[minerlabel][0]
+    if minerkey not in minerhashhistory:
+        minerhashhistory[minerkey] = []
+    hashrategh = int(hashrate/1000.0)
+    minerhashhistory[minerkey].append(hashrategh)
+    while len(minerhashhistory[minerkey]) > historylength:
+        del minerhashhistory[minerkey][0]
     return formatHashrate(hashrate, hashdesc)
 
 def getHighestTemp(minerinfo):
@@ -76,7 +81,8 @@ def getHighestTemp(minerinfo):
                     highesttemp = innertemp["Board"]
                 if innertemp["Chip"] > highesttemp:
                     highesttemp = innertemp["Chip"]
-    return str(format(highesttemp, ".2f")) + "°C"
+    shighesttemp = "???" if highesttemp == 0 else str(format(highesttemp, ".2f")) + "°C"
+    return shighesttemp
 
 def getTempSettings(minerinfo):
     temptarget = temphot = tempdangerous = 0
@@ -86,39 +92,49 @@ def getTempSettings(minerinfo):
                 temptarget = innertempctrl["Target"]
                 temphot = innertempctrl["Hot"]
                 tempdangerous = innertempctrl["Dangerous"]
-    stemptarget = str(temptarget) + "°C"
-    stemphot = str(temphot) + "°C"
-    stempdangerous = str(tempdangerous) + "°C"
+    stemptarget = "???" if temptarget == 0 else str(temptarget) + "°C"
+    stemphot = "???" if temphot == 0 else str(temphot) + "°C"
+    stempdangerous = "???" if tempdangerous == 0 else str(tempdangerous) + "°C"
     return stemptarget, stemphot, stempdangerous
 
 def getTunerStatus(minerinfo):
     if "tunerstatus" in minerinfo:
+        if len(minerinfo["tunerstatus"]) == 0:
+            return "No response from miner"
         for tunerstatus in minerinfo["tunerstatus"]:
             for innertuner in tunerstatus["TUNERSTATUS"]:
                 for chainstatus in innertuner["TunerChainStatus"]:
                     status = chainstatus["Status"]
                     return status
-    return "Running"
+    return "Unknown Status"
 
 def renderPower(draw, minerinfo, left, top, width, height):
     groupFontSize = 18
     subtextFontSize = 14
     subtextPadding = 5
     powerlimit, powerused, powerchain, powerminer, powerunused = getPowerInfo(minerinfo)
-    print(f"  power used: {powerused} (chain: {powerchain}, miner: {powerminer})")
+    spowerlimit = "???" if powerlimit == 9999 else str(powerlimit) + "w"
+    spowerused = "???" if powerused == 9999 else str(powerused) + "w"
+    spowerchain = "???" if powerchain == 9999 else str(powerchain) + "w"
+    spowerminer = "???" if powerminer == 9999 else str(powerminer) + "w"
+    spowerunused = "???" if powerunused == 9999 else str(powerunused) + "w"
+    print(f"  power used: {spowerused} (chain: {spowerchain}, miner: {spowerminer})")
     vicarioustext.drawtoplefttext(draw, "Power: ", groupFontSize, left, top, colorTextFG, True)
-    vicarioustext.drawtoprighttext(draw, str(powerused) + "w", groupFontSize, left+width, top, colorTextFG, True)
+    vicarioustext.drawtoprighttext(draw, spowerused, groupFontSize, left+width, top, colorTextFG, True)
     vicarioustext.drawtoplefttext(draw, "~ chain power: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, str(powerchain) + "w", subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
+    vicarioustext.drawtoprighttext(draw, spowerchain, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "~ miner power: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 1.5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, str(powerminer) + "w", subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 1.5), colorTextFG)
+    vicarioustext.drawtoprighttext(draw, spowerminer, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 1.5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "unused power: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, str(powerunused) + "w", subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
+    vicarioustext.drawtoprighttext(draw, spowerunused, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "allocated: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 3.5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, str(powerlimit) + "w", subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 3.5), colorTextFG)
+    vicarioustext.drawtoprighttext(draw, spowerlimit, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 3.5), colorTextFG)
     # Tuner status
     ts = getTunerStatus(minerinfo)
-    vicarioustext.drawbottomlefttext(draw, ts, 12, left, top+height, colorTextFG)
+    colorTuner = colorTextFG
+    if ts == "No response from miner":
+        colorTuner = colorDangerous
+    vicarioustext.drawbottomlefttext(draw, ts, 12, left, top+height, colorTuner)
 
 def renderHashrate(draw, minerinfo, left, top, width, height):
     global minerhashhistory
@@ -126,9 +142,10 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
     subtextFontSize = 14
     tinyFontSize = 8
     subtextPadding = 15
+    dataPointSize = 3
     hashrate = getHashrate(minerinfo, width)
     print(f"  hashrate: {hashrate}")
-    print(f"  hashrate history: {minerhashhistory[minerlabel]}")
+    #print(f"  hashrate history: {minerhashhistory[minerkey]}")
     vicarioustext.drawtoplefttext(draw, "Hashrate: ", groupFontSize, left, top, colorTextFG, True)
     vicarioustext.drawtoprighttext(draw, hashrate, groupFontSize, left+width, top, colorTextFG, True)
     # Visualize hashrate over time.
@@ -136,14 +153,18 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
     hrgl = left
     hrgh = height - (groupFontSize + subtextPadding)
     hrgw = width
-    hrlo = hrhi = minerhashhistory[minerlabel][0]
+    hrlo = hrhi = minerhashhistory[minerkey][0]
     hrto = 0
     hrcn = 0
-    for hrv in minerhashhistory[minerlabel]:
-        hrcn = hrcn + 1
-        hrlo = hrv if hrv < hrlo else hrlo
-        hrhi = hrv if hrv > hrhi else hrhi
-        hrto = hrto + hrv
+    for hrv in minerhashhistory[minerkey]:
+        if hrv > -1:
+            hrcn = hrcn + 1
+            hrlo = hrv if ((hrv < hrlo) or (hrlo == -1)) else hrlo
+            hrhi = hrv if ((hrv > hrhi) or (hrhi == -1)) else hrhi
+            hrto = hrto + hrv
+    # box
+    boxfill = colorDangerous if minerhashhistory[minerkey][len(minerhashhistory[minerkey])-1] == 0 else colorBackground
+    draw.rectangle(xy=[(hrgl,hrgt),(hrgl+hrgw,hrgt+hrgh)],fill=boxfill,outline=colorHashrateBox,width=2)
     # avg line
     hrav = float(hrto) / float(hrcn)
     hravp = .5
@@ -160,37 +181,57 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
         hry = top + groupFontSize + subtextPadding + ((1.0 - hrp) * hrgh)
         lowliney = hry
         draw.line(xy=[(hrgl,hry),(hrgl+hrgw,hry)],fill=colorHot,width=1)
-    hrl = len(minerhashhistory[minerlabel])
+    hrl = len(minerhashhistory[minerkey])
     hri = hrl
-    hrx = left + width
-    # box
-    draw.rectangle(xy=[(hrgl,hrgt),(hrgl+hrgw,hrgt+hrgh)],outline=colorHashrateBox,width=2)
-    # time lines every 30 minutes
-    pixelsPer30Minutes = 30 * (60 / sleepInterval)
-    timeline = hrx
-    timeperiod = 0
-    while(timeline > left):
-        timeline = timeline - pixelsPer30Minutes
-        timeperiod = timeperiod + 1
-        if timeline > left:
-            draw.line(xy=[(timeline,hrgt-(subtextPadding/2)),(timeline,hrgt+hrgh)],fill=colorHashrateBox,width=1)
-            timetext = str(timeperiod * 30) + " mins"
-            vicarioustext.drawbottomlefttext(draw, timetext, tinyFontSize, timeline+2, hrgt - 1, colorTextFG)
+    hrx = left + width - dataPointSize
+    timelineBy30Mins = False
+    timelineBy60Ticks = True
+    if timelineBy30Mins:
+        # time lines every 30 minutes
+        pixelsPer30Minutes = 30 * (60 / sleepInterval)
+        timeline = hrx
+        timeperiod = 0
+        while(timeline > left):
+            timeline = timeline - pixelsPer30Minutes
+            timeperiod = timeperiod + 1
+            if timeline > left:
+                draw.line(xy=[(timeline,hrgt-(subtextPadding/2)),(timeline,hrgt+hrgh)],fill=colorHashrateBox,width=1)
+                timetext = str(timeperiod * 30) + " mins"
+                vicarioustext.drawbottomlefttext(draw, timetext, tinyFontSize, timeline+2, hrgt - 1, colorTextFG)
+    if timelineBy60Ticks:
+        # time lines every 60 ticks
+        timePeriodSize = 60
+        minutesPerLine = (timePeriodSize * sleepInterval) / 60
+        timeline = hrx
+        timeperiod = 0
+        while(timeline > left):
+            timeline = timeline - timePeriodSize
+            timeperiod = timeperiod + 1
+            if timeline > left:
+                draw.line(xy=[(timeline,hrgt-(subtextPadding/2)),(timeline,hrgt+hrgh)],fill=colorHashrateBox,width=1)
+                timetext = str(int(timeperiod * minutesPerLine)) + " mins"
+                vicarioustext.drawbottomlefttext(draw, timetext, tinyFontSize, timeline+2, hrgt - 1, colorTextFG)
     # data points
     while(hri > 0):
         hri = hri - 1
         hrx = hrx - 1
-        if hrx <= left:
+        if hrx <= left + dataPointSize:
             break
-        hrv = minerhashhistory[minerlabel][hri]
-        hrp = .5
-        if hrhi - hrlo > 0:
-            hrp = float(hrv - hrlo)/float(hrhi - hrlo)
-        hry = top + groupFontSize + subtextPadding + ((1.0 - hrp) * hrgh)
-        colorPlot = colorHashratePlot
-        colorPlot = colorHot if (hrv/hrav) < .80 else colorPlot
-        colorPlot = colorDangerous if (hrv/hrav) < .50 else colorPlot
-        draw.ellipse(xy=[(hrx-1,hry-1),(hrx,hry)],fill=colorPlot,width=2)
+        hrv = minerhashhistory[minerkey][hri]
+        if hrv > -1:
+            hrp = .5
+            if hrhi - hrlo > 0:
+                hrp = float(hrv - hrlo)/float(hrhi - hrlo)
+            hry = top + groupFontSize + subtextPadding + ((1.0 - hrp) * hrgh)
+            colorPlot = colorHashratePlot
+            if hrav > 0:
+                colorPlot = colorHot if (hrv/hrav) < .80 else colorPlot
+                colorPlot = colorDangerous if (hrv/hrav) < .50 else colorPlot
+            else:
+                colorPlot = colorDangerous
+            if boxfill == colorDangerous:
+                colorPlot = colorTextFG
+            draw.ellipse(xy=[(hrx-1,hry-1),(hrx+1,hry+1)],fill=colorPlot,outline=colorPlot,width=dataPointSize)
     # high label
     hrmaxt = "Max: " + formatHashrate(hrhi, "Gh/s")
     tw,th,tf=vicarioustext.gettextdimensions(draw, hrmaxt, tinyFontSize, False)
@@ -209,7 +250,7 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
         # as warning
         lowlinet = "Low: " + formatHashrate(lowlinev, "Gh/s")
         draw.rectangle(xy=[(hrgl+1,lowliney+1),(hrgl+tw+2,lowliney+th+2)],outline=colorHashrateBox,fill=colorHashrateBox,width=1)
-        vicarioustext.drawtoplefttext(draw, lowlinett, tinyFontSize, hrgl + 2, lowliney + 1, colorHot)
+        vicarioustext.drawtoplefttext(draw, lowlinet, tinyFontSize, hrgl + 2, lowliney + 1, colorHot)
     else:
         # as floor
         hrmint = "Min: " + formatHashrate(hrlo, "Gh/s")
@@ -253,9 +294,10 @@ def renderFans(draw, minerinfo, left, top, width, height):
                 y = int(top + groupFontSize + (subtextFontSize * (float(currentfan["ID"]) + float(.5))))
                 vicarioustext.drawtoplefttext(draw, "fan no. " + fanid, subtextFontSize, left + subtextPadding, y, colorTextFG)
                 vicarioustext.drawtoprighttext(draw, str(fanrpm) + " RPM", subtextFontSize, left+width, y, colorTextFG)
-    print(f"  fan speed: {fanspeed}")
+    sfanspeed = "???" if fanspeed == 0 else str(fanspeed) + "%"
+    print(f"  fan speed: {sfanspeed}")
     vicarioustext.drawtoplefttext(draw, "Fan Speed: ", groupFontSize, left, top, colorTextFG, True)
-    vicarioustext.drawtoprighttext(draw, str(fanspeed) + "%", groupFontSize, left+width, top, colorTextFG, True)
+    vicarioustext.drawtoprighttext(draw, sfanspeed, groupFontSize, left+width, top, colorTextFG, True)
 
 def renderPoolInfo(draw, minerinfo, left, top, width, height):
     groupFontSize = 16
@@ -282,9 +324,6 @@ def renderPoolInfo(draw, minerinfo, left, top, width, height):
                 vicarioustext.drawtoprighttext(draw, poolstatus, subtextFontSize, left+width, y, colorTextFG)
     vicarioustext.drawtoplefttext(draw, "Pool Info: ", groupFontSize, left, top, colorTextFG, True)
 
-
-
-
 def createimage(minerinfo, width=480, height=320):
     headerheight = 30
     footerheight = 15
@@ -293,7 +332,7 @@ def createimage(minerinfo, width=480, height=320):
     fanheight = (height - headerheight - footerheight) * .41
     quadheight = int((height - headerheight - footerheight) * .5)
     quadwidth = int(width/2)
-    quadpad = 10
+    quadpad = 5
     innerquadwidth = quadwidth-(quadpad*2)
     innerquadheight = quadheight-(quadpad*2)
     leftquadwidth = int(width * .40)
@@ -314,9 +353,9 @@ def createimage(minerinfo, width=480, height=320):
     # Input Temperature
     renderTemperature(draw, minerinfo, 0+quadpad, headerheight+topquadheight+quadpad, leftquadwidth-(quadpad*2), bottomquadheight-(quadpad*2))
     # Output Fans
-    renderFans(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.55), bottomquadheight-(quadpad*2))
+    renderFans(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.50), bottomquadheight-(quadpad*2))
     # Output Pool
-    renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad+int((rightquadwidth-(quadpad))*.55), headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.45), bottomquadheight-(quadpad*2))
+    renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad+int((rightquadwidth-(quadpad))*.50)+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*3))*.50), bottomquadheight-(quadpad*2))
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
@@ -324,23 +363,48 @@ def createimage(minerinfo, width=480, height=320):
     vicarioustext.drawbottomlefttext(draw, "Powered by Braiins", 14, 0, height, colorBraiins)
     # Save to file
     outputFileMiner = outputFile
-    if len(minerlabel) > 0:
-        outputFileMiner = outputFileMiner.replace(".png", "-" + minerlabel + ".png")
+    outputFileMiner = outputFileMiner.replace(".png", "-" + mineraddress + ".png")
     im.save(outputFileMiner)
 
+def getMinerHashHistoryFilename():
+    return dataDirectory + "minerbraiins/minerhashhistory.json"
+
+def loadMinerHashHistory():
+    filename = getMinerHashHistoryFilename()
+    if not exists(filename):
+        return {}
+    mtime = int(os.path.getmtime(filename))
+    currenttime = int(time.time())
+    diff = currenttime - mtime
+    emptyTicks = int(diff / sleepInterval)
+    print(f"Loading existing hash history")
+    with open(filename) as f:
+        minerhashhistory = json.load(f)
+    if emptyTicks > 0:
+        print(f"Adding {emptyTicks} entries of empty hash history to demarcate time since last run.")
+        for key in minerhashhistory:
+            for k in range(emptyTicks):
+                minerhashhistory[key].append(-1)
+    return minerhashhistory
+
+def saveMinerHashHistory(minerhashhistory):
+    with open(getMinerHashHistoryFilename(), "w") as f:
+        json.dump(minerhashhistory,f)
 
 def isValidMiner():
     if len(mineraddress) == 0:
         return False
     if "miners" in config:
-        if len(config["miners"]) > 1 and len(minerlabel) == 0:
-            return False
+        for miner in config["miners"]:
+            if len(miner["mineraddress"]) == 0:
+                return False
     return True
 
 if __name__ == '__main__':
     # Defaults
     configFile="/home/bitcoin/nodeyez/config/minerbraiins.json"
     outputFile="/home/bitcoin/images/minerbraiins.png"
+    dataDirectory="/home/bitcoin/nodeyez/data/"
     minerlabel=""
     mineraddress=""
     sleepInterval=30
@@ -352,7 +416,8 @@ if __name__ == '__main__':
     colorHashrateBox=ImageColor.getrgb("#404040")
     colorHashratePlot=ImageColor.getrgb("#00ff00")
     # Inits
-    minerhashhistory = {}
+    lastSaved = 0
+    saveInterval = 600
     # Require config
     if not exists(configFile):
         print(f"You need to make a config file at {configFile} to set your miner address and login information")
@@ -365,6 +430,8 @@ if __name__ == '__main__':
             config = config["minerstatus"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
+        if "dataDirectory" in config:
+            dataDirectory = config["dataDirectory"]
         if "minerlabel" in config:
             minerlabel = config["minerlabel"]
         if "mineraddress" in config:
@@ -384,6 +451,11 @@ if __name__ == '__main__':
             colorHashrateBox = ImageColor.getrgb(config["colorHashrateBox"])
         if "colorHashratePlot" in config:
             colorHashratePlot = ImageColor.getrgb(config["colorHashratePlot"])
+    # Data directories
+    if not exists(dataDirectory):
+        os.makedirs(dataDirectory)
+    if not exists(dataDirectory + "minerbraiins/"):
+        os.makedirs(dataDirectory + "minerbraiins/")
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
@@ -392,6 +464,8 @@ if __name__ == '__main__':
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"You may specify a custom configuration file at {configFile}")
         exit(0)
+    # Load any existing hashrate history
+    minerhashhistory = loadMinerHashHistory()
     # Loop
     while True:
         if "miners" in config:
@@ -399,20 +473,27 @@ if __name__ == '__main__':
             for miner in miners:
                 minerlabel=""
                 mineraddress=""
-                if "minerlabel" in miner:
-                    minerlabel = miner["minerlabel"]
                 if "mineraddress" in miner:
                     mineraddress = miner["mineraddress"]
+                if "minerlabel" in miner:
+                    minerlabel = miner["minerlabel"]
+                else:
+                    minerlabel = "Miner: " + mineraddress
                 if isValidMiner():
+                    minerkey = mineraddress
                     minerinfo = getMinerInfo()
                     createimage(minerinfo)
                 else:
                     print(f"One or more miners is missing information in {configFile}. Skipping.")
         else:
             if isValidMiner():
+                minerkey = mineraddress
                 minerinfo = getMinerInfo()
                 createimage(minerinfo)
             else:
                 print(f"Inadequate configuration for miner. Set minerlabel and mineraddress for each miner in {configFile}.")
                 exit(1)
+        if int(time.time()) > lastSaved + saveInterval:
+            saveMinerHashHistory(minerhashhistory)
+            lastSaved = int(time.time())
         time.sleep(sleepInterval)
