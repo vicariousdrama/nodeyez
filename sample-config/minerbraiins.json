@@ -14,7 +14,40 @@
       "minerlabel": "",
       "mineraddress.comment": "(required) The ip or host address for your miner on your local lan, accessible from the host running the minerstatus script",
       "mineraddress.type": "string",
-      "mineraddress": "127.0.0.1"
+      "mineraddress": "127.0.0.1",
+      "expectations.comment": "An optional structure defining expectations to monitor for. A setting out of range will cause a warning to be rendered.",
+      "expectations.type": "object",
+      "expectations": {
+        "power.comment": "An optional structure defining power expectations to monitor for",
+        "power.type": "object",
+        "power": {
+          "low.comment": "An optional property to define the low end of expected power range, in watts",
+          "low.type": "integer",
+          "low": 800,
+          "high.comment": "An optional property to define the high end of expected power range, in watts",
+          "high.type": "integer",
+          "high": 1000
+        },
+        "hashrate.comment": "An optional structure defining hashrate expectations to monitor for",
+        "hashrate.type": "object",
+        "hashrate": {
+          "low.comment": "An optional property to define the low end of expected hashrate, in MH/s",
+          "low.type": "integer",
+          "low": 11500000
+        },
+        "pools.comment": "An optional array of pool definitions of expected pools to send hashrate to",
+        "pools.type": "array",
+        "pools": [
+          {
+            "url.comment": "The url for a pool that is expected to be configured",
+            "url.type": "string",
+            "url": "stratum2+tcp://v2.us-east.stratum.slushpool.com",
+            "user.comment": "The user for a pool that is expected to be configured",
+            "user.type": "string",
+            "user": "YourUsername.YourWorkername"
+          }
+        ]
+      }
     }
   ],
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",

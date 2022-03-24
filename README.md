@@ -7,6 +7,8 @@ representing different state about your node, market rates, mining and more.
 The images can be easily displayed either on an attached screen using the simple [slideshow.sh](./scripts/slideshow.sh) 
 script or service, or to a [web site dashboard](#displaying-to-a-website-dashboard).
 
+[jump to the quick menu of panels](#quick-menu-of-info-panels)
+
 STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled exceptions may be raised
 that cause related wrapper service to terminate.  Please test and provide feedback.  
 
@@ -15,6 +17,27 @@ in that environment.  This guide will need to be adapted in the following way
 - references to `admin` should be changed to whichever account you would SSH into the system to do administrative tasks
 - references to `bitcoin` user should be changed to whichever account has the bitcoin and lnd macaroon access to call bitcoin-cli and lncli
 - Because of username differences, paths in scripts may need to be altered for data directories, image output paths, and nginx dashboard paths
+
+__Attention MyNodeBTC users__: These scripts are actively developed on a MyNodeBTC instance so
+if you follow along it should work for you with minimal changes.  If you do find something that
+does not work, please log an issue.  One known issue is that the /home/bitcoin folder for the
+MyNodeBTC instance appears to run off the microsd card.  This could potentially cause problems
+for activity opening/writing/closing files for the images over time.  
+
+__Attention Raspibolt users__: These scripts were initially developed on a Raspibolt with either the
+admin or pi user for sudo, and bitcoin user as the one running all the scripts.  These scripts should
+all work just fine but again reach out if there are issues.
+
+__Attention Raspiblitz users__: The screen on the raspiblitz is one of the reasons this project got
+started.  If you already started with a screen on the raspiblitz then in theory you should have the
+necessary config settings at bootup.  However, I dont know whether there would be conflicts for the
+console output.  Luckily you can still run the service scripts without the slideshow if needed.
+
+__Attention PiZero users__: Yes, you can run some of the scripts on a Raspberry Pi Zero if you want
+to setup an auxiliary device.  Obviously the scripts will run much slower then they would on a more
+resource capable Raspberry Pi 4.  Futhermore, unless you're attaching an external SSD or other
+storage, you should be mindful of the same issues mentioned above for MyNodeBTC regarding many
+read/writes to the microsd card.
 
 ![image strip](./images/nodeyez-4x4-layout.png)
 
@@ -110,7 +133,8 @@ The one I've used I got from a local electronics store.  It looks like this and 
 You can get one from amazon [here](https://www.amazon.com/gp/product/B07V9WW96D) 
   or [here](https://www.amazon.com/gp/product/B07L414LZP)
   or [here](https://www.amazon.com/gp/product/B08KZXSJW2)
-  or [here](https://www.amazon.com/gp/product/B083C12N57)
+  or [here](https://www.amazon.com/gp/product/B083C12N57).  If you can't source one from any of the above, reach
+out to me on Twitter.
 
 
 ![image of the 3.5" TFT screen for raspberry pi](./images/xpt2046-tft-piscreen.jpg)
