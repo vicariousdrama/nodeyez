@@ -167,6 +167,7 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
     draw.rectangle(xy=[(hrgl,hrgt),(hrgl+hrgw,hrgt+hrgh)],fill=boxfill,outline=colorHashrateBox,width=2)
     # avg line
     hrav = float(hrto) / float(hrcn)
+    hrlo = (hrav * .93) if (hrav * .93) < hrlo else hrlo
     hravp = .5
     if hrhi - hrlo > 0:
         hravp = float(hrav - hrlo)/float(hrhi - hrlo)
@@ -175,21 +176,19 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
     draw.line(xy=[(hrgl,hry),(hrgl+hrgw,hry)],fill=colorHashrateBox,width=1)
     # low line
     lowliney = 0
-    lowlinev = (hrav * .80)
+    lowlinev = (hrav * .95)
+    lowlinecolor = colorHot
     if lowlinev > hrlo:
         hrp = float(lowlinev - hrlo)/float(hrhi-hrlo)
         hry = top + groupFontSize + subtextPadding + ((1.0 - hrp) * hrgh)
         lowliney = hry
-        draw.line(xy=[(hrgl,hry),(hrgl+hrgw,hry)],fill=colorHot,width=1)
-    hrl = len(minerhashhistory[minerkey])
-    hri = hrl
-    hrx = left + width - dataPointSize
+        draw.line(xy=[(hrgl,hry),(hrgl+hrgw,hry)],fill=lowlinecolor,width=1)
     timelineBy30Mins = False
     timelineBy60Ticks = True
     if timelineBy30Mins:
         # time lines every 30 minutes
         pixelsPer30Minutes = 30 * (60 / sleepInterval)
-        timeline = hrx
+        timeline = left + width - dataPointSize
         timeperiod = 0
         while(timeline > left):
             timeline = timeline - pixelsPer30Minutes
@@ -202,7 +201,7 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
         # time lines every 60 ticks
         timePeriodSize = 60
         minutesPerLine = (timePeriodSize * sleepInterval) / 60
-        timeline = hrx
+        timeline = left + width - dataPointSize
         timeperiod = 0
         while(timeline > left):
             timeline = timeline - timePeriodSize
@@ -212,6 +211,12 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
                 timetext = str(int(timeperiod * minutesPerLine)) + " mins"
                 vicarioustext.drawbottomlefttext(draw, timetext, tinyFontSize, timeline+2, hrgt - 1, colorTextFG)
     # data points
+    hrl = len(minerhashhistory[minerkey])
+    hri = hrl
+    hrx = left + width - dataPointSize
+    masize = 20
+    oldmax = -1
+    oldmay = -1
     while(hri > 0):
         hri = hri - 1
         hrx = hrx - 1
@@ -232,6 +237,25 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
             if boxfill == colorDangerous:
                 colorPlot = colorTextFG
             draw.ellipse(xy=[(hrx-1,hry-1),(hrx+1,hry+1)],fill=colorPlot,outline=colorPlot,width=dataPointSize)
+        # moving average
+        if True:
+            if hri > masize:
+                matotal = 0
+                macount = 0
+                for mahri in range(masize):
+                    maval = minerhashhistory[minerkey][hri - mahri]
+                    if maval > -1:
+                        macount = macount + 1
+                        matotal = matotal + maval
+                if macount > 0:
+                    mavg = int(matotal / macount)
+                    mavgp = float(mavg - hrlo)/float(hrhi-hrlo)
+                    mavy = top + groupFontSize + subtextPadding + ((1.0 - mavgp) * hrgh)
+                    if oldmay != -1:
+                        draw.line(xy=[(oldmax,oldmay),(hrx,mavy)],fill=colorHashrateMA,width=dataPointSize)
+                    oldmax = hrx
+                    oldmay = mavy
+
     # high label
     hrmaxt = "Max: " + formatHashrate(hrhi, "Gh/s")
     tw,th,tf=vicarioustext.gettextdimensions(draw, hrmaxt, tinyFontSize, False)
@@ -250,7 +274,7 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
         # as warning
         lowlinet = "Low: " + formatHashrate(lowlinev, "Gh/s")
         draw.rectangle(xy=[(hrgl+1,lowliney+1),(hrgl+tw+2,lowliney+th+2)],outline=colorHashrateBox,fill=colorHashrateBox,width=1)
-        vicarioustext.drawtoplefttext(draw, lowlinet, tinyFontSize, hrgl + 2, lowliney + 1, colorHot)
+        vicarioustext.drawtoplefttext(draw, lowlinet, tinyFontSize, hrgl + 2, lowliney + 1, lowlinecolor)
     else:
         # as floor
         hrmint = "Min: " + formatHashrate(hrlo, "Gh/s")
@@ -324,6 +348,83 @@ def renderPoolInfo(draw, minerinfo, left, top, width, height):
                 vicarioustext.drawtoprighttext(draw, poolstatus, subtextFontSize, left+width, y, colorTextFG)
     vicarioustext.drawtoplefttext(draw, "Pool Info: ", groupFontSize, left, top, colorTextFG, True)
 
+def renderFailedExpectations(draw, minerinfo, left, top, width, height):
+    warning = ""
+    warning2 = ""
+    textFontSize = 12
+    if minerexpectations == {}:
+        return
+    if "power" in minerexpectations:
+        powerlimit = 0
+        if "tunerstatus" in minerinfo:
+            for tunerstatus in minerinfo["tunerstatus"]:
+                for innertuner in tunerstatus["TUNERSTATUS"]:
+                    powerlimit = innertuner["PowerLimit"]
+        if "low" in minerexpectations["power"]:
+            lowpowerthreshold = minerexpectations["power"]["low"]
+            if lowpowerthreshold > powerlimit:
+                warning = "Power configured below expected threshold of " + str(lowpowerthreshold)
+        if "high" in minerexpectations["power"]:
+            highpowerthreshold = minerexpectations["power"]["high"]
+            if highpowerthreshold < powerlimit:
+                warning = "Power configured above expected threshold of " + str(highpowerthreshold)
+    if "hashrate" in minerexpectations:
+        hashrate = 0
+        if "summary" in minerinfo:
+            for summary in minerinfo["summary"]:
+                for innersummary in summary["SUMMARY"]:
+                    if innersummary["MHS 1m"] > hashrate:
+                        hashrate = innersummary["MHS 1m"]
+        if "low" in minerexpectations["hashrate"]:
+            lowhashratethreshold = minerexpectations["hashrate"]["low"]
+            if lowhashratethreshold > hashrate:
+                warning = "Hashrate is below expected threshold of " + str(lowhashratethreshold)
+    if "pools" in minerexpectations:
+        for exppool in minerexpectations["pools"]:
+            poolfound = False
+            urlvalue = ""
+            uservalue = ""
+            if "url" in exppool:
+                urlvalue = exppool["url"]
+            if "user" in exppool:
+                uservalue = exppool["user"]
+            if "pools" in minerinfo:
+                for pool in minerinfo["pools"]:
+                    for currentpool in pool["POOLS"]:
+                        poolurl = currentpool["URL"]
+                        pooluser = currentpool["User"]
+                        if (urlvalue == poolurl) and (uservalue == pooluser):
+                            poolfound = True
+            if not poolfound:
+                warning = "Expected pool not found having user " + uservalue
+                warning2 = " and url " + urlvalue
+        if "pools" in minerinfo:
+            for pool in minerinfo["pools"]:
+                for currentpool in pool["POOLS"]:
+                    poolurl = currentpool["URL"]
+                    pooluser = currentpool["User"]
+                    poolfound = False
+                    for exppool in minerexpectations["pools"]:
+                        if "url" in exppool:
+                            urlvalue = exppool["url"]
+                        if "user" in exppool:
+                            uservalue = exppool["user"]
+                        if (urlvalue == poolurl) and (uservalue == pooluser):
+                            poolfound = True
+                    if not poolfound:
+                        warning = "Miner has pool configured that is not expected"
+                        warning2 = poolurl + " with user " + pooluser
+    # This used to force output when testing
+    #warning = "Miner has pool configured that is not expected"
+    #warning2 = "stratum2+tcp://v2.us-east.stratum.slushpool.com with user WhoDisUser.filthyardvark99"
+    if len(warning) > 0:
+        print(f"WARNING: {warning}")
+        draw.rectangle(xy=[(left,top),(left+width,top+height)],outline=colorDangerous,fill=colorDangerous,width=1)
+        vicarioustext.drawtoplefttext(draw, warning, textFontSize, left, top, colorTextFG)
+    if len(warning2) > 0:
+        print(f"WARNING: {warning2}")
+        vicarioustext.drawbottomlefttext(draw, warning2, textFontSize, left, top+height, colorTextFG)
+
 def createimage(minerinfo, width=480, height=320):
     headerheight = 30
     footerheight = 15
@@ -356,6 +457,7 @@ def createimage(minerinfo, width=480, height=320):
     renderFans(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.50), bottomquadheight-(quadpad*2))
     # Output Pool
     renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad+int((rightquadwidth-(quadpad))*.50)+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*3))*.50), bottomquadheight-(quadpad*2))
+    renderFailedExpectations(draw, minerinfo, quadpad, height-footerheight-headerheight, width-(quadpad*2), headerheight)
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
@@ -415,9 +517,11 @@ if __name__ == '__main__':
     colorBackground=ImageColor.getrgb("#000000")
     colorHashrateBox=ImageColor.getrgb("#404040")
     colorHashratePlot=ImageColor.getrgb("#00ff00")
+    colorHashrateMA=ImageColor.getrgb("#c0c0c0")
     # Inits
     lastSaved = 0
     saveInterval = 600
+    minerexpectations = {}
     # Require config
     if not exists(configFile):
         print(f"You need to make a config file at {configFile} to set your miner address and login information")
@@ -451,6 +555,8 @@ if __name__ == '__main__':
             colorHashrateBox = ImageColor.getrgb(config["colorHashrateBox"])
         if "colorHashratePlot" in config:
             colorHashratePlot = ImageColor.getrgb(config["colorHashratePlot"])
+        if "colorHashrateMA" in config:
+            colorHashrateMA = ImageColor.getrgb(config["colorHashrateMA"])
     # Data directories
     if not exists(dataDirectory):
         os.makedirs(dataDirectory)
@@ -479,6 +585,10 @@ if __name__ == '__main__':
                     minerlabel = miner["minerlabel"]
                 else:
                     minerlabel = "Miner: " + mineraddress
+                if "expectations" in miner:
+                    minerexpectations = miner["expectations"]
+                else:
+                    minerexpectations = {}
                 if isValidMiner():
                     minerkey = mineraddress
                     minerinfo = getMinerInfo()
