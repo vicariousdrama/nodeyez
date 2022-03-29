@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 from PIL import Image, ImageDraw
 
-sourceFile="/home/bitcoin/nodeyez/images/nodeyez-catseyes.png"
-outputFile="/home/bitcoin/images/logo.png"
+sourceFile="/home/nodeyez/nodeyez/images/nodeyez-catseyes.png"
+outputFile="/home/nodeyez/nodeyez/imageoutput/logo.png"
 stretchEdge=True
 
 def createimage(width=480, height=320):

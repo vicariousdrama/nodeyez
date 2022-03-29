@@ -164,8 +164,8 @@ def getmemusage(memtype,label):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/sysinfo.json"
-    outputFile="/home/bitcoin/images/sysinfo.png"
+    configFile="/home/nodeyez/nodeyez/config/sysinfo.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/sysinfo.png"
     sleepInterval=30
     colorHeader=ImageColor.getrgb("#ffffff")
     colorThermometerUnfilled=ImageColor.getrgb("#000000")

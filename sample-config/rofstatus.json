@@ -10,7 +10,7 @@
     "colors": {
       "circle.comment": "The default color of the outer circle of the ring expressed as a Hexadecimal color specifier",
       "circle.type": "string",
-      "circle": "#404040",
+      "circle": "#202020",
       "offline.comment": "The default color of a node when its offline expressed as a Hexadecimal color specifier",
       "offline.type": "string",
       "offline": "#ff4040",
@@ -46,7 +46,7 @@
       "shortlabel": "Sample",
       "imagefilename.comment": "The path to save the generated image for this ring",
       "imagefilename.type": "string",
-      "imagefilename": "/home/bitcoin/images/rof-sample.png",
+      "imagefilename": "/home/nodeyez/nodeyez/imageoutput/rof-sample.png",
       "telegramgroup.comment": "An arbitrary field value for information about the ring",
       "telegramgroup.type": "string",
       "telegramgroup": "",
@@ -61,7 +61,7 @@
         "colors": {
           "circle.comment": "The color of the outer circle of the ring expressed as a Hexadecimal color specifier",
           "circle.type": "string",
-          "circle": "#404040",
+          "circle": "#202020",
           "offline.comment": "The color of a node when it is offline expressed as a Hexadecimal color specifier",
           "offline.type": "string",
           "offline": "#ff4040",

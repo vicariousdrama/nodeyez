@@ -182,8 +182,8 @@ def createimage(accountinfo, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/f2pool.json"
-    outputFile = "/home/bitcoin/images/f2pool.png"
+    configFile="/home/nodeyez/nodeyez/config/f2pool.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/f2pool.png"
     account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
     hashrateLowThreshold = 60000000000000 # 60 TH is 60,000,000,000,000 or 60 followed by 12 zeros
     sleepInterval=600

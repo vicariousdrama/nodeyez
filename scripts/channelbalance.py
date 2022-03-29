@@ -69,8 +69,8 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, width=480, heigh
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/bitcoin/nodeyez/config/channelbalance.json"
-    outputFile = "/home/bitcoin/images/channelbalance.png"
+    configFile = "/home/nodeyez/nodeyez/config/channelbalance.json"
+    outputFile = "/home/nodeyez/nodeyez/imageoutput/channelbalance.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     colorBarOutline=ImageColor.getrgb("#770044")

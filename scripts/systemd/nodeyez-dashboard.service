@@ -7,9 +7,9 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/images
+WorkingDirectory=/home/nodeyez/nodeyez/imageoutput
 ExecStart=/usr/bin/python2.7 -m SimpleHTTPServer 3906
-User=bitcoin
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

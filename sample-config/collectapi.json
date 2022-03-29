@@ -1,7 +1,4 @@
 {
-  "apikey.comment": "Sign up for an account at collectapi.com, then get your API key at collectapi.com/auth",
-  "apikey.type": "string",
-  "apikey": ""
   "dailyretrieve.comment": "an array of API calls to be made daily",
   "dailyretrieve.type": "array",
   "dailyretrieve": [
@@ -12,12 +9,26 @@
        "headers.comment": "Headers to be included in the request.",
        "headers.type": "array",
        "headers": [
-         "authorization: apikey someapikey:valueishere. After signing up for an accout at collectapi.com, subscribe to free tier and get your api key",
+         "authorization: apikey someapikey:valueishere",
          "content-type: application/json"
        ],
        "saveToSubfolder.comment": "subfolder in the data directory under collectapi to store results",
        "saveToSubfolder.type": "string",
        "saveToSubfolder": "gasprice/allusaprice"
+    },
+    {
+       "url.comment": "The url to be called",
+       "url.type": "string",
+       "url": "https://api.collectapi.com/gasPrice/canada",
+       "headers.comment": "Headers to be included in the request.",
+       "headers.type": "array",
+       "headers": [
+         "authorization: apikey someapikey:valueishere",
+         "content-type: application/json"
+       ],
+       "saveToSubfolder.comment": "subfolder in the data directory under collectapi to store results",
+       "saveToSubfolder.type": "string",
+       "saveToSubfolder": "gasprice/canada"
     }
   ]
 }

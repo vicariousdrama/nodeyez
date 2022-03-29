@@ -5,11 +5,13 @@
 Description=Image(s) for Lightning Channel Balances
 StartLimitIntervalSec=600
 StartLimitBurst=2
+Wants=lnd.service
+After=lnd.service
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/channelbalance.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/channelbalance.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

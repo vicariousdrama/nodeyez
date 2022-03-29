@@ -9,9 +9,9 @@ New Panels and Enhancements
 - New panel: Raretoshi
 - New panel: Compass Mining Hardware
 - New panel: Gas Price
-- New panel: Miner - Braiins
+- Renamed panel: Miner - Braiins (replaces Miner Status panel)
 - Enhanced Compass Mining Status - now supports minor status level
-- Enhanced Miner Status - support configuration of multiple miners
+- Enhanced Miner Brains - support multiple miners, new look and feel
 - Enhanced Raretoshi - Set download timeout to 5 seconds
 - Enhanced Daily Data Retrieval - support for slushpool data 
 - Enhanced Raretoshi panel to allow for traversing user randomly
@@ -22,6 +22,9 @@ General
 - New script to retrieve/parse compass mining historical status
 - Added rudimentary mock-data support for Bitcoin and LND calls
 - Added support for colorBackground in panels via config
+- Improve guidance for different node types (Raspibolt, Raspiblitz, MyNodeBTC, Umbrel)
+- Setup now using dedicated nodeyez user with preference to external hard drive for home folder
+- Lots of new documentation
 
 Bugfixes
 - Fixed some loop timeouts

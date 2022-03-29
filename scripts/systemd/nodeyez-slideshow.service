@@ -7,8 +7,8 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/slideshow.sh
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/slideshow.sh
 User=root
 Restart=on-failure
 RestartSec=30

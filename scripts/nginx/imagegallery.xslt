@@ -10,14 +10,14 @@
     <style>
     @media only screen and (min-width: 1025px) {
         img {
-            width: 33%;
+            width: 49%;
             height: auto;
         }
         img.imageinlist {
             display: inline;
             height: auto;
-            width: 33%;
-            margin: 1px;
+            width: 49%;
+            margin: 0px;
             vertical-align: bottom;
         }
         #imagelist {

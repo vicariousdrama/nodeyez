@@ -1,10 +1,10 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/minerstatus.png",
-  "dataDirectory.comment": "The base path for the directory to store a local cookie",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/minerbraiins.png",
+  "dataDirectory.comment": "The base path for the directory to store hashrate history",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/bitcoin/nodeyez/data/",
+  "dataDirectory": "/home/nodeyez/nodeyez/data/",
   "miners.comment": "An array of one or more miners",
   "miners.type": "array",
   "miners": [
@@ -52,7 +52,7 @@
   ],
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
   "sleepInterval.type": "integer",
-  "sleepInterval": 30,
+  "sleepInterval": 60,
   "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
   "colorTextFG.type": "string",
   "colorTextFG": "#ffffff",
@@ -70,6 +70,9 @@
   "colorHashrateBox": "#202020",
   "colorHashratePlot.comment": "The color to plot each hashrate value within the hashrate graph expressed as a Hexadecimal color specifier",
   "colorHashratePlot.type": "string",
-  "colorHashratePlot": "#2f3fc5"
+  "colorHashratePlot": "#2f3fc5",
+  "colorHashrateMA.comment": "The color to draw the hashrate moving average line expressed as a Hexadecimal color specifier",
+  "colorHashrateMA.type": "string",
+  "colorhashrateMA": "#40ff40"
 }
 

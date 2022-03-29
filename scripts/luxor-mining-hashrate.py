@@ -194,8 +194,8 @@ def createimage(hashrate_history, date_prefix, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/luxor.json"
-    outputFile = "/home/bitcoin/images/luxor-mining-hashrate.png"
+    configFile="/home/nodeyez/nodeyez/config/luxor.json"
+    outputFile = "/home/nodeyez/nodeyez/imageoutput/luxor-mining-hashrate.png"
     apikey = "--configure-in--nodeyez/config/luxor.json"
     username = "--configure-in--nodeyez/config/luxor.json"
     subheadingText = "S19 Pro 110TH"

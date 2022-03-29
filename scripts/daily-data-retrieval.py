@@ -265,8 +265,8 @@ if __name__ == '__main__':
     enableF2Pool = True
     enableLuxor = True
     enableSlushpool = True
-    dataDirectory="/home/bitcoin/nodeyez/data/"
-    configFolder="/home/bitcoin/nodeyez/config/"
+    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFolder="/home/nodeyez/nodeyez/config/"
     configFileBisq=configFolder + "satsperusd.json"
     configFileCollectAPI=configFolder + "collectapi.json"
     configFileCompassHardware=configFolder + "compassmininghardware.json"

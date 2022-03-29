@@ -31,13 +31,13 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/utcclock.json"
-    outputFile="/home/bitcoin/images/utcclock.png"
+    configFile="/home/nodeyez/nodeyez/config/utcclock.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/utcclock.png"
     sleepInterval=30
-    colorTextDayOfWeek=ImageColor.getrgb("#ffffff")
-    colorTextDate=ImageColor.getrgb("#ffffff")
-    colorTextTime=ImageColor.getrgb("#ffffff")
-    colorBackground=ImageColor.getrgb("#000000")
+    colorTextDayOfWeek=ImageColor.getrgb("#e69138")
+    colorTextDate=ImageColor.getrgb("#f1c232")
+    colorTextTime=ImageColor.getrgb("#6aa84f")
+    colorBackground=ImageColor.getrgb("#602060")
     # Override defaults
     if exists(configFile):
         with open(configFile) as f:

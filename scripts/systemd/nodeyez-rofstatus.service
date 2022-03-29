@@ -5,11 +5,13 @@
 Description=Image(s) for Ring of Fire Status
 StartLimitIntervalSec=600
 StartLimitBurst=2
+Wants=lnd.service
+After=lnd.service
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/rofstatus.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/rofstatus.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

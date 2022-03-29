@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/mempoolblocks.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/mempoolblocks.png",
   "urlmempool.comment": "The url for the mempool blocks information. If you are running your own mempool.space service on MyNodeBTC, then use http://127.0.0.1:4080/api/v1/fees/mempool-blocks",
   "urlmempool.type": "string",
   "urlmempool": "https://mempool.space/api/v1/fees/mempool-blocks",
@@ -46,7 +46,7 @@
   "colorBlock1": "#c0ca33",
   "colorBlock2.comment": "The color to use for blocks higher where recommended fee is higher than satLevel2 expressed as a Hexadecimal color specifier",
   "colorBlock2.type": "string",
-  "colorBlock2": "#fdd83f",
+  "colorBlock2": "#fdd835",
   "colorBlock3.comment": "The color to use for blocks higher where recommended fee is higher than satLevel3 expressed as a Hexadecimal color specifier",
   "colorBlock3.type": "string",
   "colorBlock3": "#f4511e",

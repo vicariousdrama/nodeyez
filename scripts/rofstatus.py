@@ -94,94 +94,6 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     # Save to file
     im.save(outputFile)
 
-def getnodeinfo(pubkey):
-    cmd = "lncli getnodeinfo --pub_key " + pubkey + " --include_channels 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
-    j = json.loads(cmdoutput)
-    return j
-
-def getnodealias(nodeinfo):
-    return nodeinfo["node"]["alias"]
-
-def getnodeaddress(nodeinfo):
-    bestresult = ""
-    for addr in nodeinfo["node"]["addresses"]:
-        nodehostandport = addr["addr"]
-        if bestresult == "":
-            bestresult = nodehostandport
-        elif "onion" in nodehostandport:
-            if "onion" not in bestresult:
-                bestresult = nodehostandport
-            elif len(nodehostandport) > 56:
-                bestresult = nodehostandport
-    return bestresult
-
-def getnodepeers():
-    cmd = "lncli listpeers 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        return '{\"peers\": []}'
-
-def isnodeconnected(pubkey):
-    nodepeers = getnodepeers()
-    j = json.loads(nodepeers)
-    for peer in j["peers"]:
-        if pubkey == peer["pub_key"]:
-            return True
-    return False
-
-def attemptconnect(nodeinfo):
-    nodestatus = 0
-    pubkey = nodeinfo["node"]["pub_key"]
-    addr = getnodeaddress(nodeinfo)
-    if addr == "0.0.0.0:65535":
-        return 0
-    cmd = "lncli connect " + pubkey + "@" + addr + " --timeout 5s 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        if "error" in cmdoutput:
-            nodestatus = 0
-        else:
-            cmd = "lncli disconnect " + pubkey + " 2>&1"
-            try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-                if "error" in cmdoutput:
-                    nodestatus = 0
-                else:
-                    nodestatus = 1
-            except subprocess.CalledProcessError as e2:
-                nodestatus = 0
-    except subprocess.CalledProcessError as e:
-        nodestatus = 0
-    return nodestatus
-
-def getnodealiasandstatus(pubkey, nextnodepubkey):
-    nodeinfo = getnodeinfo(pubkey)
-    nodealias = getnodealias(nodeinfo)
-    nodeonline = 0
-    if isnodeconnected(pubkey):
-        nodeonline = 1
-    else:
-        nodeonline = attemptconnect(nodeinfo)
-    # look if there is a channel
-    haschannel = 0
-    if "channels" in nodeinfo:
-        for channel in nodeinfo["channels"]:
-            node1_pub = channel["node1_pub"]
-            node2_pub = channel["node2_pub"]
-            if pubkey == node1_pub and nextnodepubkey == node2_pub:
-                haschannel = 1
-                break
-            if pubkey == node2_pub and nextnodepubkey == node1_pub:
-                haschannel = 1
-                break
-    return (nodealias, nodeonline, haschannel, nodeinfo)
-
 def checknodestatus(nodes):
     nodealiases=[]
     nodeonline=[]
@@ -198,7 +110,7 @@ def checknodestatus(nodes):
         nodepubkey = node["pubkey"]
         nodeoperator = node["operator"]
         nextnodepubkey = nextnode["pubkey"]
-        nodeas = getnodealiasandstatus(nodepubkey, nextnodepubkey)
+        nodeas = vicariousbitcoin.getnodealiasandstatus(nodepubkey, nextnodepubkey)
         nodealiases.append(nodeas[0])
         nodeonline.append(nodeas[1])
         nodechannel.append(nodeas[2])
@@ -216,7 +128,7 @@ def getcolorconfig(config, colorid, defaultcolor):
 def setfontandcolor(config):
     global colorcircle, coloroffline, coloronline, colorofflinetext, coloronlinetext, colortext, colortextshadow, colorbackground
     # color config
-    colorcircle = getcolorconfig(config, "circle", "#c0c0c0")
+    colorcircle = getcolorconfig(config, "circle", "#202020")
     coloroffline = getcolorconfig(config, "offline", "#ff4040")
     coloronline = getcolorconfig(config, "online", "#40ff40")
     colorofflinetext = getcolorconfig(config, "offlinetext", "#ffffff")
@@ -228,7 +140,7 @@ def setfontandcolor(config):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/rofstatus.json"
+    configFile="/home/nodeyez/nodeyez/config/rofstatus.json"
     sleepInterval = 900
     # Require configuration
     if not exists(configFile):

@@ -1,5 +1,5 @@
 # Nodeyez: systemd unit for Compass Mining Hardware panel generation
-# /etc/systemd/system/nodeyez-compassmining.service
+# /etc/systemd/system/nodeyez-compassmininghardware.service
 
 [Unit]
 Description=Image for Compass Mining Hardware
@@ -7,9 +7,9 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/compassmininghardware.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/compassmininghardware.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

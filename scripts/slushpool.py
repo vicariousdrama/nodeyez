@@ -260,8 +260,8 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/bitcoin/nodeyez/config/slushpool.json"
-    outputFile = "/home/bitcoin/images/slushpool.png"
+    configFile = "/home/nodeyez/nodeyez/config/slushpool.json"
+    outputFile = "/home/nodeyez/nodeyez/imageoutput/slushpool.png"
     authtoken = "--put-your-auth-token-in-nodeyez/config/slushpool.json--"
     useTor=False
     priceUrl = "https://bisq.markets/bisq/api/markets/ticker"

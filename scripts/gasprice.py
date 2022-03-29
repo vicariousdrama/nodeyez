@@ -158,14 +158,14 @@ def processdata():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/gasprice.json"
-    outputFile="/home/bitcoin/images/gasprice.png"
-    dataDirectory="/home/bitcoin/nodeyez/data/"
+    configFile="/home/nodeyez/nodeyez/config/gasprice.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/gasprice.png"
+    dataDirectory="/home/nodeyez/nodeyez/data/"
     dataCountry="USA"
     dataState="California"
     randomCountry=True
     randomState=True
-    blockclockEnabled=True
+    blockclockEnabled=False
     blockclockAddress="21.21.21.21"
     blockclockPassword=""
     sleepInterval=3600
