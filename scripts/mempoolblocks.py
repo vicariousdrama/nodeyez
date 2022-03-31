@@ -131,8 +131,8 @@ def getrecommendedfees():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/mempoolblocks.json"
-    outputFile="/home/bitcoin/images/mempoolblocks.png"
+    configFile="/home/nodeyez/nodeyez/config/mempoolblocks.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/mempoolblocks.png"
     urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
     urlfeerecs="https://mempool.space/api/v1/fees/recommended"
     colorBlockEdgeOutline=ImageColor.getrgb("#202020")

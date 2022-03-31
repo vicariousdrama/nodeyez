@@ -261,10 +261,10 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/raretoshi.json"
+    configFile="/home/nodeyez/nodeyez/config/raretoshi.json"
     raretoshiUser="BTCTKVR"
-    outputFile="/home/bitcoin/images/raretoshi.png"
-    dataDirectory="/home/bitcoin/nodeyez/data/"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/raretoshi.png"
+    dataDirectory="/home/nodeyez/nodeyez/data/"
     downloadConnectTimeout=5
     downloadMaxTimeout=20
     overlayTextEnabled=True

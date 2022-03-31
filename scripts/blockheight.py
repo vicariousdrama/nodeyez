@@ -17,8 +17,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/blockheight.json"
-    outputFile="/home/bitcoin/images/blockheight.png"
+    configFile="/home/nodeyez/nodeyez/config/blockheight.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/blockheight.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=120

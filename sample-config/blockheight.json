@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/blockheight.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/blockheight.png",
   "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
   "colorTextFG.type": "string",
   "colorTextFG": "#ffffff",

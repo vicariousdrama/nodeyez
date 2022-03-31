@@ -1,0 +1,19 @@
+# Nodeyez: systemd unit for Art Hash panel generation
+# /etc/systemd/system/nodeyez-arthash.service
+
+[Unit]
+Description=Image for Blockhash Dungeon
+StartLimitIntervalSec=600
+StartLimitBurst=2
+Wants=bitcoind.service
+After=bitcoind.service
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/arthash.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

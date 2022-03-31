@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 (
-cd /home/bitcoin/nodeyez/data/compassminingstatus/
+cd /home/nodeyez/nodeyez/data/compassminingstatus/
 for DCountry in */
 do
     echo "Processing ${DCountry}"

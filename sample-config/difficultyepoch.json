@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/difficultyepoch.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/difficultyepoch.png",
   "colorGrid.comment": "The base color of the grid representing each block during the difficulty period, expressed as a Hexadecimal color specifier",
   "colorGrid.type": "string",
   "colorGrid": "#404040",

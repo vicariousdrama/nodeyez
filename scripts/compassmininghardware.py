@@ -113,8 +113,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/compassmininghardware.json"
-    outputFile="/home/bitcoin/images/compassmininghardware.png"
+    configFile="/home/nodeyez/nodeyez/config/compassmininghardware.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png"
     hardwareurl="https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorTextWarn=ImageColor.getrgb("#ff0000")

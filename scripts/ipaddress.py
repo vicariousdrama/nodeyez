@@ -32,8 +32,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/ipaddress.json"
-    outputFile="/home/bitcoin/images/ipaddress.png"
+    configFile="/home/nodeyez/nodeyez/config/ipaddress.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/ipaddress.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     sleepInterval=120

@@ -5,11 +5,13 @@
 Description=Image for Difficulty Epoch
 StartLimitIntervalSec=600
 StartLimitBurst=2
+Wants=bitcoind.service
+After=bitcoind.service
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/difficultyepoch.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/difficultyepoch.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

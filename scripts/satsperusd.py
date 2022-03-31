@@ -86,8 +86,8 @@ def getpriceinfo():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/satsperusd.json"
-    outputFile="/home/bitcoin/images/satsperusd.png"
+    configFile="/home/nodeyez/nodeyez/config/satsperusd.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/satsperusd.png"
     priceurl="https://bisq.markets/bisq/api/markets/ticker"
     useTor=False
     satshape="square" # may be one of these: ['square','circle']

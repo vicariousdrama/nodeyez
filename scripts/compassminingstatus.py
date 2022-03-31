@@ -77,8 +77,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/compassminingstatus.json"
-    outputFile="/home/bitcoin/images/compassminingstatus.png"
+    configFile="/home/nodeyez/nodeyez/config/compassminingstatus.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/compassminingstatus.png"
     statusurl="https://status.compassmining.io/"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorGoodText=ImageColor.getrgb("#40ff40")

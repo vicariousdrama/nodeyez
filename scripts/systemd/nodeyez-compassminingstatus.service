@@ -1,5 +1,5 @@
 # Nodeyez: systemd unit for Compass Mining Status panel generation
-# /etc/systemd/system/nodeyez-compassmining.service
+# /etc/systemd/system/nodeyez-compassminingstatus.service
 
 [Unit]
 Description=Image for Compass Mining Status
@@ -7,9 +7,9 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/compassminingstatus.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/compassminingstatus.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

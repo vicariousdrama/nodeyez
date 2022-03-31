@@ -7,9 +7,9 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/usr/local/bin/python3 /home/bitcoin/nodeyez/scripts/daily-data-retrieval.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

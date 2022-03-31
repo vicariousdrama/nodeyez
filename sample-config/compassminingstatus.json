@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/compassminingstatus.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/compassminingstatus.png",
   "statusurl.comment": "The url that provides the current compass mining facility status",
   "statusurl.type": "string",
   "statusurl": "https://status.compassmining.io/",

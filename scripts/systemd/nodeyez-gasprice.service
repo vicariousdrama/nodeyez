@@ -7,9 +7,9 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
-WorkingDirectory=/home/bitcoin/nodeyez/scripts
-ExecStart=/home/bitcoin/nodeyez/scripts/gasprice.py
-User=bitcoin
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/nodeyez/scripts/gasprice.py
+User=nodeyez
 Restart=on-failure
 RestartSec=30
 

@@ -4,7 +4,7 @@
   "account": "--your-account-name-on-f2pool--",
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/bitcoin/images/f2pool.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/f2pool.png",
   "hashrateLowThreshold.comment": "The hashrate level for which hashing should be considered low",
   "hashrateLowThreshold.type": "integer",
   "hashrateLowThreshold": 60000000000000,

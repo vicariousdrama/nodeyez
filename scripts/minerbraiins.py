@@ -98,19 +98,34 @@ def getTempSettings(minerinfo):
     return stemptarget, stemphot, stempdangerous
 
 def getTunerStatus(minerinfo):
+    statustoreturn = ""
+    statusvalues = []
     if "tunerstatus" in minerinfo:
         if len(minerinfo["tunerstatus"]) == 0:
-            return "No response from miner"
-        for tunerstatus in minerinfo["tunerstatus"]:
-            for innertuner in tunerstatus["TUNERSTATUS"]:
-                for chainstatus in innertuner["TunerChainStatus"]:
-                    status = chainstatus["Status"]
-                    return status
-    return "Unknown Status"
+            statustoreturn = "No response from miner"
+        else:
+            for tunerstatus in minerinfo["tunerstatus"]:
+                for innertuner in tunerstatus["TUNERSTATUS"]:
+                    for chainstatus in innertuner["TunerChainStatus"]:
+                        status = chainstatus["Status"]
+                        if status not in statusvalues:
+                            statusvalues.append(status)
+    if len(statusvalues) > 0:
+        statustoreturn = statusvalues[0]
+        # look for first non stable
+        for statusvalue in statusvalues:
+            if statusvalue != "Stable":
+                statustoreturn = statusvalue
+    if len(statustoreturn) == 0:
+        statustoreturn = "Unknown status"
+    if statustoreturn in ["Stable","Testing performance profile","Tuning individual chips"]:
+        return statustoreturn, colorTextFG
+    else:
+        return statustoreturn, colorDangerous
 
 def renderPower(draw, minerinfo, left, top, width, height):
-    groupFontSize = 18
-    subtextFontSize = 14
+    groupFontSize = 16
+    subtextFontSize = 12
     subtextPadding = 5
     powerlimit, powerused, powerchain, powerminer, powerunused = getPowerInfo(minerinfo)
     spowerlimit = "???" if powerlimit == 9999 else str(powerlimit) + "w"
@@ -129,16 +144,10 @@ def renderPower(draw, minerinfo, left, top, width, height):
     vicarioustext.drawtoprighttext(draw, spowerunused, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "allocated: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 3.5), colorTextFG)
     vicarioustext.drawtoprighttext(draw, spowerlimit, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 3.5), colorTextFG)
-    # Tuner status
-    ts = getTunerStatus(minerinfo)
-    colorTuner = colorTextFG
-    if ts == "No response from miner":
-        colorTuner = colorDangerous
-    vicarioustext.drawbottomlefttext(draw, ts, 12, left, top+height, colorTuner)
 
 def renderHashrate(draw, minerinfo, left, top, width, height):
     global minerhashhistory
-    groupFontSize = 18
+    groupFontSize = 16
     subtextFontSize = 14
     tinyFontSize = 8
     subtextPadding = 15
@@ -249,7 +258,9 @@ def renderHashrate(draw, minerinfo, left, top, width, height):
                         matotal = matotal + maval
                 if macount > 0:
                     mavg = int(matotal / macount)
-                    mavgp = float(mavg - hrlo)/float(hrhi-hrlo)
+                    mavgp = 0
+                    if hrhi-hrlo > 0:
+                        mavgp = float(mavg - hrlo)/float(hrhi-hrlo)
                     mavy = top + groupFontSize + subtextPadding + ((1.0 - mavgp) * hrgh)
                     if oldmay != -1:
                         draw.line(xy=[(oldmax,oldmay),(hrx,mavy)],fill=colorHashrateMA,width=dataPointSize)
@@ -296,9 +307,9 @@ def renderTemperature(draw, minerinfo, left, top, width, height):
     vicarioustext.drawtoplefttext(draw, "Target temp: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
     vicarioustext.drawtoprighttext(draw, temptarget, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "Hot temp: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 1.5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, temphot, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 1.5), colorHot)
+    vicarioustext.drawtoprighttext(draw, temphot, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 1.5), colorTextFG)
     vicarioustext.drawtoplefttext(draw, "Danger temp: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
-    vicarioustext.drawtoprighttext(draw, tempdangerous, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 2.5), colorDangerous)
+    vicarioustext.drawtoprighttext(draw, tempdangerous, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * 2.5), colorTextFG)
 
 def renderFans(draw, minerinfo, left, top, width, height):
     groupFontSize = 16
@@ -309,15 +320,16 @@ def renderFans(draw, minerinfo, left, top, width, height):
     if "fans" in minerinfo:
         for fan in minerinfo["fans"]:
             for currentfan in fan["FANS"]:
-                fancount = fancount + 1
-                if fancount > 4:
-                    break
                 fanid = str(currentfan["ID"])
                 fanspeed = currentfan["Speed"]
                 fanrpm = currentfan["RPM"]
-                y = int(top + groupFontSize + (subtextFontSize * (float(currentfan["ID"]) + float(.5))))
-                vicarioustext.drawtoplefttext(draw, "fan no. " + fanid, subtextFontSize, left + subtextPadding, y, colorTextFG)
-                vicarioustext.drawtoprighttext(draw, str(fanrpm) + " RPM", subtextFontSize, left+width, y, colorTextFG)
+                if fanrpm > 0:
+                    fancount = fancount + 1
+                    if fancount > 4:
+                        break
+                    y = int(top + groupFontSize + (subtextFontSize * (float(currentfan["ID"]) + float(.5))))
+                    vicarioustext.drawtoplefttext(draw, "fan no. " + fanid, subtextFontSize, left + subtextPadding, y, colorTextFG)
+                    vicarioustext.drawtoprighttext(draw, str(fanrpm) + " RPM", subtextFontSize, left+width, y, colorTextFG)
     sfanspeed = "???" if fanspeed == 0 else str(fanspeed) + "%"
     print(f"  fan speed: {sfanspeed}")
     vicarioustext.drawtoplefttext(draw, "Fan Speed: ", groupFontSize, left, top, colorTextFG, True)
@@ -332,7 +344,7 @@ def renderPoolInfo(draw, minerinfo, left, top, width, height):
         for pool in minerinfo["pools"]:
             for currentpool in pool["POOLS"]:
                 linecount = linecount + 1
-                if linecount > 4:
+                if linecount > 3:
                     break
                 poolurl = currentpool["URL"]
                 poolurlpos = poolurl[:poolurl.rfind(".")].rfind(".") + 1
@@ -341,9 +353,9 @@ def renderPoolInfo(draw, minerinfo, left, top, width, height):
                 print(f"  pool: {poolurl} ({poolstatus})")
                 y = int(top + groupFontSize + (subtextFontSize * (float(linecount-1) + float(.5))))
                 vicarioustext.drawtoplefttext(draw, poolurl, subtextFontSize, left + subtextPadding, y, colorTextFG)
-                linecount = linecount + 1
-                if linecount > 4:
-                    break
+                #linecount = linecount + 1
+                #if linecount > 4:
+                #    break
                 y = int(top + groupFontSize + (subtextFontSize * (float(linecount-1) + float(.5))))
                 vicarioustext.drawtoprighttext(draw, poolstatus, subtextFontSize, left+width, y, colorTextFG)
     vicarioustext.drawtoplefttext(draw, "Pool Info: ", groupFontSize, left, top, colorTextFG, True)
@@ -351,10 +363,14 @@ def renderPoolInfo(draw, minerinfo, left, top, width, height):
 def renderFailedExpectations(draw, minerinfo, left, top, width, height):
     warning = ""
     warning2 = ""
-    textFontSize = 12
+    singleFontSize = 16
+    doubleFontSize = 12
     if minerexpectations == {}:
         return
-    if "power" in minerexpectations:
+    tunerStatus, tunerColor = getTunerStatus(minerinfo)
+    if len(warning) == 0 and tunerColor == colorDangerous:
+        warning = tunerStatus
+    if len(warning) == 0 and "power" in minerexpectations:
         powerlimit = 0
         if "tunerstatus" in minerinfo:
             for tunerstatus in minerinfo["tunerstatus"]:
@@ -368,7 +384,7 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
             highpowerthreshold = minerexpectations["power"]["high"]
             if highpowerthreshold < powerlimit:
                 warning = "Power configured above expected threshold of " + str(highpowerthreshold)
-    if "hashrate" in minerexpectations:
+    if len(warning) == 0 and "hashrate" in minerexpectations:
         hashrate = 0
         if "summary" in minerinfo:
             for summary in minerinfo["summary"]:
@@ -379,7 +395,7 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
             lowhashratethreshold = minerexpectations["hashrate"]["low"]
             if lowhashratethreshold > hashrate:
                 warning = "Hashrate is below expected threshold of " + str(lowhashratethreshold)
-    if "pools" in minerexpectations:
+    if len(warning) == 0 and "pools" in minerexpectations:
         for exppool in minerexpectations["pools"]:
             poolfound = False
             urlvalue = ""
@@ -417,13 +433,18 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
     # This used to force output when testing
     #warning = "Miner has pool configured that is not expected"
     #warning2 = "stratum2+tcp://v2.us-east.stratum.slushpool.com with user WhoDisUser.filthyardvark99"
+    textFontSize = doubleFontSize if len(warning2) > 0 else singleFontSize
     if len(warning) > 0:
         print(f"WARNING: {warning}")
         draw.rectangle(xy=[(left,top),(left+width,top+height)],outline=colorDangerous,fill=colorDangerous,width=1)
-        vicarioustext.drawtoplefttext(draw, warning, textFontSize, left, top, colorTextFG)
-    if len(warning2) > 0:
-        print(f"WARNING: {warning2}")
-        vicarioustext.drawbottomlefttext(draw, warning2, textFontSize, left, top+height, colorTextFG)
+        textBold = False if len(warning2) > 0 else True
+        vicarioustext.drawtoplefttext(draw, warning, textFontSize, left, top, colorTextFG, textBold)
+        if len(warning2) > 0:
+            print(f"WARNING: {warning2}")
+            vicarioustext.drawbottomlefttext(draw, warning2, doubleFontSize, left, top+height, colorTextFG)
+    else:
+        vicarioustext.drawlefttext(draw, tunerStatus, textFontSize, left, top+int(height/2), colorTextFG, True)
+
 
 def createimage(minerinfo, width=480, height=320):
     headerheight = 30
@@ -436,8 +457,8 @@ def createimage(minerinfo, width=480, height=320):
     quadpad = 5
     innerquadwidth = quadwidth-(quadpad*2)
     innerquadheight = quadheight-(quadpad*2)
-    leftquadwidth = int(width * .40)
-    rightquadwidth = int(width * .60)
+    leftquadwidth = int(width * .35)
+    rightquadwidth = int(width * .65)
     topquadheight = int((height - headerheight - footerheight) * .60)
     bottomquadheight = int((height - headerheight - footerheight) * .40)
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
@@ -447,22 +468,35 @@ def createimage(minerinfo, width=480, height=320):
     if len(minerlabel) > 0:
         headerText = minerlabel
     vicarioustext.drawcenteredtext(draw, headerText, 24, int(width/2), int(headerheight/2),colorTextFG,True)
-    # Input Power
-    renderPower(draw, minerinfo, 0+quadpad, headerheight+quadpad, leftquadwidth-(quadpad*2), topquadheight-(quadpad*2))
-    # Output Hashrate
-    renderHashrate(draw, minerinfo, leftquadwidth+quadpad, headerheight+quadpad, rightquadwidth-(quadpad*2), topquadheight-(quadpad*2))
-    # Input Temperature
-    renderTemperature(draw, minerinfo, 0+quadpad, headerheight+topquadheight+quadpad, leftquadwidth-(quadpad*2), bottomquadheight-(quadpad*2))
-    # Output Fans
-    renderFans(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.50), bottomquadheight-(quadpad*2))
-    # Output Pool
-    renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad+int((rightquadwidth-(quadpad))*.50)+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*3))*.50), bottomquadheight-(quadpad*2))
-    renderFailedExpectations(draw, minerinfo, quadpad, height-footerheight-headerheight, width-(quadpad*2), headerheight)
+    if False:
+        # Input Power
+        renderPower(draw, minerinfo, 0+quadpad, headerheight+quadpad, leftquadwidth-(quadpad*2), topquadheight-(quadpad*2))
+        # Output Hashrate
+        renderHashrate(draw, minerinfo, leftquadwidth+quadpad, headerheight+quadpad, rightquadwidth-(quadpad*2), topquadheight-(quadpad*2))
+        # Input Temperature
+        renderTemperature(draw, minerinfo, 0+quadpad, headerheight+topquadheight+quadpad, leftquadwidth-(quadpad*2), bottomquadheight-(quadpad*2))
+        # Output Fans
+        renderFans(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*2))*.50), bottomquadheight-(quadpad*2))
+        # Output Pool
+        renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad+int((rightquadwidth-(quadpad))*.50)+quadpad, headerheight+topquadheight+quadpad, int((rightquadwidth-(quadpad*3))*.50), bottomquadheight-(quadpad*2))
+    if True:
+        # Input Power
+        renderPower(draw, minerinfo, 0+quadpad, headerheight+quadpad, leftquadwidth-(quadpad*2), int((topquadheight-(quadpad*2))/2))
+        # Output Hashrate
+        renderHashrate(draw, minerinfo, leftquadwidth+quadpad, headerheight+quadpad, rightquadwidth-(quadpad*2), topquadheight-(quadpad*2))
+        # Input Temperature
+        renderTemperature(draw, minerinfo, 0+quadpad, headerheight+quadpad+int((topquadheight-(quadpad*2))/2)+quadpad, leftquadwidth-(quadpad*2), int((topquadheight-(quadpad*2))/2))
+        # Output Fans
+        renderFans(draw, minerinfo, 0+quadpad, headerheight+topquadheight+quadpad, leftquadwidth-(quadpad*2), bottomquadheight-(quadpad*2))
+        # Output Pool
+        renderPoolInfo(draw, minerinfo, leftquadwidth+quadpad, headerheight+topquadheight+quadpad, rightquadwidth-(quadpad*2), bottomquadheight-(quadpad*2))
+    # Failed Expectations / Status
+    renderFailedExpectations(draw, minerinfo, quadpad, height-footerheight-headerheight-8, width-(quadpad*2), headerheight)
+    # Braiins
+    vicarioustext.drawbottomlefttext(draw, "Powered by Braiins", 14, 0, height, colorBraiins)
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
-    # Braiins
-    vicarioustext.drawbottomlefttext(draw, "Powered by Braiins", 14, 0, height, colorBraiins)
     # Save to file
     outputFileMiner = outputFile
     outputFileMiner = outputFileMiner.replace(".png", "-" + mineraddress + ".png")
@@ -504,20 +538,20 @@ def isValidMiner():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/bitcoin/nodeyez/config/minerbraiins.json"
-    outputFile="/home/bitcoin/images/minerbraiins.png"
-    dataDirectory="/home/bitcoin/nodeyez/data/"
+    configFile="/home/nodeyez/nodeyez/config/minerbraiins.json"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/minerbraiins.png"
+    dataDirectory="/home/nodeyez/nodeyez/data/"
     minerlabel=""
     mineraddress=""
-    sleepInterval=30
+    sleepInterval=60
     colorBraiins=ImageColor.getrgb("#2f3fc5")
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorHot=ImageColor.getrgb("#ffaa00")
     colorDangerous=ImageColor.getrgb("#ff0000")
     colorBackground=ImageColor.getrgb("#000000")
-    colorHashrateBox=ImageColor.getrgb("#404040")
-    colorHashratePlot=ImageColor.getrgb("#00ff00")
-    colorHashrateMA=ImageColor.getrgb("#c0c0c0")
+    colorHashrateBox=ImageColor.getrgb("#202020")
+    colorHashratePlot=ImageColor.getrgb("#2f3fc5")
+    colorHashrateMA=ImageColor.getrgb("#40ff40")
     # Inits
     lastSaved = 0
     saveInterval = 600
@@ -604,6 +638,7 @@ if __name__ == '__main__':
                 print(f"Inadequate configuration for miner. Set minerlabel and mineraddress for each miner in {configFile}.")
                 exit(1)
         if int(time.time()) > lastSaved + saveInterval:
+            print(f"Saving hash history")
             saveMinerHashHistory(minerhashhistory)
             lastSaved = int(time.time())
         time.sleep(sleepInterval)
