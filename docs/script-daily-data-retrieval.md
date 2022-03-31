@@ -15,6 +15,20 @@ will also allow for more graphing trends.
 
 The script is installed at [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
 
+* Before running this script you must have met dependencies
+
+  - beautifulsoup4 is required for compass mining scripts to parse HTML
+
+  ```sh
+  python3 -m pip install beautifulsoup4
+  ```
+
+  - pandas is required for luxor scripts to use the client library for data retrieval
+
+  ```sh
+  python3 -m pip install pandas
+  ```
+
 * To run this script
 
    ```sh

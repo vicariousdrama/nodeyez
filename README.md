@@ -48,7 +48,7 @@ consider reviewing, testing, and providing feedback as a github issue.
 ## Installation Steps
 
 1. [Raspberry Pi Node](./docs/install-1-raspberrypinode.md)
-2. [Python and Library Dependencies](./docs/install-2-pythonlibs.md)
+2. [Python and Dependencies](./docs/install-2-pythondeps.md)
 3. [Display Screen](./docs/install-3-displayscreen.md)
 4. [Nodeyez User and this Git Repository](./docs/install-4-nodeyez.md)
 5. [Website Dashboard](./docs/install-5-websitedashboard.md)

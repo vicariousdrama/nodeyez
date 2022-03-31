@@ -10,6 +10,13 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassminingstatus.py
 
 ![sample image of compass mining status](../images/compassminingstatus.png)
 
+* Before running this script you must have met dependencies
+
+   - beautifulsoup4 is required for compass mining scripts to parse HTML
+
+   ```sh
+   python3 -m pip install beautifulsoup4
+   ```
 
 * To run this script
 

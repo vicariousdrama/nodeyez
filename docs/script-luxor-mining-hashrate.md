@@ -22,8 +22,15 @@ files (luxor.py and resolvers.py) are already copied into this repo so no
 additional action is required. A Pull Request has been opened with the upstream
 repository to include the change (forced sort order for the data). This PR
 has recently been merged and other enhancements have been made to the client
-that have not yet been brought into this project yet.  The Luxor Python client
-uses Pandas, which needs to be installed once if you haven't yet done so.
+that have not yet been brought into this project yet.  
+
+* Before running this script you must have met dependencies
+
+   - pandas is required for luxor scripts to use the client library for data retrieval
+
+   ```sh
+   python3 -m pip install pandas
+   ```
 
 * To run this script
 

@@ -1,6 +1,10 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
+[Home](../README.md) | [Continue to Python and Dependencies](./install-2-pythondeps.md)
+
+---
+
 ## Raspberry Pi Node
 
 To use some of the the scripts in this project, you'll need a Bitcoin Node.
@@ -19,5 +23,5 @@ a raspberry pi with an operating system that uses systemd.
 
 ---
 
-[Home](../README.md) | [Continue to Python and Library Dependencies](./install-2-pythonlibs.md)
+[Home](../README.md) | [Continue to Python and Dependencies](./install-2-pythondeps.md)
 

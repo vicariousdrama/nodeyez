@@ -1,6 +1,10 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
+[Home](../README.md) | [Back to Display Screen](./install-3-displayscreen.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
+
+---
+
 ## Setting up the Nodeyez User 
 
 Now we get to specifics of the Nodeyez user and cloning this repository.
@@ -201,6 +205,27 @@ You should be logged in as a privileged user to enter these command
    cp /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
    fi
    ```
+
+### 9. Install python packages in user installation area
+
+   These packages may take some time to download and build, particularly the
+   pandas package.
+
+   ```sh
+   python3 -m pip install beautifulsoup4
+   python3 -m pip install pandas
+   python3 -m pip install qrcode
+   ```
+
+   beatifulsoup4 - This is a library for extracting data from HTML and XML
+   files. Within Nodeyez, it is used by the Compass Mining Status script
+   and the Daily Data Retrieval script.
+
+   pandas - This is a data analysis library. Within Nodeyez, it is used by
+   the Luxor GraphQL client for transforming/mapping results from API calls
+
+   qrcode - This library allows for creating qrcodes based on text input and
+   is used by Nodeyez as part of the Raretoshi script.
 
 ## Configuring and Running Nodeyez Scripts
 

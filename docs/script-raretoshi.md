@@ -11,6 +11,14 @@ Only static PNG and JPEG files are supported at this time.
 ![sample raretoshi rendering](../images/raretoshi.png)
 
 
+* Before running this script you must have met dependencies
+
+   - qrcode is required to generate qr codes on the image to link to the asset
+
+   ```sh
+   python3 -m pip install qrcode
+   ```
+
 * To run this script
 
    ```sh
