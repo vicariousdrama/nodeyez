@@ -198,7 +198,6 @@ You should be logged in as a privileged user to enter these command
    mkdir -p /home/nodeyez/nodeyez/config
    mkdir -p /home/nodeyez/nodeyez/data
    mkdir -p /home/nodeyez/nodeyez/imageoutput
-   chmod +x /home/nodeyez/nodeyez/scripts/*
    cp /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
    fi
    ```
@@ -249,10 +248,8 @@ If you are currently logged in as nodeyez, `exit` back to the priviledged user,
 then run the following
 
    ```sh
-   (
    cd /home/nodeyez/nodeyez/scripts
    sudo ./slideshow.sh &
-   )
    ```
 
 A process ID (PID) number will be displayed as output to the console for the
@@ -270,7 +267,7 @@ the script again it will now show any errors to the console.
 Terminate any existing background process before restarting the slideshow script
 
    ```sh
-   sudo kill `ps aux | grep slideshow | grep -v grep | awk '{print $2}'`
+   for p in `ps aux | grep slideshow | grep -v grep | awk '{print $2}'`; do sudo kill $p; done
    sudo /home/nodeyez/nodeyez/scripts/slideshow.sh &
    ```
 
