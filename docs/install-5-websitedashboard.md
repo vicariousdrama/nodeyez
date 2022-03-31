@@ -1,6 +1,10 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
+[Home](../README.md) | [Back to Nodeyez User](./install-4-nodeyez.md) | [Continue to Running Services at Startup](./install-6-runatstartup.md)
+
+---
+
 ## Setting up the Website Dashboard
 
 Whether you are using a display screen or not, you can also make the images 
@@ -71,6 +75,8 @@ There should be no errors when running the test with the first command.
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
+[Continue to Running Services at Startup](./install-6-runatstartup.md)
+
 
 ## New Install of NGINX
 
@@ -110,6 +116,8 @@ Now see if you can access the dashboard at https://your-node-ip:907
    ```
  
 Now see if you can access the dashboard at https://your-node-ip:907
+
+[Continue to Running Services at Startup](./install-6-runatstartup.md)
 
 ## Modifying Existing NGINX setup
 
@@ -188,6 +196,7 @@ The premade configuration used in the prior section uses ports 906 for http, and
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
+[Continue to Running Services at Startup](./install-6-runatstartup.md)
 
 ---
 

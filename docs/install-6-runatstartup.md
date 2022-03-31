@@ -1,6 +1,10 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
+[Home](../README.md) | [Back to Website Dashboard](./install-5-websitedashboard.md) 
+
+---
+
 ## Running Services at Startup
 
 You can run the scripts you so choose automatically at startup so that you don't
@@ -11,8 +15,10 @@ the service scripts to the appropriate systemd folder
    sudo cp /home/nodeyez/nodeyez/scripts/systemd/*.service /etc/systemd/system/
    ```
 
-And enable them.  You don't have to enable every service, just the ones you want 
-to run automatically at startup
+### 1. Enable services
+
+You don't have to enable every service, just the ones you want to run 
+automatically at startup.
 
    ```sh
    sudo systemctl enable nodeyez-arthash.service
@@ -37,8 +43,9 @@ to run automatically at startup
    sudo systemctl enable nodeyez-utcclock.service
    ```
 
-And then start them. As above, only issue the systemctl start command for those 
-services you want to run.
+### 2. Start services
+
+Only issue the systemctl start command for those services you want to run.
 
    ```sh
    sudo systemctl start nodeyez-arthash.service
@@ -63,13 +70,49 @@ services you want to run.
    sudo systemctl start nodeyez-utcclock.service
    ```
 
+### 3. List Nodeyez services and status
+
+* For a listing of the Nodeyez services that are enabled to run automatically
+  every time your system boots, use this command
+
+   ```sh
+   sudo systemctl list-unit-files --type=service --state=enabled | grep nodeyez
+   ```
+
+* More often though, you may want to see the same list, but with the running
+  state as well.  You can use this command
+
+   ```sh
+   sudo systemctl list-units --type=service | grep nodeyez
+   ```
+
+Sample output
+
+   ```c
+     nodeyez-channelbalance.service                              loaded active running Image(s) for Lightning Channel Balances
+   ● nodeyez-compassmininghardware.service                       loaded failed failed  Image for Compass Mining Hardware
+     nodeyez-daily-data-retrieval.service                        loaded active running Retrieve background data for Nodeyez
+     nodeyez-difficultyepoch.service                             loaded active running Image for Difficulty Epoch
+   ● nodeyez-f2pool.service                                      loaded failed failed  Image for F2 Pool Mining Summary
+     nodeyez-mempoolblocks.service                               loaded active running Image for Mempool Blocks
+     nodeyez-minerbraiins.service                                loaded active running Image for Miner Status running Braiins
+     nodeyez-satsperusd.service                                  loaded active running Image for Sats per USD
+     nodeyez-slideshow.service                                   loaded active running Image Display Slideshow to Framebuffer
+   ```
+
+In the above example, we've chosen to only run some of the services, and two of
+them are showing that they failed.  Viewing the logs can help when diagnosing
+the cause of failure.
+
+### 4. View logs
+
 You can view the logs using journalctl like this
 
    ```sh
    sudo journalctl -fu nodeyez-sysinfo.service
    ```
 
-And press CTRL+C to stop viewing the logs
+And press CTRL+C to stop viewing the logs for that service
 
 
 ---

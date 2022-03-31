@@ -1,23 +1,27 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
-## Python and Library Dependencies
+[Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Display Screen](./install-3-displayscreen.md)
 
-1.  Login to your node with a privileged user that can sudo.
+---
+
+## Python and Dependencies
+
+### 1.  Login to your node with a privileged user that can sudo.
     - MyNodeBTC: ssh as admin
     - Raspiblitz ssh as admin
     - Raspibolt: ssh as admin
     - Umbrel: ssh as umbrel
     - Default Raspbian: ssh as pi
 
-2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the 
+### 2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the 
    scripts require Python 3. 
 
    ```sh
    sudo apt-get install python3
    ```
 
-3. Install the Python Pillow library. 
+### 3. Install the Python Pillow library. 
 
    ```sh
    sudo apt-get install libjpeg-dev zlib1g-dev
@@ -51,30 +55,11 @@ Display panels to get the most from your node
    Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or 
    above.
 
-4. Install git and torify as follows
+### 4. Install git and torify as follows
 
    ```sh
    sudo apt install git
    sudo apt-get install apt-transport-tor
-   ```
-
-5. If you plan to run the compass mining scripts, install Beautiful Soup 
-   python library.
-
-   ```sh
-   python3 -m pip install beautifulsoup4
-   ```
-
-6. If you plan to run the luxor related scripts, install pandas
-
-   ```sh
-   python3 -m pip install pandas
-   ```
-
-7. If you plan to run the raretoshi scripts, install the qrcode library
-
-   ```sh
-   python3 -m pip install qrcode
    ```
 
 ---
