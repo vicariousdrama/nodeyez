@@ -12,8 +12,8 @@ import vicarioustext
 
 # ===============================================================================================================================
 # SPECIAL DEPENDENCY: To use this script, you should have gas price data downloaded to the the following location
-#      /home/bitcoin/nodeyez/data/collectapi/gasprice/allusaprice
-#      /home/bitcoin/nodeyez/data/collectapi/gasprice/canada
+#      /home/nodeyez/nodeyez/data/collectapi/gasprice/allusaprice
+#      /home/nodeyez/nodeyez/data/collectapi/gasprice/canada
 # You can get this data from the collectapi.com website using an API Key.  The free plan allows for making 100 requests per
 # month and the gas price data is updated daily.  You can and should make use of the daily-data-retrieval.py script and service
 # to retrieve this information for you so you dont waste your free api calls on testing.

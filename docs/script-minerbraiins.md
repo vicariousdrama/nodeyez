@@ -11,7 +11,7 @@ is to improve for other miners over time.
 
 The script is installed at [/home/nodeyez/nodeyez/scripts/minerbraiins.py](../scripts/minerbraiins.py).
 
-![sample image of miner status](./images/minerbraiins.png)
+![sample image of miner status](../images/minerbraiins.png)
 
 * To run this script
 

@@ -2,7 +2,7 @@
 
 # the framebuffer image viewer (fbi) needs root so run this script with sudo
 # install fbi via  `sudo apt-get -y install fbi`
-foldertodisplay="/home/bitcoin/images"
+foldertodisplay="/home/nodeyez/nodeyez/imageoutput"
 timeperimage=5
 while true
 do
