@@ -251,7 +251,6 @@ then run the following
    ```sh
    (
    cd /home/nodeyez/nodeyez/scripts
-   chmod +x slideshow.sh
    sudo ./slideshow.sh &
    )
    ```
