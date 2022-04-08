@@ -63,7 +63,11 @@ def findEfficientHashrate(hwinfo):
     return matchentry
 
 def renderEntry(draw, x, y, w, h, label, entry):
-    name = entry["name"]
+    name = "Miner"
+    if "name" in entry:
+        name = entry["name"]
+    if "baseModelName" in entry:
+        name = entry["baseModelName"]
     hashrate = entry["hashrate"]
     power = entry["power"]
     minCost = entry["minCost"]
