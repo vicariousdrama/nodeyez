@@ -101,10 +101,10 @@ def createimage(width=480, height=320):
             break
         drawmempoolblock(draw,(width-((mpb+1)*bw)),padtop,bw,bw,mpblist[mpb],mpb)
     vicarioustext.drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2), colorTextFG, True)
-    vicarioustext.drawcenteredtext(draw, "Next: " + str(feefastest), 20, int(width/8*1), height-padtop, colorTextFG)
-    vicarioustext.drawcenteredtext(draw, "30 Min: " + str(feehalfhour), 20, int(width/8*3), height-padtop, colorTextFG)
-    vicarioustext.drawcenteredtext(draw, "1 Hr: " + str(feehour), 20, int(width/8*5), height-padtop, colorTextFG)
-    vicarioustext.drawcenteredtext(draw, "Minimum: " + str(feeminimum), 20, int(width/8*7), height-padtop, colorTextFG)
+    vicarioustext.drawlefttext(draw, "Minimum: " + str(feeminimum), 18, 0, height-padtop, colorTextFG)
+    vicarioustext.drawcenteredtext(draw, "1 Hour: " + str(feehour), 16, int(width/8*3), height-padtop, colorTextFG)
+    vicarioustext.drawcenteredtext(draw, "30 Minutes: " + str(feehalfhour), 16, int(width/8*5), height-padtop, colorTextFG)
+    vicarioustext.drawrighttext(draw, "Next: " + str(feefastest), 18, width, height-padtop, colorTextFG)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFile)
 
