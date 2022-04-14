@@ -54,7 +54,7 @@ def getepochnum(blocknum):
 
 def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
-    return int(epochnum * 2016) + 1
+    return min(blocknum, (int(epochnum * 2016) + 1))
 
 
 
