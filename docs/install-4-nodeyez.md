@@ -80,8 +80,8 @@ You should be logged in as a privileged user to enter these command
 
    ```sh
    sudo mkdir -p /home/nodeyez/.bitcoin
-   sudo cp /home/bitcoin/.bitcoin/bitcoin.conf /home/nodeyeyz/.bitcoin/bitcoin.conf
-   sudo cp /home/bitcoin/.bitcoin/.cookie /home/nodeyeyz/.bitcoin/.cookie
+   sudo cp /home/bitcoin/.bitcoin/bitcoin.conf /home/nodeyez/.bitcoin/bitcoin.conf
+   sudo cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
    sudo chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin
    ```
 
