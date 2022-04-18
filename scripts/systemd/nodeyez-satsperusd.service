@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-satsperusd.service
 
 [Unit]
-Description=Image for Sats per USD
+Description=Nodeyez image generator for Sats per USD
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/satsperusd.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/satsperusd.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

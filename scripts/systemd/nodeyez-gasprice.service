@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-gasprice.service
 
 [Unit]
-Description=Image for Gas Price
+Description=Nodeyez image generator for Gas Price
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/gasprice.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/gasprice.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

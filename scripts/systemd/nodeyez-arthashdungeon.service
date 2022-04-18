@@ -5,7 +5,7 @@
 # /etc/systemd/system/nodeyez-arthashdungeon.service
 
 [Unit]
-Description=Image for Blockhash Dungeon
+Description=Nodeyez image generator for Blockhash Dungeon
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service
@@ -13,7 +13,7 @@ After=bitcoind.service
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/arthashdungeon.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/arthashdungeon.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

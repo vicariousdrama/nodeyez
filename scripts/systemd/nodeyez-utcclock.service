@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-utcclock.service
 
 [Unit]
-Description=Image for UTC Clock
+Description=Nodeyez image generator for UTC Clock
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/utcclock.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/utcclock.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

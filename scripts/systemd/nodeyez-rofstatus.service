@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-rofstatus.service
 
 [Unit]
-Description=Image(s) for Ring of Fire Status
+Description=Nodeyez image generator for Lightning Ring of Fire Status
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=lnd.service
@@ -10,7 +10,7 @@ After=lnd.service
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/rofstatus.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/rofstatus.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30
