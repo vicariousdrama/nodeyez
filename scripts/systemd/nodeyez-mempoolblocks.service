@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-mempoolblocks.service
 
 [Unit]
-Description=Image for Mempool Blocks
+Description=Nodeyez image generator for Mempool Blocks
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/mempoolblocks.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/mempoolblocks.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

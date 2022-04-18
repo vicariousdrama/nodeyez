@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-slideshow.service
 
 [Unit]
-Description=Image Display Slideshow to Framebuffer
+Description=Nodeyez slideshow manager
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/slideshow.sh
+ExecStart=/usr/bin/env bash /home/nodeyez/nodeyez/scripts/slideshow.sh
 User=root
 Restart=on-failure
 RestartSec=30

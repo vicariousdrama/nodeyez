@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-slushpool.service
 
 [Unit]
-Description=Image for SlushPool Mining Pool
+Description=Nodeyez image generator for SlushPool Mining Pool
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/slushpool.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/slushpool.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

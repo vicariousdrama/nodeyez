@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-f2pool.service
 
 [Unit]
-Description=Image for F2 Pool Mining Summary
+Description=Nodeyez image generator for F2 Pool Mining Summary
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/f2pool.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/f2pool.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

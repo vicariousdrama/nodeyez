@@ -25,6 +25,7 @@ General
 - Improve guidance for different node types (Raspibolt, Raspiblitz, MyNodeBTC, Umbrel)
 - Setup now using dedicated nodeyez user with preference to external hard drive for home folder
 - Lots of new documentation
+- Systemd service scripts now all use /usr/bin/env to force execution path as mounted drive may disallow
 
 Bugfixes
 - Fixed some loop timeouts

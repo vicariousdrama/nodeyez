@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-daily-data-retrieval.service
 
 [Unit]
-Description=Retrieve background data for Nodeyez
+Description=Nodeyez periodic data retrieval for services
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/daily-data-retrieval.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

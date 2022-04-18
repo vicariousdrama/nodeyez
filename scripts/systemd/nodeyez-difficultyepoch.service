@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-difficultyepoch.service
 
 [Unit]
-Description=Image for Difficulty Epoch
+Description=Nodeyez image generator for Difficulty Epoch
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service
@@ -10,7 +10,7 @@ After=bitcoind.service
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/difficultyepoch.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/difficultyepoch.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

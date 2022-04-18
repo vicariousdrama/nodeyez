@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-raretoshi.service
 
 [Unit]
-Description=Image for Raretoshi
+Description=Nodeyez image generator for Raretoshi
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/raretoshi.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/raretoshi.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

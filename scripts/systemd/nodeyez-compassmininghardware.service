@@ -2,13 +2,13 @@
 # /etc/systemd/system/nodeyez-compassmininghardware.service
 
 [Unit]
-Description=Image for Compass Mining Hardware
+Description=Nodeyez image generator for Compass Mining Hardware
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/home/nodeyez/nodeyez/scripts/compassmininghardware.py
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/compassmininghardware.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30
