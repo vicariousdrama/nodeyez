@@ -36,6 +36,7 @@ Bugfixes
 - Fixed Miner Status panel support for password
 - Fixed ring of fire panel handling of background color
 - Fixed difficulty epoch failing if blocknum was last in a difficulty epoch
+- Fixed bitcoin dependent services to get updated bitcoin cookie before start
 
 ## 1.0.0-beta
 
