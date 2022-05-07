@@ -3,7 +3,9 @@ Display panels to get the most from your node
 
 # CHANGELOG
 
-## Unreleased main development branch
+## 1.0.0
+
+- Released 2022-05-07
 
 New Panels and Enhancements
 - New panel: Raretoshi
