@@ -16,6 +16,7 @@ New Panels and Enhancements
 - Enhanced Daily Data Retrieval - support for slushpool data 
 - Enhanced Raretoshi panel to allow for traversing user randomly
 - Enhanced Raretoshi panel to support QR code hyperlink
+- Enhanced Mempool panel to show fee histogram as a bar and improve config
 
 General
 - Externalized configuration from scripts to json files
