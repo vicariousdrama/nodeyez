@@ -1,7 +1,7 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
-![image strip](./images/nodeyez-4x4-layout.png)
+![case](./images/case-lightningshell.jpg)
 
 This repository contains simple [scripts](./scripts) used to generate images 
 representing different state about your node, market rates, mining and more.
@@ -12,9 +12,8 @@ up both options.  Some scripts also have support for reporting data to a local [
 For convenice, systemd service scripts are also available to allow for running
 them at startup automatically.
 
-STATUS: BETA.  Scripts are functional, but there may be bugs, or unhandled 
-exceptions may cause the script or wrapper services to terminate.  Please
-consider reviewing, testing, and providing feedback as a github issue.
+
+<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/compassmininghardware.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/gasprice.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/raretoshi.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 />
 
 ## Quick Menu of Info Panels
 
