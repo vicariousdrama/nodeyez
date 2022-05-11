@@ -113,13 +113,27 @@ def drawmempoolblock(draw,x,y,w,h,blockinfo,mpb,mpblen,btr):
 
 def drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,histy2,padtop):
     histpixelwidth = int(float(bw) * (float(curhistvsize)/float(1000000)))
-    histtext = str(int(curhistsatfee)) + " sat/vB"
-    histtextw, histtexth, histtextfont = vicarioustext.gettextdimensions(draw, histtext, 10, False)
     histcolor = getColorForHistogram(curhistsatfee)
     histx1 = histx2 - histpixelwidth
-    draw.polygon(xy=((histx1,histy1),(histx2,histy1),(histx2,histy2),(histx1,histy2)),fill=histcolor)
-    if histtextw < histpixelwidth:
-        vicarioustext.drawcenteredtext(draw, histtext, 10, (histx1+int(histpixelwidth/2)), (histy1+int(padtop/2)))
+    draw.polygon(xy=((histx1,histy1),(histx2,histy1),(histx2,histy2),(histx1,histy2)),outline=colorBlockEdgeOutline, fill=histcolor)
+
+    histtext = str(int(curhistsatfee)) + " sat/vB"
+    histtextw, histtexth, histtextfont = vicarioustext.gettextdimensions(draw, histtext, 10, False)
+    alignCenter = False
+    alignRight = True
+    if histtextw < (histpixelwidth-4):
+        if alignCenter:
+            vicarioustext.drawcenteredtext(draw, histtext, 10, (histx1+int(histpixelwidth/2)), (histy1+int(padtop/2)))
+        if alignRight:
+            vicarioustext.drawrighttext(draw, histtext, 10, (histx1+histpixelwidth-2), (histy1+int(padtop/2)))
+    else:
+        histtext = str(int(curhistsatfee))
+        histtextw, histtexth, histtextfont = vicarioustext.gettextdimensions(draw, histtext, 10, False)
+        if histtextw < (histpixelwidth-4):
+            if alignCenter:
+                vicarioustext.drawcenteredtext(draw, histtext, 10, (histx1+int(histpixelwidth/2)), (histy1+int(padtop/2)))
+            if alignRight:
+                vicarioustext.drawrighttext(draw, histtext, 10, (histx1+histpixelwidth-2), (histy1+int(padtop/2)))
     return histx1
 
 
@@ -141,6 +155,16 @@ def createimage(width=480, height=320):
         if mpb > (btr -1):
             break
         drawmempoolblock(draw,(width-((mpb+1)*bw)),padtop,bw,bw,mpblist[mpb],mpb,mpblen,btr)
+    # calculate approx total number of potential blocks and txs
+    totalvsize = 0
+    totaltx = 0
+    for mpb in range(mpblen):
+        totalvsize = totalvsize + mpblist[mpb]["blockVSize"]
+        totaltx = totaltx + mpblist[mpb]["nTx"]
+    totalblocks = int(totalvsize / 1000000)
+    totaltime = str(int(totalblocks / 6)) + " hours" if totalblocks > 12 else str(int(totalblocks * 10)) + " minutes"
+    memsummary = str(totaltx) + " tx with vsize " + convert_size(totalvsize) + ", ~ " + str(totalblocks) + " blocks, ~ " + totaltime
+    vicarioustext.drawcenteredtext(draw, memsummary, 12, int(width/2), padtop+bw+int(padtop/4), colorTextFG, False)
     # histogram info
     histogramdata = gethistograminfo()
     histy1=padtop+bw+int(padtop/2)

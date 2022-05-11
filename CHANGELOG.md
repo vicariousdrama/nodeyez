@@ -3,9 +3,15 @@ Display panels to get the most from your node
 
 # CHANGELOG
 
+## Unrelease main branch
+
+New Panels and Enhancements
+- Enhanced Mempool - show sumary of tx in mempool, block count and time
+
 ## 1.0.0
 
 - Released 2022-05-07
+- Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](https://github.com/vicariousdrama/nodeyez/commit/290fb01c39cef84ab77155eea437439825a304ca)
 
 New Panels and Enhancements
 - New panel: Raretoshi
