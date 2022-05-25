@@ -161,7 +161,7 @@ def createimage(width=480, height=320):
     for mpb in range(mpblen):
         totalvsize = totalvsize + mpblist[mpb]["blockVSize"]
         totaltx = totaltx + mpblist[mpb]["nTx"]
-    totalblocks = int(totalvsize / 1000000)
+    totalblocks = math.ceil(totalvsize / 1000000)
     totaltime = str(int(totalblocks / 6)) + " hours" if totalblocks > 12 else str(int(totalblocks * 10)) + " minutes"
     memsummary = str(totaltx) + " tx with vsize " + convert_size(totalvsize) + ", ~ " + str(totalblocks) + " blocks, ~ " + totaltime
     vicarioustext.drawcenteredtext(draw, memsummary, 12, int(width/2), padtop+bw+int(padtop/4), colorTextFG, False)
