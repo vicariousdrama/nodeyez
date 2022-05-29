@@ -6,7 +6,11 @@ Display panels to get the most from your node
 ## Unrelease main branch
 
 New Panels and Enhancements
+- New panel: Channel Fees (requires updated macaroon)
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
+
+General
+- Updated macaroon creation to allow querying ForwardingHistory
 
 ## 1.0.0
 

@@ -177,6 +177,15 @@ def getnodepeers():
     except subprocess.CalledProcessError as e:
         return '{\"peers\": []}'
 
+def getfwdinghistory():
+    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        cmdoutput = '{\"forwarding_events\": []}'
+    j = json.loads(cmdoutput)
+    return j
+
 def isnodeconnected(pubkey):
     nodepeers = getnodepeers()
     j = json.loads(nodepeers)
