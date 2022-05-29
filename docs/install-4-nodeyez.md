@@ -98,7 +98,7 @@ You should be logged in as a privileged user to enter these command
    ```sh
    sudo mkdir -p /home/nodeyez/.lnd
    sudo cp /home/bitcoin/.lnd/tls.cert /home/nodeyez/.lnd/tls.cert
-   lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer --save_to ${HOME}/nodeyez.macaroon
+   lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory --save_to ${HOME}/nodeyez.macaroon
    sudo mv ${HOME}/nodeyez.macaroon /home/nodeyez/.lnd/nodeyez.macaroon
    sudo chown -R nodeyez:nodeyez /home/nodeyez/.lnd
    ```
