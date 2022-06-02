@@ -186,6 +186,8 @@ if __name__ == '__main__':
     outputFile="/home/nodeyez/nodeyez/imageoutput/f2pool.png"
     account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
     hashrateLowThreshold = 60000000000000 # 60 TH is 60,000,000,000,000 or 60 followed by 12 zeros
+    width=480
+    height=320
     sleepInterval=600
     colorDataValue=ImageColor.getrgb("#4040ff")
     colorHashDotFill=ImageColor.getrgb("#4040ff")
@@ -213,6 +215,10 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "hashrateLowThreshold" in config:
             hashrateLowThreshold = config["hashrateLowThreshold"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -250,10 +256,10 @@ if __name__ == '__main__':
             print(f"You may specify a custom configuration file at {configFile}")
         else:
             accountinfo = getaccountinfo()
-            createimage(accountinfo)
+            createimage(accountinfo,width,height)
         exit(0)
     # Loop
     while True:
         accountinfo = getaccountinfo()
-        createimage(accountinfo)
+        createimage(accountinfo,width,height)
         time.sleep(sleepInterval)

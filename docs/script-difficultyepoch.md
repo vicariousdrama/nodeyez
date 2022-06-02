@@ -40,6 +40,8 @@ It depends on a bitcoin node running locally and fully synched.
    | colorBehind | The color to draw the grid for a block when its not yet mined and was expected to be, expressed as a Hexadecimal color specifier. Default `#ff0000` |
    | colorMined | The color to fill in the block when it has been mined by the time expected, expressed as a Hexadecimal color specifie. Default `#40ff40` |
    | saveEachBlock | Indicates whether the result for each block should be saved as a separate image. Useful as source for animated composites. Default `false` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `540` |
 
    After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.

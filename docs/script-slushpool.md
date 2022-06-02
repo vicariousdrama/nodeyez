@@ -39,6 +39,8 @@ from this panel in future updates.
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/slushpool.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
    | authtoken | Create your API access  token at https://slushpool.com/settings/access/ with limited read-only access, and not web access |
    | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `false` |

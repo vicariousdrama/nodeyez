@@ -34,6 +34,8 @@ LND, etc.
    | --- | --- |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/sysinfo.png` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
    | colorHeader | The color of the header text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorThermometerUnfilled | The color for the unfilled portion of the thermometer expressed as a Hexadecimal color specifier. Default `#000000` |

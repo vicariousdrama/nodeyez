@@ -103,6 +103,8 @@ if __name__ == '__main__':
     outputFile = "/home/nodeyez/nodeyez/imageoutput/channelfees.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
+    width=480
+    height=320
     sleepInterval=1800
     pageSize=12
     # Override config
@@ -117,6 +119,10 @@ if __name__ == '__main__':
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -143,5 +149,5 @@ if __name__ == '__main__':
             lastidx = (pagenum*pageSize)-1
             if lastidx > channelcount-1:
                 lastidx = channelcount-1
-            createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory)
+            createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, width, height)
         time.sleep(sleepInterval)

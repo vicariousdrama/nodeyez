@@ -33,6 +33,8 @@ if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/utcclock.json"
     outputFile="/home/nodeyez/nodeyez/imageoutput/utcclock.png"
+    width=480
+    height=320
     sleepInterval=30
     colorTextDayOfWeek=ImageColor.getrgb("#e69138")
     colorTextDate=ImageColor.getrgb("#f1c232")
@@ -46,6 +48,10 @@ if __name__ == '__main__':
             config = config["utcclock"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 10 if sleepInterval < 10 else sleepInterval # minimum 10 seconds, local only
@@ -66,9 +72,9 @@ if __name__ == '__main__':
             print(f"2) Pass an argument other than -h or --help to run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            createimage()
+            createimage(width,height)
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width,height)
         time.sleep(sleepInterval)

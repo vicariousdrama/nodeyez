@@ -37,6 +37,8 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minerbraiins.py](../sc
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/minerbraiins.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `60` |
    | dataDirectory | The base path for the directory to store hashrate history. Default `/home/nodeyez/nodeyez/data/` |
    | colorHot | The color to show the temperature exceeding the hot threshold expressed as a Hexadecimal color specifier. Default `#ffaa00` |

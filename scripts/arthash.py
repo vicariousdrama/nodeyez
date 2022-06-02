@@ -84,6 +84,8 @@ if __name__ == '__main__':
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorShapeOutline=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
+    width=480
+    height=320
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -99,6 +101,10 @@ if __name__ == '__main__':
             colorShapeOutline = ImageColor.getrgb(config["colorShapeOutline"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
@@ -115,13 +121,14 @@ if __name__ == '__main__':
             print(f"   {arg0} 722231 1920 1080")
             print(f"You may specify a custom configuration file at {configFile}")
             exit(0)
+        blocknumber = int(sys.argv[1])
         if len(sys.argv) > 3:
-            createimage(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
-        else:
-            createimage(int(sys.argv[1]))
+            width = int(sys.argv[2])
+            height = int(sys.argv[3])
+        createimage(blocknumber, width, height)
         exit(0)
     # Loop
     while True:
         blocknumber = vicariousbitcoin.getcurrentblock()
-        createimage(blocknumber, 480, 320)
+        createimage(blocknumber, width, height)
         time.sleep(sleepInterval)

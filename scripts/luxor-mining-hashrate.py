@@ -201,6 +201,8 @@ if __name__ == '__main__':
     subheadingText = "S19 Pro 110TH"
     hashrateTarget = 110000000000000
     hashrateLowThreshold = 90000000000000
+    width=480
+    height=320
     sleepInterval=86400
     colorDataValue=ImageColor.getrgb("#4040ff")
     colorHashDotFill=ImageColor.getrgb("#4040ff")
@@ -240,6 +242,10 @@ if __name__ == '__main__':
             hashrateTarget = config["hashrateTarget"]
         if "hashrateLowThreshold" in config:
             hashrateLowThreshold = config["hashrateLowThreshold"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -284,7 +290,7 @@ if __name__ == '__main__':
             if entry["date"][:7] != date_prefix:
                 date_prefix = entry["date"][:7]
                 print(f"Creating image for {date_prefix}")
-                createimage(hashrate_history, date_prefix)
+                createimage(hashrate_history, date_prefix,width,height)
         # only run once if an argument was passed
         if len(sys.argv) > 1:
             break

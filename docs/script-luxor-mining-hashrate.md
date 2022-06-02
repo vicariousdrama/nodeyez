@@ -57,6 +57,8 @@ that have not yet been brought into this project yet.
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/luxor-mining-hashrate.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `86400` |
    | apikey | Your api key for your Luxor account. |
    | username | Your username for your Luxor account. |
