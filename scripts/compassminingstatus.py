@@ -93,6 +93,8 @@ if __name__ == '__main__':
     colorMinor=ImageColor.getrgb("#2020ff")
     colorMinorText=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
+    width=480
+    height=320
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -130,6 +132,10 @@ if __name__ == '__main__':
             colorMinorText = ImageColor.getrgb(config["colorMinorText"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -143,9 +149,9 @@ if __name__ == '__main__':
             print(f"Depends on Beautiful Soup package.")
             print(f"   Install via:   pip install beautifulsoup4")
         else:
-            createimage()
+            createimage(width, height)
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width, height)
         time.sleep(sleepInterval)

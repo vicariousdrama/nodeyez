@@ -21,6 +21,8 @@ if __name__ == '__main__':
     outputFile="/home/nodeyez/nodeyez/imageoutput/blockheight.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
+    width=480
+    height=320
     sleepInterval=120
     # Override config
     if exists(configFile):
@@ -34,6 +36,10 @@ if __name__ == '__main__':
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
@@ -47,5 +53,5 @@ if __name__ == '__main__':
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width,height)
         time.sleep(sleepInterval)

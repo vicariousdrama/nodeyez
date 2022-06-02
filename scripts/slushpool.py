@@ -268,6 +268,8 @@ if __name__ == '__main__':
     priceCheckInterval = 10800	                      # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
     kwhPrice = .12                                    # price per killowatt hour, in dollars
     kwhUsed = 1.100                                   # amount of killowatts used per hour for miners on the account
+    width=480
+    height=320
     sleepInterval = 600                               # controls how often this display panel is updated. 600 is once every 10 minutes
     colorHeader=ImageColor.getrgb("#ffffff")          # The header text color. Need to pass to also specify bolding
     colorMiningReward=ImageColor.getrgb("#6b50ff")    # Slushpool mining rewards color
@@ -315,6 +317,10 @@ if __name__ == '__main__':
             kwhPrice = float(config["kwhPrice"])
         if "kwhUsed" in config:
             kwhUsed = float(config["kwhUsed"])
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -368,7 +374,7 @@ if __name__ == '__main__':
         else:
             price_countdown = price_countdown - sleepInterval
         print("Creating image")
-        createimage(accountrewards,accountprofile,poolstats,price_last)
+        createimage(accountrewards,accountprofile,poolstats,price_last,width,height)
         if len(sys.argv) > 1:
             exit(0)
         time.sleep(sleepInterval)

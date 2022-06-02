@@ -52,6 +52,8 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassminingstatus.py
    | colorNoneText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#ffffff` |
    | colorMinor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#2020ff` |
    | colorMinorText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#ffffff` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 
    After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.

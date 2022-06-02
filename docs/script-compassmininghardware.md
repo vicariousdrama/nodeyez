@@ -43,6 +43,8 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassmininghardware.
    | sizeEntryLabel | The font size to use for the group/category label. Default `20` |
    | sizeEntryName | The font size to use for the miner name. Default `18` |
    | sizeEntryInfo | The font size to use for the informational labels. Default `14` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 
    After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.

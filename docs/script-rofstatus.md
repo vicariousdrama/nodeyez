@@ -36,8 +36,10 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/rofstatus.py](../scrip
    nano /home/nodeyez/nodeyez/config/rofstatus.json
    ```
 
-   | field name | description |
-   | --- | --- |
+   | field name    | description                             |
+   | ------------- |---------------------------------------- |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `900` |
    | imagesettings | The default settings to apply to images generated unless overridden within a ring. The structure is defined below. |
    | rings | An array collection of defined rings to monitor and produce images for. The structure is defined below. |

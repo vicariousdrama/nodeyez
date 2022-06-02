@@ -94,7 +94,7 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     # Save to file
     im.save(outputFile)
 
-def checknodestatus(nodes):
+def checknodestatus(nodes, width, height):
     nodealiases=[]
     nodeonline=[]
     nodechannel=[]
@@ -115,7 +115,7 @@ def checknodestatus(nodes):
         nodeonline.append(nodeas[1])
         nodechannel.append(nodeas[2])
         nodeinfos.append(nodeas[3])
-    createimage(nodeonline, nodechannel, nodeinfos, nodes)
+    createimage(nodeonline, nodechannel, nodeinfos, nodes, width, height)
 
 def getcolorconfig(config, colorid, defaultcolor):
     if "imagesettings" in config:
@@ -141,6 +141,8 @@ def setfontandcolor(config):
 if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/rofstatus.json"
+    width=480
+    height=320
     sleepInterval = 900
     # Require configuration
     if not exists(configFile):
@@ -149,6 +151,10 @@ if __name__ == '__main__':
     # Load configuration (there is no defaults, everything is in the config)
     with open(configFile) as f:
         config = json.load(f)
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
@@ -163,5 +169,5 @@ if __name__ == '__main__':
                 setfontandcolor(ring)
             else:
                 setfontandcolor(config)
-            checknodestatus(ring["nodes"])
+            checknodestatus(ring["nodes"],width,height)
         time.sleep(sleepInterval)

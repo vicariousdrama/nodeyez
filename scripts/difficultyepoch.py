@@ -118,6 +118,8 @@ if __name__ == '__main__':
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     saveEachBlock=False
+    width=480
+    height=320
     sleepInterval=540
     # Override config
     if exists(configFile):
@@ -141,6 +143,10 @@ if __name__ == '__main__':
             colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "saveEachBlock" in config:
             saveEachBlock = config["saveEachBlock"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
@@ -152,9 +158,9 @@ if __name__ == '__main__':
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            createimage()
+            createimage(width, height)
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width, height)
         time.sleep(sleepInterval)

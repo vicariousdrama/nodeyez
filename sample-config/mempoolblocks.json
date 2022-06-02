@@ -71,6 +71,12 @@
   "blocksToRender.comment": "The maximum number (1-6) of upcoming blocks to render which will influence the size of the blocks drawn",
   "blocksToRender.type": "integer",
   "blocksToRender": 3,
+  "width.comment": "The width, in pixels to generate the image. Default is 480",
+  "width.type": "integer",
+  "width": 480,
+  "height.comment": "The height, in pixels to generate the image. Default is 320",
+  "height.type": "integer",
+  "height": 320,
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
   "sleepInterval.type": "integer",
   "sleepInterval": 300

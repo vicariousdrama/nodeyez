@@ -26,6 +26,12 @@
   "blockclockPassword.comment": "The password for the blockclock on your network, leave blank for no password",
   "blockclockPassword.type": "string",
   "blockclockPassword": "",
+  "width.comment": "The width, in pixels to generate the image. Default is 480",
+  "width.type": "integer",
+  "width": 480,
+  "height.comment": "The height, in pixels to generate the image. Default is 320",
+  "height.type": "integer",
+  "height": 320,
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
   "sleepInterval.type": "integer",
   "sleepInterval": 3600

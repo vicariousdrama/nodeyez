@@ -275,6 +275,8 @@ if __name__ == '__main__':
     stretchEdgeSpacing=30
     randomUserEnabled=True
     randomUserInterval=300
+    width=480
+    height=320
     sleepInterval=30
     qrCodeEnabled=True
     qrCodeSize=2
@@ -320,6 +322,10 @@ if __name__ == '__main__':
             qrCodeEnabled = config["qrCodeEnabled"]
         if "qrCodeSize" in config:
             qrCodeSize = config["qrCodeSize"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
@@ -349,10 +355,10 @@ if __name__ == '__main__':
             print(f"You may specify a custom configuration file at {configFile}")
         else:
             raretoshiUser = sys.argv[1]
-            createimage()
+            createimage(width,height)
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width,height)
         print(f"Sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

@@ -91,6 +91,8 @@ if __name__ == '__main__':
     priceurl="https://bisq.markets/bisq/api/markets/ticker"
     useTor=False
     satshape="square" # may be one of these: ['square','circle']
+    width=480
+    height=320
     sleepInterval=3600
     showBigText=True
     showBigTextOnTop=True
@@ -118,6 +120,10 @@ if __name__ == '__main__':
             useTor = config["useTor"]
         if "satshape" in config:
             satshape = config["satshape"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 600 if sleepInterval < 600 else sleepInterval # minimum 10 minutes, access others
@@ -145,9 +151,9 @@ if __name__ == '__main__':
             print(f"2) Pass an argument other than -h or --help to run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            createimage()
+            createimage(width,height)
         exit(0)
     # Loop
     while True:
-        createimage()
+        createimage(width,height)
         time.sleep(sleepInterval)

@@ -132,7 +132,7 @@ def blockclockReport(name, currency, price):
     # c slot 6 is location
     blockclockAPICall(baseapi + "ou_text/6/" + abbrev + "/" + dataCountry)
 
-def processdata():
+def processdata(width=480, height=320):
     global randomCountry
     global randomState
     #1. get newest file in folder
@@ -149,7 +149,7 @@ def processdata():
         name, currency, price = getItemInfo(newestfile, itemindex)
         print(f"Doing gas prices for {price}, {currency}, {name}")
         #4. create the image
-        createImage(name, currency, price)
+        createImage(name, currency, price, width, height)
         #5. send price to blockclock
         blockclockReport(name, currency, price)
     else:
@@ -168,6 +168,8 @@ if __name__ == '__main__':
     blockclockEnabled=False
     blockclockAddress="21.21.21.21"
     blockclockPassword=""
+    width=480
+    height=320
     sleepInterval=3600
     colorTextGas=ImageColor.getrgb("#e69138")
     colorTextLocation=ImageColor.getrgb("#f1c232")
@@ -197,6 +199,10 @@ if __name__ == '__main__':
             blockclockAddress = config["blockclockAddress"]
         if "blockclockPassword" in config:
             blockclockPassword = config["blockclockPassword"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
         if "colorTextGas" in config:
@@ -221,9 +227,9 @@ if __name__ == '__main__':
             print(f"2) Pass an argument other than -h or --help to run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            processdata()
+            processdata(width,height)
         exit(0)
     # Loop
     while True:
-        processdata()
+        processdata(width,height)
         time.sleep(sleepInterval)

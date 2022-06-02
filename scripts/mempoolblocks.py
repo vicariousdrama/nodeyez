@@ -289,6 +289,8 @@ if __name__ == '__main__':
         {"satMin": 150.0, "satMax": 9999.0, "colorFill": "#4a148c"}
     ]
     blocksToRender=3
+    width=480
+    height=320
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -300,6 +302,10 @@ if __name__ == '__main__':
             urlmempool = config["urlmempool"]
         if "urlfeerecs" in config:
             urlfeerecs = config["urlfeerecs"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if (sleepInterval < 300 and "mempool.space" in urlmempool) else sleepInterval # 5 minutes minimum when accessing others
@@ -335,10 +341,10 @@ if __name__ == '__main__':
             print(f"You may specify a custom configuration file at {configFile}")
         else:
             blocksToRender = int(sys.argv[1])
-            createimage()
+            createimage(width, height)
         exit(0)
 
     # Loop
     while True:
-        createimage()
+        createimage(width, height)
         time.sleep(sleepInterval)

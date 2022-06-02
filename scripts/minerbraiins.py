@@ -543,6 +543,8 @@ if __name__ == '__main__':
     dataDirectory="/home/nodeyez/nodeyez/data/"
     minerlabel=""
     mineraddress=""
+    width=480
+    height=320
     sleepInterval=60
     colorBraiins=ImageColor.getrgb("#2f3fc5")
     colorTextFG=ImageColor.getrgb("#ffffff")
@@ -574,6 +576,10 @@ if __name__ == '__main__':
             minerlabel = config["minerlabel"]
         if "mineraddress" in config:
             mineraddress = config["mineraddress"]
+        if "width" in config:
+            width = int(config["width"])
+        if "height" in config:
+            height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 5 if sleepInterval < 5 else sleepInterval # 5 seconds minimum, local only
@@ -626,14 +632,14 @@ if __name__ == '__main__':
                 if isValidMiner():
                     minerkey = mineraddress
                     minerinfo = getMinerInfo()
-                    createimage(minerinfo)
+                    createimage(minerinfo,width,height)
                 else:
                     print(f"One or more miners is missing information in {configFile}. Skipping.")
         else:
             if isValidMiner():
                 minerkey = mineraddress
                 minerinfo = getMinerInfo()
-                createimage(minerinfo)
+                createimage(minerinfo,width,height)
             else:
                 print(f"Inadequate configuration for miner. Set minerlabel and mineraddress for each miner in {configFile}.")
                 exit(1)

@@ -30,6 +30,8 @@ graphically
    | --- | --- |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/satsperusd.png` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | width | The width, in pixels, to generate the image. Default `480` |
+   | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
    | priceurl | The url that provides the pricing information from bisq marketplace. Default `https://bisq.markets/bisq/api/markets/ticker` |
    | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `false` |
