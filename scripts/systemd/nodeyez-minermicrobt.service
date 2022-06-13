@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for Miner MicroBT panel generation
+# /etc/systemd/system/nodeyez-minerbraiins.service
+
+[Unit]
+Description=Nodeyez image generator for Miner Status for Whatsminer
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/minermicrobt.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

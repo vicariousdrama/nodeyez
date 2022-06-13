@@ -6,6 +6,7 @@ Display panels to get the most from your node
 ## Unrelease main branch
 
 New Panels and Enhancements
+- New panel: Miner Status for MicroBT Whatsminer
 - New panel: Channel Fees (requires updated macaroon)
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
