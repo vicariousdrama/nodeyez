@@ -36,6 +36,7 @@ them at startup automatically.
 | [f2 pool](./docs/script-f2pool.md) | | | Yes |
 | [luxor pool](./docs/script-luxor-mining-hashrate.md) | | | Yes |
 | [miner - braiins](./docs/script-minerbraiins.md) | | | |
+| [miner - microbt](./docs/script-minermicrobt.md) | | | |
 | [slushpool](./docs/script-slushpool.md) | | | Yes |
 |                **_Other Fun Stuff_** |
 | [compass mining hardware](./docs/script-compassmininghardware.md) | | | Yes |
