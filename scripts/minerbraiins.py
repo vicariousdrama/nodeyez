@@ -617,8 +617,13 @@ if __name__ == '__main__':
         if "miners" in config:
             miners = config["miners"]
             for miner in miners:
+                enabled = True
                 minerlabel=""
                 mineraddress=""
+                if "enabled" in miner:
+                    enabled = miner["enabled"]
+                if !enabled:
+                    continue
                 if "mineraddress" in miner:
                     mineraddress = miner["mineraddress"]
                 if "minerlabel" in miner:
