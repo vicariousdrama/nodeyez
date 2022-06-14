@@ -48,12 +48,14 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minermicrobt.py](../sc
    | colorHashrateBox | The color of the border, average line and label backgrounds for the hashrate graph expressed as a Hexadecimal color specifier. Default `#202020` |
    | colorHashratePlot | The color to plot each hashrate value within the hashrate graph expressed as a Hexadecimal color specifier. Default `#2f3fc5` |
    | colorHashrateMA | The color to draw the hashrate moving average line expressed as a Hexadecimal color specifier. Default `#40ff40` |
+   | colorLowPowerMode | The color to draw the label background indicating if running in low power mode expressed as a Hexadecimal color specifier. Default `#006000` |
    | miners | An array of one or more miners. The structure of a miner is defined below |
 
    __miner__
 
    | field name | description |
    | --- | --- |
+   | enabled | Inidicates whether this miner configuration is enabled for monitoring |
    | minerlabel | A unique label to give this miner. If provided, it is used as the label in the header area of the image |
    | mineraddress | *required* The ip or host address for your miner on your local lan, accessible from the host running the script |
    | expectations | An optional structure defining expectations to monitor for. A setting out of range will cause a warning to be rendered. The structure is defined below |
@@ -75,12 +77,14 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minermicrobt.py](../sc
    | --- | --- |
    | low | An optional property to define the low end of expected power range, in watts. |
    | high | An optional property to define the high end of expected power range, in watts. |
+   | lowmodelow | An optional property to define the low end of expected power usage, in watts, when running in low power mode. |
 
    __hashrate__
 
    | field name | description |
    | --- | --- |
    | low | An optional property to define the low end of expected hashrate, in MH/s |
+   | lowmodelow | An optional property to define the low end of expected hashrate, in MH/s, when running in low power mode. |
 
    __pools__
 

@@ -103,6 +103,18 @@ def getTempSettings(minerinfo):
             chipmax = float(minerexpectations["temps"]["maxchip"])
     return str(format(envmax, ".2f")) + "°C", str(format(boardmax, ".2f")) + "°C", str(format(chipmax, ".2f")) + "°C"
 
+def isLowPowerMode(minerinfo):
+    islow = False
+    if "summary" in minerinfo:
+        for s in minerinfo["summary"]:
+            if "SUMMARY" in s:
+               for t in s["SUMMARY"]:
+                   if "Power Mode" in t:
+                       powermode = t["Power Mode"]
+                       if powermode == "Low":
+                           islow = True
+    return islow
+
 def renderPower(draw, minerinfo, left, top, width, height):
     groupFontSize = 16
     subtextFontSize = 12
@@ -113,6 +125,11 @@ def renderPower(draw, minerinfo, left, top, width, height):
     print(f"  power used: {spowerused} (limit: {spowerlimit})")
     vicarioustext.drawtoplefttext(draw, "Power: ", groupFontSize, left, top, colorTextFG, True)
     vicarioustext.drawtoprighttext(draw, spowerused, groupFontSize, left+width, top, colorTextFG, True)
+    if isLowPowerMode(minerinfo):
+        sw,sh,f = vicarioustext.gettextdimensions(draw, "Power: ", groupFontSize, True)
+        lw,lh,f = vicarioustext.gettextdimensions(draw, "low ", subtextFontSize, False)
+        draw.rectangle(xy=[(left + sw, top + sh - lh),(left + sw + lw, top + sh)],fill=colorLowPowerMode,outline=colorLowPowerMode,width=2)
+        vicarioustext.drawcenteredtext(draw, "low", subtextFontSize, left + sw + (lw/2), top + sh - (lh/2), colorTextFG, False)
     vicarioustext.drawtoplefttext(draw, "limit: ", subtextFontSize, left + subtextPadding, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
     vicarioustext.drawtoprighttext(draw, spowerlimit, subtextFontSize, left+width, top + groupFontSize + (subtextFontSize * .5), colorTextFG)
 
@@ -382,6 +399,9 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
         else:
             if "low" in minerexpectations["power"]:
                 lowpowerthreshold = minerexpectations["power"]["low"]
+                if isLowPowerMode(minerinfo):
+                    if "lowmodelow" in minerexpectations["power"]:
+                        lowpowerthreshold = minerexpectations["power"]["lowmodelow"]
                 if lowpowerthreshold > powerused:
                     warning = "Power below expected threshold of " + str(lowpowerthreshold)
             if "high" in minerexpectations["power"]:
@@ -402,6 +422,9 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
                         hashrate = innersummary["MHS 1m"]
         if "low" in minerexpectations["hashrate"]:
             lowhashratethreshold = minerexpectations["hashrate"]["low"]
+            if isLowPowerMode(minerinfo):
+                if "lowmodelow" in minerexpectations["hashrate"]:
+                    lowhashratethreshold = minerexpectations["hashrate"]["lowmodelow"]
             if lowhashratethreshold > hashrate:
                 warning = "Hashrate is below expected threshold of " + str(lowhashratethreshold)
     if len(warning) == 0 and "fans" in minerexpectations:
@@ -573,6 +596,7 @@ if __name__ == '__main__':
     colorHashrateBox=ImageColor.getrgb("#202020")
     colorHashratePlot=ImageColor.getrgb("#2f3fc5")
     colorHashrateMA=ImageColor.getrgb("#40ff40")
+    colorLowPowerMode=ImageColor.getrgb("#006000")
     # Inits
     lastSaved = 0
     saveInterval = 600
@@ -616,6 +640,8 @@ if __name__ == '__main__':
             colorHashratePlot = ImageColor.getrgb(config["colorHashratePlot"])
         if "colorHashrateMA" in config:
             colorHashrateMA = ImageColor.getrgb(config["colorHashrateMA"])
+        if "colorLowPowerMode" in config:
+            colorLowPowerMode = ImageColor.getrgb(config["colorLowPowerMode"])
     # Data directories
     if not exists(dataDirectory):
         os.makedirs(dataDirectory)
@@ -636,8 +662,13 @@ if __name__ == '__main__':
         if "miners" in config:
             miners = config["miners"]
             for miner in miners:
+                enabled = True
                 minerlabel=""
                 mineraddress=""
+                if "enabled" in miner:
+                    enabled = miner["enabled"]
+                if not enabled:
+                    continue
                 if "mineraddress" in miner:
                     mineraddress = miner["mineraddress"]
                 if "minerlabel" in miner:

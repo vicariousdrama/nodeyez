@@ -9,7 +9,10 @@
   "miners.type": "array",
   "miners": [
     {
-      "minerlabel.comment": "A unique label to give this miner. It is used as part of the filename and label on image.",
+      "enabled.comment": "Indicates whether this miner configuration is enabled for monitoring",
+      "enabled.type": "boolean",
+      "enabled": false,
+      "minerlabel.comment": "A unique label to give this miner. It is used as part of the header on image.",
       "minerlabel.type": "string",
       "minerlabel": "",
       "mineraddress.comment": "(required) The ip or host address for your miner on your local lan, accessible from the host running the minerstatus script",
@@ -26,14 +29,20 @@
           "low": 3000,
           "high.comment": "An optional property to define the high end of expected power range, in watts",
           "high.type": "integer",
-          "high": 3400
+          "high": 3400,
+          "lowmodelow.comment": "An optional property to define the low end of expected power range when running in low power mode, in watts",
+          "lowmodelow.type": "integer",
+          "lowmodelow": 1900
         },
         "hashrate.comment": "An optional structure defining hashrate expectations to monitor for",
         "hashrate.type": "object",
         "hashrate": {
           "low.comment": "An optional property to define the low end of expected hashrate, in MH/s",
           "low.type": "integer",
-          "low": 65000000
+          "low": 65000000,
+          "lowmodelow.comment": "An optional property to define the low end of expected hashrate when in low power mode, in MH/s",
+          "lowmodelow.type": "integer",
+          "lowmodelow": 45000000
         },
         "pools.comment": "An optional array of pool definitions of expected pools to send hashrate to",
         "pools.type": "array",
@@ -102,6 +111,9 @@
   "colorHashratePlot": "#2f3fc5",
   "colorHashrateMA.comment": "The color to draw the hashrate moving average line expressed as a Hexadecimal color specifier",
   "colorHashrateMA.type": "string",
-  "colorhashrateMA": "#40ff40"
+  "colorhashrateMA": "#40ff40",
+  "colorLowPowerMode.comment": "The color to draw the label background indicating if running in low power mode expressed as a Hexadecimal color specifier",
+  "colorLowPowerMode.type": "string",
+  "colorLowPowerMode": #006000"
 }
 

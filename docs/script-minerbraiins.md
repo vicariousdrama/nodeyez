@@ -52,6 +52,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minerbraiins.py](../sc
 
    | field name | description |
    | --- | --- |
+   | enabled | Indicates whether this miner configuration is enabled for monitoring |
    | minerlabel | A unique label to give this miner. If provided, it is used as the label in the header area of the image |
    | mineraddress | *required* The ip or host address for your miner on your local lan, accessible from the host running the script |
    | expectations | An optional structure defining expectations to monitor for. A setting out of range will cause a warning to be rendered. The structure is defined below |
