@@ -622,7 +622,7 @@ if __name__ == '__main__':
                 mineraddress=""
                 if "enabled" in miner:
                     enabled = miner["enabled"]
-                if !enabled:
+                if not enabled:
                     continue
                 if "mineraddress" in miner:
                     mineraddress = miner["mineraddress"]
