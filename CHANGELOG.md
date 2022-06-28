@@ -13,6 +13,7 @@ New Panels and Enhancements
 General
 - Updated macaroon creation to allow querying ForwardingHistory
 - Dimensions for any panel can be set via "width" and "height" in config file
+- Updated Compass Facilities list
 
 ## 1.0.0
 
