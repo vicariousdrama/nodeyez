@@ -244,6 +244,7 @@ separate tab or window for convenience.
 - [art hash dungeon](./script-arthashdungeon.md)
 - [block height](./script-blockheight.md)
 - [difficulty epoch](./script-difficultyepoch.md)
+- [halving countdown](./script-halving.md)
 - [mempool blocks](./script-mempoolblocks.md)
 
 **Lightning Dependent**

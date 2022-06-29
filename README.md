@@ -28,6 +28,7 @@ them at startup automatically.
 | [art hash dungeon](./docs/script-arthashdungeon.md) | Yes | | |
 | [block height](./docs/script-blockheight.md) | Yes | | |
 | [difficulty epoch](./docs/script-difficultyepoch.md) | Yes | | |
+| [halving countdown](./docs/script-halving.md) | Yes | | |
 | [mempool blocks](./docs/script-mempoolblocks.md) | Optional | | Yes |
 |                **_Lightning Dependent_** |
 | [channel balance](./docs/script-channelbalance.md) | | Yes | |
