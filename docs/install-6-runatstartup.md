@@ -31,6 +31,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-difficultyepoch.service
    sudo systemctl enable nodeyez-f2pool.service
    sudo systemctl enable nodeyez-gasprice.service
+   sudo systemctl enable nodeyez-halving.service
    sudo systemctl enable nodeyez-ipaddress.service
    sudo systemctl enable nodeyez-mempoolblocks.service
    sudo systemctl enable nodeyez-minerbraiins.service
@@ -59,6 +60,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-difficultyepoch.service
    sudo systemctl start nodeyez-f2pool.service
    sudo systemctl start nodeyez-gasprice.service
+   sudo systemctl start nodeyez-halving.service
    sudo systemctl start nodeyez-ipaddress.service
    sudo systemctl start nodeyez-mempoolblocks.service
    sudo systemctl start nodeyez-minerbraiins.service

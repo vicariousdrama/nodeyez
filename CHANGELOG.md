@@ -8,6 +8,7 @@ Display panels to get the most from your node
 New Panels and Enhancements
 - New panel: Miner Status for MicroBT Whatsminer
 - New panel: Channel Fees (requires updated macaroon)
+- New Panel: Halving Countdown - Progress to Next Subsidy Halving
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
 General
