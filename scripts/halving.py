@@ -18,7 +18,7 @@ def createimage(width=480, height=320):
     halvingpct = float(nHeight - halvingbegin) / float(2100.00)
     gridblocks = nHeight % 2100
     # start the image with header and footer
-    padtop=50
+    padtop=36
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     vicarioustext.drawcenteredtext(draw, "Progress to Next Subsidy Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
@@ -30,8 +30,10 @@ def createimage(width=480, height=320):
     barwidth=int(math.floor(float(width-(padleft+padleft+4))*halvingpct/100.00))
     draw.rounded_rectangle(xy=(padleft+2,padtop+2,padleft+barwidth,padtop+barheight-2),radius=3,fill=colorProgress)
     pcttxt = str(format(halvingpct, ".2f")) + "%"
-    if halvingpct < 75:
-        vicarioustext.drawrighttext(draw, str(nHeight), 18, padleft+barwidth-2, padtop+(barheight/2), colorBackground, True)
+    if halvingpct < 25:
+        vicarioustext.drawcenteredtext(draw, str(nHeight) + " is " + pcttxt, 18, (width/2), padtop+(barheight/2), colorProgress, True)
+    elif halvingpct < 75:
+        vicarioustext.drawrighttext(draw, "Block\n" + str(nHeight), 18, padleft+barwidth-2, padtop+(barheight/2), colorBackground, True)
         vicarioustext.drawlefttext(draw, pcttxt, 18, padleft+barwidth+2, padtop+(barheight/2), colorProgress, True)
     else:
         vicarioustext.drawcenteredtext(draw, str(nHeight) + " is " + pcttxt, 18, (width/2), padtop+(barheight/2), colorBackground, True)
@@ -49,9 +51,11 @@ def createimage(width=480, height=320):
             brx = tlx+blockw-2
             bry = tly+blockw-2
             fillcolor = None
+            outlinecolor = colorGrid
             if gridblocknum <= gridblocks:
                 fillcolor = colorProgress
-            draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=colorGrid)
+                outlinecolor = None
+            draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
     im.save(outputFile)
 
 
