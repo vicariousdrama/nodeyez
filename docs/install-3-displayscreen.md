@@ -97,8 +97,7 @@ I have some extras that I can sell.
 
    From the command line you can use `sudo init 6`.
 
-### 6. After waiting for the pi to restart, log to your node with a privileged user
-   that can sudo.
+### 6. After waiting for the pi to restart, log to your node with a privileged user that can sudo.
     - MyNodeBTC: ssh as admin
     - Raspiblitz ssh as admin
     - Raspibolt: ssh as admin
@@ -109,7 +108,7 @@ I have some extras that I can sell.
 
    ```sh
    cd /tmp
-   wget https://raw.githubusercontent.com/vicariousdrama/nodeyez/fix-div-by-zero/images/logo.png
+   wget https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png
    sudo fbi --vt 1 --autozoom --device /dev/fb0 -1 logo.png
    rm logo.png
    ```
