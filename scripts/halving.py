@@ -39,11 +39,11 @@ def createimage(width=480, height=320):
     cols = 60
     nHeight = vicariousbitcoin.getcurrentblock()
     nSubsidyHalvingInterval = 210000
-    gridblocks = 2100
     halvings = nHeight / nSubsidyHalvingInterval
     halvingbegin = math.floor(halvings) * nSubsidyHalvingInterval
     halvingend = halvingbegin + nSubsidyHalvingInterval - 1
-    halvingpct = float(nHeight - halvingbegin) / float(gridblocks)
+    halvingpct = float(nHeight - halvingbegin) / float(rows*cols)
+    gridblocks = nHeight % (rows*cols)
     # start the image
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
