@@ -35,39 +35,22 @@ def getGridImage(p):
 
 
 def createimage(width=480, height=320):
-    rows = 30
-    cols = 70
+    rows = 35
+    cols = 60
     nHeight = vicariousbitcoin.getcurrentblock()
-    nSubsidyHalvingInterval = rows * cols * 100 # 210000
+    nSubsidyHalvingInterval = 210000
+    gridblocks = 2100
     halvings = nHeight / nSubsidyHalvingInterval
     halvingbegin = math.floor(halvings) * nSubsidyHalvingInterval
     halvingend = halvingbegin + nSubsidyHalvingInterval - 1
-    halvingpct = float(nHeight - halvingbegin) / float(2100.00)
-    gridblocks = nHeight % (rows * cols) # 2100
-    # start the image with header and footer
-    padtop=36
+    halvingpct = float(nHeight - halvingbegin) / float(gridblocks)
+    # start the image
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
-    vicarioustext.drawcenteredtext(draw, "Progress to Next Subsidy Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
-    # progress bar showing major percent
-    padleft=50
-    barheight=40
-    draw.rounded_rectangle(xy=(padleft,padtop,width-padleft,padtop+barheight),radius=3,fill=None,outline=colorGrid,width=1)
-    barwidth=int(math.floor(float(width-(padleft+padleft+4))*halvingpct/100.00))
-    draw.rounded_rectangle(xy=(padleft+2,padtop+2,padleft+barwidth,padtop+barheight-2),radius=3,fill=colorProgress)
-    pcttxt = str(format(halvingpct, ".3f")) + "%"
-    if halvingpct < 25:
-        vicarioustext.drawcenteredtext(draw, str(nHeight) + " is " + pcttxt, 18, (width/2), padtop+(barheight/2), colorProgress, True)
-    elif halvingpct < 75:
-        vicarioustext.drawrighttext(draw, "Block\n" + str(nHeight), 18, padleft+barwidth-2, padtop+(barheight/2), colorBackground, True)
-        vicarioustext.drawlefttext(draw, pcttxt, 18, padleft+barwidth+2, padtop+(barheight/2), colorProgress, True)
-    else:
-        vicarioustext.drawcenteredtext(draw, str(nHeight) + " is " + pcttxt, 18, (width/2), padtop+(barheight/2), colorBackground, True)
-    # grid of 70x30 (2100) for the current percent
-    blockw=int(math.floor(width/cols))
+    # grid for the current percent
+    blockw=int(math.floor((width-1)/cols))
     padleft=int(math.floor((width-(cols*blockw))/2))
-    padtop=100
+    padtop=40
     if gridImageEnabled:
         gridw = blockw * cols
         gridh = blockw * rows
@@ -123,13 +106,35 @@ def createimage(width=480, height=320):
                     draw.rectangle(xy=((tlx-1,tly-1),(brx+1,bry+1)),fill=fillcolor,outline=outlinecolor,width=2)
             else:
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
+    # header and footer
+    padtop=36
+    vicarioustext.drawcenteredtext(draw, "Next Subsidy Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
+    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
+    # progress bar showing major percent
+    padleft=0
+    barheight=32
+    barwidth=(width//2)
+    padtop=height-barheight
+    vicarioustext.drawtoplefttext(draw, "grid represents 1 whole percent", 10, barwidth + 3, padtop, colorProgress)
+    draw.rounded_rectangle(xy=(padleft,padtop,padleft+barwidth,padtop+barheight),radius=3,fill=None,outline=colorGrid,width=1)
+    barwidth=int(float(barwidth)*halvingpct/100.00)
+    draw.rounded_rectangle(xy=(padleft+2,padtop+2,padleft+barwidth,padtop+barheight-2),radius=3,fill=colorProgress)
+    pcttxt = str(format(halvingpct, ".3f")) + "%"
+    if halvingpct < 25:
+        vicarioustext.drawlefttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth+4, padtop+(barheight/2), colorProgress, True)
+    elif halvingpct < 75:
+        vicarioustext.drawrighttext(draw, "Block\n" + str(nHeight), 14, padleft+barwidth-2, padtop+(barheight/2), colorBackground, True)
+        vicarioustext.drawlefttext(draw, pcttxt, 14, padleft+barwidth+2, padtop+(barheight/2), colorProgress, True)
+    else:
+        vicarioustext.drawrighttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth-4, padtop+(barheight/2), colorBackground, True)
+    # save
     im.save(outputFile)
 
 
 if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/halving.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/zhalving.png"
+    outputFile="/home/nodeyez/nodeyez/imageoutput/halving.png"
     ipfsDirectory="/home/nodeyez/nodeyez/data/ipfs"
     colorGrid=ImageColor.getrgb("#404040")
     colorProgress=ImageColor.getrgb("#40FF40")
