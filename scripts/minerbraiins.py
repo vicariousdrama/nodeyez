@@ -501,6 +501,7 @@ def createimage(minerinfo, width=480, height=320):
     outputFileMiner = outputFile
     outputFileMiner = outputFileMiner.replace(".png", "-" + mineraddress + ".png")
     im.save(outputFileMiner)
+    im.close()
 
 def getMinerHashHistoryFilename():
     return dataDirectory + "minerbraiins/minerhashhistory.json"

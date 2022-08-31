@@ -81,6 +81,7 @@ def createImage(name, currency, price, width=480, height=320):
         pricelabel = pricelabel + "/liter"
     vicarioustext.drawcenteredtext(draw, pricelabel, 72, int(width/2), int(height/2)+120, colorTextPrice)
     im.save(outputFile)
+    im.close()
 
 def getUSAbbrev(name):
     abbrev = {"Alaska": "AK", "Alabama": "AL", "Arkansas": "AR", "Arizona": "AZ", "California": "CA", "Colorado": "CO", "Connecticut": "CT",

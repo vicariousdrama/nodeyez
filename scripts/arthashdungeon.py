@@ -145,12 +145,14 @@ def createimage(blocknumber=1, width=480, height=320):
             fieldrow = (mazerow*2)+1
             for mazecolumn in range(mazecolumns):
                 fieldcolumn = (mazecolumn*2)
-                basetile = maze[mazecolumn][mazerow]['t'] % 6
-                basetilex = themex + (basetile * iconsize)
-                basetileimage = tileset.crop((basetilex, themey, basetilex + iconsize, themey + iconsize))
-                im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+0)*iconsize)))
-                im.paste(basetileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+1)*iconsize)))
-                im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+1)*iconsize)))
+                if 1 == 0: # changing basetileimage
+                    basetile = maze[mazecolumn][mazerow]['t'] % 6
+                    basetilex = themex + (basetile * iconsize)
+                    basetileimage.close()
+                    basetileimage = tileset.crop((basetilex, themey, basetilex + iconsize, themey + iconsize))
+                    im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+0)*iconsize)))
+                    im.paste(basetileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+1)*iconsize)))
+                    im.paste(basetileimage, (xoffset+((fieldcolumn+1)*iconsize), yoffset+((fieldrow+1)*iconsize)))
                 im.paste(walltileimage, (xoffset+((fieldcolumn+0)*iconsize), yoffset+((fieldrow+0)*iconsize)))
                 thingmap[fieldcolumn+0][fieldrow+0-1]=1
                 if not maze[mazecolumn][mazerow]['no']:
@@ -206,23 +208,25 @@ def createimage(blocknumber=1, width=480, height=320):
 
     byteidx -= bytenum
     # draw some logos
-    logostodraw = int(maxrow/2)
-    logostotry = 100
-    while logostodraw > 0 and logostotry > 0:
-        logostotry -= 1
-        byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 7))
-        fieldcol = int(blockhash[byteidx:byteidx+4],16) % maxcol
-        byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 11))
-        fieldrow = int(blockhash[byteidx:byteidx+4],16) % maxrow
-        if thingmap[fieldcol][fieldrow] == 0:
-            byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 3))
-            tilex   = int(blockhash[byteidx:byteidx+2],16) % logosetx
-            byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 5))
-            tiley   = int(blockhash[byteidx:byteidx+2],16) % logosety
-            logoimage = logoset.crop((tilex*iconsize,tiley*iconsize,(tilex+1)*iconsize,(tiley+1)*iconsize))
-            im.paste(logoimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), logoimage)
-            thingmap[fieldcol][fieldrow] = 1
-            logostodraw = logostodraw - 1
+    if 1 == 1:
+        logostodraw = int(maxrow/2)
+        logostotry = 100
+        while logostodraw > 0 and logostotry > 0:
+            logostotry -= 1
+            byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 7))
+            fieldcol = int(blockhash[byteidx:byteidx+4],16) % maxcol
+            byteidx = byteidx - 4 if byteidx - 4 >= 0 else len(blockhash) - (4 + int(random.random() * 11))
+            fieldrow = int(blockhash[byteidx:byteidx+4],16) % maxrow
+            if thingmap[fieldcol][fieldrow] == 0:
+                byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 3))
+                tilex   = int(blockhash[byteidx:byteidx+2],16) % logosetx
+                byteidx = byteidx - 2 if byteidx - 2 >= 0 else len(blockhash) - (2 + int(random.random() * 5))
+                tiley   = int(blockhash[byteidx:byteidx+2],16) % logosety
+                logoimage = logoset.crop((tilex*iconsize,tiley*iconsize,(tilex+1)*iconsize,(tiley+1)*iconsize))
+                im.paste(logoimage, (xoffset+(fieldcol*iconsize),yoffset+((fieldrow+1)*iconsize)), logoimage)
+                logoimage.close()
+                thingmap[fieldcol][fieldrow] = 1
+                logostodraw = logostodraw - 1
     # draw stairs
     # draw top bar
     #  - level
@@ -230,7 +234,12 @@ def createimage(blocknumber=1, width=480, height=320):
     vicarioustext.drawlefttext(draw, "Blockhash Dungeon", 24, 0, int(padtop/2), colorTextFG, True)
     vicarioustext.drawrighttext(draw, "Level " + str(blocknumber), 24, width, int(padtop/2), colorTextFG, True)
     im.save(outputFileBlock)
-
+    # cleanup resources
+    logoset.close()
+    tileset.close()
+    basetileimage.close()
+    walltileimage.close()
+    im.close()
 
 if __name__ == '__main__':
     # Defaults

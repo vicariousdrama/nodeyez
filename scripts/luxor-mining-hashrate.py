@@ -189,7 +189,7 @@ def createimage(hashrate_history, date_prefix, width=480, height=320):
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
     im.save(datedOutputFile)
-
+    im.close()
 
 
 if __name__ == '__main__':

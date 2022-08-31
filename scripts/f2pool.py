@@ -178,6 +178,7 @@ def createimage(accountinfo, width=480, height=320):
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
     im.save(outputFile)
+    im.close()
 
 
 if __name__ == '__main__':

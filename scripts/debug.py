@@ -66,6 +66,7 @@ def createimage(width=480, height=320):
         vicarioustext.drawcenteredtext(draw, "All panels rendering when expected", 24, int(width/2), int(height/2))
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     im.save(outputFile)
+    im.close()
 
 while True:
     createimage()

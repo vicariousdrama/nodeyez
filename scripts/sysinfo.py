@@ -120,6 +120,7 @@ def createimage(width=480, height=320):
     drawicon(draw,"memory",5+bw+bw,bh+5,bw,bh-10,v=str(getmemusage("Swap","Swap")))
     drawicon(draw,"datetime",0,0,width,height)
     im.save(outputFile)
+    im.close()
 
 def gettemp():
     cmd = "cat /sys/class/thermal/thermal_zone0/temp"

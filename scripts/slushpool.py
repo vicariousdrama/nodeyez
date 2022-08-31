@@ -255,7 +255,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     # Save to file
     im.save(outputFile)
-
+    im.close()
 
 
 if __name__ == '__main__':

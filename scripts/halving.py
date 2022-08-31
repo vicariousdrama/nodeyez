@@ -22,6 +22,7 @@ def getGridImage(p):
                 filepath = ipfsDirectory + "/" + filename
                 filesize = os.path.getsize(filepath)
                 if filesize > 50000:
+                    print(f"loading image file {filepath}")
                     rImage = Image.open(filepath).convert("RGBA")
                     filegood = True
             except BaseException as err:
@@ -71,6 +72,13 @@ def createimage(width=480, height=320):
             gridsourcewider = Image.new(mode="RGBA", size=(newgridsourcewidth, gridsourceh), color=colorProgress)
             gridsourcewider.paste(gridsource, (gridsourceoffset,0))
             gridimage = gridsourcewider.resize(size=(gridw,gridh))
+        gridimageunmined = gridimage.copy()
+        if gridImageUnminedMode == 'grayscale':
+            gridimageunmined = ImageOps.grayscale(gridimageunmined)
+        if gridImageUnminedMode == 'dither':
+            gridimageunmined = gridimageunmined.convert('1')
+        if gridImageUnminedMode == 'dither2':
+            gridimageunmined = gridimageunmined.convert('L')
     for dc in range(cols):
         for dr in range(rows):
             gridblocknum = ((dr*cols)+dc)+1
@@ -89,17 +97,15 @@ def createimage(width=480, height=320):
                 gtly = (dr*blockw)
                 gbrx = gtlx+blockw-1
                 gbry = gtly+blockw-1
-                gblockimg = gridimage.crop((gtlx,gtly,gbrx,gbry))
                 if fillcolor != colorProgress:
-                    # convert to black and white
-                    if gridImageUnminedMode == 'grayscale':
-                        gblockimg = ImageOps.grayscale(gblockimg)
-                    if gridImageUnminedMode == 'dither':
-                        gblockimg = gblockimg.convert('1')
-                    if gridImageUnminedMode == 'dither2':
-                        gblockimg = gblockimg.convert('L')
+                    gblockimg = gridimageunmined.crop((gtlx,gtly,gbrx,gbry))
+                else:
+                    gblockimg = gridimage.crop((gtlx,gtly,gbrx,gbry))
                 # paste the part into the right spot
                 im.paste(gblockimg, (tlx, tly))
+                # cleanup resources
+                gblockimg.close()
+                # highlight current block in the grid with an outline
                 if gridblocknum == gridblocks:
                     fillcolor = None
                     outlinecolor = colorProgress
@@ -129,7 +135,16 @@ def createimage(width=480, height=320):
         vicarioustext.drawrighttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth-4, padtop+(barheight/2), colorBackground, True)
     # save
     im.save(outputFile)
-
+    # cleanup image resources
+    if gridImageEnabled:
+        gridsource.close()
+        gridimage.close()
+        gridimageunmined.close()
+        if gridsourceratio > gridratio:
+            gridsourcetaller.close()
+        else:
+            gridsourcewider.close()
+    im.close()
 
 if __name__ == '__main__':
     # Defaults
