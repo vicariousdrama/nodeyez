@@ -210,6 +210,7 @@ def createimage(width=480, height=320):
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
     im.save(outputFile)
+    im.close()
 
 def getmempoolblocks():
     cmd = "curl --silent " + urlmempool

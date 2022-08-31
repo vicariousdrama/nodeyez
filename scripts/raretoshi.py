@@ -186,6 +186,7 @@ def createimage(width=480, height=320):
                 imTaller.paste(imLine, (0, y+offset+sourceHeight+stretchEdgeSpacing))
         print(f"Resizing to {width} x {height}")
         im = imTaller.resize(size=(width,height))
+        imTaller.close()
     if imageRatio > sourceRatio:
         print("Need to extend sides")
         newSourceWidth=int(sourceHeight * imageRatio)
@@ -204,10 +205,11 @@ def createimage(width=480, height=320):
                 imWider.paste(imLine, (x+offset+sourceWidth+stretchEdgeSpacing, 0))
         print(f"Resizing to {width} x {height}")
         im = imWider.resize(size=(width,height))
-
+        imWider.close()
     if imageRatio == sourceRatio:
         print("Same ratio")
         im = sourceImage.resize(size=(width,height))
+    sourceImage.close()
     # Labeling
     overlayTextBottomHeight=0
     if overlayTextEnabled:
@@ -251,10 +253,14 @@ def createimage(width=480, height=320):
             qry = qry - overlayTextBottomHeight #bottom overlay
         qrpos = (qrx, qry)
         im.paste(img_qr, qrpos)
+        img_qr.close()
     # Combine and save
     composite = Image.alpha_composite(im, alpha_img)
     print(f"Done. Saving image to {outputFile}")
     composite.save(outputFile)
+    alpha_img.close()
+    im.close()
+    composite.close()
     # Set new raretoshiuser?
     if randomUserEnabled:
         pickRaretoshiUser(raretoshiInfo)

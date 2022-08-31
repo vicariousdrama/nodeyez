@@ -75,7 +75,7 @@ def createimage(blocknumber=1, width=480, height=320):
     vicarioustext.drawcenteredtext(draw, "Blockhash Art For Block " + str(blocknumber), 24, int(width/2), int(padtop/2), colorTextFG, True)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFileBlock)
-
+    im.close()
 
 if __name__ == '__main__':
     # Defaults

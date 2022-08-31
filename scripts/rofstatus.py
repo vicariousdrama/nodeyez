@@ -93,6 +93,7 @@ def createimage(nodesonline, nodeschannel, nodesinfos, nodes, width=480, height=
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     # Save to file
     im.save(outputFile)
+    im.close()
 
 def checknodestatus(nodes, width, height):
     nodealiases=[]

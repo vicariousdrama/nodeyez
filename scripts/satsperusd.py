@@ -63,6 +63,9 @@ def createimage(width=480, height=320):
     composite = Image.alpha_composite(im, alpha_img)
     print(f"Saving file to {outputFile}")
     composite.save(outputFile)
+    im.close()
+    alpha_img.close()
+    composite.close()
 
 def getpriceinfo():
     print("Retrieving updated price information")

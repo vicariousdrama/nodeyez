@@ -3,7 +3,7 @@
 # the framebuffer image viewer (fbi) needs root so run this script with sudo
 # install fbi via  `sudo apt-get -y install fbi`
 foldertodisplay="/home/nodeyez/nodeyez/imageoutput"
-timeperimage=5
+timeperimage=3
 while true
 do
     imagecount=`ls ${foldertodisplay} | wc -l`

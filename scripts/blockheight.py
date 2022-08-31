@@ -14,6 +14,7 @@ def createimage(width=480, height=320):
     vicarioustext.drawcenteredtext(draw, str(currentblock), 96, int(width/2), int(height/2), colorTextFG)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     im.save(outputFile)
+    im.close()
 
 if __name__ == '__main__':
     # Defaults

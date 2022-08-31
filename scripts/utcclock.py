@@ -28,6 +28,8 @@ def createimage(width=480, height=320):
     vicarioustext.drawcenteredtext(draw, getdate(), 72, int(width/2), int(height/2), colorTextDate)
     vicarioustext.drawcenteredtext(draw, gettime(), 96, int(width/2), int(height/2)+120, colorTextTime)
     im.save(outputFile)
+    im.close()
+
 
 if __name__ == '__main__':
     # Defaults

@@ -96,6 +96,7 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, w
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
     im.save(pageoutputFile)
+    im.close()
 
 if __name__ == '__main__':
     # Defaults

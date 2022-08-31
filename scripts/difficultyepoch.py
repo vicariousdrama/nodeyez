@@ -105,6 +105,7 @@ def createimage(width=480, height=320):
     if saveEachBlock:
         of2=outputFile.replace(".png","-" + str(currentblock) + ".png")
         im.save(of2)
+    im.close()
 
 
 if __name__ == '__main__':
