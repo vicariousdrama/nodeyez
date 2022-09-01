@@ -43,6 +43,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-slushpool.service
    sudo systemctl enable nodeyez-sysinfo.service
    sudo systemctl enable nodeyez-utcclock.service
+   sudo systemctl enable nodeyez-whirlpoolliquidity.service
    ```
 
 ### 2. Start services
@@ -72,6 +73,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-slushpool.service
    sudo systemctl start nodeyez-sysinfo.service
    sudo systemctl start nodeyez-utcclock.service
+   sudo systemctl start nodeyez-whirlpoolliquidity.service
    ```
 
 ### 3. List Nodeyez services and status

@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 import vicarioustext
+import vicariousnetwork
 
 def convert_size(size_bytes):
    if size_bytes == 0:
@@ -144,7 +145,7 @@ def createimage(width=480, height=320):
     # header
     vicarioustext.drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2), colorTextFG, True)
     # blocks
-    mempoolblocks = getmempoolblocks()
+    mempoolblocks = vicariousnetwork.getmempoolblocks(useTor, urlmempool)
     mpblist=list(mempoolblocks)
     mpblen=len(mpblist)
     btr=blocksToRender
@@ -166,7 +167,7 @@ def createimage(width=480, height=320):
     memsummary = str(totaltx) + " tx with vsize " + convert_size(totalvsize) + ", ~ " + str(totalblocks) + " blocks, ~ " + totaltime
     vicarioustext.drawcenteredtext(draw, memsummary, 12, int(width/2), padtop+bw+int(padtop/4), colorTextFG, False)
     # histogram info
-    histogramdata = gethistograminfo()
+    histogramdata = vicariousnetwork.getmempoolhistograminfo(useTor, urlfeehistogram)
     histy1=padtop+bw+int(padtop/2)
     histy2=histy1+padtop
     histx1=0
@@ -201,7 +202,7 @@ def createimage(width=480, height=320):
                 break
     histx1 = drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,histy2,padtop)
     # fee recommendations
-    feefastest, feehalfhour, feehour, feeminimum = getrecommendedfees()
+    feefastest, feehalfhour, feehour, feeminimum = vicariousnetwork.getmempoolrecommendedfees(useTor, urlfeerecs)
     vicarioustext.drawlefttext(draw, "Minimum: " + str(feeminimum), 18, 0, height-padtop, colorTextFG)
     vicarioustext.drawcenteredtext(draw, "1 Hour: " + str(feehour), 16, int(width/8*3), height-padtop, colorTextFG)
     vicarioustext.drawcenteredtext(draw, "30 Minutes: " + str(feehalfhour), 16, int(width/8*5), height-padtop, colorTextFG)
@@ -212,38 +213,6 @@ def createimage(width=480, height=320):
     im.save(outputFile)
     im.close()
 
-def getmempoolblocks():
-    cmd = "curl --silent " + urlmempool
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        cmdoutput = "[]"
-        j = json.loads(cmdoutput)
-        return j
-
-def getrecommendedfees():
-    cmd = "curl --silent " + urlfeerecs
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j["fastestFee"], j["halfHourFee"], j["hourFee"], j["minimumFee"]
-    except subprocess.CalledProcessError as e:
-        return 1, 1, 1, 1
-
-def gethistograminfo():
-    cmd = "curl --silent " + urlfeehistogram
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        cmdoutput = '{"count":0,"vsize":0,"total_fee":0,"fee_histogram":[]}'
-        j = json.loads(cmdoutput)
-        return j
-
-
 if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/mempoolblocks.json"
@@ -251,6 +220,7 @@ if __name__ == '__main__':
     urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
     urlfeerecs="https://mempool.space/api/v1/fees/recommended"
     urlfeehistogram="https://mempool.space/api/mempool"
+    useTor=True
     colorBackground=ImageColor.getrgb("#000000")
     colorBlockEdgeOutline=ImageColor.getrgb("#202020")
     colorBlockSide=ImageColor.getrgb("#404040")
@@ -303,6 +273,10 @@ if __name__ == '__main__':
             urlmempool = config["urlmempool"]
         if "urlfeerecs" in config:
             urlfeerecs = config["urlfeerecs"]
+        if "urlfeehistogram" in config:
+            urlfeehistogram = config["urlfeehistogram"]
+        if "useTor" in config:
+            useTor = config["useTor"]
         if "width" in config:
             width = int(config["width"])
         if "height" in config:

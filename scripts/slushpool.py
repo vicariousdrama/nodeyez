@@ -8,68 +8,7 @@ import subprocess
 import sys
 import time
 import vicarioustext
-
-def getaccountprofile():
-    cmd = "curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/profile/json/btc/"
-    if useTor:
-        cmd = "torify " + cmd
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        cmdoutput = ""
-    if len(cmdoutput) == 0:
-        cmdoutput = "{\"btc\":{\"confirmed_reward\": null, \"unconfirmed_reward\": \"0.00000000\", \"estimated_reward\": \"0.00000000\", \"hash_rate_unit\": \"Gh/s\", \"hash_rate_5m\": 0.0000}}"
-        j = json.loads(cmdoutput)
-    return j
-
-def getaccountrewards():
-    time.sleep(6)
-    cmd = "curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/accounts/rewards/json/btc/"
-    if useTor:
-        cmd = "torify " + cmd
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        cmdoutput = ""
-    if len(cmdoutput) == 0:
-        cmdoutput = "{\"btc\":{\"daily_rewards\":[]}}"
-        j = json.loads(cmdoutput)
-    return j
-
-def getpoolstats():
-    time.sleep(6)
-    cmd = "curl --silent -H \"SlushPool-Auth-Token: " + authtoken + "\" https://slushpool.com/stats/json/btc/"
-    if useTor:
-        cmd = "torify " + cmd
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        cmdoutput = ""
-    if len(cmdoutput) == 0:
-        cmdoutput = "{\"btc\":{\"blocks\":{\"0\":{\"date_found\":0,\"mining_duration\":0,\"total_shares\":0,\"state\":\"confirmed\",\"confirmations_left\":0,\"value\": \"0.00000000\",\"user_reward\": \"0.00000000\",\"pool_scoring_hash_rate\": 0.000000}}}}"
-        j = json.loads(cmdoutput)
-    return j
-
-def getpriceinfo():
-    cmd = "curl -s " + priceUrl
-    if useTor:
-        cmd = "torify " + cmd
-    global price_last
-    global price_high
-    global price_low
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        if len(cmdoutput) > 0:
-            j = json.loads(cmdoutput)
-            price_last = int(math.floor(float(j["btc_usd"]["last"])))
-            price_high = int(math.floor(float(j["btc_usd"]["high"])))
-            price_low = int(math.floor(float(j["btc_usd"]["low"])))
-    except subprocess.CalledProcessError as e:
-        cmdoutput = "{\"error\": \"dont care\" }"
-    return (price_last,price_high,price_low)
+import vicariousnetwork
 
 def getaccounthashrate(accountprofile):
     hashrate = accountprofile["btc"]["hash_rate_5m"]
@@ -263,7 +202,7 @@ if __name__ == '__main__':
     configFile = "/home/nodeyez/nodeyez/config/slushpool.json"
     outputFile = "/home/nodeyez/nodeyez/imageoutput/slushpool.png"
     authtoken = "--put-your-auth-token-in-nodeyez/config/slushpool.json--"
-    useTor=False
+    useTor=True
     priceUrl = "https://bisq.markets/bisq/api/markets/ticker"
     priceCheckInterval = 10800	                      # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
     kwhPrice = .12                                    # price per killowatt hour, in dollars
@@ -364,12 +303,12 @@ if __name__ == '__main__':
     # Loop
     while True:
         print("Getting account profile and rewards")
-        accountprofile = getaccountprofile()
-        accountrewards = getaccountrewards()
-        poolstats = getpoolstats()
+        accountprofile = vicariousnetwork.getslushpoolaccountprofile(True, authtoken)
+        accountrewards = vicariousnetwork.getslushpoolaccountrewards(True, authtoken)
+        poolstats = vicariousnetwork.getslushpoolstats(True, authtoken)
         if price_countdown <= 0:
             print("Getting updated prices")
-            price_last, price_high, price_low = getpriceinfo()
+            price_last, price_high, price_low = vicariousnetwork.getpriceinfo(True, priceUrl, price_last, price_high, price_low)
             price_countdown = priceCheckInterval
         else:
             price_countdown = price_countdown - sleepInterval

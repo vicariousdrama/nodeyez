@@ -19,7 +19,7 @@ from this panel in future updates.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./slushpool.py
+   /home/nodeyez/nodeyez/scripts/slushpool.py
    ```
 
    Press CTRL+C to stop the process
@@ -43,7 +43,7 @@ from this panel in future updates.
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
    | authtoken | Create your API access  token at https://slushpool.com/settings/access/ with limited read-only access, and not web access |
-   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `false` |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | priceurl | The url that provides the pricing information from bisq marketplace. Default `https://bisq.markets/bisq/api/markets/ticker` |
    | priceCheckInterval | The amount of time, in seconds, the script should wait before checking the price again to use for profitability. 10800 is 3 hours. Default `10800` |
    | kwhPrice | The price per killowatt you pay for electricity to run the miner. Default `0.12` |

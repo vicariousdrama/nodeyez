@@ -17,7 +17,7 @@ LND, etc.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./sysinfo.py
+   /home/nodeyez/nodeyez/scripts/sysinfo.py
    ```
 
    Press CTRL+C to stop the process

@@ -1,7 +1,7 @@
 # ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
-## Channel Balance
+## Channel Fees
 
 This script prepares an image depicting your node's lightning channel routing
 velocity and earned fees.  This is initially a basic table listing and will
@@ -16,7 +16,7 @@ It depends on a lighting node.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./channelfees.py
+   /home/nodeyez/nodeyez/scripts/channelfees.py
    ```
 
    Press CTRL+C to stop the process

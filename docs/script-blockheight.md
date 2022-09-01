@@ -13,7 +13,7 @@ It depends on a bitcoin node running locally and fully synched.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./blockheight.py
+   /home/nodeyez/nodeyez/scripts/blockheight.py
    ```
 
    Press CTRL+C to stop the process

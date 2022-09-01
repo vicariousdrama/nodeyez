@@ -3,18 +3,22 @@ Display panels to get the most from your node
 
 # CHANGELOG
 
-## Unrelease main branch
+## Unreleased main branch
 
 New Panels and Enhancements
 - New panel: Miner Status for MicroBT Whatsminer
 - New panel: Channel Fees (requires updated macaroon)
 - New Panel: Halving Countdown - Progress to Next Subsidy Halving
+- New Panel: Whirlpool Liquidity - Show Premixer and Remixer state for the pools
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
 General
 - Updated macaroon creation to allow querying ForwardingHistory
 - Dimensions for any panel can be set via "width" and "height" in config file
 - Updated Compass Facilities list
+- Improved resource management for images, closing to free memory
+- Encapsulated network calls, default to using torify for most scripts
+- Changed documentation to call scripts from full path to workaround common mount issues
 
 ## 1.0.0
 

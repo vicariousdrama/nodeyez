@@ -18,7 +18,7 @@ with Docker.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./ipaddress.py
+   /home/nodeyez/nodeyez/scripts/ipaddress.py
    ```
 
    Press CTRL+C to stop the process

@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-from PIL import Image, ImageDraw, ImageColor
+from PIL import Image, ImageDraw, ImageColor, ImageFile
 from os.path import exists
 import json
 import os
@@ -9,47 +9,7 @@ import subprocess
 import sys
 import time
 import vicarioustext
-
-def getConnectTimeouts():
-    global downloadConnectTimeout
-    global downloadMaxTimeout
-    return " --connect-timeout " + str(downloadConnectTimeout) + " --max-time " + str(downloadMaxTimeout) + " "
-
-def getRaretoshiUserinfo():
-    global userInfo
-    global userInfoLast
-    userFilename = raretoshiUser + ".json"
-    localFilename = raretoshiDataDirectory + userFilename
-    tempFilename = localFilename + ".tmp"
-    refreshUser = False
-    if not exists(localFilename):
-        refreshUser = True
-    if userInfoInterval + userInfoLast < int(time.time()):
-        refreshUser = True
-    if refreshUser:
-        print(f"Calling raretoshi website for user data")
-        userInfoLast = int(time.time())
-        url = "https://raretoshi.com/" + userFilename
-        cmd = "curl -s -o " + tempFilename + getConnectTimeouts() + url
-        try:
-            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-            with open(tempFilename) as f:
-                userInfo = json.load(f)
-            if exists(localFilename):
-                os.remove(localFilename)
-            os.rename(tempFilename, localFilename)
-        except subprocess.CalledProcessError as e:
-            print(f"Error downloading and loading file {tempFilename}. Error is {e}")
-            if exists(localFilename):
-                print("Attempting to reload from cached result {localFilename}")
-                try:
-                    with open(localFilename) as f:
-                        userInfo = json.load(f)
-                except:
-                    print("Error raised reading {localFilename} as json")
-    else:
-        print(f"Using cached data from {userInfoLast}")
-    return userInfo
+import vicariousnetwork
 
 def pickRaretoshiUser(raretoshiInfo):
     global randomUserLast
@@ -103,30 +63,30 @@ def downloadIPFSfile(ipfshash):
     else:
         url = "https://ipfs.io/ipfs/" + ipfshash
     print(f"Downloading from {url}")
-    cmd = "curl -s -o " + saveto + getConnectTimeouts() + url
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    rc = vicariousnetwork.getandsavefile(useTor, url, saveto, "")
+    if rc == 0:
         print(f"IPFS Downloaded to {saveto}")
-    except subprocess.CalledProcessError as e:
-        print(f"error {e}")
+    else:
         # If we were originally hitting IPFS, we can try fallback to raretoshi
         if url.startswith("https://ipfs.io/"):
             url = url.replace("https://ipfs.io/", "https://raretoshi.com/api/")
             print(f"Retrying with {url}")
-            cmd = "curl -s -o " + saveto + getConnectTimeouts() + url
-            try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            rc = vicariousnetwork.getandsavefile(useTor, url, saveto, "")
+            if rc == 0:
                 print(f"IPFS Downloaded to {saveto}")
-            except:
-                print(f"error {e}")
+            else:
+                print(f"Unable to download file from {url}")
 
 def createimage(width=480, height=320):
     # Setup alpha layer
     alpha_img = Image.new(mode="RGBA", size=(width, height), color=(255,255,255,0))
     draw = ImageDraw.Draw(alpha_img)
     print(f"Getting Raretoshi information for user {raretoshiUser}")
-    raretoshiInfo = getRaretoshiUserinfo()
-    holdingscount = len(raretoshiInfo["subject"]["holdings"])
+    global userInfo
+    global userInfoLast
+    global userInfoInterval
+    userInfo, userInfoLast = vicariousnetwork.getraretoshiuserinfo(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
+    holdingscount = len(userInfo["subject"]["holdings"])
     # quick bail if no holdings
     if holdingscount == 0:
         print("User has no holdings on raretoshi")
@@ -140,7 +100,7 @@ def createimage(width=480, height=320):
         holdingindex = int(random.random() * holdingscount)
         if len(sys.argv) > 2:
             holdingindex = int(sys.argv[2])
-        holding = raretoshiInfo["subject"]["holdings"][holdingindex]
+        holding = userInfo["subject"]["holdings"][holdingindex]
         filetype = holding["filetype"]
         if filetype not in allowedfiletypes:
             print(f"Holding {holdingindex} is {filetype} which is unsupported.")
@@ -153,17 +113,22 @@ def createimage(width=480, height=320):
     print(f"Picked holding {holdingindex} titled {title} with ipfshash {ipfshash} ")
     downloadIPFSfile(ipfshash)
     artist = holding["artist"]["username"]
+    print(f"Downloading avatar for artist: {artist}")
     downloadIPFSfile(holding["artist"]["avatar_url"])
     owner = holding["owner"]["username"]
+    print(f"Downloading avatar for owner: {owner}")
     downloadIPFSfile(holding["owner"]["avatar_url"])
     sourceFile = getIPFSLocalFilename(ipfshash)
     if not exists(sourceFile):
-        print(f"The file was not found at {sourceFile}")
+        print(f"The source image file was not found at {sourceFile}")
         print(f"There may be a problem with the IPFS servers")
         slug = holding["slug"]
         print(f"This is for https://raretoshi.com/a/{slug}")
         return
-    sourceImage=Image.open(sourceFile).convert("RGBA")
+    # temp
+    #sourceFile = "/home/nodeyez/nodeyez/data/ipfs/Qme9Wp6V2G38ADrunUrZLun7MgRiUdvEqn72XR5ykek81o"
+    sourceImage=Image.open(sourceFile)
+    sourceImage=sourceImage.convert("RGBA")
     sourceWidth=int(sourceImage.getbbox()[2])
     sourceHeight=int(sourceImage.getbbox()[3])
     sourceRatio=float(sourceWidth)/float(sourceHeight)
@@ -263,7 +228,7 @@ def createimage(width=480, height=320):
     composite.close()
     # Set new raretoshiuser?
     if randomUserEnabled:
-        pickRaretoshiUser(raretoshiInfo)
+        pickRaretoshiUser(userInfo)
 
 if __name__ == '__main__':
     # Defaults
@@ -271,6 +236,7 @@ if __name__ == '__main__':
     raretoshiUser="BTCTKVR"
     outputFile="/home/nodeyez/nodeyez/imageoutput/raretoshi.png"
     dataDirectory="/home/nodeyez/nodeyez/data/"
+    useTor=True
     downloadConnectTimeout=5
     downloadMaxTimeout=20
     overlayTextEnabled=True
@@ -291,6 +257,8 @@ if __name__ == '__main__':
     userInfoLast=0
     userInfo=json.loads('{"subject":{"holdings":[]}}')
     randomUserLast=0
+    # https://itecnote.com/tecnote/python-pil-ioerror-image-file-truncated-with-big-images/
+    ImageFile.LOAD_TRUNCATED_IMAGES = True
     # Override config
     if exists(configFile):
         with open(configFile) as f:
@@ -303,6 +271,8 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "dataDirectory" in config:
             dataDirectory = config["dataDirectory"]
+        if "useTor" in config:
+            useTor = config["useTor"]
         if "downloadConnectTimeout" in config:
             downloadConnectTimeout = config["downloadConnectTimeout"]
         if "downloadMaxTimeout" in config:

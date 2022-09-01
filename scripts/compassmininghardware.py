@@ -9,18 +9,7 @@ import sys
 import time
 import requests
 import vicarioustext
-
-
-def getHardwareInfo():
-    cmd = "curl -s " + hardwareurl
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"Error retrieving compass mining hardware data from {hardwareurl}")
-        print(f"{e}")
-        cmdoutput = '{"ok":true,"payload":{"hardwareGrouped":[]}}'
-    j = json.loads(cmdoutput)
-    return j
+import vicariousnetwork
 
 def getHardwareGrouped(hwinfo):
     if "payload" in hwinfo:
@@ -85,7 +74,7 @@ def renderEntry(draw, x, y, w, h, label, entry):
     vicarioustext.drawcenteredtext(draw, "$" + str(costPerTH) + "/TH", sizeEntryInfo, x + (w/2), y+100, colorEntryPower)
 
 def createimage(width=480, height=320):
-    hardwareinfo = getHardwareInfo()
+    hardwareinfo = vicariousnetwork.getcompassmininghardwareinfo(useTor, hardwareurl)
     hwGrouped = getHardwareGrouped(hardwareinfo)
     headerheight = 50
     footerheight = 18
@@ -121,6 +110,7 @@ if __name__ == '__main__':
     configFile="/home/nodeyez/nodeyez/config/compassmininghardware.json"
     outputFile="/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png"
     hardwareurl="https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc"
+    useTor=True
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorTextWarn=ImageColor.getrgb("#ff0000")
     colorBackground=ImageColor.getrgb("#000000")
@@ -144,6 +134,8 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "hardwareurl" in config:
             hardwareurl = config["hardwareurl"]
+        if "useTor" in config:
+            useTore = config["useTor"]
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorTextWarn" in config:

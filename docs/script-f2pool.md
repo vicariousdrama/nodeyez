@@ -17,7 +17,7 @@ file.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./f2pool.py
+   /home/nodeyez/nodeyez/scripts/f2pool.py
    ```
 
    Press CTRL+C to stop the process
@@ -38,6 +38,7 @@ file.
    | field name | description |
    | --- | --- |
    | account | Your account name on f2pool. **required** |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/f2pool.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
