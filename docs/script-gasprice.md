@@ -16,7 +16,7 @@ script.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./gasprice.py
+   /home/nodeyez/nodeyez/scripts/gasprice.py
    ```
 
    Press CTRL+C to stop the process

@@ -14,7 +14,7 @@ a bitcoin node running locally and fully synched.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./arthash.py
+   /home/nodeyez/nodeyez/scripts/arthash.py
    ```
 
    Press CTRL+C to stop the process

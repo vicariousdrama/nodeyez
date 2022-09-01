@@ -23,7 +23,7 @@ Only static PNG and JPEG files are supported at this time.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./raretoshi.py
+   /home/nodeyez/nodeyez/scripts/raretoshi.py
    ```
 
    Press CTRL+C to stop the process
@@ -40,6 +40,7 @@ Only static PNG and JPEG files are supported at this time.
    | --- | --- |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/raretoshi.png` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | width | The width, in pixels, to generate the image. Default `480` |
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |

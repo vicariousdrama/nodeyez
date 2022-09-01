@@ -13,7 +13,7 @@ graphically
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./satsperusd.py
+   /home/nodeyez/nodeyez/scripts/satsperusd.py
    ```
 
    Press CTRL+C to stop the process
@@ -34,7 +34,7 @@ graphically
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
    | priceurl | The url that provides the pricing information from bisq marketplace. Default `https://bisq.markets/bisq/api/markets/ticker` |
-   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `false` |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | satshape | The shape that each individual sat should be drawn. Supported values are: square, circle. Default `square` |
    | showBigText | Indicates whether the current Sats Per USD value should be displayed in large mode in the middle instead of at bottom of image. Default `true` |
    | showBigTextOnTop | If showBigText is enabled, this controls whether the total value is rendered below the sat graph or above it in z-order. Default `true` |

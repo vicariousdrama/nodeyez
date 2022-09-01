@@ -16,7 +16,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassmininghardware.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./compassmininghardware.py
+   /home/nodeyez/nodeyez/scripts/compassmininghardware.py
    ```
 
    Press CTRL+C to stop the process
@@ -33,6 +33,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassmininghardware.
    | --- | --- |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png` |
    | hardwareurl | The url that provides current compass mining hardware prices for featured, reseller, and at home ASICs. Default `https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc` |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorTextWarn | The color of the text if there are warnings or errors accessing the hardwareurl. Default `#ff0000` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |

@@ -1,12 +1,13 @@
 #! /usr/bin/env python3
 from datetime import datetime
+from luxor import API
 from os.path import exists
 import json
 import os
 import subprocess
 import sys
 import time
-from luxor import API
+import vicariousnetwork
 
 def getdatefile():
     return datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
@@ -15,13 +16,7 @@ def isFirstOfTheMonth():
     return (int(datetime.utcnow().strftime("%e")) == 1)
 
 def getAndSaveFile(url, savetofile, extra=""):
-    cmd = "curl -s " + extra + " -o " + savetofile + " " + url
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        print(f"file saved to {savetofile}\n")
-    except subprocess.CalledProcessError as e:
-        print(f"error saving file {savetofile} from url {url}\n")
-        print(e)
+    vicariousnetwork.getandsavefile(True, url, savetofile, extra)
 
 def makeDirIfNotExists(path):
     if not exists(path):
@@ -129,7 +124,9 @@ def getAndSaveCompassMiningStatusInfo():
         getAndSaveCompassFacilityStatus(baseurl, "canada/manitoba5", "9hcxtxzr6m3p", 1)
         getAndSaveCompassFacilityStatus(baseurl, "canada/manitoba6", "n89q0k5qwf85", 1)
         getAndSaveCompassFacilityStatus(baseurl, "canada/manitoba7", "zdj1pbf1p8dg", 1)
-        getAndSaveCompassFacilityStatus(baseurl, "canada/ontario", "1zjg8wgylr7x", 1)
+        getAndSaveCompassFacilityStatus(baseurl, "canada/newfoundland1", "0p5x9pj0xg1z", 1) # new august 2022
+        getAndSaveCompassFacilityStatus(baseurl, "canada/newfoundland2", "mj5mff51w9dy", 1) # new august 2022
+        getAndSaveCompassFacilityStatus(baseurl, "canada/ontario", "1zjg8wgylr7x", 1) # 54x
 #        getAndSaveCompassFacilityStatus(baseurl, "canada/quebec", "n9yqj1td9v32", 1)
         getAndSaveCompassFacilityStatus(baseurl, "iceland/southern-peninsula", "0wtyz0xpgswf", 1)
 #        getAndSaveCompassFacilityStatus(baseurl, "kazakhstan/pavlodar-region", "k4kgphjfmg1q", 1)
@@ -139,7 +136,7 @@ def getAndSaveCompassMiningStatusInfo():
         getAndSaveCompassFacilityStatus(baseurl, "usa/florida", "z056gck1hqh0", 1)
 #        getAndSaveCompassFacilityStatus(baseurl, "usa/florida2", "53db4g6rh5sc", 1)
         getAndSaveCompassFacilityStatus(baseurl, "usa/georgia", "2zhw91nntctn", 1)
-        getAndSaveCompassFacilityStatus(baseurl, "usa/georgia2", "m6tgmv50632p", 1)
+        getAndSaveCompassFacilityStatus(baseurl, "usa/georgia2", "m6tgmv50632p", 1) # 49x closing september 2022. moving to Texas 1
         getAndSaveCompassFacilityStatus(baseurl, "usa/indiana", "dd5w0sjpymlt", 1)
         getAndSaveCompassFacilityStatus(baseurl, "usa/iowa", "nq11cxscsv6v", 1)
         getAndSaveCompassFacilityStatus(baseurl, "usa/kentucky1", "8zjbpfwpj6ph", 1)
@@ -158,7 +155,7 @@ def getAndSaveCompassMiningStatusInfo():
 #        getAndSaveCompassFacilityStatus(baseurl, "usa/pennsylvania", "11srlh63flpy", 1)
         getAndSaveCompassFacilityStatus(baseurl, "usa/south-carolina", "14kjx3pjvvbl", 1)
         getAndSaveCompassFacilityStatus(baseurl, "usa/texas", "hqy3cy37xcsp", 1)
-        getAndSaveCompassFacilityStatus(baseurl, "usa/texas2", "fzy7c2q8z6m8", 1)
+        getAndSaveCompassFacilityStatus(baseurl, "usa/texas2", "fzy7c2q8z6m8", 1) # 56x
         getAndSaveCompassFacilityStatus(baseurl, "usa/washington", "6v408kf7qk7v", 1)
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -33,7 +33,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.p
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./daily-data-retrieval.py
+   /home/nodeyez/nodeyez/scripts/daily-data-retrieval.py
    ```
 
    Press CTRL+C to stop the process

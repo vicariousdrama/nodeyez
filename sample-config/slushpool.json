@@ -7,7 +7,7 @@
   "outputFile": "/home/nodeyez/nodeyez/imageoutput/slushpool.png",
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
-  "useTor": false,
+  "useTor": true,
   "priceurl.comment": "The url that provides the pricing information from bisq marketplace",
   "priceurl.type": "string",
   "priceUrl": "https://bisq.markets/bisq/api/markets/ticker",

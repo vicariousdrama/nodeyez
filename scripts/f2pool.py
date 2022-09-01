@@ -9,19 +9,7 @@ import sys
 import time
 import vicariousbitcoin
 import vicarioustext
-
-def getaccountinfo():
-    emptyresult = '{"hashrate":0,"hashrate_history":{},"value_last_date":0.00,"value_today":0.00}'
-    cmd = "curl https://api.f2pool.com/bitcoin/" + account
-    cmdoutput = ""
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        cmdoutput = emptyresult
-    if len(cmdoutput) == 0:
-        cmdoutput = emptyresult
-    j = json.loads(cmdoutput)
-    return j
+import vicariousnetwork
 
 def gethashratestring(ihashrate):
     hashrate = ihashrate
@@ -186,6 +174,7 @@ if __name__ == '__main__':
     configFile="/home/nodeyez/nodeyez/config/f2pool.json"
     outputFile="/home/nodeyez/nodeyez/imageoutput/f2pool.png"
     account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
+    useTor = True
     hashrateLowThreshold = 60000000000000 # 60 TH is 60,000,000,000,000 or 60 followed by 12 zeros
     width=480
     height=320
@@ -210,8 +199,12 @@ if __name__ == '__main__':
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
+        if "f2pool" in config:
+            config = config["f2pool"]
         if "account" in config:
             account = config["account"]
+        if "useTor" in config:
+            useTor = config["useTor"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
         if "hashrateLowThreshold" in config:
@@ -256,11 +249,11 @@ if __name__ == '__main__':
             print(f"2) Passing any arguments other then -h or --help will run once and exit")
             print(f"You may specify a custom configuration file at {configFile}")
         else:
-            accountinfo = getaccountinfo()
+            accountinfo = vicariousnetwork.getf2poolaccountinfo(useTor, account)
             createimage(accountinfo,width,height)
         exit(0)
     # Loop
     while True:
-        accountinfo = getaccountinfo()
+        accountinfo = vicariousnetwork.getf2poolaccountinfo(useTor, account)
         createimage(accountinfo,width,height)
         time.sleep(sleepInterval)

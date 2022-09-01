@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 import vicarioustext
+import vicariousnetwork
 
 def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
     satsleft = spf
@@ -24,7 +25,10 @@ def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
             satsleft = satsleft - 1
 
 def createimage(width=480, height=320):
-    last,high,low = getpriceinfo()
+    global last
+    global high
+    global low
+    last,high,low = vicariousnetwork.getpriceinfo(useTor, priceurl, last, high, low)
     satsperfiatunit = int(round(100000000.0 / last))
     satsperfiatunitlow = int(round(100000000.0 / low))
     satsperfiatunithigh = int(round(100000000.0 / high))
@@ -67,32 +71,12 @@ def createimage(width=480, height=320):
     alpha_img.close()
     composite.close()
 
-def getpriceinfo():
-    print("Retrieving updated price information")
-    cmd = "curl --silent " + priceurl
-    if useTor:
-        cmd = "torify " + cmd
-    global last
-    global high
-    global low
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        if len(cmdoutput) > 0:
-            j = json.loads(cmdoutput)
-            last = int(math.floor(float(j["btc_usd"]["last"])))
-            high = int(math.floor(float(j["btc_usd"]["high"])))
-            low = int(math.floor(float(j["btc_usd"]["low"])))
-    except subprocess.CalledProcessError as e:
-        cmdoutput = "{\"error\":  }"
-    return (last,high,low)
-
-
 if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/satsperusd.json"
     outputFile="/home/nodeyez/nodeyez/imageoutput/satsperusd.png"
     priceurl="https://bisq.markets/bisq/api/markets/ticker"
-    useTor=False
+    useTor=True
     satshape="square" # may be one of these: ['square','circle']
     width=480
     height=320

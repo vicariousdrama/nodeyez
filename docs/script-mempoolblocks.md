@@ -19,7 +19,7 @@ at [/home/nodeyez/nodeyez/scripts/mempoolblocks.py](../scripts/mempoolblocks.py)
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./mempoolblocks.py
+   /home/nodeyez/nodeyez/scripts/mempoolblocks.py
    ```
 
    Press CTRL+C to stop the process
@@ -43,6 +43,7 @@ at [/home/nodeyez/nodeyez/scripts/mempoolblocks.py](../scripts/mempoolblocks.py)
    | urlmempool | The url for the mempool blocks information. If you are running your own mempool.space service on MyNodeBTC, then use http://127.0.0.1:4080/api/v1/fees/mempool-blocks. Default `https://mempool.space/api/v1/fees/mempool-blocks` |
    | urlfeerecs | The url for the mempool fees recommendation. If you are running your own mempool.space service on MyNodeBTC, then use http://127.0.0.1:4080/api/v1/fees/recommended. Default `https://mempool.space/api/v1/fees/recommended` |
    | urlfeehistogram | The url for the mempool fee histogram data. If you are running your own mempool.space service on MyNodeBTC, then use http://127.0.0.1:4080/api/mempool. Default `https://mempool.space/api/mempool` |
+   | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
    | colorBlockEdgeOutline | The color to use for the outline of block shapes expressed as a Hexadecimal color specifier. Default `#202020` |
    | colorBlockSide | The color to use for the side of the block expressed as a Hexadecimal color specifier. Default `#404040` |
    | colorBlockTop | The color to use for the top of the block expressed as a Hexadecimal color specifier. Default `#606060` |

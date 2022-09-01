@@ -7,7 +7,7 @@
   "priceurl": "https://bisq.markets/bisq/api/markets/ticker",
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
-  "useTor": false,
+  "useTor": true,
   "satshape.comment": "The shape that each individual sat should be drawn.  Supported values are: square, circle",
   "satshape.type": "string",
   "satshape": "square",

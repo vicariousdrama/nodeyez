@@ -19,7 +19,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minermicrobt.py](../sc
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./minermicrobt.py
+   /home/nodeyez/nodeyez/scripts/minermicrobt.py
    ```
 
    Press CTRL+C to stop the process

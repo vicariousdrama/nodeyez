@@ -17,7 +17,7 @@ It depends on a bitcoin node running locally and fully synched.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   ./halving.py
+   /home/nodeyez/nodeyez/scripts/halving.py
    ```
 
    Press CTRL+C to stop the process

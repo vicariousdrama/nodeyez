@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 import vicarioustext
+import vicariousnetwork
 
 # ===============================================================================================================================
 # SPECIAL DEPENDENCY: To use this script, you should have gas price data downloaded to the the following location
@@ -100,18 +101,6 @@ def getCANAbbrev(name):
       "Northwest Territories": "NT", "Nunavut": "NU"}
     return abbrev[name]
 
-
-def blockclockAPICall(urltocall):
-    cmd = "curl -s "
-    if len(blockclockPassword) > 0:
-        cmd = cmd + " --digest -u :" + blockclockPassword + " "
-    cmd = cmd + "\"" + urltocall + "\""
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        print(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        print(f"error {e}")
-
 def blockclockReport(name, currency, price):
     if not blockclockEnabled:
         return
@@ -121,7 +110,7 @@ def blockclockReport(name, currency, price):
     while len(rprice) < 6:
         rprice = rprice + "9"
     # send basic price info
-    blockclockAPICall(baseapi + "show/number/" + rprice + "?sym=$&pair=GAS/")
+    vicariousnetwork.getblockclockapicall(baseapi + "show/number/" + rprice + "?sym=$&pair=GAS/", blockclockPassword)
     if dataCountry == "USA":
         voltype = "GAL"
         abbrev = getUSAbbrev(name)
@@ -129,9 +118,9 @@ def blockclockReport(name, currency, price):
         voltype = "LITER"
         abbrev = getCANAbbrev(name)
     # b slot 5 is currency and volume
-    blockclockAPICall(baseapi + "ou_text/5/USD/" + voltype)
+    vicariousnetwork.getblockclockapicall(baseapi + "ou_text/5/USD/" + voltype, blockclockPassword)
     # c slot 6 is location
-    blockclockAPICall(baseapi + "ou_text/6/" + abbrev + "/" + dataCountry)
+    vicariousnetwork.getblockclockapicall(baseapi + "ou_text/6/" + abbrev + "/" + dataCountry, blockclockPassword)
 
 def processdata(width=480, height=320):
     global randomCountry

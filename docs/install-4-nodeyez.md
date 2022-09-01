@@ -263,6 +263,7 @@ separate tab or window for convenience.
 - [gas prices](./script-gasprice.md)
 - [raretoshi](./script-raretoshi.md)
 - [sats per usd](./script-satsperusd.md)
+- [whirlpool liquidity](./script-whirlpoolliquidity.md)
 
 ## Running the Slideshow
 
