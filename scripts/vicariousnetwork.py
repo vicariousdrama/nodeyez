@@ -220,16 +220,16 @@ def getwhirlpoolliquidity(useTor=True):
         {"pools":[
          {"poolId":"0.01btc","denomination":1000000,"feeValue":50000,
           "mustMixBalanceMin":1000170,"mustMixBalanceCap":1009690,"mustMixBalanceMax":1019125,"minAnonymitySet":5,"minMustMix":2,
-          "tx0MaxOutputs":70,"nbRegistered":265,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":699936,"nbConfirmed":2},
+          "tx0MaxOutputs":70,"nbRegistered":-1,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":5297,"nbConfirmed":-1},
          {"poolId":"0.001btc","denomination":100000,"feeValue":5000,
           "mustMixBalanceMin":100170,"mustMixBalanceCap":109690,"mustMixBalanceMax":119125,"minAnonymitySet":5,"minMustMix":2,
-          "tx0MaxOutputs":25,"nbRegistered":247,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":100530,"nbConfirmed":2},
+          "tx0MaxOutputs":25,"nbRegistered":-1,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":2296,"nbConfirmed":-1},
          {"poolId":"0.05btc","denomination":5000000,"feeValue":175000,
           "mustMixBalanceMin":5000170,"mustMixBalanceCap":5009690,"mustMixBalanceMax":5019125,"minAnonymitySet":5,"minMustMix":2,
-          "tx0MaxOutputs":70,"nbRegistered":177,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":12101041,"nbConfirmed":2},
+          "tx0MaxOutputs":70,"nbRegistered":-1,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":9298,"nbConfirmed":-1},
          {"poolId":"0.5btc","denomination":50000000,"feeValue":1750000,
           "mustMixBalanceMin":50000170,"mustMixBalanceCap":50009690,"mustMixBalanceMax":50019125,"minAnonymitySet":5,"minMustMix":2,
-          "tx0MaxOutputs":70,"nbRegistered":57,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":2884100,"nbConfirmed":2}
+          "tx0MaxOutputs":70,"nbRegistered":-1,"mixAnonymitySet":5,"mixStatus":"CONFIRM_INPUT","elapsedTime":1299,"nbConfirmed":-1}
          ]}'''
     j = json.loads(cmdoutput)
     return j

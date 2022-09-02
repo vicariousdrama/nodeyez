@@ -10,7 +10,7 @@
   "height": 320,
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
   "sleepInterval.type": "integer",
-  "sleepInterval": 600,
+  "sleepInterval": 3600,
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
   "useTor": true,
