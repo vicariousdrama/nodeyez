@@ -1,4 +1,4 @@
-# ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
+# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 [Home](../README.md) | [Back to Python and Dependencies](./install-2-pythondeps.md) | [Continue to Nodeyez](./install-4-nodeyez.md)
