@@ -1,4 +1,4 @@
-# ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
+# ![Nodeyez](./raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 # CHANGELOG
@@ -19,11 +19,12 @@ General
 - Improved resource management for images, closing to free memory
 - Encapsulated network calls, default to using torify for most scripts
 - Changed documentation to call scripts from full path to workaround common mount issues
+- Migrating repository to local gitea service
 
 ## 1.0.0
 
 - Released 2022-05-07
-- Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](https://github.com/vicariousdrama/nodeyez/commit/290fb01c39cef84ab77155eea437439825a304ca)
+- Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](./commit/290fb01c39cef84ab77155eea437439825a304ca)
 
 New Panels and Enhancements
 - New panel: Raretoshi
@@ -62,10 +63,9 @@ Bugfixes
 ## 1.0.0-beta
 
 - Released: 2022-02-06
-- Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](https://github.com/vicariousdrama/nodeyez/commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
+- Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](./commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
 
 ### Features
-- Added Github-pages at https://vicariousdrama.github.io/nodeyez/
 - Add/update sample images
 - Added guidance for screen to put on Raspberry Pi
 - General organization/refactoring to improve maintainability
@@ -87,7 +87,7 @@ Bugfixes
 ## 1.0.0-alpha
 
 - Released: 2021-07-29
-- Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](https://github.com/vicariousdrama/nodeyez/commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
+- Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](./commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
 
 ### Features
 - New panel: Block Height

@@ -1,4 +1,4 @@
-# ![Nodeyez](https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg)
+# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 [Home](../README.md) | [Back to Display Screen](./install-3-displayscreen.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
@@ -137,7 +137,7 @@ You should be logged in as a privileged user to enter these command
    }
    ```
 
-   **If you get an error, please report as a github issue.  You will not be able
+   **If you get an error, please report as a new issue.  You will not be able
    to run scripts requiring access to bitcoin until this is resolved.**
 
    For lightning, first we will get the nodes public key
@@ -146,7 +146,7 @@ You should be logged in as a privileged user to enter these command
    lncli --macaroonpath=/home/nodeyez/.lnd/nodeyez.macaroon getinfo | jq .identity_pubkey
    ```
 
-   **If you get an error, please report as a github issue.  You will not be able
+   **If you get an error, please report as a new issue.  You will not be able
    to run scripts requiring access to lightning until this is resolved.**
   
    You can also verify that the nodeyez macaroon for lncli does not allow any
