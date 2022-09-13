@@ -9,11 +9,11 @@ representing different state about your node, market rates, mining and more.
 The images can be displayed via simple slideshow to attached screen, or to a
 website dashboard.  The installation steps below will guide you through setting
 up both options.  Some scripts also have support for reporting data to a local [Blockclock Mini](https://blockclockmini.com/).
-For convenice, systemd service scripts are also available to allow for running
+For convenience, systemd service scripts are also available to allow for running
 them at startup automatically.
 
 
-<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/compassmininghardware.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/gasprice.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/raretoshi.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Quick Menu of Info Panels
 
@@ -29,7 +29,7 @@ them at startup automatically.
 | [block height](./docs/script-blockheight.md) | Yes | | |
 | [difficulty epoch](./docs/script-difficultyepoch.md) | Yes | | |
 | [halving countdown](./docs/script-halving.md) | Yes | | |
-| [mempool blocks](./docs/script-mempoolblocks.md) | Optional | | Yes |
+| [mempool blocks](./docs/script-mempoolblocks.md) | | | Optional |
 |                **_Lightning Dependent_** |
 | [channel balance](./docs/script-channelbalance.md) | | Yes | |
 | [ring of fire](./docs/script-rofstatus.md) | | Yes | Yes |
@@ -40,12 +40,17 @@ them at startup automatically.
 | [miner - microbt](./docs/script-minermicrobt.md) | | | |
 | [slushpool](./docs/script-slushpool.md) | | | Yes |
 |                **_Other Fun Stuff_** |
-| [compass mining hardware](./docs/script-compassmininghardware.md) | | | Yes |
 | [compass mining status](./docs/script-compassminingstatus.md) | | | Yes |
+| [sats per usd](./docs/script-satsperusd.md) | | | Yes |
+| [whirlpool cli mix status](./docs/script-whirlpoolclimix.md) | Yes | | |
+| [whirlpool liquidity](./docs/script-whirlpoolliquidity.md) | | | Optional |
+|                **_No Longer Supported_** |
+|                _The scripts are still available, but may not properly function as the data providers have changed from open standards or charge outrageous fees_ |
+| [compass mining hardware](./docs/script-compassmininghardware.md) | | | Yes |
 | [gas price](./docs/script-gasprice.md) | | | Yes |
 | [raretoshi](./docs/script-raretoshi.md) | | | Yes |
-| [sats per usd](./docs/script-satsperusd.md) | | | Yes |
-| [whirlpool liquidity](./docs/script-whirlpoolliquidity.md) | | | Yes |
+
+
 
 ## Installation Steps
 

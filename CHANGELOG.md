@@ -10,6 +10,7 @@ New Panels and Enhancements
 - New panel: Channel Fees (requires updated macaroon)
 - New Panel: Halving Countdown - Progress to Next Subsidy Halving
 - New Panel: Whirlpool Liquidity - Show Premixer and Remixer state for the pools
+- New Panel: Whirlpool CLI+Mix Status - Shows your whirlpool CLI status and pools you are mixing in
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
 General
@@ -17,9 +18,10 @@ General
 - Dimensions for any panel can be set via "width" and "height" in config file
 - Updated Compass Facilities list
 - Improved resource management for images, closing to free memory
-- Encapsulated network calls, default to using torify for most scripts
+- Encapsulated network calls, default to using tor for most scripts
 - Changed documentation to call scripts from full path to workaround common mount issues
 - Migrating repository to local gitea service
+- Deprecating support for Compass Mining Hardware, Gas Prices, Raretoshi
 
 ## 1.0.0
 

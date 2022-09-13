@@ -114,6 +114,10 @@ class API:
 
         s = requests.Session()
         s.headers = headers
+        # use tor proxy for requests
+#        s.proxies = {'http': 'socks5h://127.0.0.1:9050','https': 'socks5h://127.0.0.1:9050'}
+        # ssl verification because requests/ipaddress is broken?
+        s.verify=False
 
         if self.verbose:
             logging.info(query)

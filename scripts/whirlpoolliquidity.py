@@ -27,7 +27,7 @@ def getpoolinfo(pools, poolid):
                 nbConfirmed = int(pool["nbConfirmed"])
             if "elapsedTime" in pool:
                 elapsedTime = int(pool["elapsedTime"])
-            print(f"found pool {poolid}: premixers = {nbConfirmed}, remixers = {nbRegistered}, ms since last: {elapsedTime}")
+            #print(f"found pool {poolid}: premixers = {nbConfirmed}, remixers = {nbRegistered}, ms since last: {elapsedTime}")
             break
     if not found:
         print(f"did not locate pool with id: {poolid}.")
@@ -88,8 +88,8 @@ def drawpool(im, draw, pools, poolid, quadheader, topx, topy, bottomx, bottomy):
     y = int( topy + (headersize + (1 * labelsize * labelline) + labelbuf) )
     for w in range(2):
         c = "grey"
-        c = "yellow" if (premixers == 1 and premixers > w) else c
-        c = "green" if premixers >= 2 else c
+        c = "yellow" if (premixers >= 1 and premixers > w) else c
+        c = "green" if premixers >= 2 and elapsedTime < 120000 else c
         drawwhirl(im, x + (w * whirlsize), y-(whirlsize//2), c)
     t = str(premixers) + " premixer"
     t = t + "s" if premixers != 1 else t
@@ -106,7 +106,16 @@ def drawpool(im, draw, pools, poolid, quadheader, topx, topy, bottomx, bottomy):
     t = t + "s" if remixers != 1 else t
     vicarioustext.drawlefttext(draw, t, whirllabelsize, x, topy + (headersize + (2.25 * labelsize * labelline) + labelbuf), colorPremixers, False)
     # Attribution
-    vicarioustext.drawbottomlefttext(draw, "Data from pool.whirl.mx", 16, 0, height, colorPoolHeader)
+    attributionLine = "Data from Whirlpool Coordinator" if isWhirlpoolCoordinator() else "Data from Whirlpool Client"
+    vicarioustext.drawbottomlefttext(draw, attributionLine, 16, 0, height, colorPoolHeader)
+
+def isWhirlpoolCoordinator():
+    if "udkmfc5j6zvv3ysavbrwzhwji4hpyfe3apqa6yst7c7l32mygf65g4ad.onion" in whirlpoolurl:
+        return True
+    if "pool.whirl.mx" in whirlpoolurl:
+        return True
+    return False
+
 
 def drawlogo(im, canvaswidth, canvasheight, targetWidth):
     if not exists(logoSamouraiFile):
@@ -154,7 +163,7 @@ def getorloadliquidity():
             refreshData = True
     if refreshData:
         print("Refreshing whirlpool liquidity data")
-        pools = vicariousnetwork.getwhirlpoolliquidity()
+        pools = vicariousnetwork.getwhirlpoolliquidity(useTor, whirlpoolurl, apiKey)
         found = False
         remixers, premixers, elapsedTime = getpoolinfo(pools, "0.5btc")
         if remixers == -1 or premixers == -1:
@@ -209,6 +218,8 @@ if __name__ == '__main__':
     logoSamouraiFile = "/home/nodeyez/nodeyez/images/samourai.png"
     dataDirectory = "/home/nodeyez/nodeyez/data/"
     useTor=True
+    whirlpoolurl="http://udkmfc5j6zvv3ysavbrwzhwji4hpyfe3apqa6yst7c7l32mygf65g4ad.onion"
+    apiKey=""
     width=480
     height=320
     sleepInterval = 3600                              # controls how often this display panel is updated. 3600 is once every hour
@@ -229,13 +240,17 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "useTor" in config:
             useTor = config["useTor"]
+        if "whirlpoolurl" in config:
+            whirlpoolurl = config["whirlpoolurl"]
+        if "apiKey" in config:
+            apiKey = config["apiKey"]
         if "width" in config:
             width = int(config["width"])
         if "height" in config:
             height = int(config["height"])
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 600 if sleepInterval < 600 else sleepInterval # minimum 10 minutes, access others
+            sleepInterval = 600 if isWhirlpoolCoordinator() and sleepInterval < 600 else sleepInterval # minimum 10 minutes when accessing others
         if "colorHeader" in config:
             colorHeader = ImageColor.getrgb(config["colorHeader"])
         if "colorPoolHeader" in config:

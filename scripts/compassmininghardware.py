@@ -98,7 +98,7 @@ def createimage(width=480, height=320):
         renderEntry(draw, 0, headerheight + halfInternalHeight, int(width/2), halfInternalHeight, "Cheapest Hashrate", entryCheapestHashrate)
         renderEntry(draw, int(width/2), headerheight + halfInternalHeight, int(width/2), halfInternalHeight, "Energy Efficient", entryEfficientHashrate)
     else:
-        vicarioustext.drawcenteredtext(draw, "Unable to get hardware information", 20, width, height, colorTextWarn)
+        vicarioustext.drawcenteredtext(draw, "Unable to get hardware information", 20, int(width/2), int(height/2), colorTextWarn)
 
     # timestamp
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)

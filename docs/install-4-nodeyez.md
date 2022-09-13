@@ -258,11 +258,9 @@ separate tab or window for convenience.
 - [miner - braiins](./script-minerbraiins.md)
 
 **Other Fun Stuff**
-- [compass mining hardware](./script-compassmininghardware.md)
 - [compass mining status](./script-compassminingstatus.md)
-- [gas prices](./script-gasprice.md)
-- [raretoshi](./script-raretoshi.md)
 - [sats per usd](./script-satsperusd.md)
+- [whirlpool cli mix status](./script-whirlpoolclimix.md)
 - [whirlpool liquidity](./script-whirlpoolliquidity.md)
 
 ## Running the Slideshow
