@@ -15,8 +15,8 @@ def getdatefile():
 def isFirstOfTheMonth():
     return (int(datetime.utcnow().strftime("%e")) == 1)
 
-def getAndSaveFile(url, savetofile, extra=""):
-    vicariousnetwork.getandsavefile(True, url, savetofile, extra)
+def getAndSaveFile(url, savetofile, headers={}):
+    vicariousnetwork.getandsavefile(True, url, savetofile, headers)
 
 def makeDirIfNotExists(path):
     if not exists(path):
@@ -56,12 +56,12 @@ def getAndSaveCollectAPIInfo():
             targetfolder = collectAPIDataDirectory + subfolder + "/"
             makeDirIfNotExists(targetfolder)
             filename = targetfolder + datefile
+            print(f"Retrieving and saving Collect API info for {url} to {datefile}")
             if not os.path.exists(filename):
-                extraargs = ""
+                headers = {}
                 if "headers" in dailyretrieve:
-                    for header in dailyretrieve["headers"]:
-                        extraargs = extraargs + " -H \"" + header + "\" "
-                getAndSaveFile(url, filename, extraargs)
+                    headers = dailyretrieve["headers"]
+                getAndSaveFile(url, filename, headers)
                 time.sleep(5)
             else:
                 print(f"Skipping download of {filename} as it already exists")
@@ -244,25 +244,25 @@ def getAndSaveSlushpoolInfo():
         return
     with open(configFileSlushpool) as f:
         config = json.load(f)
-    extraargs = " -H \"Slushpool-Auth-Token: " + config["authtoken"] + "\" "
-    getAndSaveSlushpoolFile("pool stats", "poolstats/", "https://slushpool.com/stats/json/btc", extraargs)
-    getAndSaveSlushpoolFile("user performance", "userprofile/", "https://slushpool.com/accounts/profile/json/btc", extraargs)
-    getAndSaveSlushpoolFile("90 day daily rewards", "dailyreward/", "https://slushpool.com/accounts/reward/json/btc", extraargs)
-    getAndSaveSlushpoolFile("worker performance", "workers/", "https://slushpool.com/accounts/workers/json/btc", extraargs)
+    headers = {"Slushpool-Auth-Token": config["authtoken"]}
+    getAndSaveSlushpoolFile("pool stats", "poolstats/", "https://slushpool.com/stats/json/btc", headers)
+    getAndSaveSlushpoolFile("user performance", "userprofile/", "https://slushpool.com/accounts/profile/json/btc", headers)
+    getAndSaveSlushpoolFile("90 day daily rewards", "dailyreward/", "https://slushpool.com/accounts/reward/json/btc", headers)
+    getAndSaveSlushpoolFile("worker performance", "workers/", "https://slushpool.com/accounts/workers/json/btc", headers)
 
 # --------------------------------------------------------------------------------------------------------------------
 # getAndSaveSlushpoolFile
 #
 # Helper method to build directories as needed, log what being done, and download respective file
 # --------------------------------------------------------------------------------------------------------------------
-def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, extraargs):
+def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, headers):
     datefile = getdatefile()
     folder=slushpoolDataDirectory + subdirectory
     makeDirIfNotExists(folder)
     filename=folder + datefile
     print(f"Retrieving and saving Slushpool {comment} to {filename}")
     time.sleep(6)  # slushpool throttles/blocks if more than 1 per 5 seconds
-    getAndSaveFile(fileurl, filename, extraargs)
+    getAndSaveFile(fileurl, filename, headers)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     # Defaults
     enableBisq = True
     enableCollectAPI = True
-    enableCompassHardware = True
+    enableCompassHardware = False # API changed. Data no longer available
     enableCompassStatus = True
     enableF2Pool = True
     enableLuxor = True
@@ -418,4 +418,7 @@ if __name__ == '__main__':
         if enableLuxor and currentTime > lastTimeLuxor + sleepIntervalLuxor:
             getAndSaveLuxorHashrateInfo()
             lastTimeLuxor = currentTime if lastTimeLuxor == 0 else lastTimeLuxor + sleepIntervalLuxor
+        if enableSlushpool and currentTime > lastTimeSlushpool + sleepIntervalSlushpool:
+            getAndSaveSlushpoolInfo()
+            lastTimeSlushpool = currentTime if lastTimeSlushpool == 0 else lastTimeSlushpool + sleepIntervalSlushpool
         time.sleep(sleepInterval)

@@ -209,9 +209,19 @@ def createimage(width=480, height=320):
     vicarioustext.drawrighttext(draw, "Next: " + str(feefastest), 18, width, height-padtop, colorTextFG)
     # footer
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
-    vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
+    if isMempoolSpace():
+        vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
+    else:
+        vicarioustext.drawbottomlefttext(draw, "Data from sovereign node", 14, 0, height, colorMempool)
     im.save(outputFile)
     im.close()
+
+def isMempoolSpace():
+    if "mempoolhqx4isw62xs7abwphsq7ldayuidyx2v2oethdhhj6mlo2r6ad.onion" in urlmempool:
+        return True
+    if "mempool.space" in urlmempool:
+        return True
+    return False
 
 if __name__ == '__main__':
     # Defaults

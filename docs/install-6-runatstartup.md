@@ -25,24 +25,22 @@ automatically at startup.
    sudo systemctl enable nodeyez-arthashdungeon.service
    sudo systemctl enable nodeyez-blockheight.service
    sudo systemctl enable nodeyez-channelbalance.service
-   sudo systemctl enable nodeyez-compassmininghardware.service
    sudo systemctl enable nodeyez-compassminingstatus.service
    sudo systemctl enable nodeyez-daily-data-retrieval.service
    sudo systemctl enable nodeyez-difficultyepoch.service
    sudo systemctl enable nodeyez-f2pool.service
-   sudo systemctl enable nodeyez-gasprice.service
    sudo systemctl enable nodeyez-halving.service
    sudo systemctl enable nodeyez-ipaddress.service
    sudo systemctl enable nodeyez-mempoolblocks.service
    sudo systemctl enable nodeyez-minerbraiins.service
    sudo systemctl enable nodeyez-minermicrobt.service
-   sudo systemctl enable nodeyez-raretoshi.service
    sudo systemctl enable nodeyez-rofstatus.service
    sudo systemctl enable nodeyez-satsperusd.service
    sudo systemctl enable nodeyez-slideshow.service
    sudo systemctl enable nodeyez-slushpool.service
    sudo systemctl enable nodeyez-sysinfo.service
    sudo systemctl enable nodeyez-utcclock.service
+   sudo systemctl enable nodeyez-whirlpoolclimix.service
    sudo systemctl enable nodeyez-whirlpoolliquidity.service
    ```
 
@@ -55,24 +53,22 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-arthashdungeon.service
    sudo systemctl start nodeyez-blockheight.service
    sudo systemctl start nodeyez-channelbalance.service
-   sudo systemctl start nodeyez-compassmininghardware.service
    sudo systemctl start nodeyez-compassminingstatus.service
    sudo systemctl start nodeyez-daily-data-retrieval.service
    sudo systemctl start nodeyez-difficultyepoch.service
    sudo systemctl start nodeyez-f2pool.service
-   sudo systemctl start nodeyez-gasprice.service
    sudo systemctl start nodeyez-halving.service
    sudo systemctl start nodeyez-ipaddress.service
    sudo systemctl start nodeyez-mempoolblocks.service
    sudo systemctl start nodeyez-minerbraiins.service
    sudo systemctl start nodeyez-minermicrobt.service
-   sudo systemctl start nodeyez-raretoshi.service
    sudo systemctl start nodeyez-rofstatus.service
    sudo systemctl start nodeyez-satsperusd.service
    sudo systemctl start nodeyez-slideshow.service
    sudo systemctl start nodeyez-slushpool.service
    sudo systemctl start nodeyez-sysinfo.service
    sudo systemctl start nodeyez-utcclock.service
+   sudo systemctl start nodeyez-whirlpoolclimix.service
    sudo systemctl start nodeyez-whirlpoolliquidity.service
    ```
 
@@ -96,7 +92,6 @@ Sample output
 
    ```c
      nodeyez-channelbalance.service                              loaded active running Image(s) for Lightning Channel Balances
-   ● nodeyez-compassmininghardware.service                       loaded failed failed  Image for Compass Mining Hardware
      nodeyez-daily-data-retrieval.service                        loaded active running Retrieve background data for Nodeyez
      nodeyez-difficultyepoch.service                             loaded active running Image for Difficulty Epoch
    ● nodeyez-f2pool.service                                      loaded failed failed  Image for F2 Pool Mining Summary
@@ -106,8 +101,8 @@ Sample output
      nodeyez-slideshow.service                                   loaded active running Image Display Slideshow to Framebuffer
    ```
 
-In the above example, we've chosen to only run some of the services, and two of
-them are showing that they failed.  Viewing the logs can help when diagnosing
+In the above example, we've chosen to only run some of the services, and one of
+them is showing that they failed.  Viewing the logs can help when diagnosing
 the cause of failure.
 
 ### 4. View logs

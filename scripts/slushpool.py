@@ -304,7 +304,9 @@ if __name__ == '__main__':
     while True:
         print("Getting account profile and rewards")
         accountprofile = vicariousnetwork.getslushpoolaccountprofile(True, authtoken)
+        time.sleep(6)
         accountrewards = vicariousnetwork.getslushpoolaccountrewards(True, authtoken)
+        time.sleep(6)
         poolstats = vicariousnetwork.getslushpoolstats(True, authtoken)
         if price_countdown <= 0:
             print("Getting updated prices")

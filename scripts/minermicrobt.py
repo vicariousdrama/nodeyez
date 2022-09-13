@@ -394,8 +394,8 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
         return
     if len(warning) == 0 and "power" in minerexpectations:
         powerlimit, powerused = getPowerInfo(minerinfo)
-        if powerused == "???":
-            warning = "Unknown power level. Rebooting?"
+        if powerused == "???" or powerused == 9999:
+            warning = "Unknown power level. Rebooting? Offline?"
         else:
             if "low" in minerexpectations["power"]:
                 lowpowerthreshold = minerexpectations["power"]["low"]
