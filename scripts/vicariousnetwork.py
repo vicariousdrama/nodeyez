@@ -251,7 +251,7 @@ def getwhirlpoolliquidity(useTor=True, url="https://pool.whirl.mx:8080", apiKey=
     return geturl(useTor, whirlpoolurl, defaultResponse, headers)
 
 def getwhirlpoolmix(useTor=True, url=None, apiKey=""):
-    path = "/rest/mixX"
+    path = "/rest/mix"
     whirlpoolurl = url + path
     headers = getwhirlpoolheaders(apiKey)
     defaultResponse = '''{
