@@ -96,17 +96,37 @@ def createimage(width=480, height=320):
     fnglength = len(fnghistory["data"])
     oldmaxpos = -1
     oldmaypos = -1
+    olddtlabel = ""
     for entry in fnghistory["data"]:
         # current data point
         entrynum = entrynum + 1
         fngpct = entry["value"]
         xpos = chartright - (entrynum * plotbuf)
         ypos = chartbottom - int(math.floor((chartbottom-charttop) / 100.0 * float(fngpct)))
-        #print(f"xpos: {xpos}, ypos: {ypos}")
         if ((xbuf+xpos-plotbuf) <= chartleft):
-            #print(f"enough! {entrynum}")
             break
         draw.ellipse(xy=[(xbuf+xpos-plotbuf,ybuf+ypos-plotbuf),(xbuf+xpos+plotbuf,ybuf+ypos+plotbuf)],fill=colorDataValue,outline=colorDataValue,width=1)
+        # tick mark label
+        fngtime = entry["timestamp"]
+        dtlabel = olddtlabel
+        if "-" in fngtime:
+            dtyear = fngtime[0:4]
+            dtmonth = fngtime[5:7]
+            dtday = fngtime[8:10]
+            if int(dtmonth) % 3 == 0:
+                if int(dtday) == 1:
+                    dtlabel = fngtime[0:7]
+        else:
+            dt_obj = datetime.fromtimestamp(int(fngtime))
+            if ((dt_obj.month % 3) == 0):
+                if (dt_obj.day == 1):
+                    dtlabel = str(dt_obj.year) + "-" + str(dt_obj.month).rjust(2,'0')
+        if olddtlabel != dtlabel:
+            lw,lh,lf = vicarioustext.gettextdimensions(draw, dtlabel, 12, False)
+            draw.line(xy=[xpos,charttop,xpos,chartbottom],fill=colorGraphLineDark,width=1)
+            if (xpos + graphedge + lw < chartright):
+                vicarioustext.drawbottomlefttext(draw, dtlabel, 12, xpos + 1, chartbottom, colorGraphLineLight, False)
+            olddtlabel = dtlabel
         # moving average calculation (14 points = 7 day)
         masize = 14
         matotal = 0
