@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 [Home](../README.md) | [Back to Website Dashboard](./install-5-websitedashboard.md) 
@@ -29,6 +29,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-daily-data-retrieval.service
    sudo systemctl enable nodeyez-difficultyepoch.service
    sudo systemctl enable nodeyez-f2pool.service
+   sudo systemctl enable nodeyez-fearandgreed.service
    sudo systemctl enable nodeyez-halving.service
    sudo systemctl enable nodeyez-ipaddress.service
    sudo systemctl enable nodeyez-mempoolblocks.service
@@ -57,6 +58,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-daily-data-retrieval.service
    sudo systemctl start nodeyez-difficultyepoch.service
    sudo systemctl start nodeyez-f2pool.service
+   sudo systemctl start nodeyez-fearandgreed.service
    sudo systemctl start nodeyez-halving.service
    sudo systemctl start nodeyez-ipaddress.service
    sudo systemctl start nodeyez-mempoolblocks.service

@@ -11,6 +11,7 @@ New Panels and Enhancements
 - New Panel: Halving Countdown - Progress to Next Subsidy Halving
 - New Panel: Whirlpool Liquidity - Show Premixer and Remixer state for the pools
 - New Panel: Whirlpool CLI+Mix Status - Shows your whirlpool CLI status and pools you are mixing in
+- New Panel: Fear and Greed Index - Shows data from alternative.me
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
 General

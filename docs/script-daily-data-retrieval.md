@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 ## Daily Data Retrieval
@@ -51,6 +51,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.p
    | Compass Hardware | 1 hour | [/home/nodeyez/nodeyez/config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
    | Compass Status | 23 hours | [/home/nodeyez/nodeyez/config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
    | F2 Pool | 23 hours | [/home/nodeyez/nodeyez/config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
+   | Fear and Greed | 12 hours | [/home/nodeyez/nodeyez/config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
    | Luxor | 23 hours | [/home/nodeyez/nodeyez/config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
    | Slushpool | 23 hours | [/home/nodeyez/nodeyez/config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
 

@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 ## Difficulty Epoch

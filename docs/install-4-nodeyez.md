@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
 Display panels to get the most from your node
 
 [Home](../README.md) | [Back to Display Screen](./install-3-displayscreen.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
@@ -259,6 +259,7 @@ separate tab or window for convenience.
 
 **Other Fun Stuff**
 - [compass mining status](./script-compassminingstatus.md)
+- [fear and greed index](./srcript-fearandgreed.md)
 - [sats per usd](./script-satsperusd.md)
 - [whirlpool cli mix status](./script-whirlpoolclimix.md)
 - [whirlpool liquidity](./script-whirlpoolliquidity.md)
