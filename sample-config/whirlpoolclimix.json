@@ -32,6 +32,12 @@
   "colorDataValue.comment": "The color of the text for field values expressed as a Hexadecimal color specifier",
   "colorDataValue.type": "string",
   "colorDataValue": "#bbbbbb",
+  "colorDataOn.comment": "The color of the indicator when something is on/true. Default `#40ff40` ",
+  "colorDataOn.type": "string",
+  "colorDataOn": "#40ff40",
+  "colorDataOff.comment": "The color of the indicator when something is off/false. Default `#ff4040` ",
+  "colorDataOff.type": "string",
+  "colorDataOff": "#ff4040",
   "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
   "colorTextFG.type": "string",
   "colorTextFG": "#ffffff"

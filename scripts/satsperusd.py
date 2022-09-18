@@ -33,8 +33,45 @@ def createimage(width=480, height=320):
     satsperfiatunitlow = int(round(100000000.0 / low))
     satsperfiatunithigh = int(round(100000000.0 / high))
     satsleft = satsperfiatunit
-    satw=int(math.floor(width/87))
-    padleft=int(math.floor((width-(87*satw))/2))
+    maxcol=1
+    # note: the following is hardcoded for screen size assumptions. will need updates
+    # to scale well for other screen sizes larger or smaller.
+    # based on 480 width, 320 height, and padtop = 40, and footer being ~ padtop + 10.
+    # effective area is 480 x 230 for the sats grid or 110,400 pixels
+    # need space between each sat, and around groupings of 10x10
+    if satsleft > 40:
+        maxcol=2
+    if satsleft > 200:
+        maxcol=3
+    if satsleft > 300:
+        maxcol=4
+    if satsleft > 400:
+        maxcol=5
+    if satsleft > 1000:
+        maxcol=6
+    if satsleft > 1400:
+        maxcol=7
+    if satsleft > 1800:
+        maxcol=8
+    if satsleft > 3200:
+        maxcol=9
+    if satsleft > 4500:
+        maxcol=10
+    if satsleft > 5000:
+        maxcol=11
+    if satsleft > 5500:
+        maxcol=12
+    if satsleft > 8400:
+        maxcol=13
+    if satsleft > 9100:
+        maxcol=14
+    if satsleft > 9800:
+        maxcol=15
+    if satsleft > 15000:
+        maxcol=21 # max 210000 sats per usd ~ $476.19
+    satswide = (maxcol * 10) + (maxcol - 1)
+    satw=int(math.floor(width/satswide))
+    padleft=int(math.floor((width-(satswide*satw))/2))
     padtop=40
     im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
@@ -49,7 +86,7 @@ def createimage(width=480, height=320):
         satsleft = satsleft - 100
         drawsatssquare(draw,dc,dr,100,satw,padleft,padtop)
         dc = dc + 1
-        if dc >= 8:
+        if dc >= maxcol:
             dr = dr + 1
             dc = 0
     drawsatssquare(draw,dc,dr,satsleft,satw,padleft,padtop)

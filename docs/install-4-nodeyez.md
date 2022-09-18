@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../images/nodeyez.svg)
 Display panels to get the most from your node
 
 [Home](../README.md) | [Back to Display Screen](./install-3-displayscreen.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)

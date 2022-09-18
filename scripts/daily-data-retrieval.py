@@ -32,6 +32,7 @@ def makeDirIfNotExists(path):
 #   bsq_btc <last, high, low, volume_left, volume_right, buy, sell>
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveBisqInfo():
+    print("---")
     if not enableBisq:
         print("WARNING: Call to getAndSaveBisqInfo made but enableBisq is False")
         return
@@ -43,6 +44,7 @@ def getAndSaveBisqInfo():
     getAndSaveFile(config["priceurl"], filename)
 
 def getAndSaveCollectAPIInfo():
+    print("---")
     if not enableCollectAPI:
         print("WARNING: Call to getAndSaveCollectAPIInfo made but enableCollectAPI is False")
         return
@@ -86,6 +88,7 @@ def getAndSaveCollectAPIInfo():
 #   max_items_per_user, monthly_bundle_price, pricePerHashrate, pricePerHashrateForSorting, hashrateSorting
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveCompassMiningHardwareInfo():
+    print("---")
     if not enableCompassHardware:
         print("WARNING: Call to getAndSaveCompassMiningHardwareInfo made but enableCompassHardware is False")
         return
@@ -104,6 +107,7 @@ def getAndSaveCompassMiningHardwareInfo():
 # In addition, saving snapshots for details for individual facilities
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveCompassMiningStatusInfo():
+    print("---")
     if not enableCompassStatus:
         print("WARNING: Call to getAndSaveCompassMiningStatusInfo made but enableCompassStatus is False")
         return
@@ -193,6 +197,7 @@ def getAndSaveCompassFacilityStatus(baseurl, facilityname, facilityid, pages):
 #								<address> bitcoin address sent to
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveF2PoolAccountInfo():
+    print("---")
     if not enableF2Pool:
         print("WARNING: Call to getAndSaveF2PoolAccountInfo made but enableF2Pool is False")
         return
@@ -211,6 +216,7 @@ def getAndSaveF2PoolAccountInfo():
 # Full API documentation at https://alternative.me/crypto/fear-and-greed-index/#api
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveFearAndGreedInfo():
+    print("---")
     if not enableFearAndGreed:
         print("WARNING: Call to getAndSaveFearAndGreedInfo made but enableFearAndGreed is False")
         return
@@ -228,6 +234,7 @@ def getAndSaveFearAndGreedInfo():
 # Using Python library from https://github.com/LuxorLabs/graphql-python-client
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveLuxorHashrateInfo():
+    print("---")
     if not enableLuxor:
         print("WARNING: Call to getAndSaveLuxorHashrateInfo made but enableLuxor is False")
         return
@@ -255,6 +262,7 @@ def getAndSaveLuxorHashrateInfo():
 # API documentation at https://help.slushpool.com/en/support/solutions/articles/77000433512-api-configuration-guide
 # --------------------------------------------------------------------------------------------------------------------
 def getAndSaveSlushpoolInfo():
+    print("---")
     if not enableSlushpool:
         print("WARNING: Call to getAndSaveSlushpoolInfo made but enableSlushpool is False")
         return
@@ -276,6 +284,7 @@ def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, headers):
     folder=slushpoolDataDirectory + subdirectory
     makeDirIfNotExists(folder)
     filename=folder + datefile
+    print("-")
     print(f"Retrieving and saving Slushpool {comment} to {filename}")
     time.sleep(6)  # slushpool throttles/blocks if more than 1 per 5 seconds
     getAndSaveFile(fileurl, filename, headers)
@@ -320,7 +329,7 @@ if __name__ == '__main__':
     lastTimeF2Pool=0
     lastTimeFearAndGreed=0
     lastTimeLuxor=0
-    lastSlushpool=0
+    lastTimeSlushpool=0
     # Check that config exists
     if enableBisq and not exists(configFileBisq):
         enableBisq = False
@@ -343,6 +352,7 @@ if __name__ == '__main__':
         print(f"The F2Pool configuration file was not defined at {configFileF2Pool}")
         print(f"F2Pool data will not be downloaded")
     if enableFearAndGreed and not exists(configFileFearAndGreed):
+        pass
         #enableFearAndGreed = False
         #print(f"The Fear And Greed configuration file was not defined at {configFileFearAndGreed}")
         #print(f"Fear and Greed data will not be downloaded")
@@ -447,11 +457,13 @@ if __name__ == '__main__':
             lastTimeF2Pool = currentTime if lastTimeF2Pool == 0 else lastTimeF2Pool + sleepIntervalF2Pool
         if enableFearAndGreed and currentTime > lastTimeFearAndGreed + sleepIntervalFearAndGreed:
             getAndSaveFearAndGreedInfo()
-            lastTimeFearAndGreed = currentTime if lastTimeFearAndGreed = 0 else lastTimeFearAndGreed + sleepIntervalFearAndGreed
+            lastTimeFearAndGreed = currentTime if lastTimeFearAndGreed == 0 else lastTimeFearAndGreed + sleepIntervalFearAndGreed
         if enableLuxor and currentTime > lastTimeLuxor + sleepIntervalLuxor:
             getAndSaveLuxorHashrateInfo()
             lastTimeLuxor = currentTime if lastTimeLuxor == 0 else lastTimeLuxor + sleepIntervalLuxor
         if enableSlushpool and currentTime > lastTimeSlushpool + sleepIntervalSlushpool:
             getAndSaveSlushpoolInfo()
             lastTimeSlushpool = currentTime if lastTimeSlushpool == 0 else lastTimeSlushpool + sleepIntervalSlushpool
+        print("---")
+        print(f"Done retrieving data for this round. sleeping for {sleepInterval}")
         time.sleep(sleepInterval)

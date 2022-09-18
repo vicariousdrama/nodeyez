@@ -94,14 +94,22 @@ def isWhirlpoolCoordinator():
 def drawfieldvalue(draw, label, value, left, top, right, bottom):
     centerh = left + ((right-left)//2)
     centerv = top + ((bottom-top)//2)
+    colorValue = colorDataValue
+    fontBold = False
+    if value == getunicodebool(True):
+        colorValue = colorDataOn
+        fontBold = True
+    if value == getunicodebool(False):
+        colorValue = colorDataOff
+        fontBold = True
     vicarioustext.drawcenteredtext(draw, label, 16, centerh, centerv - 10, colorDataLabel, True)
-    vicarioustext.drawcenteredtext(draw, value, 14, centerh, centerv + 10, colorDataValue, False)
+    vicarioustext.drawcenteredtext(draw, value, 14, centerh, centerv + 10, colorValue, fontBold)
 
 def createimage(width=480, height=320):
     headerheight = 30
     footerheight = 15
     qw = width//4
-    qh = (height-(headerheight+footerheight))//4
+    qh = (height-(headerheight+footerheight))//5
     qt = headerheight
     clistatus = vicariousnetwork.getwhirlpoolcliconfig(useTor, whirlpoolurl, apiKey)
     mixstatus = vicariousnetwork.getwhirlpoolmix(useTor, whirlpoolurl, apiKey)
@@ -110,14 +118,25 @@ def createimage(width=480, height=320):
     # Header
     vicarioustext.drawcenteredtext(draw, "Whirlpool CLI + MIX", 24, int(width/2), int(headerheight/2), colorHeader, True)
     # Basic meta data
-    drawfieldvalue(draw, "Network",   str(clistatus["network"]),             qw*0, qt+(qh*0), qw*1, qt+(qh*1))
-    drawfieldvalue(draw, "Tor",       getunicodebool(clistatus["tor"]),      qw*1, qt+(qh*0), qw*2, qt+(qh*1))
-    drawfieldvalue(draw, "Dojo",      getunicodebool(clistatus["dojo"]),     qw*2, qt+(qh*0), qw*3, qt+(qh*1))
-    drawfieldvalue(draw, "Logged In", getunicodebool(clistatus["loggedIn"]), qw*3, qt+(qh*0), qw*4, qt+(qh*1))
-    drawfieldvalue(draw, "Version",   clistatus["version"],                  qw*0, qt+(qh*1), qw*1, qt+(qh*2))
-    drawfieldvalue(draw, "Started",   getunicodebool(mixstatus["started"]),  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
-    drawfieldvalue(draw, "Mixing",    str(mixstatus["nbMixing"]),            qw*2, qt+(qh*1), qw*3, qt+(qh*2))
-    drawfieldvalue(draw, "Queued",    str(mixstatus["nbQueued"]),            qw*3, qt+(qh*1), qw*4, qt+(qh*2))
+    rv = 2
+    if rv == 1:
+        drawfieldvalue(draw, "Network",   str(clistatus["network"]),             qw*0, qt+(qh*0), qw*1, qt+(qh*1))
+        drawfieldvalue(draw, "Tor",       getunicodebool(clistatus["tor"]),      qw*1, qt+(qh*0), qw*2, qt+(qh*1))
+        drawfieldvalue(draw, "Dojo",      getunicodebool(clistatus["dojo"]),     qw*2, qt+(qh*0), qw*3, qt+(qh*1))
+        drawfieldvalue(draw, "Logged In", getunicodebool(clistatus["loggedIn"]), qw*3, qt+(qh*0), qw*4, qt+(qh*1))
+        drawfieldvalue(draw, "Version",   clistatus["version"],                  qw*0, qt+(qh*1), qw*1, qt+(qh*2))
+        drawfieldvalue(draw, "Started",   getunicodebool(mixstatus["started"]),  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
+        drawfieldvalue(draw, "Mixing",    str(mixstatus["nbMixing"]),            qw*2, qt+(qh*1), qw*3, qt+(qh*2))
+        drawfieldvalue(draw, "Queued",    str(mixstatus["nbQueued"]),            qw*3, qt+(qh*1), qw*4, qt+(qh*2))
+    if rv == 2:
+        drawfieldvalue(draw, "Tor",       getunicodebool(clistatus["tor"]),      qw*0, qt+(qh*0), qw*1, qt+(qh*1))
+        drawfieldvalue(draw, "Dojo",      getunicodebool(clistatus["dojo"]),     qw*1, qt+(qh*0), qw*2, qt+(qh*1))
+        drawfieldvalue(draw, "Logged In", getunicodebool(clistatus["loggedIn"]), qw*2, qt+(qh*0), qw*3, qt+(qh*1))
+        drawfieldvalue(draw, "Started",   getunicodebool(mixstatus["started"]),  qw*3, qt+(qh*0), qw*4, qt+(qh*1))
+        drawfieldvalue(draw, "Network",   str(clistatus["network"]),             qw*0, qt+(qh*1), qw*1, qt+(qh*2))
+        drawfieldvalue(draw, "Version",   clistatus["version"],                  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
+        drawfieldvalue(draw, "Mixing",    str(mixstatus["nbMixing"]),            qw*2, qt+(qh*1), qw*3, qt+(qh*2))
+        drawfieldvalue(draw, "Queued",    str(mixstatus["nbQueued"]),            qw*3, qt+(qh*1), qw*4, qt+(qh*2))
     # Pools mixing
     tc = 0
     tw = width//3
@@ -125,7 +144,7 @@ def createimage(width=480, height=320):
     for t in mixstatus["threads"]:
         if tc > 0:
             threadheads = ["","",""]
-        yt = qt+int(qh*(2.0 + float(tc) * 0.3)) - 16
+        yt = qt+int(qh*(2.5 + float(tc) * 0.3)) - 16
         yb = qt+int(qh*(3.0 + float(tc) * 0.3)) - 16
         drawfieldvalue(draw, threadheads[0], btctosats(t["poolId"]),                 tw*0, yt, tw*1, yb)
         drawfieldvalue(draw, threadheads[1], stepstatus(t["mixStep"]),               tw*1, yt, tw*2, yb)
@@ -156,6 +175,8 @@ if __name__ == '__main__':
     colorHeader=ImageColor.getrgb("#ffffff")          # The header text color. Need to pass to also specify bolding
     colorDataLabel=ImageColor.getrgb("#aa2222")       # Color for each field label
     colorDataValue=ImageColor.getrgb("#bbbbbb")       # Color for each field value
+    colorDataOn=ImageColor.getrgb("#40ff40")          # Color for on/true checkmark
+    colorDataOff=ImageColor.getrgb("#ff4040")         # Color for off/false checkmark
     colorTextFG=ImageColor.getrgb("#ffffff")          # General text color other than header and data values
     colorBackground=ImageColor.getrgb("#000000")      # Background color
     # Overide defaults
@@ -191,6 +212,10 @@ if __name__ == '__main__':
             colorDataLabel = ImageColor.getrgb(config["colorDataLabel"])
         if "colorDataValue" in config:
             colorDataValue = ImageColor.getrgb(config["colorDataValue"])
+        if "colorDataOn" in config:
+            colorDataOn = ImageColor.getrgb(config["colorDataOn"])
+        if "colorDataOff" in config:
+            colorDataOff = ImageColor.getrgb(config["colorDataOff"])
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
         if "colorBackground" in config:

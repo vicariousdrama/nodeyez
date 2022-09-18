@@ -1,4 +1,4 @@
-# ![Nodeyez](../../../raw/branch/main/images/nodeyez.svg)
+# ![Nodeyez](../images/nodeyez.svg)
 Display panels to get the most from your node
 
 ## Whirlpool Liquidity
