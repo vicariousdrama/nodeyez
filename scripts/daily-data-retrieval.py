@@ -205,6 +205,22 @@ def getAndSaveF2PoolAccountInfo():
     getAndSaveFile(fileurl, filename)
 
 # --------------------------------------------------------------------------------------------------------------------
+# getAndSaveFearAndGreedInfo
+#
+# Retrieves the fear and greed info from Alternative.me
+# Full API documentation at https://alternative.me/crypto/fear-and-greed-index/#api
+# --------------------------------------------------------------------------------------------------------------------
+def getAndSaveFearAndGreedInfo():
+    if not enableFearAndGreed:
+        print("WARNING: Call to getAndSaveFearAndGreedInfo made but enableFearAndGreed is False")
+        return
+    datefile = getdatefile()
+    print(f"Retrieving and saving Fear and Greed info to {datefile}")
+    filename = fearAndGreedDataDirectory + datefile
+    fileurl = "https://api.alternative.me/fng/?limit=0&format=json&date_format=cn"
+    getAndSaveFile(fileurl, filename)
+
+# --------------------------------------------------------------------------------------------------------------------
 # getAndSaveLuxorHashrateInfo
 #
 # Retrieves information from Luxor Mining for an account via graphql
@@ -264,7 +280,6 @@ def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, headers):
     time.sleep(6)  # slushpool throttles/blocks if more than 1 per 5 seconds
     getAndSaveFile(fileurl, filename, headers)
 
-
 # --------------------------------------------------------------------------------------------------------------------
 # Main program entry point
 # --------------------------------------------------------------------------------------------------------------------
@@ -275,6 +290,7 @@ if __name__ == '__main__':
     enableCompassHardware = False # API changed. Data no longer available
     enableCompassStatus = True
     enableF2Pool = True
+    enableFearAndGreed = True
     enableLuxor = True
     enableSlushpool = True
     dataDirectory="/home/nodeyez/nodeyez/data/"
@@ -284,6 +300,7 @@ if __name__ == '__main__':
     configFileCompassHardware=configFolder + "compassmininghardware.json"
     configFileCompassStatus=configFolder + "compassminingstatus.json"
     configFileF2Pool=configFolder + "f2pool.json"
+    configFileFearAndGreed=configFolder + "fearandgreed.json"
     configFileLuxor=configFolder + "luxor.json"
     configFileSlushpool=configFolder + "slushpool.json"
     sleepInterval=300 # This is for the main loop controller
@@ -293,6 +310,7 @@ if __name__ == '__main__':
     sleepIntervalCompassHardware=3600
     sleepIntervalCompassStatus=82800
     sleepIntervalF2Pool=82800
+    sleepIntervalFearAndGreed=41400
     sleepIntervalLuxor=82800
     sleepIntervalSlushpool=82800
     lastTimeBisq=0
@@ -300,6 +318,7 @@ if __name__ == '__main__':
     lastTimeCompassHardware=0
     lastTimeCompassStatus=0
     lastTimeF2Pool=0
+    lastTimeFearAndGreed=0
     lastTimeLuxor=0
     lastSlushpool=0
     # Check that config exists
@@ -323,6 +342,10 @@ if __name__ == '__main__':
         enableF2Pool = False
         print(f"The F2Pool configuration file was not defined at {configFileF2Pool}")
         print(f"F2Pool data will not be downloaded")
+    if enableFearAndGreed and not exists(configFileFearAndGreed):
+        #enableFearAndGreed = False
+        #print(f"The Fear And Greed configuration file was not defined at {configFileFearAndGreed}")
+        #print(f"Fear and Greed data will not be downloaded")
     if enableLuxor and not exists(configFileLuxor):
         enableLuxor = False
         print(f"The Luxor configuration file was not defined at {configFileLuxor}")
@@ -349,6 +372,9 @@ if __name__ == '__main__':
     f2PoolDataDirectory = dataDirectory + "f2pool/"
     if enableF2Pool:
         makeDirIfNotExists(f2PoolDataDirectory)
+    fearAndGreedDataDirectory = dataDirectory + "fearandgreed/"
+    if enableFearAndGreed:
+        makeDirIfNotExists(fearAndGreedDataDirectory)
     luxorDataDirectory = dataDirectory + "luxor/"
     if enableLuxor:
         makeDirIfNotExists(luxorDataDirectory)
@@ -368,6 +394,7 @@ if __name__ == '__main__':
             print(f"   {arg0} compassmininghardware")
             print(f"   {arg0} compsasminingstatus")
             print(f"   {arg0} f2pool")
+            print(f"   {arg0} fearandgreed")
             print(f"   {arg0} luxor")
             print(f"   {arg0} slushpool")
         else:
@@ -387,6 +414,9 @@ if __name__ == '__main__':
             elif apistub == 'f2pool':
                 if enableF2Pool:
                     getAndSaveF2PoolAccountInfo()
+            elif apistub == 'fearandgreed':
+                if enableFearAndGreed:
+                    getAndSaveFearAndGreedInfo()
             elif apistub == 'luxor':
                 if enableLuxor:
                     getAndSaveLuxorHashrateInfo()
@@ -415,6 +445,9 @@ if __name__ == '__main__':
         if enableF2Pool and currentTime > lastTimeF2Pool + sleepIntervalF2Pool:
             getAndSaveF2PoolAccountInfo()
             lastTimeF2Pool = currentTime if lastTimeF2Pool == 0 else lastTimeF2Pool + sleepIntervalF2Pool
+        if enableFearAndGreed and currentTime > lastTimeFearAndGreed + sleepIntervalFearAndGreed:
+            getAndSaveFearAndGreedInfo()
+            lastTimeFearAndGreed = currentTime if lastTimeFearAndGreed = 0 else lastTimeFearAndGreed + sleepIntervalFearAndGreed
         if enableLuxor and currentTime > lastTimeLuxor + sleepIntervalLuxor:
             getAndSaveLuxorHashrateInfo()
             lastTimeLuxor = currentTime if lastTimeLuxor == 0 else lastTimeLuxor + sleepIntervalLuxor
