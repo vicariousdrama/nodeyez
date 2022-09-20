@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for LND Hub Account Balances Pool panel generation
+# /etc/systemd/system/nodeyez-lndhub.service
+
+[Unit]
+Description=Nodeyez image generator for LND Hub Account Balances
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/lndhub.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

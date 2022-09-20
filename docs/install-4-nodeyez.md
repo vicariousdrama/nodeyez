@@ -249,6 +249,7 @@ separate tab or window for convenience.
 
 **Lightning Dependent**
 - [channel balance](./script-channelbalance.md)
+- [lnd hub account balances](./script-lndhub.md)
 - [ring of fire](./script-rofstatus.md)
 
 **Mining Related**
