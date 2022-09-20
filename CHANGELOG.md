@@ -12,6 +12,7 @@ New Panels and Enhancements
 - New Panel: Whirlpool Liquidity - Show Premixer and Remixer state for the pools
 - New Panel: Whirlpool CLI+Mix Status - Shows your whirlpool CLI status and pools you are mixing in
 - New Panel: Fear and Greed Index - Shows data from alternative.me
+- New Panel: LND Hub Account Balances - Relies on local redis backing store to show account info
 - Enhanced Mempool - show sumary of tx in mempool, block count and time
 
 General

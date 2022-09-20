@@ -55,7 +55,7 @@ def getunicodebool(b):
     if b:
         return u"✓"
     else:
-        return u"❌"
+        return u"✗"
 
 def stepstatus(s):
     if s == "CONNECTING":
@@ -95,15 +95,18 @@ def drawfieldvalue(draw, label, value, left, top, right, bottom):
     centerh = left + ((right-left)//2)
     centerv = top + ((bottom-top)//2)
     colorValue = colorDataValue
+    fontSize = 14
     fontBold = False
     if value == getunicodebool(True):
         colorValue = colorDataOn
+        fontSize = 32
         fontBold = True
     if value == getunicodebool(False):
         colorValue = colorDataOff
+        fontSize = 32
         fontBold = True
     vicarioustext.drawcenteredtext(draw, label, 16, centerh, centerv - 10, colorDataLabel, True)
-    vicarioustext.drawcenteredtext(draw, value, 14, centerh, centerv + 10, colorValue, fontBold)
+    vicarioustext.drawcenteredtext(draw, value, fontSize, centerh, centerv + 10, colorValue, fontBold)
 
 def createimage(width=480, height=320):
     headerheight = 30
