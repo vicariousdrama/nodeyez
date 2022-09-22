@@ -26,7 +26,9 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         if int(v) > 65:
             barcolor=colorThermometerBarHot
             barpos=1
-        draw.ellipse(xy=(x+4,y+4+(h/4*3),tw-4,h-4),fill=barcolor,outline=None,width=1)
+        xo = 4
+        yo = 0
+        draw.ellipse(xy=(x+xo,y+yo+(h/4*3),tw-xo,h-xo),fill=barcolor,outline=None,width=1)
         draw.rectangle(xy=(x+4+((tw-x)/4*1),y+4+(h/8*barpos),x-4+((tw-x)/4*3),y-4+(h/8*7)),fill=barcolor,outline=None,width=1)
         # lines
         for j in range(8):
@@ -40,8 +42,8 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         pct = int(list(v.split())[4].replace("%",""))
         gbf = list(v.split())[3]
         pad = 30
-        ox = 3
-        oy = 3
+        ox = 2
+        oy = 2
         if pct == 50:
             ox = 0
         if pct > 50:
@@ -50,19 +52,19 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         ea = sa + math.floor(pct*3.6)
         slicecolor = colorPieGood
         textcolor = colorPieGoodText
-        if pct > 80:
+        if pct > 75:
             slicecolor = colorPieWarn
             textcolor = colorPieWarnText
         if pct > 90:
             slicecolor = colorPieDanger
             textcolor = colorPieDangerText
-        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=slicecolor,outline=colorPieOutline,width=2)
+        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=slicecolor,outline=colorPieOutline,width=1)
         vicarioustext.drawtoplefttext(draw, "used", 16, x+(w/2), y+(h/2)+8, textcolor)
         ox = ox * -1
         oy = oy * -1
         sa = ea
         ea = 360
-        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=colorPieEmpty,outline=colorPieOutline,width=2)
+        draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=colorPieEmpty,outline=colorPieOutline,width=1)
         vicarioustext.drawbottomlefttext(draw, "free", 16, x+(w/2), y+(h/2)-8, colorPieEmptyText)
         vicarioustext.drawcenteredtext(draw, gbf + " free", 20, x+(w/2), y+h-10, colorPieLabelText)
     if icon == "sdcard":
@@ -78,7 +80,7 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         vicarioustext.drawlefttext(draw, "15 min", 16, x+6, y+((h/8)*7), colorCPULabelText)
         ttw = 72
         for j in range(3):
-            draw.rounded_rectangle(xy=(x+ttw+3,y+((h/8)*((j*2)+2))+3,x+w,y+((h/8)*((j*2)+4))-3),radius=4,outline=colorCPUOutline,width=2)
+            draw.rounded_rectangle(xy=(x+ttw+3,y+((h/8)*((j*2)+2))+3,x+w,y+((h/8)*((j*2)+4))-3),radius=4,outline=colorCPUOutline,width=1)
             ld = list(v.split())[j]
             ldw = int(((x+w)-(x+ttw+3)) * (float(ld)/float(getprocessorcount())))
             barcolor=colorCPUGood
@@ -92,7 +94,7 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         p = list(v.split())[1]
         pad = 20
         draw.arc(xy=(x+pad,y+(pad*2),x+w-pad,y+h),start=120,end=420,fill=colorMEMOutline,width=20)
-        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=colorMEMEmpty,width=16)
+        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=colorMEMEmpty,width=17)
         arccolor=colorMEMGood
         if int(p) == 0:
             p = "1"
@@ -101,7 +103,7 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         if int(p) > 90:
             arccolor=colorMEMDanger
         ea=120+int((420-120)*(float(p)/100))
-        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120,end=ea,fill=arccolor,width=16)
+        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120,end=ea,fill=arccolor,width=17)
         vicarioustext.drawcenteredtext(draw, l, 24, x+(w/2), y+20, colorHeader, True)
         vicarioustext.drawcenteredtext(draw, p + "%", 20, x+(w/2), y+(h/2)+20, colorMEMLabelText)
     if icon == "datetime":

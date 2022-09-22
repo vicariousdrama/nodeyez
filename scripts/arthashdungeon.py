@@ -145,7 +145,7 @@ def createimage(blocknumber=1, width=480, height=320):
             fieldrow = (mazerow*2)+1
             for mazecolumn in range(mazecolumns):
                 fieldcolumn = (mazecolumn*2)
-                if 1 == 0: # changing basetileimage
+                if 1 == 1: # changing basetileimage
                     basetile = maze[mazecolumn][mazerow]['t'] % 6
                     basetilex = themex + (basetile * iconsize)
                     basetileimage.close()

@@ -34,9 +34,10 @@ It depends on a lighting node.
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/channelbalance.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-   | colorBarOutline | The color of the outline for the channel balance bar expressed as a hexadecimal color specifier. Default `#770044` |
-   | colorBarFilled | The color of the filled portion representing the local balance of the channel expressed as a hexadecimal color specifier. Default `#aa3377` |
-   | colorBarEmpty | The color of the unfilled portion representing the remote balance of the channel expressed as a hexadecimal color specifier. Default `#202020` |
+   | colorBarOutline | The color of the outline for the channel balance bar expressed as a hexadecimal color specifier. Default `#808080` |
+   | colorBarFilled | The color of the filled portion representing the local balance of the channel expressed as a hexadecimal color specifier. Default `#008000` |
+   | colorBarEmpty | The color of the unfilled portion representing the remote balance of the channel expressed as a hexadecimal color specifier. Default `#ffa500` |
+   | displayBalances | Indicates whether local and remote channel balance amounts should be rendered along with proportional bar. Default `true` |
    | width | The width, in pixels, to generate the image. Default `480` |
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `1800` |

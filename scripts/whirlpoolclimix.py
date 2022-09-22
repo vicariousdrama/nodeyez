@@ -121,38 +121,70 @@ def createimage(width=480, height=320):
     # Header
     vicarioustext.drawcenteredtext(draw, "Whirlpool CLI + MIX", 24, int(width/2), int(headerheight/2), colorHeader, True)
     # Basic meta data
-    rv = 2
-    if rv == 1:
-        drawfieldvalue(draw, "Network",   str(clistatus["network"]),             qw*0, qt+(qh*0), qw*1, qt+(qh*1))
-        drawfieldvalue(draw, "Tor",       getunicodebool(clistatus["tor"]),      qw*1, qt+(qh*0), qw*2, qt+(qh*1))
-        drawfieldvalue(draw, "Dojo",      getunicodebool(clistatus["dojo"]),     qw*2, qt+(qh*0), qw*3, qt+(qh*1))
-        drawfieldvalue(draw, "Logged In", getunicodebool(clistatus["loggedIn"]), qw*3, qt+(qh*0), qw*4, qt+(qh*1))
-        drawfieldvalue(draw, "Version",   clistatus["version"],                  qw*0, qt+(qh*1), qw*1, qt+(qh*2))
-        drawfieldvalue(draw, "Started",   getunicodebool(mixstatus["started"]),  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
-        drawfieldvalue(draw, "Mixing",    str(mixstatus["nbMixing"]),            qw*2, qt+(qh*1), qw*3, qt+(qh*2))
-        drawfieldvalue(draw, "Queued",    str(mixstatus["nbQueued"]),            qw*3, qt+(qh*1), qw*4, qt+(qh*2))
-    if rv == 2:
-        drawfieldvalue(draw, "Tor",       getunicodebool(clistatus["tor"]),      qw*0, qt+(qh*0), qw*1, qt+(qh*1))
-        drawfieldvalue(draw, "Dojo",      getunicodebool(clistatus["dojo"]),     qw*1, qt+(qh*0), qw*2, qt+(qh*1))
-        drawfieldvalue(draw, "Logged In", getunicodebool(clistatus["loggedIn"]), qw*2, qt+(qh*0), qw*3, qt+(qh*1))
-        drawfieldvalue(draw, "Started",   getunicodebool(mixstatus["started"]),  qw*3, qt+(qh*0), qw*4, qt+(qh*1))
-        drawfieldvalue(draw, "Network",   str(clistatus["network"]),             qw*0, qt+(qh*1), qw*1, qt+(qh*2))
-        drawfieldvalue(draw, "Version",   clistatus["version"],                  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
-        drawfieldvalue(draw, "Mixing",    str(mixstatus["nbMixing"]),            qw*2, qt+(qh*1), qw*3, qt+(qh*2))
-        drawfieldvalue(draw, "Queued",    str(mixstatus["nbQueued"]),            qw*3, qt+(qh*1), qw*4, qt+(qh*2))
+    rv = 2 # render variant
+    #print(clistatus)
+    #print("---")
+    #print(mixstatus)
+    #print("---")
+    s_network = clistatus["network"]
+    b_tor = clistatus["tor"]
+    b_dojo = clistatus["dojo"]
+    b_loggedin = clistatus["loggedIn"]
+    s_version = clistatus["version"]
+    b_started = False
+    i_mixing = 0
+    i_queued = 0
+    errormsg = ""
+    if "started" in mixstatus:
+       b_started = mixstatus["started"]
+    if "nbMixing" in mixstatus:
+       i_mixing = mixstatus["nbMixing"]
+    if "nbQueued" in mixstatus:
+       i_queued = mixstatus["nbQueued"]
+    if "message" in mixstatus:
+        print("---")
+        print(mixstatus["message"])
+        if "No wallet opened" in mixstatus["message"]:
+            errormsg = mixstatus["message"]
+    if "error" in mixstatus:
+        if mixstatus["error"] != None:
+            errormsg = mixstatus["error"]
+    errormsg = errormsg.replace(".",".\n")
+
+    if rv == 1: # original
+        drawfieldvalue(draw, "Network",   s_network,                  qw*0, qt+(qh*0), qw*1, qt+(qh*1))
+        drawfieldvalue(draw, "Tor",       getunicodebool(b_tor),      qw*1, qt+(qh*0), qw*2, qt+(qh*1))
+        drawfieldvalue(draw, "Dojo",      getunicodebool(b_dojo),     qw*2, qt+(qh*0), qw*3, qt+(qh*1))
+        drawfieldvalue(draw, "Logged In", getunicodebool(b_loggedin), qw*3, qt+(qh*0), qw*4, qt+(qh*1))
+        drawfieldvalue(draw, "Version",   s_version,                  qw*0, qt+(qh*1), qw*1, qt+(qh*2))
+        drawfieldvalue(draw, "Started",   getunicodebool(b_started),  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
+        drawfieldvalue(draw, "Mixing",    str(i_mixing),              qw*2, qt+(qh*1), qw*3, qt+(qh*2))
+        drawfieldvalue(draw, "Queued",    str(i_queued),              qw*3, qt+(qh*1), qw*4, qt+(qh*2))
+    if rv == 2: # mod with all booleans on top progressing left to right
+        drawfieldvalue(draw, "Tor",       getunicodebool(b_tor),      qw*0, qt+(qh*0), qw*1, qt+(qh*1))
+        drawfieldvalue(draw, "Dojo",      getunicodebool(b_dojo),     qw*1, qt+(qh*0), qw*2, qt+(qh*1))
+        drawfieldvalue(draw, "Logged In", getunicodebool(b_loggedin), qw*2, qt+(qh*0), qw*3, qt+(qh*1))
+        drawfieldvalue(draw, "Started",   getunicodebool(b_started),  qw*3, qt+(qh*0), qw*4, qt+(qh*1))
+        drawfieldvalue(draw, "Network",   s_network,                  qw*0, qt+(qh*1), qw*1, qt+(qh*2))
+        drawfieldvalue(draw, "Version",   s_version,                  qw*1, qt+(qh*1), qw*2, qt+(qh*2))
+        drawfieldvalue(draw, "Mixing",    str(i_mixing),              qw*2, qt+(qh*1), qw*3, qt+(qh*2))
+        drawfieldvalue(draw, "Queued",    str(i_queued),              qw*3, qt+(qh*1), qw*4, qt+(qh*2))
+    # Error Message
+    vicarioustext.drawtoplefttext(draw, errormsg, 20, 5, int(height/2), colorDataOff, True)
     # Pools mixing
     tc = 0
     tw = width//3
-    threadheads = ["Pool", "Mix Step", "Last Activity"]
-    for t in mixstatus["threads"]:
-        if tc > 0:
-            threadheads = ["","",""]
-        yt = qt+int(qh*(2.5 + float(tc) * 0.3)) - 16
-        yb = qt+int(qh*(3.0 + float(tc) * 0.3)) - 16
-        drawfieldvalue(draw, threadheads[0], btctosats(t["poolId"]),                 tw*0, yt, tw*1, yb)
-        drawfieldvalue(draw, threadheads[1], stepstatus(t["mixStep"]),               tw*1, yt, tw*2, yb)
-        drawfieldvalue(draw, threadheads[2], gethumantime(t["lastActivityElapsed"]), tw*2, yt, tw*3, yb)
-        tc = tc + 1
+    if "threads" in mixstatus:
+        threadheads = ["Pool", "Mix Step", "Last Activity"]
+        for t in mixstatus["threads"]:
+            if tc > 0:
+                threadheads = ["","",""]
+            yt = qt+int(qh*(2.5 + float(tc) * 0.3)) - 16
+            yb = qt+int(qh*(3.0 + float(tc) * 0.3)) - 16
+            drawfieldvalue(draw, threadheads[0], btctosats(t["poolId"]),                 tw*0, yt, tw*1, yb)
+            drawfieldvalue(draw, threadheads[1], stepstatus(t["mixStep"]),               tw*1, yt, tw*2, yb)
+            drawfieldvalue(draw, threadheads[2], gethumantime(t["lastActivityElapsed"]), tw*2, yt, tw*3, yb)
+            tc = tc + 1
     # Date and Time
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     # Attribution

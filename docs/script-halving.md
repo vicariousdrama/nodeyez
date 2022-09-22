@@ -40,6 +40,7 @@ It depends on a bitcoin node running locally and fully synched.
    | gridImageEnabled | Indicates whether to render a graphic image into the grid. If enabled, will source images from the ipfsDirectory location, changing to a different image for each whole percent. Default `True` |
    | gridImageUnminedMode | When gridImageEnabled is True, this controls how unmined blocks should appear. Recognized values are 'grayscale', 'dither', 'dither2'.  Unrecognized values will result in full image being displayed in color.  Default `grayscale` |
    | ipfsDirectory | A directory to find image files.  This is intended to leverage images downloaded as part of the raretoshi script.  Default `/home/nodeyez/nodeyez/data/ipfs` |
+   | fillGridDividersEnabled | This controls whether the lines between individual grid blocks should be filled as well when blocks are produced. Default `true` |
    | width | The width, in pixels, to generate the image. Default `480` |
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `540` |

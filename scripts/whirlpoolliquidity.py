@@ -18,17 +18,18 @@ def getpoolinfo(pools, poolid):
     nbConfirmed = -1
     elapsedTime = -1
     found = False
-    for pool in pools["pools"]:
-        if pool["poolId"] == poolid:
-            found = True
-            if "nbRegistered" in pool:
-                nbRegistered = int(pool["nbRegistered"])
-            if "nbConfirmed" in pool:
-                nbConfirmed = int(pool["nbConfirmed"])
-            if "elapsedTime" in pool:
-                elapsedTime = int(pool["elapsedTime"])
-            #print(f"found pool {poolid}: premixers = {nbConfirmed}, remixers = {nbRegistered}, ms since last: {elapsedTime}")
-            break
+    if "pools" in pools:
+        for pool in pools["pools"]:
+            if pool["poolId"] == poolid:
+                found = True
+                if "nbRegistered" in pool:
+                    nbRegistered = int(pool["nbRegistered"])
+                if "nbConfirmed" in pool:
+                    nbConfirmed = int(pool["nbConfirmed"])
+                if "elapsedTime" in pool:
+                    elapsedTime = int(pool["elapsedTime"])
+                #print(f"found pool {poolid}: premixers = {nbConfirmed}, remixers = {nbRegistered}, ms since last: {elapsedTime}")
+                break
     if not found:
         print(f"did not locate pool with id: {poolid}.")
     return nbRegistered, nbConfirmed, elapsedTime

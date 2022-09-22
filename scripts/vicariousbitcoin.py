@@ -1,5 +1,6 @@
 # import packages
 from os.path import exists
+import binascii
 import json
 import math
 import subprocess
@@ -8,12 +9,12 @@ useMockData=False
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
-def getblock(blocknum):
+def getblock(blocknum, verbosity=0):
     if useMockData:
         if exists("../mock-data/getblock.json"):
             with open("../mock-data/getblock.json") as f:
                 return json.load(f)
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "`"
+    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` " + str(verbosity)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -27,7 +28,7 @@ def getblockhash(blocknumber=1):
     if useMockData:
         if exists("../mock-data/getblockhash.json"):
             with open("../mock-data/getblockhash.json") as f:
-                return json.load(f)
+                return f.readline()
     cmd = "bitcoin-cli getblockhash " + str(blocknumber)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -35,6 +36,50 @@ def getblockhash(blocknumber=1):
     except subprocess.CalledProcessError as e:
         print(e)
         return "0000000000000000000000000000000000000000000000000000000000000000"
+
+def getblockopreturns(blocknum):
+    if useMockData:
+        return ["This is an example OP_RETURN", "Another OP_RETURN found in the block", "Only utf-8 or ascii decodable OP_RETURNs are rendered","Support for\nmulti-line OP_RETURN values\nexists as well","Some spammy OP_RETURN values are excluded","There must be at least one space","Lengthy OP_RETURN values without new lines may end up running off the side of the image","It depends on the fontsize set, which is based on number of OP_RETURN\nentries in the block","NODEYEZ","Nodeyez - Display panels to get the most from your node","NODEYEZ","NODEYEZ"]
+
+    b = getblock(blocknum, 2)
+    opreturns = []
+    if "tx" in b:
+        txidx = 0
+        for tx in b["tx"]:
+            txidx += 1
+            voutidx = 0
+            if "vout" in tx:
+                for vout in tx["vout"]:
+                    voutidx += 1
+                    if "scriptPubKey" in vout:
+                        scriptPubKey = vout["scriptPubKey"]
+                        if "asm" in scriptPubKey:
+                            asm = scriptPubKey["asm"]
+                            if "OP_RETURN" in asm:
+                                ophex = asm.replace("OP_RETURN ", "")
+                                # require more than one word
+                                if "20" not in ophex:
+                                    continue
+                                #encodinglist = ["utf-8","gb18030","euc-kr","cp1253","utf-32","utf-16","euc-kr","cp1253","cp1252","iso8859-16","ascii","latin-1","iso8859-1"]
+                                encodinglist = ["utf-8","ascii"]
+                                hasError = True
+                                opbytes = bytes.fromhex(ophex)
+                                for encoding in encodinglist:
+                                    if hasError == False:
+                                        break
+                                    try:
+                                        optext = opbytes.decode(encoding)
+#                                        print(f"successfully converted with encoding {encoding}: {optext}")
+                                        hasError = False
+                                        opreturns.append(optext)
+                                    except Exception as e:
+#                                        print(f"error converting hex to text with encoding {encoding} for tx[{txidx}].vout[{voutidx}]: {e}")
+                                        pass
+#                                if hasError:
+#                                    opreturns.append(ophex)
+
+
+    return opreturns
 
 def getcurrentblock():
     if useMockData:
@@ -82,8 +127,10 @@ def attemptconnect(nodeinfo):
                 else:
                     nodestatus = 1
             except subprocess.CalledProcessError as e2:
+                print(f"error calling disconnect in attempconnect: {e}")
                 nodestatus = 0
     except subprocess.CalledProcessError as e:
+        print(f"error in attemptconnect: {e}")
         nodestatus = 0
     return nodestatus
 
@@ -147,25 +194,58 @@ def getnodechannels():
     if useMockData:
         if exists("../mock-data/getnodechannels.json"):
             with open("../mock-data/getnodechannels.json") as f:
-                return json.load(f)
+                r = json.load(f)
+                return r
     cmd = "lncli" + getlndglobaloptions() + " listchannels 2>&1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        print(f"error in getnodechannels: {e}")
         cmdoutput = '{\"channels\": []}'
     j = json.loads(cmdoutput)
     return j
+
+def mockaliasforpubkey(pubkey):
+    alias = "mockup node"
+    mfn = "../mock-data/bip39words.txt"
+    if exists(mfn):
+        with open(mfn) as f:
+            wordnum = int(pubkey[0:4], base=16)
+            wordnum %= 2048
+            for i, line in enumerate(f):
+                if i == wordnum:
+                    alias = line.replace("\n","") + "-" + str(i)
+                    break
+        pass
+    return alias
 
 def getnodeinfo(pubkey):
     if useMockData:
         if exists("../mock-data/getnodeinfo.json"):
             with open("../mock-data/getnodeinfo.json") as f:
-                return json.load(f)
+                r = json.load(f)
+                r["node"]["alias"] = mockaliasforpubkey(pubkey)
+                return r
     cmd = "lncli" + getlndglobaloptions() + " getnodeinfo --pub_key " + pubkey + " --include_channels 2>&1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        print(f"error in getnodeinfo: {e}")
         cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
+    j = json.loads(cmdoutput)
+    return j
+
+def getnodepayments():
+    if useMockData:
+        if exists("../mock-data/getnodepayments.json"):
+            with open("../mock-data/getnodepayments.json") as f:
+                return json.load(f)
+    cmd = "lncli" + getlndglobaloptions() + " listpayments 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        print(f"error in getnodepayments: {e}")
+        cmdoutput = '{\"payments\": []}'
     j = json.loads(cmdoutput)
     return j
 
@@ -175,13 +255,19 @@ def getnodepeers():
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return cmdoutput
     except subprocess.CalledProcessError as e:
+        print(f"error in getnodepeers: {e}")
         return '{\"peers\": []}'
 
 def getfwdinghistory():
+    if useMockData:
+        if exists("../mock-data/getfwdinghistory.json"):
+            with open("../mock-data/getfwdinghistory.json") as f:
+                return json.load(f)
     cmd = "lncli" + getlndglobaloptions() + " fwdinghistory 2>&1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
+        print(f"error in getfwdinghistory: {e}")
         cmdoutput = '{\"forwarding_events\": []}'
     j = json.loads(cmdoutput)
     return j

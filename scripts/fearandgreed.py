@@ -38,6 +38,7 @@ def getfnghistory():
             fngfile = fearAndGreedDataDirectory + datefile
             vicariousnetwork.getandsavefile(url, fngfile)
         # Open the file
+        print(f"Loading data from {fngfile}")
         with open(fngfile) as f:
             # Load data as JSON
             filedata = json.load(f)
@@ -148,15 +149,17 @@ def createimage(width=480, height=320):
     if fnglength > 0:
         currentvalue = fnghistory["data"][0]["value"]
         currentlabel = fnghistory["data"][0]["value_classification"]
+    print(f"Current Value: {currentvalue} - {currentlabel}")
     vicarioustext.drawcenteredtext(draw, currentvalue, 48, int(width/2), (headerheight+32), colorDataValue, True)
     vicarioustext.drawcenteredtext(draw, currentlabel, 20, int(width/2), (headerheight+64), colorDataValue, True)
     # Attribution
     attributionLine = "Data from alternative.me"
-    vicarioustext.drawbottomlefttext(draw, attributionLine, 16, 0, height, colorTextFG)
+    vicarioustext.drawbottomlefttext(draw, attributionLine, 16, 0, height, colorAttribution)
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
+    print("Saving image")
     im.save(outputFile)
     im.close()
 
@@ -177,6 +180,7 @@ if __name__ == '__main__':
     colorGraphLineDark=ImageColor.getrgb("#606060")
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
+    colorAttribution=ImageColor.getrgb("#aa2222")
     # Override config
     if exists(configFile):
         with open(configFile) as f:

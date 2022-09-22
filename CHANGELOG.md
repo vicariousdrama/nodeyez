@@ -13,7 +13,12 @@ New Panels and Enhancements
 - New Panel: Whirlpool CLI+Mix Status - Shows your whirlpool CLI status and pools you are mixing in
 - New Panel: Fear and Greed Index - Shows data from alternative.me
 - New Panel: LND Hub Account Balances - Relies on local redis backing store to show account info
-- Enhanced Mempool - show sumary of tx in mempool, block count and time
+- New Panel: OP_RETURN - Renders text from OP_RETURN values
+- Enhanced Blockhash Dungeon - Fixed bug with floor tiles
+- Enhanced Channel Balances - Cleaner lines, new default colors, option to display amounts
+- Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout
+- Enhanced Sats Per USD - dynamically scale size of sat grid based on current total
+- Enhanced System Info - Cleaner lines, better thermometer bulb alignment
 
 General
 - Updated macaroon creation to allow querying ForwardingHistory
@@ -22,8 +27,9 @@ General
 - Improved resource management for images, closing to free memory
 - Encapsulated network calls, default to using tor for most scripts
 - Changed documentation to call scripts from full path to workaround common mount issues
-- Migrating repository to local gitea service
-- Deprecating support for Compass Mining Hardware, Gas Prices, Raretoshi
+- Migrated repository to local gitea service. Github is now only a mirror.
+- Deprecated support for Compass Mining Hardware, Gas Prices, Raretoshi
+- Improved Mock data for testing renderings
 
 ## 1.0.0
 
