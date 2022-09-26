@@ -255,101 +255,11 @@ def getwhirlpoolmix(useTor=True, url=None, apiKey=""):
     whirlpoolurl = url + path
     headers = getwhirlpoolheaders(apiKey)
     defaultResponse = '''{
-          "started": true,
-          "nbMixing": 5,
-          "nbQueued": 43,
-          "threads": [
-            {
-              "hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-              "index": 3,
-              "value": 100000,
-              "confirmations": 1234,
-              "path": "M/0/615",
-              "address": "bc1qzuyh3i8e284wqpbdnjtx0r74gepg64erwzwt72",
-              "account": "POSTMIX",
-              "status": "MIX_STARTED",
-              "mixStep": "REGISTERED_INPUT",
-              "mixableStatus": "MIXABLE",
-              "progressPercent": 30,
-              "poolId": "0.001btc",
-              "mixsDone": 11,
-              "message": null,
-              "error": null,
-              "lastActivityElapsed": 131823
-            },
-            {
-              "hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-              "index": 3,
-              "value": 100000,
-              "confirmations": 1234,
-              "path": "M/0/615",
-              "address": "bc1qzuyh3i8e284wqpbdnjtx0r74gepg64erwzwt72",
-              "account": "POSTMIX",
-              "status": "MIX_STARTED",
-              "mixStep": "REVEALED_OUTPUT",
-              "mixableStatus": "MIXABLE",
-              "progressPercent": 30,
-              "poolId": "0.0025btc",
-              "mixsDone": 11,
-              "message": null,
-              "error": null,
-              "lastActivityElapsed": 31823
-            },
-            {
-              "hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-              "index": 3,
-              "value": 100000,
-              "confirmations": 1234,
-              "path": "M/0/615",
-              "address": "bc1qzuyh3i8e284wqpbdnjtx0r74gepg64erwzwt72",
-              "account": "POSTMIX",
-              "status": "MIX_STARTED",
-              "mixStep": "REGISTERED_OUTPUT",
-              "mixableStatus": "MIXABLE",
-              "progressPercent": 30,
-              "poolId": "0.005btc",
-              "mixsDone": 11,
-              "message": null,
-              "error": null,
-              "lastActivityElapsed": 231823
-            },
-            {
-              "hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-              "index": 3,
-              "value": 100000,
-              "confirmations": 1234,
-              "path": "M/0/615",
-              "address": "bc1qzuyh3i8e284wqpbdnjtx0r74gepg64erwzwt72",
-              "account": "POSTMIX",
-              "status": "MIX_STARTED",
-              "mixStep": "CONFIRMED_INPUT",
-              "mixableStatus": "MIXABLE",
-              "progressPercent": 30,
-              "poolId": "0.01btc",
-              "mixsDone": 11,
-              "message": null,
-              "error": null,
-              "lastActivityElapsed": 631823
-            },
-            {
-              "hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-              "index": 3,
-              "value": 100000,
-              "confirmations": 1234,
-              "path": "M/0/615",
-              "address": "bc1qzuyh3i8e284wqpbdnjtx0r74gepg64erwzwt72",
-              "account": "POSTMIX",
-              "status": "MIX_STARTED",
-              "mixStep": "CONFIRMING_INPUT",
-              "mixableStatus": "MIXABLE",
-              "progressPercent": 30,
-              "poolId": "0.025btc",
-              "mixsDone": 11,
-              "message": null,
-              "error": null,
-              "lastActivityElapsed": 1131823
-            }
-          ]
+          "started": false,
+          "nbMixing": 0,
+          "nbQueued": 0,
+          "error": "Unable to get info about mix",
+          "message": "Unable to get info about mix"
         }'''
     return geturl(useTor, whirlpoolurl, defaultResponse, headers)
 
@@ -358,8 +268,8 @@ def getwhirlpoolcliconfig(useTor=True, url=None, apiKey=""):
     whirlpoolurl = url + path
     headers = getwhirlpoolheaders(apiKey)
     defaultResponse = '''{
-         "cliStatus":"ERROR", "cliMessage": null, "loggedIn": false, "torProgress": 0, "network": "main", 
-         "serverUrl": "http://udkmfc5j6zvv3ysavbrwzhwji4hpyfe3apqa6yst7c7l32mygf65g4ad.onion", "serverName": "MAINNET",
+         "cliStatus":"ERROR", "cliMessage": null, "loggedIn": false, "torProgress": 0, "network": "unknown",
+         "serverUrl": "unknown.onion", "serverName": "Unknown",
          "dojoUrl": "ERROR", "tor": false, "dojo": false, "version": "0.10.15"
         }'''
     return geturl(useTor, whirlpoolurl, defaultResponse, headers)

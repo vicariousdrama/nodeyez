@@ -1,0 +1,19 @@
+# Nodeyez: systemd unit for Channel Usage, Fees and Earnings
+# /etc/systemd/system/nodeyez-channelfees.service
+
+[Unit]
+Description=Nodeyez image generator for Channel Usage, Fees and Earnings
+StartLimitIntervalSec=600
+StartLimitBurst=2
+Wants=lnd.service
+After=lnd.service
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/channelfees.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

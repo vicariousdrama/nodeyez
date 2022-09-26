@@ -146,6 +146,11 @@ def createimage(width=480, height=320):
     vicarioustext.drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2), colorTextFG, True)
     # blocks
     mempoolblocks = vicariousnetwork.getmempoolblocks(useTor, urlmempool)
+    global oldmempoolblocks
+    if mempoolblocks == []:  # default response if error fetching
+        mempoolblocks = oldmempoolblocks # assign previous (which initializes as empty array as well)
+    if mempoolblocks != oldmempoolblocks: # if its different
+        oldmempoolblocks = mempoolblocks # update the previous, which presumably is good data.
     mpblist=list(mempoolblocks)
     mpblen=len(mpblist)
     btr=blocksToRender
@@ -209,6 +214,7 @@ def createimage(width=480, height=320):
     vicarioustext.drawrighttext(draw, "Next: " + str(feefastest), 18, width, height-padtop, colorTextFG)
     # footer
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
+    # attribution
     if isMempoolSpace():
         vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
     else:
@@ -237,7 +243,7 @@ if __name__ == '__main__':
     colorBlockTop=ImageColor.getrgb("#505050")
     colorBlockFace=ImageColor.getrgb("#606060")
     colorTextFG=ImageColor.getrgb("#ffffff")
-    colorMempool=ImageColor.getrgb("#699fed")
+    colorMempool=ImageColor.getrgb("#4cbae6") # "#699fed"
     blockSatLevels = [
         {"satMin": 0.0, "satMax": 10.0, "colorBlock": "#40c040", "colorText": "#ffffff"},
         {"satMin": 10.0, "satMax": 30.0, "colorBlock": "#9ea90b", "colorText": "#ffffff"},
@@ -312,7 +318,7 @@ if __name__ == '__main__':
             blockSatLevels = config["blockSatLevels"]
         if "histogramSatLevels" in config:
             histogramSatLevels = config["histogramSatLevels"]
-
+    oldmempoolblocks = []
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:

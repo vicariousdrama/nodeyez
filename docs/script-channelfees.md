@@ -34,6 +34,10 @@ It depends on a lighting node.
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/channelfees.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+   | colorRowBG1 | The primary color to use as the background for data rows expressed as a Hexadecimal color specifier. Default `#404040` |
+   | colorRowBG2 | The alternate color to use as the background for data rows expressed as a Hexadecimal color specifier. Default `#202020` |
+   | colorRowFG1 | The color of the text for data rows on primary color background expressed as a Hexadecimal color specifier. Default `#ffffff` |
+   | colorRowFG2 | The color of the text for data rows on alternate color background expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | width | The width, in pixels, to generate the image. Default `480` |
    | height | The height, in pixels, to generate the image. Default `320` |
    | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `1800` |

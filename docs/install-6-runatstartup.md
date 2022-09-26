@@ -25,6 +25,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-arthashdungeon.service
    sudo systemctl enable nodeyez-blockheight.service
    sudo systemctl enable nodeyez-channelbalance.service
+   sudo systemctl enable nodeyez-channelfees.service
    sudo systemctl enable nodeyez-compassminingstatus.service
    sudo systemctl enable nodeyez-daily-data-retrieval.service
    sudo systemctl enable nodeyez-difficultyepoch.service
@@ -36,6 +37,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-mempoolblocks.service
    sudo systemctl enable nodeyez-minerbraiins.service
    sudo systemctl enable nodeyez-minermicrobt.service
+   sudo systemctl enable nodeyez-opreturn.service
    sudo systemctl enable nodeyez-rofstatus.service
    sudo systemctl enable nodeyez-satsperusd.service
    sudo systemctl enable nodeyez-slideshow.service
@@ -55,6 +57,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-arthashdungeon.service
    sudo systemctl start nodeyez-blockheight.service
    sudo systemctl start nodeyez-channelbalance.service
+   sudo systemctl start nodeyez-channelfees.service
    sudo systemctl start nodeyez-compassminingstatus.service
    sudo systemctl start nodeyez-daily-data-retrieval.service
    sudo systemctl start nodeyez-difficultyepoch.service
@@ -66,6 +69,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-mempoolblocks.service
    sudo systemctl start nodeyez-minerbraiins.service
    sudo systemctl start nodeyez-minermicrobt.service
+   sudo systemctl start nodeyez-opreturn.service
    sudo systemctl start nodeyez-rofstatus.service
    sudo systemctl start nodeyez-satsperusd.service
    sudo systemctl start nodeyez-slideshow.service

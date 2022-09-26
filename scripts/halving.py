@@ -100,6 +100,9 @@ def createimage(width=480, height=320):
                 if fillcolor != colorProgress:
                     gblockimg = gridimageunmined.crop((gtlx,gtly,gbrx,gbry))
                 else:
+                    if fillGridDividersEnabled:
+                        gbrx += 1
+                        gbry += 1
                     gblockimg = gridimage.crop((gtlx,gtly,gbrx,gbry))
                 # paste the part into the right spot
                 im.paste(gblockimg, (tlx, tly))
@@ -111,6 +114,9 @@ def createimage(width=480, height=320):
                     outlinecolor = colorProgress
                     draw.rectangle(xy=((tlx-1,tly-1),(brx+1,bry+1)),fill=fillcolor,outline=outlinecolor,width=2)
             else:
+                if fillGridDividersEnabled:
+                   brx += 1
+                   bry += 1
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
     # header and footer
     padtop=36
@@ -134,6 +140,7 @@ def createimage(width=480, height=320):
     else:
         vicarioustext.drawrighttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth-4, padtop+(barheight/2), colorBackground, True)
     # save
+    print("saving image")
     im.save(outputFile)
     # cleanup image resources
     if gridImageEnabled:
@@ -157,6 +164,7 @@ if __name__ == '__main__':
     colorBackground=ImageColor.getrgb("#000000")
     gridImageEnabled=True
     gridImageUnminedMode="grayscale"
+    fillGridDividersEnabled=True
     width=480
     height=320
     sleepInterval=540
@@ -180,6 +188,8 @@ if __name__ == '__main__':
             gridImageEnabled = config["gridImageEnabled"]
         if "gridImageUnminedMode" in config:
             gridImageUnminedMode = config["gridImageUnminedMode"]
+        if "fillGridDividersEnabled" in config:
+            fillGridDividersEnabled = config["fillGridDividersEnabled"]
         if "ipfsDirectory" in config:
             ipfsDirectory = config["ipfsDirectory"]
         if "width" in config:
@@ -202,4 +212,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width, height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

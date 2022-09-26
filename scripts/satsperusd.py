@@ -98,7 +98,7 @@ def createimage(width=480, height=320):
         vicarioustext.drawcenteredtext(draw, "Last: " + str(satsperfiatunit), 20, int(width/8*4), height-padtop)
     vicarioustext.drawcenteredtext(draw, "High: " + str(satsperfiatunitlow), 20, int(width/8*7), height-padtop)
     vicarioustext.drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
-    vicarioustext.drawbottomlefttext(draw, "Market data by bisq", 16, 0, height, colorBisq)
+    vicarioustext.drawbottomlefttext(draw, "Data from bisq", 16, 0, height, colorBisq)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
     # Combine and save
     composite = Image.alpha_composite(im, alpha_img)

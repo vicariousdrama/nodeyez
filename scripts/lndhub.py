@@ -75,7 +75,7 @@ def createimage(width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
-    vicarioustext.drawcenteredtext(draw, "LND Hub Account Balances", 24, int(width/2), int(headerheight/2), colorTextFG, True)
+    vicarioustext.drawcenteredtext(draw, "LNDhub Account Balances", 24, int(width/2), int(headerheight/2), colorTextFG, True)
     # Sub headers
     subheaderheight = 20
     subxaccount = 3
@@ -165,6 +165,9 @@ def createimage(width=480, height=320):
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
+    # Attribution
+    attributionLine = "Data from local LNDhub instance"
+    vicarioustext.drawbottomlefttext(draw, attributionLine, 16, 0, height, colorAttribution)
     # Save to file
     if enableLogDetails:
         print()
@@ -184,6 +187,7 @@ if __name__ == '__main__':
     colorBackground=ImageColor.getrgb("#000000")
     colorLine=ImageColor.getrgb("#4040ff")
     colorTextDark=ImageColor.getrgb("#808080")
+    colorAttribution=ImageColor.getrgb("#80cef2")
     redisServer = "localhost"
     redisPort = 6379
     redisDb = 0
