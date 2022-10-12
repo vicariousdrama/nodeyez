@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageColor
 from os.path import exists
 import glob
@@ -26,6 +27,7 @@ def clearOldImages(pages):
             os.remove(filename)
 
 def createimage(channels, firstidx, lastidx, pagenum, pageSize, width=480, height=320):
+    utcnow = datetime.utcnow()
     padding=4
     outlinewidth=2
     padtop = 40
@@ -57,12 +59,24 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, width=480, heigh
         local_balance = int(currentchannel["local_balance"])
         remote_balance = int(currentchannel["remote_balance"])
         commit_fee = int(currentchannel["commit_fee"])
-        alias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
+        isactive = currentchannel["active"]
+        if isactive:
+            remotealias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
+            nodecolor = colorTextFG
+        else:
+            remoteinfo = vicariousbitcoin.getnodeinfo(remote_pubkey)
+            nodecolor = colorNodeOffline
+            remotealias = remoteinfo["node"]["alias"]
+            remoteupdated = remoteinfo["node"]["last_update"]
+            utc5daysago = utcnow - timedelta(days=5)
+            utc5daysagoseconds = int(utc5daysago.strftime('%s'))
+            if remoteupdated < utc5daysagoseconds:
+                nodecolor = colorNodeDead
         datarowbottom = padtop + (linesdrawn * dataheight)
         datarowtop = datarowbottom - dataheight
         datarowtop = padtop + (linesdrawn * dataheight)
         datarowbottom = datarowtop + dataheight
-        vicarioustext.drawlefttext(draw, alias, nodefontsize, 0, datarowbottom - (dataheight/2), colorTextFG)
+        vicarioustext.drawlefttext(draw, remotealias, nodefontsize, 0, datarowbottom - (dataheight/2), nodecolor)
         draw.rounded_rectangle(xy=(aliaswidth,datarowtop+padding,width-outlinewidth,datarowbottom),radius=4,fill=colorBarEmpty,outline=colorBarOutline,width=outlinewidth)
         percentage = float(local_balance)/float(capacity)
         barwidth = int(math.floor(float(width-aliaswidth-outlinewidth)*percentage))
@@ -91,6 +105,8 @@ if __name__ == '__main__':
     configFile = "/home/nodeyez/nodeyez/config/channelbalance.json"
     outputFile = "/home/nodeyez/nodeyez/imageoutput/channelbalance.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorNodeOffline=ImageColor.getrgb("#ffa500")
+    colorNodeDead=ImageColor.getrgb("#ff0000")
     colorBackground=ImageColor.getrgb("#000000")
     colorBarOutline=ImageColor.getrgb("#808080")
     colorBarFilled=ImageColor.getrgb("#008000")
@@ -110,6 +126,10 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorNodeOffline" in config:
+            colorNodeOffline = ImageColor.getrgb(config["colorNodeOffline"])
+        if "colorNodeDead" in config:
+            colorNodeDead = ImageColor.getrgb(config["colorNodeDead"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "colorBarOutline" in config:
@@ -151,4 +171,5 @@ if __name__ == '__main__':
             createimage(channels, firstidx, lastidx, pagenum, pageSize, width, height)
         if len(sys.argv) > 1:
             exit(0)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

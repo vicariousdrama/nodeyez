@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageColor
 from os.path import exists
 import glob
@@ -11,7 +12,7 @@ import vicariousbitcoin
 import vicarioustext
 
 def clearOldImages(pages):
-    # find all images matching 
+    # find all images matching
     imageMask = outputFile.replace(".png", "-*.png")
     files=glob.glob(imageMask)
     for filename in files:
@@ -65,6 +66,7 @@ def sumchannelpayments(paymenthistory, chan_id):
     return paycount, payfees
 
 def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width=480, height=320):
+    utcnow = datetime.utcnow()
     padding=4
     outlinewidth=2
     padtop = 40
@@ -116,16 +118,28 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
         receive_ratio = str(int((float(total_satoshis_received) / float(capacity)) * 100)) + "%"
         earncount, earnfees = sumchannelearnings(fwdinghistory, chan_id)
         paycount, payfees = sumchannelpayments(paymenthistory, chan_id)
-        alias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
         datarowtop = padtop + (linesdrawn * dataheight) + 2
         datarowbottom = datarowtop + dataheight
         colorRowBG = colorRowBG1 if (linesdrawn % 2 == 0) else colorRowBG2
         colorRowFG = colorRowFG1 if (linesdrawn % 2 == 0) else colorRowFG2
+        isactive = currentchannel["active"]
+        if isactive:
+            remotealias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
+            nodecolor = colorRowFG
+        else:
+            remoteinfo = vicariousbitcoin.getnodeinfo(remote_pubkey)
+            nodecolor = colorNodeOffline
+            remotealias = remoteinfo["node"]["alias"]
+            remoteupdated = remoteinfo["node"]["last_update"]
+            utc5daysago = utcnow - timedelta(days=5)
+            utc5daysagoseconds = int(utc5daysago.strftime('%s'))
+            if remoteupdated < utc5daysagoseconds:
+                nodecolor = colorNodeDead
         # write it out
         # - node alias
         draw.rectangle(xy=(0,datarowtop,width,datarowbottom),fill=colorRowBG)
         centery = datarowtop + int(dataheight/2)
-        vicarioustext.drawlefttext(draw, alias, nodefontsize, 0, centery, colorRowFG)
+        vicarioustext.drawlefttext(draw, remotealias, nodefontsize, 0, centery, nodecolor)
         draw.rectangle(xy=(aliaswidth,datarowtop,width,datarowbottom),fill=colorRowBG) # blanks out excess to the right
         # - ratio receive
         centerx = int(width * .40)
@@ -134,17 +148,21 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
         centerx = int(width * .50)
         vicarioustext.drawrighttext(draw, sent_ratio, nodefontsize, centerx, centery, colorRowFG)
         # - send events
-        centerx = int(width * .605)
-        vicarioustext.drawcenteredtext(draw, str(paycount), nodefontsize, centerx, centery, colorRowFG)
+        if paycount > 0:
+            centerx = int(width * .605)
+            vicarioustext.drawcenteredtext(draw, str(paycount), nodefontsize, centerx, centery, colorRowFG)
         # - send fees
-        centerx = int(width * .74)
-        vicarioustext.drawrighttext(draw, str(payfees), nodefontsize, centerx, centery, colorRowFG)
+        if payfees > 0:
+            centerx = int(width * .74)
+            vicarioustext.drawrighttext(draw, str(payfees), nodefontsize, centerx, centery, colorRowFG)
         # - forward events
-        centerx = int(width * .825)
-        vicarioustext.drawcenteredtext(draw, str(earncount), nodefontsize, centerx, centery, colorRowFG)
+        if earncount > 0:
+            centerx = int(width * .825)
+            vicarioustext.drawcenteredtext(draw, str(earncount), nodefontsize, centerx, centery, colorRowFG)
         # - forward earned
-        centerx = int(width * .98)
-        vicarioustext.drawrighttext(draw, str(earnfees), nodefontsize, centerx, centery, colorRowFG)
+        if earnfees > 0:
+            centerx = int(width * .98)
+            vicarioustext.drawrighttext(draw, str(earnfees), nodefontsize, centerx, centery, colorRowFG)
     # Page Info
     channelcount = len(channels)
     pages = int(math.ceil(float(channelcount) / float(pageSize)))
@@ -163,6 +181,8 @@ if __name__ == '__main__':
     configFile = "/home/nodeyez/nodeyez/config/channelfees.json"
     outputFile = "/home/nodeyez/nodeyez/imageoutput/channelfees.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
+    colorNodeOffline=ImageColor.getrgb("#ffa500")
+    colorNodeDead=ImageColor.getrgb("#ff0000")
     colorBackground=ImageColor.getrgb("#000000")
     colorRowBG1=ImageColor.getrgb("#404040")
     colorRowBG2=ImageColor.getrgb("#202020")
@@ -182,6 +202,10 @@ if __name__ == '__main__':
             outputFile = config["outputFile"]
         if "colorTextFG" in config:
             colorTextFG = ImageColor.getrgb(config["colorTextFG"])
+        if "colorNodeOffline" in config:
+            colorNodeOffline = ImageColor.getrgb(config["colorNodeOffline"])
+        if "colorNodeDead" in config:
+            colorNodeDead = ImageColor.getrgb(config["colorNodeDead"])
         if "colorBackground" in config:
             colorBackground = ImageColor.getrgb(config["colorBackground"])
         if "colorRowBG1" in config:

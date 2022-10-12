@@ -61,12 +61,20 @@ def drawmempoolblock(draw,x,y,w,h,blockinfo,mpb,mpblen,btr):
     feemedianint = int(math.floor(float(feemedian)))
     depth=int(math.floor(w*.14))
     pad=2
+    # side
     draw.polygon(xy=((x+pad,y+pad),(x+pad,y+h-pad-depth),(x+pad+depth,y+h-pad),(x+pad+depth,y+pad+depth)),outline=colorBlockEdgeOutline,fill=colorBlockSide)
+    # top
     draw.polygon(xy=((x+pad,y+pad),(x+pad+depth,y+pad+depth),(x+w-pad,y+pad+depth),(x+w-pad-depth,y+pad)),outline=colorBlockEdgeOutline,fill=colorBlockTop)
+    # face
     draw.polygon(xy=((x+pad+depth,y+pad+depth),(x+w-pad,y+pad+depth),(x+w-pad,y+h-pad),(x+pad+depth,y+h-pad)),outline=colorBlockEdgeOutline,fill=colorBlockFace)
-    fillxstart=(x+w-pad)-int(float((x+w-pad)-(x+pad+depth))*float(float(blockvsize)/float(1000000)))
+    # fill
     colorBlockFaceMedian, colorBlockText = getColorsForBlock(feemedian)
-    draw.polygon(xy=((fillxstart,y+pad+depth),(x+w-pad,y+pad+depth),(x+w-pad,y+h-pad),(fillxstart,y+h-pad)),outline=colorBlockEdgeOutline,fill=colorBlockFaceMedian)
+    fillxstart=(x+w-pad)-int(float((x+w-pad)-(x+pad+depth))*float(float(blockvsize)/float(1000000))) # default (righttoleft)
+    fillxend=(x+w-pad)
+    if renderStyle == "lefttoright":
+        fillxstart=x+pad+depth
+        fillxend=x+pad+depth+int(float((x+w-pad)-(x+pad+depth))*float(float(blockvsize)/float(1000000)))
+    draw.polygon(xy=((fillxstart,y+pad+depth),(fillxend,y+pad+depth),(fillxend,y+h-pad),(fillxstart,y+h-pad)),outline=colorBlockEdgeOutline,fill=colorBlockFaceMedian)
     centerx=x+depth+(int(math.floor((w-depth)/2)))
     # Text labels
     if btr <= 3:
@@ -115,26 +123,41 @@ def drawmempoolblock(draw,x,y,w,h,blockinfo,mpb,mpblen,btr):
 def drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,histy2,padtop):
     histpixelwidth = int(float(bw) * (float(curhistvsize)/float(1000000)))
     histcolor = getColorForHistogram(curhistsatfee)
-    histx1 = histx2 - histpixelwidth
+    histx1 = histx2 - histpixelwidth # default (righttoleft)
+    if renderStyle == "lefttoright":
+        histx1 = histx2 + histpixelwidth
     draw.polygon(xy=((histx1,histy1),(histx2,histy1),(histx2,histy2),(histx1,histy2)),outline=colorBlockEdgeOutline, fill=histcolor)
 
     histtext = str(int(curhistsatfee)) + " sat/vB"
     histtextw, histtexth, histtextfont = vicarioustext.gettextdimensions(draw, histtext, 10, False)
     alignCenter = False
     alignRight = True
+    texty = histy1 + int(padtop/2)
     if histtextw < (histpixelwidth-4):
         if alignCenter:
-            vicarioustext.drawcenteredtext(draw, histtext, 10, (histx1+int(histpixelwidth/2)), (histy1+int(padtop/2)))
+            textx = histx1 + int(histpixelwidth/2) # default (righttoleft)
+            if renderStyle == "lefttoright":
+                textx = histx2 + int(histpixelwidth/2)
+            vicarioustext.drawcenteredtext(draw, histtext, 10, textx, texty)
         if alignRight:
-            vicarioustext.drawrighttext(draw, histtext, 10, (histx1+histpixelwidth-2), (histy1+int(padtop/2)))
+            textx = histx1 + histpixelwidth-2 # default (righttoleft)
+            if renderStyle == "lefttoright":
+                textx = histx1 - 2
+            vicarioustext.drawrighttext(draw, histtext, 10, textx, texty)
     else:
         histtext = str(int(curhistsatfee))
         histtextw, histtexth, histtextfont = vicarioustext.gettextdimensions(draw, histtext, 10, False)
         if histtextw < (histpixelwidth-4):
             if alignCenter:
-                vicarioustext.drawcenteredtext(draw, histtext, 10, (histx1+int(histpixelwidth/2)), (histy1+int(padtop/2)))
+                textx = histx1 + int(histpixelwidth/2) # default (righttoleft)
+                if renderStyle == "lefttoright":
+                    textx = histx2 + int(histpixelwidth/2)
+                vicarioustext.drawcenteredtext(draw, histtext, 10, textx, texty)
             if alignRight:
-                vicarioustext.drawrighttext(draw, histtext, 10, (histx1+histpixelwidth-2), (histy1+int(padtop/2)))
+                textx = histx1 + histpixelwidth - 2 # default (righttoleft)
+                if renderStyle == "lefttoright":
+                    textx = histx1 - 2
+                vicarioustext.drawrighttext(draw, histtext, 10, textx, texty)
     return histx1
 
 
@@ -160,7 +183,10 @@ def createimage(width=480, height=320):
     for mpb in range(mpblen):
         if mpb > (btr -1):
             break
-        drawmempoolblock(draw,(width-((mpb+1)*bw)),padtop,bw,bw,mpblist[mpb],mpb,mpblen,btr)
+        blockx = int(width-((mpb+1)*bw)) # default (righttoleft)
+        if renderStyle == "lefttoright":
+            blockx = int(mpb*bw)
+        drawmempoolblock(draw,blockx,padtop,bw,bw,mpblist[mpb],mpb,mpblen,btr)
     # calculate approx total number of potential blocks and txs
     totalvsize = 0
     totaltx = 0
@@ -175,8 +201,11 @@ def createimage(width=480, height=320):
     histogramdata = vicariousnetwork.getmempoolhistograminfo(useTor, urlfeehistogram)
     histy1=padtop+bw+int(padtop/2)
     histy2=histy1+padtop
-    histx1=0
-    histx2=width
+    histx1=0 # default (righttoleft)
+    histx2=width # default (righttoleft)
+    if renderStyle == "lefttoright":
+        histx1=width
+        histx2=0
     histlist=list(histogramdata["fee_histogram"])
     histlen=len(histlist)
     curhistsatfee = 0 # to consolidate like fees
@@ -203,15 +232,23 @@ def createimage(width=480, height=320):
             histx2 = histx1
             curhistsatfee = histsatfee
             curhistvsize = histvsize
-            if histx2 <= 0:
+            if renderStyle == "righttoleft" and histx2 <= 0:
+                break
+            if renderStyle == "lefttoright" and histx2 >= width:
                 break
     histx1 = drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,histy2,padtop)
     # fee recommendations
     feefastest, feehalfhour, feehour, feeminimum = vicariousnetwork.getmempoolrecommendedfees(useTor, urlfeerecs)
-    vicarioustext.drawlefttext(draw, "Minimum: " + str(feeminimum), 18, 0, height-padtop, colorTextFG)
-    vicarioustext.drawcenteredtext(draw, "1 Hour: " + str(feehour), 16, int(width/8*3), height-padtop, colorTextFG)
-    vicarioustext.drawcenteredtext(draw, "30 Minutes: " + str(feehalfhour), 16, int(width/8*5), height-padtop, colorTextFG)
-    vicarioustext.drawrighttext(draw, "Next: " + str(feefastest), 18, width, height-padtop, colorTextFG)
+    if renderStyle == "righttoleft":
+        vicarioustext.drawlefttext(draw, "Minimum: " + str(feeminimum), 18, 0, height-padtop, colorTextFG)
+        vicarioustext.drawcenteredtext(draw, "1 Hour: " + str(feehour), 16, int(width/8*3), height-padtop, colorTextFG)
+        vicarioustext.drawcenteredtext(draw, "30 Minutes: " + str(feehalfhour), 16, int(width/8*5), height-padtop, colorTextFG)
+        vicarioustext.drawrighttext(draw, "Next: " + str(feefastest), 18, width, height-padtop, colorTextFG)
+    if renderStyle == "lefttoright":
+        vicarioustext.drawlefttext(draw, "Next: " + str(feefastest), 18, 0, height-padtop, colorTextFG)
+        vicarioustext.drawcenteredtext(draw, "30 Minutes: " + str(feehalfhour), 16, int(width/8*3), height-padtop, colorTextFG)
+        vicarioustext.drawcenteredtext(draw, "1 Hour: " + str(feehour), 16, int(width/8*5), height-padtop, colorTextFG)
+        vicarioustext.drawrighttext(draw, "Minimum: " + str(feeminimum), 18, width, height-padtop, colorTextFG)
     # footer
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     # attribution
@@ -219,6 +256,7 @@ def createimage(width=480, height=320):
         vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
     else:
         vicarioustext.drawbottomlefttext(draw, "Data from sovereign node", 14, 0, height, colorMempool)
+    print(f"saving image to {outputFile}")
     im.save(outputFile)
     im.close()
 
@@ -278,6 +316,7 @@ if __name__ == '__main__':
     blocksToRender=3
     width=480
     height=320
+    renderStyle="righttoleft"
     sleepInterval=300
     # Override config
     if exists(configFile):
@@ -297,6 +336,8 @@ if __name__ == '__main__':
             width = int(config["width"])
         if "height" in config:
             height = int(config["height"])
+        if "renderStyle" in config:
+            renderStyle = config["renderStyle"]
         if "sleepInterval" in config:
             sleepInterval = int(config["sleepInterval"])
             sleepInterval = 300 if (sleepInterval < 300 and "mempool.space" in urlmempool) else sleepInterval # 5 minutes minimum when accessing others
@@ -338,4 +379,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width, height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

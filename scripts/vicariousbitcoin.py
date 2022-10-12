@@ -9,7 +9,7 @@ useMockData=False
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
-def getblock(blocknum, verbosity=0):
+def getblock(blocknum, verbosity=1):
     if useMockData:
         if exists("../mock-data/getblock.json"):
             with open("../mock-data/getblock.json") as f:
@@ -19,9 +19,9 @@ def getblock(blocknum, verbosity=0):
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
         return j
-    except subprocess.CalledProcessError() as e:
+    except subprocess.CalledProcessError as e:
         print(e)
-        fakejson = "{\"confirmations\": 1, \"time\": " + str(getcurrenttimeinseconds) + "\"}"
+        fakejson = "{\"confirmations\": 1, \"time\": 0}"
         return json.loads(fakejson)
 
 def getblockhash(blocknumber=1):
@@ -57,13 +57,20 @@ def getblockopreturns(blocknum):
                             asm = scriptPubKey["asm"]
                             if "OP_RETURN" in asm:
                                 ophex = asm.replace("OP_RETURN ", "")
-                                # require more than one word
-                                if "20" not in ophex:
+                                # require even number of characters
+                                if len(ophex) % 2 == 1:
                                     continue
+                                # require more than one word
+#                                if "20" not in ophex:
+#                                    continue
                                 #encodinglist = ["utf-8","gb18030","euc-kr","cp1253","utf-32","utf-16","euc-kr","cp1253","cp1252","iso8859-16","ascii","latin-1","iso8859-1"]
                                 encodinglist = ["utf-8","ascii"]
                                 hasError = True
-                                opbytes = bytes.fromhex(ophex)
+                                try:
+                                    opbytes = bytes.fromhex(ophex)
+                                except Exception as e:
+                                    print(f"error handling ophex '{ophex}'")
+                                    print(f"error is {e}")
                                 for encoding in encodinglist:
                                     if hasError == False:
                                         break
@@ -231,7 +238,7 @@ def getnodeinfo(pubkey):
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
         print(f"error in getnodeinfo: {e}")
-        cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
+        cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"last_update\":0,\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
     j = json.loads(cmdoutput)
     return j
 
@@ -263,7 +270,7 @@ def getfwdinghistory():
         if exists("../mock-data/getfwdinghistory.json"):
             with open("../mock-data/getfwdinghistory.json") as f:
                 return json.load(f)
-    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory 2>&1"
+    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory --start_time -5y --max_events 50000 2>&1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
