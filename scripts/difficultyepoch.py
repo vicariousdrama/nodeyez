@@ -101,9 +101,11 @@ def createimage(width=480, height=320):
     vicarioustext.drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32, colorTextFG)
     vicarioustext.drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32, colorTextFG)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
+    print(f"saving imager to {outputFile}")
     im.save(outputFile)
     if saveEachBlock:
         of2=outputFile.replace(".png","-" + str(currentblock) + ".png")
+        print(f"saving imager to {of2}")
         im.save(of2)
     im.close()
 
@@ -164,4 +166,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width, height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

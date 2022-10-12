@@ -50,6 +50,7 @@ at [/home/nodeyez/nodeyez/scripts/mempoolblocks.py](../scripts/mempoolblocks.py)
    | blockSatLevels | A array of one or more block sat level definitions to influence block color rendering by median sat/vB. The structure of a satlevel definition is defined below. |
    | histogramSatLevels | An array of one or more histogram sat level definitions to show fee level histogram by sat/vB of transactions in the mempool. The structure is defined below. |
    | blocksToRender | The maximum number (1-6) of upcoming blocks to render which will influence the size of the blocks drawn. Default `3` |
+   | renderStyle | The style to render the image. Options: `righttoleft`, `lefttoright`. Default: `righttoleft` |
 
    __blockSatLevels__
 

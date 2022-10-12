@@ -33,6 +33,8 @@ It depends on a lighting node.
    | --- | --- |
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/channelfees.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+   | colorNodeOffline | The color of the text for an offline node expressed as a Hexadecimal color specifier. Default `#ffa500` |
+   | colorNodeDead | The color of the text for a node that has been offline for 1008 blocks expressed as a Hexadecimal color specifier. Default `#ff0000` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
    | colorRowBG1 | The primary color to use as the background for data rows expressed as a Hexadecimal color specifier. Default `#404040` |
    | colorRowBG2 | The alternate color to use as the background for data rows expressed as a Hexadecimal color specifier. Default `#202020` |

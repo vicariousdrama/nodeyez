@@ -16,7 +16,7 @@ New Panels and Enhancements
 - New Panel: OP_RETURN - Renders text from OP_RETURN values
 - Enhanced Blockhash Dungeon - Fixed bug with floor tiles
 - Enhanced Channel Balances - Cleaner lines, new default colors, option to display amounts
-- Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout
+- Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout, add renderStyle
 - Enhanced Sats Per USD - dynamically scale size of sat grid based on current total
 - Enhanced System Info - Cleaner lines, better thermometer bulb alignment
 

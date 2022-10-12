@@ -8,8 +8,8 @@ import math
 import numpy
 import random
 import subprocess
-import time
 import sys
+import time
 import vicariousbitcoin
 import vicarioustext
 
@@ -38,6 +38,13 @@ def createimage(blocknumber=1, width=480, height=320):
         # filter out routine junk
         if "BERNSTEIN 2.0" in r:
             continue
+        if r.startswith("omni"):
+            continue
+        if r.startswith("RSK"):
+            continue
+        if " " not in r:
+            continue
+        rbyte = bytes(r, 'utf-8')
         ridx += 1
         sw,sh,f = vicarioustext.gettextdimensions(draw, r, fontsize)
         texty += sh

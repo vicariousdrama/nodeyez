@@ -126,6 +126,11 @@ def createimage(width=480, height=320):
     #print("---")
     #print(mixstatus)
     #print("---")
+    errormsg = ""
+    if "cliStatus" in clistatus:
+        s_status = clistatus["cliStatus"]
+        if s_status == "ERROR":
+            errormsg += "\nError accessing CLI\nIs Whirlpool running?"
     s_network = clistatus["network"]
     b_tor = clistatus["tor"]
     b_dojo = clistatus["dojo"]
@@ -134,7 +139,6 @@ def createimage(width=480, height=320):
     b_started = False
     i_mixing = 0
     i_queued = 0
-    errormsg = ""
     if "started" in mixstatus:
        b_started = mixstatus["started"]
     if "nbMixing" in mixstatus:
@@ -145,10 +149,10 @@ def createimage(width=480, height=320):
         print("---")
         print(mixstatus["message"])
         if "No wallet opened" in mixstatus["message"]:
-            errormsg = mixstatus["message"]
+            errormsg += "\n" + mixstatus["message"]
     if "error" in mixstatus:
         if mixstatus["error"] != None:
-            errormsg = mixstatus["error"]
+            errormsg += "\n" + mixstatus["error"]
     errormsg = errormsg.replace(".",".\n")
 
     if rv == 1: # original

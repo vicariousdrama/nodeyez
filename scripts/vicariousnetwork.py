@@ -270,7 +270,7 @@ def getwhirlpoolcliconfig(useTor=True, url=None, apiKey=""):
     defaultResponse = '''{
          "cliStatus":"ERROR", "cliMessage": null, "loggedIn": false, "torProgress": 0, "network": "unknown",
          "serverUrl": "unknown.onion", "serverName": "Unknown",
-         "dojoUrl": "ERROR", "tor": false, "dojo": false, "version": "0.10.15"
+         "dojoUrl": "ERROR", "tor": false, "dojo": false, "version": "unknown"
         }'''
     return geturl(useTor, whirlpoolurl, defaultResponse, headers)
 
