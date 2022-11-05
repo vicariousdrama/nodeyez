@@ -131,9 +131,13 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
             nodecolor = colorNodeOffline
             remotealias = remoteinfo["node"]["alias"]
             remoteupdated = remoteinfo["node"]["last_update"]
-            utc5daysago = utcnow - timedelta(days=5)
-            utc5daysagoseconds = int(utc5daysago.strftime('%s'))
-            if remoteupdated < utc5daysagoseconds:
+            remoteupdateddate = datetime.fromtimestamp(remoteupdated)
+            csvdelay = int(currentchannel["csv_delay"])
+            daysold = utcnow - remoteupdateddate
+            csvrisk = (daysold.days * 144) > csvdelay
+            csvrisks = "-risk" if csvrisk else ""
+            remotealias = "(" + str(daysold.days) + "d" + csvrisks + ")" + remotealias
+            if daysold.days >= 5 or csvrisk:
                 nodecolor = colorNodeDead
         # write it out
         # - node alias
