@@ -392,6 +392,14 @@ def renderFailedExpectations(draw, minerinfo, left, top, width, height):
     doubleFontSize = 12
     if minerexpectations == {}:
         return
+    if len(warning) == 0:
+        if "pools" in minerinfo:
+            for pool in minerinfo["pools"]:
+                for currentpool in pool["POOLS"]:
+                    poolstatus = currentpool["Status"]
+                    if poolstatus == "Dead":
+                        warning = "Miner pool status is Dead"
+                        warning2 = "Can miner reach pool over network?"
     if len(warning) == 0 and "power" in minerexpectations:
         powerlimit, powerused = getPowerInfo(minerinfo)
         if powerused == "???" or powerused == 9999:
