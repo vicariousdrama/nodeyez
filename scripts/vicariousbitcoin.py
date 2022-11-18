@@ -1,9 +1,12 @@
 # import packages
 from os.path import exists
+from urllib3.exceptions import InsecureRequestWarning
 import binascii
 import json
 import math
+import requests
 import subprocess
+import vicariousnetwork
 
 useMockData=False
 
@@ -141,8 +144,46 @@ def attemptconnect(nodeinfo):
         nodestatus = 0
     return nodestatus
 
+def attemptconnectrest(nodeinfo, node):
+    if not nodeconfigvalid(node):
+        return attemptconnect(nodeinfo)
+    nodestatus = 0
+    pubkey = nodeinfo["node"]["pub_key"]
+    addr = getnodeaddressrest(nodeinfo, node)
+    if addr == "0.0.0.0:65535":
+        return nodestatus # 0
+    errorResponse = '{"error":"failed command"}'
+    connectData = '{"addr":"' + pubkey + '@' + addr + '","timeout":"5"}'
+    connectResponse = noderestcommandpost(node, "/v1/peers", connectData, errorResponse)
+    if "error" not in connectResponse:
+        disconnectResponse = noderestcommanddelete(node, "/v1/peers/" + pubkey, errorResponse)
+        if "error" not in disconnectResponse:
+            nodestatus = 1
+    return nodestatus
+
 def getdefaultaliasfrompubkey(pubkey):
-    return pubkey[0:10]
+    return pubkey[0:10] + "..."
+
+def getfwdinghistory():
+    if useMockData:
+        if exists("../mock-data/getfwdinghistory.json"):
+            with open("../mock-data/getfwdinghistory.json") as f:
+                return json.load(f)
+    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory --start_time -5y --max_events 50000 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        print(f"error in getfwdinghistory: {e}")
+        cmdoutput = '{\"forwarding_events\": []}'
+    j = json.loads(cmdoutput)
+    return j
+
+def getfwdinghistoryrest(node):
+    if useMockData or not nodeconfigvalid(node):
+        return getfwdinghistory()
+    postData = '{"start_time":0,"num_max_events":50000}'
+    defaultResponse = '{"forwarding_events":[]}'
+    return noderestcommandpost(node, "/v1/switch", postData, defaultResponse)
 
 def getlndglobaloptions():
     return " --macaroonpath=${HOME}/.lnd/nodeyez.macaroon"
@@ -161,7 +202,11 @@ def getnodeaddress(nodeinfo):
     return bestresult
 
 def getnodealias(nodeinfo):
-    return nodeinfo["node"]["alias"]
+    if "alias" in nodeinfo:
+        return nodeinfo["alias"]
+    if "node" in nodeinfo:
+        return getnodealias(nodeinfo["node"])
+    return "UNKNOWN ALIAS"
 
 def getnodealiasandstatus(pubkey, nextnodepubkey):
     nodeinfo = getnodeinfo(pubkey)
@@ -185,14 +230,44 @@ def getnodealiasandstatus(pubkey, nextnodepubkey):
                 break
     return (nodealias, nodeonline, haschannel, nodeinfo)
 
+def getnodealiasandstatusrest(pubkey, nextnodepubkey, node):
+    if not nodeconfigvalid(node):
+        return getnodealiasandstatus(pubkey, nextnodepubkey)
+    nodeinfo = getnodeinforest(pubkey, node)
+    nodealias = getnodealias(nodeinfo)
+    nodeonline = 0
+    if isnodeconnectedrest(pubkey, node):
+        nodeonline = 1
+    else:
+        nodeonline = attemptconnectrest(nodeinfo, node)
+    # look if there is a channel
+    haschannel = 0
+    if "channels" in nodeinfo:
+        for channel in nodeinfo["channels"]:
+            node1_pub = channel["node1_pub"]
+            node2_pub = channel["node2_pub"]
+            if pubkey == node1_pub and nextnodepubkey == node2_pub:
+                haschannel = 1
+                break
+            if pubkey == node2_pub and nextnodepubkey == node1_pub:
+                haschannel = 1
+                break
+    return (nodealias, nodeonline, haschannel, nodeinfo)
+
 def getnodealiasfrompubkey(pubkey):
+    return getnodealiasfrompubkeyrest(pubkey, {})
+
+def getnodealiasfrompubkeyrest(pubkey, node):
     alias = getdefaultaliasfrompubkey(pubkey)
     if pubkey in pubkey_alias.keys():
         alias = pubkey_alias[pubkey]
         if len(alias) < 1:
             alias = getdefaultaliasfrompubkey(pubkey)
     else:
-        nodeinfo = getnodeinfo(pubkey)
+        if nodeconfigvalid(node):
+            nodeinfo = getnodeinforest(pubkey, node)
+        else:
+            nodeinfo = getnodeinfo(pubkey)
         alias = getnodealias(nodeinfo)
         pubkey_alias[pubkey] = alias
     return alias
@@ -208,9 +283,90 @@ def getnodechannels():
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
     except subprocess.CalledProcessError as e:
         print(f"error in getnodechannels: {e}")
-        cmdoutput = '{\"channels\": []}'
+        cmdoutput = '{"channels": []}'
     j = json.loads(cmdoutput)
     return j
+
+def getnodechannelsrest(node):
+    if useMockData or not nodeconfigvalid(node):
+        return getnodechannels()
+    defaultResponse = '{"channels":[]}'
+    return noderestcommandget(node, "/v1/channels", defaultResponse)
+
+def getnodeinfo(pubkey):
+    if useMockData:
+        if exists("../mock-data/getnodeinfo.json"):
+            with open("../mock-data/getnodeinfo.json") as f:
+                r = json.load(f)
+                r["node"]["alias"] = mockaliasforpubkey(pubkey)
+                return r
+    cmd = "lncli" + getlndglobaloptions() + " getnodeinfo --pub_key " + pubkey + " --include_channels 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        print(f"error in getnodeinfo: {e}")
+        cmdoutput = '{"node":{"alias":"' + pubkey + '","pub_key":"' + pubkey + '","last_update":0,"addresses":[{"network":"tcp","addr":"0.0.0.0:65535"}]}}'
+    j = json.loads(cmdoutput)
+    return j
+
+def getnodeinforest(pubkey, node):
+    if not nodeconfigvalid(node):
+        return getnodeinfo(pubkey)
+    defaultResponse = '{"node":{"alias":"' + pubkey + '","pub_key":"' + pubkey + '","last_update":0,"addresses":[{"network":"tcp","addr":"0.0.0.0:65535"}]}}'
+    return noderestcommandget(node, "/v1/graph/node/" + pubkey + "?include_channels=true", defaultResponse)
+
+def getnodepayments():
+    if useMockData:
+        if exists("../mock-data/getnodepayments.json"):
+            with open("../mock-data/getnodepayments.json") as f:
+                return json.load(f)
+    cmd = "lncli" + getlndglobaloptions() + " listpayments 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        print(f"error in getnodepayments: {e}")
+        cmdoutput = '{"payments": []}'
+    j = json.loads(cmdoutput)
+    return j
+
+def getnodepaymentsrest(node):
+    if useMockData or not nodeconfigvalid(node):
+        return getnodepayments()
+    defaultResponse = '{"payments":[]}'
+    return noderestcommandget(node, "/v1/payments", defaultResponse)
+
+def getnodepeers():
+    cmd = "lncli" + getlndglobaloptions() + " listpeers 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        return cmdoutput
+    except subprocess.CalledProcessError as e:
+        print(f"error in getnodepeers: {e}")
+        return '{"peers": []}'
+
+def getnodepeersrest(node):
+    if not nodeconfigvalid(node):
+        return getnodepeers()
+    defaultResponse = '{"peers":[]}'
+    return noderestcommandget(node, "/v1/peers", defaultResponse)
+
+def isnodeconnected(pubkey):
+    nodepeers = getnodepeers()
+    j = json.loads(nodepeers)
+    for peer in j["peers"]:
+        if pubkey == peer["pub_key"]:
+            return True
+    return False
+
+def isnodeconnectedrest(pubkey, node):
+    if not nodeconfigvalid(node):
+        return isnodeconnected(pubkey)
+    nodepeers = getnodepeersrest(node)
+    if "peers" in nodepeers:
+        for peer in j["peers"]:
+            if pubkey == peer["pub_key"]:
+                return True
+    return False
 
 def mockaliasforpubkey(pubkey):
     alias = "mockup node"
@@ -226,64 +382,103 @@ def mockaliasforpubkey(pubkey):
         pass
     return alias
 
-def getnodeinfo(pubkey):
-    if useMockData:
-        if exists("../mock-data/getnodeinfo.json"):
-            with open("../mock-data/getnodeinfo.json") as f:
-                r = json.load(f)
-                r["node"]["alias"] = mockaliasforpubkey(pubkey)
-                return r
-    cmd = "lncli" + getlndglobaloptions() + " getnodeinfo --pub_key " + pubkey + " --include_channels 2>&1"
+def nodeconfigvalid(node):
+    if "address" not in node:
+        return False
+    if "macaroon" not in node:
+        return False
+    if "port" not in node:
+        return False
+    return True
+
+def noderestcommandget(node, suffix, defaultResponse="{}"):
+    cmdoutput = ""
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodeinfo: {e}")
-        cmdoutput = "{\"node\":{\"alias\":\"" + pubkey + "\",\"pub_key\":\"" + pubkey + "\",\"last_update\":0,\"addresses\":[{\"network\":\"tcp\",\"addr\":\"0.0.0.0:65535\"}]}}"
-    j = json.loads(cmdoutput)
+        nodeaddress = node["address"]
+        nodeport = node["port"]
+        nodemacaroon = node["macaroon"]
+        useTor = False
+        if "useTor" in node:
+            useTor = node["useTor"]
+        url = "https://" + nodeaddress + ":" + nodeport + suffix
+        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
+        if useTor:
+            proxies = vicariousnetwork.gettorproxies()
+        else:
+            proxies = {}
+        timeout = vicariousnetwork.gettimeouts()
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        cmdoutput = requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+        #print(f"{suffix} response \n\n{cmdoutput}")
+    except Exception as e:
+        print(f"error calling noderestcommandget for {suffix}: {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
+    try:
+        j = json.loads(cmdoutput)
+    except Exception as e:
+        print(f"error loading response as json: {e}")
+        print(f"using default")
+        j = json.loads(defaultResponse)
     return j
 
-def getnodepayments():
-    if useMockData:
-        if exists("../mock-data/getnodepayments.json"):
-            with open("../mock-data/getnodepayments.json") as f:
-                return json.load(f)
-    cmd = "lncli" + getlndglobaloptions() + " listpayments 2>&1"
+def noderestcommanddelete(node, suffix, defaultResponse="{}"):
+    cmdoutput = ""
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodepayments: {e}")
-        cmdoutput = '{\"payments\": []}'
-    j = json.loads(cmdoutput)
+        nodeaddress = node["address"]
+        nodeport = node["port"]
+        nodemacaroon = node["macaroon"]
+        useTor = False
+        if "useTor" in node:
+            useTor = node["useTor"]
+        url = "https://" + nodeaddress + ":" + nodeport + suffix
+        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
+        if useTor:
+            proxies = vicariousnetwork.gettorproxies()
+        else:
+            proxies = {}
+        timeout = vicariousnetwork.gettimeouts()
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        cmdoutput = requests.delete(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+    except Exception as e:
+        print(f"error calling noderestcommanddelete for {suffix}: {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
+    try:
+        j = json.loads(cmdoutput)
+    except Exception as e:
+        print(f"error loading response as json: {e}")
+        print(f"using default")
+        j = json.loads(defaultResponse)
     return j
 
-def getnodepeers():
-    cmd = "lncli" + getlndglobaloptions() + " listpeers 2>&1"
+def noderestcommandpost(node, suffix, postData="{}", defaultResponse="{}"):
+    cmdoutput = ""
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodepeers: {e}")
-        return '{\"peers\": []}'
-
-def getfwdinghistory():
-    if useMockData:
-        if exists("../mock-data/getfwdinghistory.json"):
-            with open("../mock-data/getfwdinghistory.json") as f:
-                return json.load(f)
-    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory --start_time -5y --max_events 50000 2>&1"
+        nodeaddress = node["address"]
+        nodeport = node["port"]
+        nodemacaroon = node["macaroon"]
+        useTor = False
+        if "useTor" in node:
+            useTor = node["useTor"]
+        url = "https://" + nodeaddress + ":" + nodeport + suffix
+        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
+        if useTor:
+            proxies = vicariousnetwork.gettorproxies()
+        else:
+            proxies = {}
+        timeout = vicariousnetwork.gettimeouts()
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+        #print(f"{suffix} response \n\n{cmdoutput}")
+    except Exception as e:
+        print(f"error calling noderestcommandpost for {suffix}: {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getfwdinghistory: {e}")
-        cmdoutput = '{\"forwarding_events\": []}'
-    j = json.loads(cmdoutput)
+        j = json.loads(cmdoutput)
+    except Exception as e:
+        print(f"error loading response as json: {e}")
+        print(f"using default")
+        j = json.loads(defaultResponse)
     return j
-
-def isnodeconnected(pubkey):
-    nodepeers = getnodepeers()
-    j = json.loads(nodepeers)
-    for peer in j["peers"]:
-        if pubkey == peer["pub_key"]:
-            return True
-    return False
-

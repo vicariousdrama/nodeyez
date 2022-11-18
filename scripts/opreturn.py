@@ -13,6 +13,16 @@ import time
 import vicariousbitcoin
 import vicarioustext
 
+def getmaxtextforwidth(draw, words, width, fontsize, isbold=False):
+    wlen = len(words)
+    if wlen == 0:
+        return "", []
+    for x in range(wlen, 0, -1):
+        s = " ".join(words[0:x])
+        sw,sh,f = vicarioustext.gettextdimensions(draw, s, fontsize, isbold)
+        if sw <= width:
+            return s, words[x:]
+
 def createimage(blocknumber=1, width=480, height=320):
     blockhash = vicariousbitcoin.getblockhash(blocknumber)
     opreturns = vicariousbitcoin.getblockopreturns(blocknumber)
@@ -46,12 +56,16 @@ def createimage(blocknumber=1, width=480, height=320):
             continue
         rbyte = bytes(r, 'utf-8')
         ridx += 1
-        sw,sh,f = vicarioustext.gettextdimensions(draw, r, fontsize)
-        texty += sh
-        if texty > height:
-            break
         textcolor = colorTextFG1 if ridx % 2 == 0 else colorTextFG2
-        vicarioustext.drawbottomlefttext(draw, r, fontsize, 0, texty, textcolor, False)
+        rwords = r.split()
+        rpart, rwords = getmaxtextforwidth(draw, rwords, width, fontsize)
+        while len(rpart) > 0:
+            sw,sh,f = vicarioustext.gettextdimensions(draw, rpart, fontsize)
+            texty += sh
+            if texty > height:
+                break
+            vicarioustext.drawbottomlefttext(draw, rpart, fontsize, 0, texty, textcolor, False)
+            rpart, rwords = getmaxtextforwidth(draw, rwords, width, fontsize)
     # Save
     if ridx > 0:
         print("Saving image")

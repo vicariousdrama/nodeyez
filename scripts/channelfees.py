@@ -65,7 +65,7 @@ def sumchannelpayments(paymenthistory, chan_id):
 #    print(f"For chan_id: {chan_id}, total payments: {paycount}, fees paid: {payfees}")
     return paycount, payfees
 
-def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width=480, height=320):
+def createimage(node, channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width=480, height=320):
     utcnow = datetime.utcnow()
     padding=4
     outlinewidth=2
@@ -77,7 +77,7 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
     draw = ImageDraw.Draw(im)
     pageoutputFile = outputFile.replace(".png","-" + str(pagenum) + ".png")
     # Headers
-    vicarioustext.drawcenteredtext(draw, "Channel Usage, Fees and Earnings", 24, int(width/2), int(padbottom/2), colorTextFG, True)
+    vicarioustext.drawcenteredtext(draw, headerText, 24, int(width/2), int(padbottom/2), colorTextFG, True)
     thfontsize = int(dataheight / 3 * 2) - 2
     thfontsize -= (thfontsize %2)
     headery = padtop + int(thfontsize/2)
@@ -124,10 +124,10 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
         colorRowFG = colorRowFG1 if (linesdrawn % 2 == 0) else colorRowFG2
         isactive = currentchannel["active"]
         if isactive:
-            remotealias = vicariousbitcoin.getnodealiasfrompubkey(remote_pubkey)
+            remotealias = vicariousbitcoin.getnodealiasfrompubkeyrest(remote_pubkey, node)
             nodecolor = colorRowFG
         else:
-            remoteinfo = vicariousbitcoin.getnodeinfo(remote_pubkey)
+            remoteinfo = vicariousbitcoin.getnodeinforest(remote_pubkey, node)
             nodecolor = colorNodeOffline
             remotealias = remoteinfo["node"]["alias"]
             remoteupdated = remoteinfo["node"]["last_update"]
@@ -176,13 +176,13 @@ def createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, p
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
     # Save to file
-    print(f"saving image for page {pagenum}")
+    print(f"saving image for page {pagenum} of {headerText}")
     im.save(pageoutputFile)
     im.close()
 
-if __name__ == '__main__':
-    # Defaults
-    configFile = "/home/nodeyez/nodeyez/config/channelfees.json"
+def setDefaults():
+    global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorRowBG1, colorRowBG2
+    global colorRowFG1, colorRowFG2, width, height, sleepInterval, pageSize, headerText
     outputFile = "/home/nodeyez/nodeyez/imageoutput/channelfees.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorNodeOffline=ImageColor.getrgb("#ffa500")
@@ -196,39 +196,54 @@ if __name__ == '__main__':
     height=320
     sleepInterval=1800
     pageSize=8
+    headerText="Channel Usage, Fees and Earnings"
+
+def overrideFromConfig(d):
+    global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorRowBG1, colorRowBG2
+    global colorRowFG1, colorRowFG2, width, height, sleepInterval, pageSize, headerText
+    if "outputFile" in d:
+        outputFile = d["outputFile"]
+    if "colorTextFG" in d:
+        colorTextFG = ImageColor.getrgb(d["colorTextFG"])
+    if "colorNodeOffline" in d:
+        colorNodeOffline = ImageColor.getrgb(d["colorNodeOffline"])
+    if "colorNodeDead" in d:
+        colorNodeDead = ImageColor.getrgb(d["colorNodeDead"])
+    if "colorBackground" in d:
+        colorBackground = ImageColor.getrgb(d["colorBackground"])
+    if "colorRowBG1" in d:
+        colorRowBG1 = ImageColor.getrgb(d["colorRowBG1"])
+    if "colorRowBG2" in d:
+        colorRowBG2 = ImageColor.getrgb(d["colorRowBG2"])
+    if "colorRowFG1" in d:
+        colorRowFG1 = ImageColor.getrgb(d["colorRowFG1"])
+    if "colorRowFG2" in d:
+        colorRowFG2 = ImageColor.getrgb(d["colorRowFG2"])
+    if "width" in d:
+        width = int(d["width"])
+    if "height" in d:
+        height = int(d["height"])
+    if "sleepInterval" in d:
+        sleepInterval = int(d["sleepInterval"])
+        sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
+    if "pageSize" in d:
+        pageSize = int(d["pageSize"])
+    if "headerText" in d:
+        headerText = d["headerText"]
+
+if __name__ == '__main__':
+    # Defaults
+    setDefaults()
     # Override config
+    configFile = "/home/nodeyez/nodeyez/config/channelfees.json"
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
         if "channelfees" in config:
             config = config["channelfees"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "colorTextFG" in config:
-            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
-        if "colorNodeOffline" in config:
-            colorNodeOffline = ImageColor.getrgb(config["colorNodeOffline"])
-        if "colorNodeDead" in config:
-            colorNodeDead = ImageColor.getrgb(config["colorNodeDead"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
-        if "colorRowBG1" in config:
-            colorRowBG1 = ImageColor.getrgb(config["colorRowBG1"])
-        if "colorRowBG2" in config:
-            colorRowBG2 = ImageColor.getrgb(config["colorRowBG2"])
-        if "colorRowFG1" in config:
-            colorRowFG1 = ImageColor.getrgb(config["colorRowFG1"])
-        if "colorRowFG2" in config:
-            colorRowFG2 = ImageColor.getrgb(config["colorRowFG2"])
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
-        if "pageSize" in config:
-            pageSize = int(config["pageSize"])
+        overrideFromConfig(config)
+    else:
+        config = {}
     # Check for single run
     if len(sys.argv) > 1:
         print(f"Generates one or more images based on the total number of lightning channels this node has.")
@@ -238,19 +253,32 @@ if __name__ == '__main__':
         print(f"You may specify a custom configuration file at {configFile}")
     # Loop
     while True:
-        fwdinghistory = vicariousbitcoin.getfwdinghistory()
-        paymenthistory = vicariousbitcoin.getnodepayments()
-        channels = vicariousbitcoin.getnodechannels()
-        channels = channels["channels"]
-        channelcount = len(channels)
-        pages = int(math.ceil(float(channelcount) / float(pageSize)))
-        clearOldImages(pages)
-        for pagenum in range(1, (pages+1)):
-            firstidx = ((pagenum-1)*pageSize)
-            lastidx = (pagenum*pageSize)-1
-            if lastidx > channelcount-1:
-                lastidx = channelcount-1
-            createimage(channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width, height)
+        if "nodes" not in config:
+            config["nodes"] = [{}] # empty node definition falls back to lncli
+        nodes = config["nodes"]
+        for node in nodes:
+            if "enabled" in node:
+                if not node["enabled"]:
+                    continue
+            setDefaults()              # reassign defaults
+            overrideFromConfig(config) # overlay configurable defaults
+            overrideFromConfig(node)   # overlay node specific
+            fwdinghistory = vicariousbitcoin.getfwdinghistoryrest(node)
+            paymenthistory = vicariousbitcoin.getnodepaymentsrest(node)
+            channels = vicariousbitcoin.getnodechannelsrest(node)
+            if "channels" in channels:
+                channels = channels["channels"]
+                channelcount = len(channels)
+                pages = int(math.ceil(float(channelcount) / float(pageSize)))
+                clearOldImages(pages)
+                for pagenum in range(1, (pages+1)):
+                    firstidx = ((pagenum-1)*pageSize)
+                    lastidx = (pagenum*pageSize)-1
+                    if lastidx > channelcount-1:
+                        lastidx = channelcount-1
+                    createimage(node, channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width, height)
+            else:
+                print(f"SKIPPING image creation for this node. Received unexpected response\n\nresponse: {channels}\n\nnode: {node}")
         if len(sys.argv) > 1:
             exit(0)
         print(f"sleeping for {sleepInterval} seconds")

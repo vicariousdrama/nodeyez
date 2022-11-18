@@ -37,5 +37,43 @@
   "sleepInterval": 1800,
   "pageSize.comment": "The number of channels to represent per page rendered",
   "pageSize.type": "integer",
-  "pageSize": 8
+  "pageSize": 8,
+  "headerText.comment": "The text to use in the header area",
+  "headerText.type": "string",
+  "headerText": "Lightning Channel Balances",
+  "nodes.comment": "An optional array of node definitions where channel balances will be reported for each node via REST calls.  If this section is not included, then RPC calls will be made using local LNCLI utility",
+  "nodes.type": "array",
+  "nodes": [
+    {
+      "enabled.comment": "Indicates whether this node definition is enabled for reporting. If set to false, it will be skipped",
+      "enabled.type": "boolean",
+      "enabled": true,
+      "address.comment": "The address or hostname for this node. It must be reachable from the server running the script",
+      "address.type": "string",
+      "address": "192.168.6.15",
+      "port.comment": "The port for which the node is listening for REST based calls. This is the restlisten value in that nodes lnd.conf",
+      "port.type": "string",
+      "port": "10080",
+      "useTor.comment": "Indicates whether calls to the node should be made over tor. For internal IP addresses this should be set to false",
+      "useTor.type": "boolean",
+      "useTor": false,
+      "macaroon.comment": "The macaroon for the node in hex format. Requires permissions for uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance. You may use the nodeyez.macaroon created for that node. To get the hex value, you may use the command: xxd -ps -u -c 1000 nodeyez.macaroon",
+      "macaroon.type": "string",
+      "macaroon": "0201036....",
+      "overridedefaults.comment": "You can override any field key/value defined above for this specific node",
+      "outputFile": "/home/nodeyez/nodeyez/imageoutput/channelbalance-node1.png",
+      "headerText": "Node1 Channel Balances",
+      "pageSize": 10,
+      "colorBackground": "#202000"
+    },
+    {
+      "enabled": false,
+      "address": "some.domain.name.example.com",
+      "port": "8080",
+      "useTor": true,
+      "macaroon": "23972973293A876dCF236D2...",
+      "headerText": "LNBIG-99 Channel Balances",
+      "pageSize": 10
+    }
+  ]
 }
