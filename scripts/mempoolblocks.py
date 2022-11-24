@@ -142,7 +142,8 @@ def drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,his
         if alignRight:
             textx = histx1 + histpixelwidth-2 # default (righttoleft)
             if renderStyle == "lefttoright":
-                textx = histx1 - 2
+                textx = histx2 + histtextw + 2
+                #textx = histx1 - 2
             vicarioustext.drawrighttext(draw, histtext, 10, textx, texty)
     else:
         histtext = str(int(curhistsatfee))
