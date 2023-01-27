@@ -264,7 +264,8 @@ separate tab or window for convenience.
 
 **Other Fun Stuff**
 - [compass mining status](./script-compassminingstatus.md)
-- [fear and greed index](./srcript-fearandgreed.md)
+- [fear and greed index](./script-fearandgreed.md)
+- [price of bitcoin](./script-fiatprice.md)
 - [sats per usd](./script-satsperusd.md)
 - [whirlpool cli mix status](./script-whirlpoolclimix.md)
 - [whirlpool liquidity](./script-whirlpoolliquidity.md)

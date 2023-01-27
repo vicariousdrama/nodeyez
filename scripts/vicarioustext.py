@@ -15,6 +15,15 @@ def getfont(size, isbold=False):
     else:
         return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",size)
 
+def getmaxfontsize(draw, s, maxwidth=480, maxheight=320, isbold=False, maxfontsize=128, minfontsize=5):
+    sw = maxwidth
+    sh = maxheight
+    fontsize = maxfontsize + 1
+    while (sw >= maxwidth or sh >= maxheight) and fontsize > minfontsize:
+        fontsize = fontsize - 1
+        sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
+    return fontsize
+
 def gettextdimensions(draw, s, fontsize, isbold=False):
     thefont = getfont(fontsize, isbold)
     sw,sh = draw.textsize(s, thefont)

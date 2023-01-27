@@ -14,6 +14,7 @@ New Panels and Enhancements
 - New Panel: Fear and Greed Index - Shows data from alternative.me
 - New Panel: LND Hub Account Balances - Relies on local redis backing store to show account info
 - New Panel: OP_RETURN - Renders text from OP_RETURN values
+- New Panel: Price of Bitcoin - Shows the price of 1 BTC in fiat terms based on the US dollar valuation
 - Enhanced Blockhash Dungeon - Fixed bug with floor tiles
 - Enhanced Channel Balances - Cleaner lines, new default colors, option to display amounts and support remote LND hosts
 - Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout, add renderStyle
