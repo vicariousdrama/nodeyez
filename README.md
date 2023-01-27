@@ -13,7 +13,7 @@ For convenience, systemd service scripts are also available to allow for running
 them at startup automatically.
 
 
-<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/channelfees.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/lndhub.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/opreturn.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/channelfees.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/lndhub.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/opreturn.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Quick Menu of Info Panels
 
@@ -45,6 +45,7 @@ them at startup automatically.
 |                **_Other Fun Stuff_** |
 | [compass mining status](./docs/script-compassminingstatus.md) | | | Yes |
 | [fear and greed index](./docs/script-fearandgreed.md) | | | Yes |
+| [price of bitcoin](./docs/script-fiatprice.md) | | | Yes |
 | [sats per usd](./docs/script-satsperusd.md) | | | Yes |
 | [whirlpool cli mix status](./docs/script-whirlpoolclimix.md) | Yes | | |
 | [whirlpool liquidity](./docs/script-whirlpoolliquidity.md) | | | Optional |

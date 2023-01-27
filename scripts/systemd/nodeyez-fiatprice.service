@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for Fiat Price panel generation
+# /etc/systemd/system/nodeyez-fiatprice.service
+
+[Unit]
+Description=Nodeyez image generator for Price of Bitcoin in fiat
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/fiatprice.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
