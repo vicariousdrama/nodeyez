@@ -13,6 +13,24 @@ useMockData=False
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
+def countblockopreturns(blocknum):
+    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 2|grep asm|grep OP_RETURN|wc -l"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        return int(cmdoutput)
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return 0
+
+def countblockordinals(blocknum):
+    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 2|grep hex|grep 0063036f72640101|wc -l"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        return int(cmdoutput)
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return 0
+
 def getblock(blocknum, verbosity=1):
     if useMockData:
         if exists("../mock-data/getblock.json"):
@@ -45,8 +63,10 @@ def getblockopreturns(blocknum):
     if useMockData:
         return ["This is an example OP_RETURN", "Another OP_RETURN found in the block", "Only utf-8 or ascii decodable OP_RETURNs are rendered","Support for\nmulti-line OP_RETURN values\nexists as well","Some spammy OP_RETURN values are excluded","There must be at least one space","Lengthy OP_RETURN values without new lines may end up running off the side of the image","It depends on the fontsize set, which is based on number of OP_RETURN\nentries in the block","NODEYEZ","Nodeyez - Display panels to get the most from your node","NODEYEZ","NODEYEZ"]
 
-    b = getblock(blocknum, 2)
     opreturns = []
+    if countblockopreturns(blocknum) == 0:
+        return opreturns
+    b = getblock(blocknum, 2)
     if "tx" in b:
         txidx = 0
         for tx in b["tx"]:
@@ -93,8 +113,10 @@ def getblockopreturns(blocknum):
     return opreturns
 
 def getblockordinals(blocknum):
-    b = getblock(blocknum, 2)
     ordinals = []
+    if countblockordinals(blocknum) == 0:
+        return ordinals
+    b = getblock(blocknum, 2)
     thepattern = re.compile("(.*)0063036f72640101(.*)68$")
     if "tx" in b:
         txidx = 0
@@ -128,15 +150,15 @@ def getblockordinals(blocknum):
                                     # size was reporting 2050, which is 802 in hex. flip the endian, 208 = 520, the max bytes that can be pushed
                                     if datalengthtype == "4c":
                                         # next 1 byte for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little") # int(g2[pos:pos+2], 16) big?
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
                                         pos += 2
                                     if datalengthtype == "4d":
                                         # next 2 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little") # int(g2[pos:pos+4], 16)
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little")
                                         pos += 4
                                     if datalengthtype == "43":
                                         # next 4 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little") # int(g2[pos:pos+8], 16)
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little")
                                         pos += 8
                                     totaldatalen += datalen
                                     morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
@@ -145,6 +167,14 @@ def getblockordinals(blocknum):
                                     # see if more op codes to continue data
                                     datalengthtype = g2[pos:pos+2]
                                     pos += 2
+                                # Check for extra bytes trailing into end. For now, we'll append these to existing, but this may be incorrect
+                                remaininghex = g2[pos:]
+                                remaininghexlength = len(remaininghex)
+                                #print(f"pos: {pos}, totaldatalen: {totaldatalen}, remaining: {remaininghex}, remaininghexlength: {remaininghexlength}")
+                                if remaininghexlength > 0:
+                                    morebytes = bytes.fromhex(g2[pos:])
+                                    rawbytes.extend(morebytes)
+                                    totaldatalen += (remaininghexlength/2)
                                 #print(f"- total data length: {totaldatalen}")
                                 # append an object
                                 ordinal = {"block":blocknum,"txid":txid,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"data":rawbytes}

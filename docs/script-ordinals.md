@@ -1,12 +1,16 @@
 # ![Nodeyez](../images/nodeyez.svg)
 Display panels to get the most from your node
 
-## Ordinals
+## Ordinal Inscriptions
 
 This script calls your local bitcoin node and will look for any transaction entries
 where the input data matches the structure of Ordinal Inscriptions.  It will then 
 parse out the data, and for each image will prepare a display image wrapper depicting
-the image, the block, and the txid
+the image, the block, and the txid.
+
+- For more information about Ordinals, checkout the [Ordinals Website](https://docs.ordinals.com/).
+- For more information about Inscriptions, checkout the [Inscriptions section](https://docs.ordinals.com/inscriptions.html).
+- For more technical explanation of OP codes used by this script for parsing out the Ordinal Inscriptions, see the [Script Wiki Page](https://en.bitcoin.it/wiki/Script)
 
 ![sample ordinal display](../images/ordinals.png)
 

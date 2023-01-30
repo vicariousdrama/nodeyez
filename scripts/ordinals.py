@@ -48,9 +48,14 @@ def createimage(blocknumber=1, width=480, height=320):
     for ordinal in ordinals:
         ordcount += 1
         print(f"Processing ordinal {ordcount}")
+        handled = False
+        size = 0
+        contenttype = "undefined"
         try:
-            if ordinal["contenttype"] in ["image/png","image/jpeg"]:
-                print(f"Ordinal is an image. Will try to load to render it")
+            size = ordinal["size"] if "size" in ordinal else 0
+            contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
+            if contenttype in ["image/png","image/jpeg"]:
+                print(f"Ordinal is an image. Will attempt to render it")
                 canvas = Image.new(mode="RGB", size=(width,height), color=colorBackground)
                 draw = ImageDraw.Draw(canvas)
                 padtop=40
@@ -71,17 +76,24 @@ def createimage(blocknumber=1, width=480, height=320):
                 # Header label
                 vicarioustext.drawcenteredtext(draw, "Ordinal Inscription in " + str(blocknumber), 24, int(width/2),int(padtop/2), colorTextFG, True)
                 # Footer
-                vicarioustext.drawbottomrighttext(draw, "txid:" + ordinal["txid"], 10, width, height)
+                vicarioustext.drawbottomrighttext(draw, "size: " + str(int(size)) + " bytes", 10, width, height-24)
+                vicarioustext.drawbottomrighttext(draw, "content-type: " + contenttype, 10, width, height-12)
+                vicarioustext.drawbottomrighttext(draw, "txid: " + ordinal["txid"], 10, width, height)
                 # Save it
                 ordoutputFile = outputFile.replace(".png","-"+str(blocknumber)+"-"+str(ordinal["txidx"])+".png")
                 print(f"Saving image as {ordoutputFile}")
                 canvas.save(ordoutputFile)
                 canvas.close()
-            if ordinal["contenttype"].startswith("text/"):
+                handled = True
+            elif contenttype.startswith("text/"):
                 print(f"Ordinal is text. Here is the contents\n")
                 print(ordinal["data"].decode())
+                handled = True
+            if not handled:
+                print(f"Ordinal is a content-type that has no handler yet: {contenttype}")
         except Exception as e:
             print(f"Error processing ordinal: {e}")
+            print(f"Size was {size} for content-type: {contenttype}")
 
 
 

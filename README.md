@@ -31,7 +31,7 @@ them at startup automatically.
 | [halving countdown](./docs/script-halving.md) | Yes | | |
 | [mempool blocks](./docs/script-mempoolblocks.md) | | | Optional |
 | [op return](./docs/script-opreturn.md) | Yes | | |
-| [ordinals](./docs/script-ordinals.md) | Yes | | | 
+| [ordinal inscriptions](./docs/script-ordinals.md) | Yes | | | 
 |                **_Lightning Dependent_** |
 | [channel balance](./docs/script-channelbalance.md) | | Yes | |
 | [channel fees](./docs/script-channelfees.md) | | Yes | |

@@ -35,7 +35,7 @@ It depends on a bitcoin node running locally and fully synched.
    | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/halving.png` |
    | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-   | colorGrid | The base color of the grid representing each block during the difficulty period, expressed as a Hexadecimal color specifier. Default `#404040` |
+   | colorGrid | The base color of the grid representing each block for this period, expressed as a Hexadecimal color specifier. Default `#404040` |
    | colorProgress | The color to fill in blocks and draw the progress bar itself, expressed as a Hexadecimal color specifie. Default `#40ff40` |
    | gridImageEnabled | Indicates whether to render a graphic image into the grid. If enabled, will source images from the ipfsDirectory location, changing to a different image for each whole percent. Default `True` |
    | gridImageUnminedMode | When gridImageEnabled is True, this controls how unmined blocks should appear. Recognized values are 'grayscale', 'dither', 'dither2'.  Unrecognized values will result in full image being displayed in color.  Default `grayscale` |
