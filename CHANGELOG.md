@@ -20,6 +20,8 @@ New Panels and Enhancements
 - Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout, add renderStyle
 - Enhanced Sats Per USD - dynamically scale size of sat grid based on current total
 - Enhanced System Info - Cleaner lines, better thermometer bulb alignment
+- New Panel: Dual Image Display - Creates a composite of multiple images suitable for screens in portrait orientation. Based around 800x480 5" LCD screens.
+- Enhanced System Info - Improved scalability for temperature, piestorage, cpuload icons
 
 General
 - Updated macaroon creation to allow querying ForwardingHistory

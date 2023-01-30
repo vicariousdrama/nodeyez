@@ -217,6 +217,7 @@ You should be logged in as a privileged user to enter these command
    python3 -m pip install beautifulsoup4
    python3 -m pip install pandas
    python3 -m pip install qrcode
+   python3 -m pip install Wand
    ```
 
    beatifulsoup4 - This is a library for extracting data from HTML and XML
@@ -228,6 +229,9 @@ You should be logged in as a privileged user to enter these command
 
    qrcode - This library allows for creating qrcodes based on text input and
    is used by Nodeyez as part of the Raretoshi script.
+
+   Wand - This library is a binding to ImageMagick for Python. It is used
+   by Nodeyez for handling filetypes that pillow cannot
 
 ## Configuring and Running Nodeyez Scripts
 
@@ -264,6 +268,7 @@ separate tab or window for convenience.
 
 **Other Fun Stuff**
 - [compass mining status](./script-compassminingstatus.md)
+- [dual image display](./script-nodeyezdual.md)
 - [fear and greed index](./script-fearandgreed.md)
 - [price of bitcoin](./script-fiatprice.md)
 - [sats per usd](./script-satsperusd.md)

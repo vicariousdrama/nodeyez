@@ -6,7 +6,7 @@ Display panels to get the most from your node
 This script calls upon the bisq marketplace to get the current fiat valuation of
 Bitcoin in US Dollar terms and then displays it graphically in large text
 
-![sample sats per usd display](../images/fiatprice.png)
+![sample price of bitcoin display](../images/fiatprice.png)
 
 * To run this script
 

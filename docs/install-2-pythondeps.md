@@ -62,6 +62,12 @@ Display panels to get the most from your node
    sudo apt-get install apt-transport-tor
    ```
 
+### 5. Install ImageMagic libraries as follows
+
+   '''sh
+   sudo apt-get install imagemagick
+   ```
+
 ---
 
 [Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Display Screen](./install-3-displayscreen.md)
