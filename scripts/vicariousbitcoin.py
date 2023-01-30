@@ -4,6 +4,7 @@ from urllib3.exceptions import InsecureRequestWarning
 import binascii
 import json
 import math
+import re
 import requests
 import subprocess
 import vicariousnetwork
@@ -90,6 +91,65 @@ def getblockopreturns(blocknum):
 
 
     return opreturns
+
+def getblockordinals(blocknum):
+    b = getblock(blocknum, 2)
+    ordinals = []
+    thepattern = re.compile("(.*)0063036f72640101(.*)68$")
+    if "tx" in b:
+        txidx = 0
+        for tx in b["tx"]:
+            txidx += 1
+            txid = "?"
+            if "txid" in tx:
+                txid = tx["txid"]
+            vinidx = 0
+            if "vin" in tx:
+                for vin in tx["vin"]:
+                    vinidx += 1
+                    if "txinwitness" in vin:
+                        for txinwitness in vin["txinwitness"]:
+                            match = re.match(thepattern, txinwitness)
+                            if match is not None:
+                                #print(f"found ordinal in tx idx:{txidx} of block {blocknum}")
+                                g2 = match.group(2)
+                                pos = g2.find("00") # find first OP_0 which splits the content type from data
+                                contenttypelength = int(g2[0:2], 16)
+                                contenttype = bytes.fromhex(g2[2:pos]).decode()
+                                pos+=2
+                                #print(f"- content type: {contenttype}")
+                                datalengthtype = g2[pos:pos+2]
+                                pos +=2
+                                datalen = 0
+                                totaldatalen = 0
+                                rawbytes = bytearray()
+                                while datalengthtype in ['4c','4d','4e']:
+                                    #print(f"- hex code for data length: {datalengthtype}")
+                                    # size was reporting 2050, which is 802 in hex. flip the endian, 208 = 520, the max bytes that can be pushed
+                                    if datalengthtype == "4c":
+                                        # next 1 byte for size
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little") # int(g2[pos:pos+2], 16) big?
+                                        pos += 2
+                                    if datalengthtype == "4d":
+                                        # next 2 bytes for size
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little") # int(g2[pos:pos+4], 16)
+                                        pos += 4
+                                    if datalengthtype == "43":
+                                        # next 4 bytes for size
+                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little") # int(g2[pos:pos+8], 16)
+                                        pos += 8
+                                    totaldatalen += datalen
+                                    morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
+                                    rawbytes.extend(morebytes)
+                                    pos += (datalen*2)
+                                    # see if more op codes to continue data
+                                    datalengthtype = g2[pos:pos+2]
+                                    pos += 2
+                                #print(f"- total data length: {totaldatalen}")
+                                # append an object
+                                ordinal = {"block":blocknum,"txid":txid,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"data":rawbytes}
+                                ordinals.append(ordinal)
+    return ordinals
 
 def getcurrentblock():
     if useMockData:

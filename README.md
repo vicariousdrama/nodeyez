@@ -13,7 +13,7 @@ For convenience, systemd service scripts are also available to allow for running
 them at startup automatically.
 
 
-<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/channelfees.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/lndhub.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/opreturn.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/channelfees.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/lndhub.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/opreturn.png" width=196 /><img src="./images/ordinals.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Quick Menu of Info Panels
 
@@ -31,6 +31,7 @@ them at startup automatically.
 | [halving countdown](./docs/script-halving.md) | Yes | | |
 | [mempool blocks](./docs/script-mempoolblocks.md) | | | Optional |
 | [op return](./docs/script-opreturn.md) | Yes | | |
+| [ordinals](./docs/script-ordinals.md) | Yes | | | 
 |                **_Lightning Dependent_** |
 | [channel balance](./docs/script-channelbalance.md) | | Yes | |
 | [channel fees](./docs/script-channelfees.md) | | Yes | |
