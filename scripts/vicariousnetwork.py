@@ -1,6 +1,9 @@
 # import packages
+from PIL import Image, ImageColor
 from os.path import exists
 from urllib3.exceptions import InsecureRequestWarning
+from wand.api import library
+import io
 import json
 import math
 import os
@@ -9,6 +12,8 @@ import shutil
 import subprocess
 import sys
 import time
+import wand.color
+import wand.image
 
 def gettimeouts():
     return (5,20)
@@ -23,10 +28,7 @@ def gettorproxies():
 # do a GET call on specified url, save response body contents as file, return 0 if success, 1 if error
 def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png", savetofile="/home/nodeyez/nodeyez/data/logo.png", headers={}):
     try:
-        if useTor:
-            proxies = gettorproxies()
-        else:
-            proxies = {}
+        proxies = gettorproxies() if useTor else {}
         timeout = gettimeouts()
         requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
         with requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False,stream=True) as response:
@@ -34,7 +36,6 @@ def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicarious
             with open(savetofile, 'wb') as filetowriteto:
                 for chunk in response.iter_content(chunk_size=8192):
                     filetowriteto.write(chunk)
-                #shutil.copyfileobj(response.raw, filetowriteto)
         print(f"file saved to {savetofile}\n")
         return 0
     except Exception as e:
@@ -46,10 +47,7 @@ def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicarious
 def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
     cmdoutput = ""
     try:
-        if useTor:
-            proxies = gettorproxies()
-        else:
-            proxies = {}
+        proxies = gettorproxies() if useTor else {}
         timeout = gettimeouts()
         requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
         cmdoutput = requests.get(url,timeout=timeout,proxies=proxies,headers=headers,verify=False).text
@@ -57,7 +55,6 @@ def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
         print(f"error calling geturl: {e}")
         print(f"using default")
         cmdoutput = defaultResponse
-    #print(cmdoutput)
     try:
         j = json.loads(cmdoutput)
     except Exception as e:
@@ -65,6 +62,31 @@ def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
         print(f"using default")
         j = json.loads(defaultResponse)
     return j
+
+# do a GET call on the specified url, and with response body, load into pillow image
+def getimagefromurl(useTor=True, url=None, headers={}):
+    img = Image.new(mode="RGB", size=(1,1), color=ImageColor.getrgb("#7f007f")) # default response is a 1x1 purple
+    try:
+        proxies = gettorproxies() if useTor else {}
+        timeout = gettimeouts()
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        with requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False,stream=True) as response:
+            response.raise_for_status()
+            ct = response.headers['content-type']
+            if ct in ['image/png','image/bmp','image/gif']:
+                img = Image.open(response.raw)
+            if ct in ['image/svg','image/svg+xml']:
+                response.raw.decode_content=True
+                svgfile=response.raw
+                with wand.image.Image() as image:
+                    with wand.color.Color('transparent') as background_color:
+                        library.MagickSetBackgroundColor(image.wand, background_color.resource)
+                    image.read(blob=svgfile.read(),format="svg")
+                    img = Image.open(io.BytesIO(image.make_blob("png32")))
+    except Exception as e:
+        print(f"error retrieving image from url {url}\n")
+        print(f"{e}")
+    return img
 
 def getblockclockapicall(url="http://21.21.21.21/api/show/text/NODEYEZ", blockclockPassword=""):
     if url == "http://21.21.21.21/api/show/text/NODEYEZ":
@@ -75,7 +97,6 @@ def getblockclockapicall(url="http://21.21.21.21/api/show/text/NODEYEZ", blockcl
         cmdoutput = requests.get(url,auth=auth).text
     else:
         cmdoutput = requests.get(url).text
-    #print(cmdoutput)
     return cmdoutput
 
 def getcompassmininghardwareinfo(useTor=True, url="https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc"):

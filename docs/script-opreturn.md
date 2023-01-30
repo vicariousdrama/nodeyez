@@ -28,7 +28,7 @@ will be generated rendering the text values.
 
    | field name | description |
    | --- | --- |
-   | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/satsperusd.png` |
+   | outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/opreturn.png` |
    | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
    | width | The width, in pixels, to generate the image. Default `480` |
    | height | The height, in pixels, to generate the image. Default `320` |

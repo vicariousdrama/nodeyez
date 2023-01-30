@@ -44,6 +44,7 @@ them at startup automatically.
 | [slushpool](./docs/script-slushpool.md) | | | Yes |
 |                **_Other Fun Stuff_** |
 | [compass mining status](./docs/script-compassminingstatus.md) | | | Yes |
+| [dual image display](./docs/script-nodeyezdual.md) | | | Yes |
 | [fear and greed index](./docs/script-fearandgreed.md) | | | Yes |
 | [price of bitcoin](./docs/script-fiatprice.md) | | | Yes |
 | [sats per usd](./docs/script-satsperusd.md) | | | Yes |
