@@ -64,7 +64,7 @@ Display panels to get the most from your node
 
 ### 5. Install ImageMagic libraries as follows
 
-   '''sh
+   ```sh
    sudo apt-get install imagemagick
    ```
 

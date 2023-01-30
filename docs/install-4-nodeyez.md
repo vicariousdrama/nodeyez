@@ -231,7 +231,8 @@ You should be logged in as a privileged user to enter these command
    is used by Nodeyez as part of the Raretoshi script.
 
    Wand - This library is a binding to ImageMagick for Python. It is used
-   by Nodeyez for handling filetypes that pillow cannot
+   by Nodeyez for handling filetypes that pillow is unable to such as
+   scalable vector graphics (SVG)
 
 ## Configuring and Running Nodeyez Scripts
 
