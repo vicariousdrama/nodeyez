@@ -8,7 +8,7 @@ where the input data matches the structure of Ordinal Inscriptions.  It will the
 parse out the data, and for each image will prepare a display image wrapper depicting
 the image, the block, and the txid
 
-![sample ordinal display](../images/ordinal.png)
+![sample ordinal display](../images/ordinals.png)
 
 * To run this script
 

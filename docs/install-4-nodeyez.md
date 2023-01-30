@@ -254,7 +254,7 @@ separate tab or window for convenience.
 - [halving countdown](./script-halving.md)
 - [mempool blocks](./script-mempoolblocks.md)
 - [op return](./script-opreturn.md)
-  [ordinals](./script-ordinals.md)
+- [ordinals](./script-ordinals.md)
 
 **Lightning Dependent**
 - [channel balance](./script-channelbalance.md)
