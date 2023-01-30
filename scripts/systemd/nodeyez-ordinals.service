@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for Ordinals panel generation
+# /etc/systemd/system/nodeyez-ordinals.service
+
+[Unit]
+Description=Nodeyez image generator for Ordinal Inscriptions
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/ordinals.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -40,6 +40,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-minermicrobt.service
    sudo systemctl enable nodeyez-nodeyezdual.service
    sudo systemctl enable nodeyez-opreturn.service
+   sudo systemctl enable nodeyez-ordinals.service
    sudo systemctl enable nodeyez-rofstatus.service
    sudo systemctl enable nodeyez-satsperusd.service
    sudo systemctl enable nodeyez-slideshow.service
@@ -74,6 +75,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-minermicrobt.service
    sudo systemctl start nodeyez-nodeyezdual.service
    sudo systemctl start nodeyez-opreturn.service
+   sudo systemctl start nodeyez-ordinals.service
    sudo systemctl start nodeyez-rofstatus.service
    sudo systemctl start nodeyez-satsperusd.service
    sudo systemctl start nodeyez-slideshow.service
