@@ -59,6 +59,7 @@ femap = {
     "image/png": "png",
     "image/svg": "svg",
     "image/tiff": "tiff",
+    "image/webp": "webp",
     "image/x-icon": "ico",
     "image/x-xbitmap": "xbm",
     "text/css": "css",
