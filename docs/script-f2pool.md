@@ -17,7 +17,7 @@ file.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/f2pool.py
+   /usr/bin/env python3 f2pool.py
    ```
 
    Press CTRL+C to stop the process

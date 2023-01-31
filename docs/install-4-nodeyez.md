@@ -214,10 +214,11 @@ You should be logged in as a privileged user to enter these command
    pandas package.
 
    ```sh
-   python3 -m pip install beautifulsoup4
-   python3 -m pip install pandas
-   python3 -m pip install qrcode
-   python3 -m pip install Wand
+   python3 -m pip install Pillow --upgrade
+   python3 -m pip install beautifulsoup4 --upgrade
+   python3 -m pip install pandas --upgrade
+   python3 -m pip install qrcode --upgrade
+   python3 -m pip install Wand --upgrade
    ```
 
    beatifulsoup4 - This is a library for extracting data from HTML and XML

@@ -16,7 +16,7 @@ It depends on a lighting node.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/channelbalance.py
+   /usr/bin/env python3 channelbalance.py
    ```
 
    Press CTRL+C to stop the process

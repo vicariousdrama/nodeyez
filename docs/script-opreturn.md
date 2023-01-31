@@ -13,7 +13,7 @@ will be generated rendering the text values.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/opreturn.py
+   /usr/bin/env python3 opreturn.py
    ```
 
    Press CTRL+C to stop the process

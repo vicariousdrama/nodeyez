@@ -34,7 +34,7 @@ me directly.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/lndhub.py
+   /usr/bin/env python3 lndhub.py
    ```
 
    Press CTRL+C to stop the process

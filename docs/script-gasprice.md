@@ -16,7 +16,7 @@ script.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/gasprice.py
+   /usr/bin/env python3 gasprice.py
    ```
 
    Press CTRL+C to stop the process

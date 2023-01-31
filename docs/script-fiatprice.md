@@ -12,7 +12,7 @@ Bitcoin in US Dollar terms and then displays it graphically in large text
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/fiatprice.py
+   /usr/bin/env python3 fiatprice.py
    ```
 
    Press CTRL+C to stop the process

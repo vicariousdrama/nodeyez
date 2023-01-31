@@ -22,7 +22,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassminingstatus.py
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/compassminingstatus.py
+   /usr/bin/env python3 compassminingstatus.py
    ```
 
    Press CTRL+C to stop the process

@@ -19,7 +19,7 @@ at [/home/nodeyez/nodeyez/scripts/mempoolblocks.py](../scripts/mempoolblocks.py)
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/mempoolblocks.py
+   /usr/bin/env python3 mempoolblocks.py
    ```
 
    Press CTRL+C to stop the process
