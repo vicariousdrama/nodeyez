@@ -3,6 +3,7 @@ from datetime import datetime
 from os.path import exists
 from PIL import Image, ImageDraw, ImageColor, ImageFile
 from io import BytesIO
+from wand.api import library
 import json
 import locale
 import math
@@ -14,6 +15,8 @@ import sys
 import time
 import vicariousbitcoin
 import vicarioustext
+import wand.color
+import wand.image
 
 def getmaxtextforwidth(draw, words, width, fontsize, isbold=False):
     wlen = len(words)
@@ -58,6 +61,7 @@ femap = {
     "image/jpeg": "jpg",
     "image/png": "png",
     "image/svg": "svg",
+    "image/svg+xml": "svg",
     "image/tiff": "tiff",
     "image/webp": "webp",
     "image/x-icon": "ico",
@@ -68,6 +72,7 @@ femap = {
     "text/plain": "txt",
     "text/richtext": "rtx",
     "video/mpeg": "mpeg",
+    "video/webm": "webm",
     "video/quicktime": "qt",
     "x-word/x-vrml": "vrml",
 }
@@ -97,13 +102,21 @@ def createimage(blocknumber=1, width=480, height=320):
         try:
             size = ordinal["size"] if "size" in ordinal else 0
             contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
-            if contenttype in ["image/png","image/jpeg"]:
+            if contenttype in ["image/gif","image/jpeg","image/png","image/svg","image/svg+xml","image/webp"]:
                 print(f"Ordinal is an image. Will attempt to render it")
                 canvas = Image.new(mode="RGBA", size=(width,height), color=colorBackground)
                 draw = ImageDraw.Draw(canvas)
                 padtop=40
                 # Load ordinal image
-                img = Image.open(BytesIO(ordinal["data"])).convert('RGBA')
+                img=Image.new(mode="RGB",size=(1,1),color=ImageColor.getrgb("#7f007f")) # default if not loaded from type
+                if contenttype in ["image/gif", "image/jpeg", "image/png", "image/webp"]:
+                    img = Image.open(BytesIO(ordinal["data"])).convert('RGBA')
+                if contenttype in ["image/svg", "image/svg+xml"]:
+                    with wand.image.Image() as image:
+                        with wand.color.Color('transparent') as background_color:
+                            library.MagickSetBackgroundColor(image.wand, background_color.resource)
+                        image.read(blob=BytesIO(ordinal["data"]),format="svg")
+                        img = Image.open(BytesIO(image.make_blob("png32")))
                 # Resize to fit
                 img = resizeToWidth(img, width)
                 irw = float(img.height)/float(img.width)
