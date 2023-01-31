@@ -17,7 +17,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minerbraiins.py](../sc
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/minerbraiins.py
+   /usr/bin/env python3 minerbraiins.py
    ```
 
    Press CTRL+C to stop the process

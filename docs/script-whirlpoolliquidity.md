@@ -13,7 +13,7 @@ the information.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/whirlpoolliquidity.py
+   /usr/bin/env python3 whirlpoolliquidity.py
    ```
 
    Press CTRL+C to stop the process

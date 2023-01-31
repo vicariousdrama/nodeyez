@@ -16,7 +16,7 @@ It depends on a bitcoin node running locally and fully synched.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/arthashdungeon.py
+   /usr/bin/env python3 arthashdungeon.py
    ```
 
    Press CTRL+C to stop the process

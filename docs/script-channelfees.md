@@ -16,7 +16,7 @@ It depends on a lighting node.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/channelfees.py
+   /usr/bin/env python3 channelfees.py
    ```
 
    Press CTRL+C to stop the process

@@ -13,7 +13,7 @@ generates a status panel of this information.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/whirlpoolclimix.py
+   /usr/bin/env python3 whirlpoolclimix.py
    ```
 
    Press CTRL+C to stop the process

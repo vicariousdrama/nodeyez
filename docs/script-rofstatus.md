@@ -23,7 +23,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/rofstatus.py](../scrip
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/rofstatus.py
+   /usr/bin/env python3 rofstatus.py
    ```
 
    Press CTRL+C to stop the process

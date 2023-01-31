@@ -13,7 +13,7 @@ graphically
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/satsperusd.py
+   /usr/bin/env python3 satsperusd.py
    ```
 
    Press CTRL+C to stop the process

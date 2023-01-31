@@ -23,7 +23,7 @@ Only static PNG and JPEG files are supported at this time.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/raretoshi.py
+   /usr/bin/env python3 raretoshi.py
    ```
 
    Press CTRL+C to stop the process

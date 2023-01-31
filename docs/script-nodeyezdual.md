@@ -15,7 +15,7 @@ the bottom up.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/nodeyezdual.py
+   /usr/bin/env python3 nodeyezdual.py
    ```
 
    Press CTRL+C to stop the process

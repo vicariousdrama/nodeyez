@@ -19,7 +19,7 @@ from this panel in future updates.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/slushpool.py
+   /usr/bin/env python3 slushpool.py
    ```
 
    Press CTRL+C to stop the process

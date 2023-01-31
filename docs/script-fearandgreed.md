@@ -14,7 +14,7 @@ the top of the image.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/fearandgreed.py
+   /usr/bin/env python3 fearandgreed.py
    ```
 
    Press CTRL+C to stop the process

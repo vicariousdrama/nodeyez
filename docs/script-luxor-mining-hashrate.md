@@ -36,7 +36,7 @@ that have not yet been brought into this project yet.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/luxor-mining-hashrate.py
+   /usr/bin/env python3 luxor-mining-hashrate.py
    ```
 
    Press CTRL+C to stop the process

@@ -16,7 +16,7 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/compassmininghardware.
 
    ```sh
    cd /home/nodeyez/nodeyez/scripts
-   /home/nodeyez/nodeyez/scripts/compassmininghardware.py
+   /usr/bin/env python3 compassmininghardware.py
    ```
 
    Press CTRL+C to stop the process
