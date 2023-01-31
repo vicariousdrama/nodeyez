@@ -135,10 +135,15 @@ def getblockordinals(blocknum):
                             if match is not None:
                                 #print(f"found ordinal in tx idx:{txidx} of block {blocknum}")
                                 g2 = match.group(2)
-                                pos = g2.find("00") # find first OP_0 which splits the content type from data
-                                contenttypelength = int(g2[0:2], 16)
-                                contenttype = bytes.fromhex(g2[2:pos]).decode()
-                                pos+=2
+                                pos = 0
+                                contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
+                                pos += 2
+                                contenttype = bytes.fromhex(g2[pos:pos+(contenttypelength*2)]).decode()
+                                pos += (contenttypelength*2)
+                                opcode = g2[pos:pos+2]
+                                pos += 2
+                                if opcode != '00':
+                                    print(f"warning. expected 0x00 divider between content type and data, but got 0x{opcode}")
                                 #print(f"- content type: {contenttype}")
                                 datalengthtype = g2[pos:pos+2]
                                 pos +=2
