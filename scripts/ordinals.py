@@ -4,6 +4,7 @@ from os.path import exists
 from PIL import Image, ImageDraw, ImageColor, ImageFile
 from io import BytesIO
 from wand.api import library
+import exifread
 import json
 import locale
 import math
@@ -56,6 +57,7 @@ femap = {
     "application/x-tar": "tar",
     "application/zip": "zip",
     "audio/flac": "flac",
+    "audio/midi": "midi",
     "audio/mpeg": "mp3",
     "audio/x-wav": "wav",
     "image/avif": "avif",
@@ -111,10 +113,23 @@ def createimage(blocknumber=1, width=480, height=320):
                 canvas = Image.new(mode="RGBA", size=(width,height), color=colorBackground)
                 draw = ImageDraw.Draw(canvas)
                 padtop=40
+                exif = {}
                 # Load ordinal image
                 img=Image.new(mode="RGB",size=(1,1),color=ImageColor.getrgb("#7f007f")) # default if not loaded from type
                 if contenttype in ["image/gif", "image/jpeg", "image/png", "image/webp"]:
                     img = Image.open(BytesIO(ordinal["data"])).convert('RGBA')
+                    tags = exifread.process_file(BytesIO(ordinal["data"]))
+                    for tag in tags.keys():
+                        if tag in ["Image Orientation","EXIF UserComment","Image Make","Image Model","EXIF LensModel"]:
+                            exif[tag] = tags[tag]
+                        if tag in ["ImageWidth","EXIF ExifImageWidth"]:
+                            exif["ImageWidth"] = tags[tag]
+                        if tag in ["ImageLength","EXIF ExifImageLength"]:
+                            exif["ImageLength"] = tags[tag]
+                        if tag in ["DateTime", "Image DateTime", "EXIF DateTimeOriginal", "EXIF DateTimeDigitized"]:
+                            exif["DateTime"] = tags[tag]
+                        if tag in ["Software","Image Software"]:
+                            exif["Software"] = tags[tag]
                 if contenttype in ["image/svg", "image/svg+xml"]:
                     with wand.image.Image() as image:
                         with wand.color.Color('transparent') as background_color:
@@ -139,8 +154,13 @@ def createimage(blocknumber=1, width=480, height=320):
                     overlayimg = Image.new(mode="RGBA", size=(width,height), color=(0,0,0,0))
                     overlaydraw = ImageDraw.Draw(overlayimg)
                     otw,oth,otf = vicarioustext.gettextdimensions(draw, "txid: " + ordinal["txid"], 10)
-                    oth = 36
+                    oth = 36 + (12 * len(exif)) if overlayExifEnabled else 36
                     overlaydraw.rectangle(xy=((width-otw,height-oth),(width,height)),fill=overlayTextColorBG)
+                    if overlayExifEnabled:
+                        exifidx = 0
+                        for k in exif:
+                            exifidx += 1
+                            vicarioustext.drawbottomrighttext(overlaydraw, k + ": " + str(exif[k]), 10, width, height-24-(exifidx*12), overlayTextColorFG)
                     vicarioustext.drawbottomrighttext(overlaydraw, "size: " + str(int(size)) + " bytes", 10, width, height-24, overlayTextColorFG)
                     vicarioustext.drawbottomrighttext(overlaydraw, "content-type: " + contenttype, 10, width, height-12, overlayTextColorFG)
                     vicarioustext.drawbottomrighttext(overlaydraw, "txid: " + ordinal["txid"], 10, width, height, overlayTextColorFG)
@@ -191,6 +211,7 @@ if __name__ == '__main__':
     sleepInterval=30
     ImageFile.LOAD_TRUNCATED_IMAGES=True
     overlayTextEnabled=True
+    overlayExifEnabled=True
     overlayTextColorBG=ImageColor.getrgb("#00000040")
     overlayTextColorFG=ImageColor.getrgb("#ffffffff")
     # Override config
@@ -220,6 +241,8 @@ if __name__ == '__main__':
             sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
         if "overlayTextEnabled" in config:
             overlayTextEnabled = config["overlayTextEnabled"]
+        if "overlayExifEnabled" in config:
+            overlayExifEnabled = config["overlayExifEnabled"]
         if "overlayTextColorBG" in config:
             overlayTextColorBG = ImageColor.getrgb(config["overlayTextColorBG"])
         if "overlayTextColorFG" in config:

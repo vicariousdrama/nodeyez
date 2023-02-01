@@ -219,6 +219,7 @@ You should be logged in as a privileged user to enter these command
    python3 -m pip install pandas --upgrade
    python3 -m pip install qrcode --upgrade
    python3 -m pip install Wand --upgrade
+   python3 -m pip install exifread --upgrade
    ```
 
    beatifulsoup4 - This is a library for extracting data from HTML and XML
@@ -234,6 +235,8 @@ You should be logged in as a privileged user to enter these command
    Wand - This library is a binding to ImageMagick for Python. It is used
    by Nodeyez for handling filetypes that pillow is unable to such as
    scalable vector graphics (SVG)
+
+   exifread - This library can parse out EXIF data from Image files
 
 ## Configuring and Running Nodeyez Scripts
 
