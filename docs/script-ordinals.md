@@ -64,6 +64,7 @@ the image, the block, and the txid.
    | exportFilesToDataDirectory | Indicates whether files should be exported to the data directory. Default `true` |
    | saveUniqueImageNames | Indicates whether unique image names should be created for each inscription. Default `true` |
    | overlayTextEnabled | Indicates whether annotations should be labeled over the image to display the transaction id, content type and size information. Default `true` |
+   | overlayExifEnabled | Indicates whether key exif data found in images should be labeled over the image in the annotation block. Default `true` |
    | overlayTextBG | If overlayTextEnabled is true, this is the color of the annotation text background overlay expressed as a Hexadecimal color specifier. Default `#00000080` |
    | overlayTextFG | If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 
