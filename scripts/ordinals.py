@@ -170,7 +170,7 @@ def createimage(blocknumber=1, width=480, height=320):
                     vicarioustext.drawbottomrighttext(draw, "txid: " + ordinal["txid"], 10, width, height, colorTextFG)
                 # Save it
                 if saveUniqueImageNames:
-                    ordoutputFile = outputFile.replace(".png","-"+str(blocknumber)+"-"+str(ordinal["txidx"])+".png")
+                    ordoutputFile = uniqueOutputFile.replace(".png","-"+str(blocknumber)+"-"+str(ordinal["txidx"])+".png")
                     print(f"Saving image as {ordoutputFile}")
                     canvas.save(ordoutputFile) # unique named
                 print(f"Saving image as {outputFile}")
@@ -201,6 +201,7 @@ if __name__ == '__main__':
     # Defaults
     configFile="/home/nodeyez/nodeyez/config/ordinals.json"
     outputFile="/home/nodeyez/nodeyez/imageoutput/ordinals.png"
+    uniqueOutputFile="/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png"
     dataDirectory="/home/nodeyez/nodeyez/data/"
     exportFilesToDataDirectory=True
     saveUniqueImageNames=True
@@ -222,6 +223,8 @@ if __name__ == '__main__':
             config = config["ordinals"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
+        if "uniqueOutputFile" in config:
+            uniqueOutputFile = config["uniqueOutputFile"]
         if "dataDirectory" in config:
             dataDirectory = config["dataDirectory"]
         if "exportFilesToDataDirectory" in config:
@@ -253,6 +256,10 @@ if __name__ == '__main__':
     ordinalsDirectory = dataDirectory + "ordinals/"
     if not os.path.exists(ordinalsDirectory):
         os.makedirs(ordinalsDirectory)
+    if saveUniqueImageNames:
+        uniqueImageDirectory = uniqueOutputFile[0:uniqueOutputFile.rindex("/")] + "/"
+        if not os.path.exists(uniqueImageDirectory):
+            os.makedirs(uniqueImageDirectory)
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
@@ -277,6 +284,7 @@ if __name__ == '__main__':
     while True:
         blocknumber = vicariousbitcoin.getcurrentblock()
         if oldblocknumber != blocknumber:
+            blocknumber = oldblocknumber + 1 if oldblocknumber != 0 else blocknumber # force it to next, dont skip any blocks
             createimage(blocknumber,width,height)
             oldblocknumber = blocknumber
         #print(f"sleeping for {sleepInterval} seconds")

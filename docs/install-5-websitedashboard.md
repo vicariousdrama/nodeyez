@@ -52,10 +52,10 @@ dashboard on port 907, and our template that generates the dashboard view.
    ```sh
    sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
    sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+   sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
    sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
    sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
-   sudo chown root:root /etc/nginx/imagegallery.xslt
+   sudo chown root:root /etc/nginx/*.xslt
    ```
 
 * Test the NGINX configuration and restart the service.
@@ -116,6 +116,10 @@ Now see if you can access the dashboard at https://your-node-ip:907
    ```
  
 Now see if you can access the dashboard at https://your-node-ip:907
+
+You can also get to lists of files in the data directory at https://your-node-ip:907/data/
+
+And view a specific subfolder of data as a photo album at https://your-node-ip:907/album/
 
 [Continue to Running Services at Startup](./install-6-runatstartup.md)
 

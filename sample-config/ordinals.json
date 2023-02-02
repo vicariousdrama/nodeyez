@@ -37,5 +37,8 @@
   "overlayTextColorBG": "#00000080",
   "overlayTextColorFG.comment": "If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier",
   "overlayTextColorFG.type": "string",
-  "overlayTextColorFG": "#ffffff"
+  "overlayTextColorFG": "#ffffff",
+  "uniqueOutputFile.comment": "The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension.",
+  "uniqueOutputFile.type": "string",
+  "uniqueOutputFile": "/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png"
 }
