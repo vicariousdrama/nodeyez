@@ -67,6 +67,7 @@ the image, the block, and the txid.
    | overlayExifEnabled | Indicates whether key exif data found in images should be labeled over the image in the annotation block. Default `true` |
    | overlayTextBG | If overlayTextEnabled is true, this is the color of the annotation text background overlay expressed as a Hexadecimal color specifier. Default `#00000080` |
    | overlayTextFG | If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+   | uniqueOutputFile | The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension. Default `/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png` |
 
    After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
