@@ -73,10 +73,17 @@
         <xsl:variable name="inscriptionid">
             <xsl:value-of select="substring-after(substring-before($name,'.'),'inscription-')" />
         </xsl:variable>
+        <xsl:variable name="blocknumber">
+            <xsl:value-of select="number(substring-before($inscriptionid,'-'))" />
+        </xsl:variable>
+        <xsl:if test="$blocknumber &lt;= 774942">
         <xsl:if test="contains('|gif|jpg|png|',concat('|',$extension,'|'))">
-            <xsl:if test="not(contains('|774366-2057|774653-658|774718-424|',concat('|',$inscriptionid,'|')))">
+            <xsl:if test="not(contains('|774366-2057|774653-658|774718-424|774783-1743|774783-1841|',concat('|',$inscriptionid,'|')))">
+            <xsl:if test="not(contains('|774787-756|747792-2014|774804-3311|',concat('|',$inscriptionid,'|')))">
                 <img class="imageinlist" src="{.}" alt="{.}" />
             </xsl:if>
+            </xsl:if>
+        </xsl:if>
         </xsl:if>
     </xsl:for-each>
     </div>
