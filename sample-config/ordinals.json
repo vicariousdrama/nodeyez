@@ -40,5 +40,8 @@
   "overlayTextColorFG": "#ffffff",
   "uniqueOutputFile.comment": "The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension.",
   "uniqueOutputFile.type": "string",
-  "uniqueOutputFile": "/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png"
+  "uniqueOutputFile": "/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png",
+  "blocklistURL.comment": "The URL to a resource that provides a list of inscriptions not to extract",
+  "blocklistURL.type": "string",
+  "blocklistURL": "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/sample-config/ordblocklist.json"
 }
