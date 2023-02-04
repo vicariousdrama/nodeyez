@@ -112,7 +112,7 @@ def getblockopreturns(blocknum):
 
     return opreturns
 
-def getblockordinals(blocknum):
+def getblockordinals(blocknum, blockIndexesToSkip=[]):
     ordinals = []
     if countblockordinals(blocknum) == 0:
         return ordinals
@@ -122,6 +122,8 @@ def getblockordinals(blocknum):
         txidx = 0
         for tx in b["tx"]:
             txidx += 1
+            if txidx in blockIndexesToSkip:
+                continue
             txid = "?"
             if "txid" in tx:
                 txid = tx["txid"]

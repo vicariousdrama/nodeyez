@@ -43,5 +43,8 @@
   "uniqueOutputFile": "/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png",
   "blocklistURL.comment": "The URL to a resource that provides a list of inscriptions not to extract",
   "blocklistURL.type": "string",
-  "blocklistURL": "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/sample-config/ordblocklist.json"
+  "blocklistURL": "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/sample-config/ordblocklist.json",
+  "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
+  "useTor.type": "boolean",
+  "useTor": true
 }

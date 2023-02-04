@@ -7,6 +7,7 @@ from wand.api import library
 import exifread
 import json
 import locale
+import logging
 import math
 import os
 import numpy
@@ -15,6 +16,7 @@ import subprocess
 import sys
 import time
 import vicariousbitcoin
+import vicariousnetwork
 import vicarioustext
 import wand.color
 import wand.image
@@ -91,7 +93,27 @@ def getfileextensionfromcontenttype(ct):
     return r
 
 def createimage(blocknumber=1, width=480, height=320):
-    ordinals = vicariousbitcoin.getblockordinals(blocknumber)
+    global blocklistChecktime
+    global blocklistActive
+    global blocklistHeight
+    global blocklistDefinitions
+
+    # blocklist filter prep
+    blockIndexesToSkip = []
+    if len(blocklistURL) > 0 and time.time() > blocklistChecktime + 21600: #6 hours
+        blocklistActive, blocklistHeight, blocklistDefinitions = getblocklist(blocklistURL)
+        blocklistChecktime = time.time()
+    if blocklistActive:
+        if int(blocklistHeight) < int(blocknumber):
+            print(f"A blocklist is configured and block height {blocknumber} is higher then vetted block height {blh}. Skipping.")
+            return
+        for blocklistDefinition in blocklistDefinitions:
+            dBlock = int(blocklistDefinition["blocknumber"])
+            if dBlock == int(blocknumber):
+                blockIndexesToSkip.append(int(blocklistDefinition["idx"]))
+
+
+    ordinals = vicariousbitcoin.getblockordinals(blocknumber, blockIndexesToSkip)
     ordcount = len(ordinals)
     if ordcount == 0:
         print(f"No ordinals found in block {blocknumber}")
@@ -101,15 +123,18 @@ def createimage(blocknumber=1, width=480, height=320):
     ordcount = 0
     for ordinal in ordinals:
         ordcount += 1
-        print(f"Processing ordinal {ordcount}")
+        txidx =  int(ordinal["txidx"]) if "txidx" in ordinal else -1
+        print(f"Processing ordinal {ordcount} in index {txidx}")
         handled = False
         size = 0
         contenttype = "undefined"
         try:
+            if txidx in blockIndexesToSkip:
+                raise Exception("Blocked") # shows in log
+                # continue # silently skip blocked
             size = ordinal["size"] if "size" in ordinal else 0
             contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
             if contenttype in ["image/gif","image/jpeg","image/png","image/svg","image/svg+xml","image/webp"]:
-                print(f"Ordinal is an image. Will attempt to render it")
                 canvas = Image.new(mode="RGBA", size=(width,height), color=colorBackground)
                 draw = ImageDraw.Draw(canvas)
                 padtop=40
@@ -118,7 +143,7 @@ def createimage(blocknumber=1, width=480, height=320):
                 img=Image.new(mode="RGB",size=(1,1),color=ImageColor.getrgb("#7f007f")) # default if not loaded from type
                 if contenttype in ["image/gif", "image/jpeg", "image/png", "image/webp"]:
                     img = Image.open(BytesIO(ordinal["data"])).convert('RGBA')
-                    tags = exifread.process_file(BytesIO(ordinal["data"]))
+                    tags = exifread.process_file(BytesIO(ordinal["data"]), details=False)
                     for tag in tags.keys():
                         if tag in ["Image Orientation","EXIF UserComment","Image Make","Image Model","EXIF LensModel"]:
                             exif[tag] = tags[tag]
@@ -171,22 +196,22 @@ def createimage(blocknumber=1, width=480, height=320):
                 # Save it
                 if saveUniqueImageNames:
                     ordoutputFile = uniqueOutputFile.replace(".png","-"+str(blocknumber)+"-"+str(ordinal["txidx"])+".png")
-                    print(f"Saving image as {ordoutputFile}")
+#                    print(f"- saving image as {ordoutputFile}")
                     canvas.save(ordoutputFile) # unique named
-                print(f"Saving image as {outputFile}")
+#                print(f"- saving image as {outputFile}")
                 canvas.save(outputFile)    # puts latest in this single slot
                 canvas.close()
                 handled = True
-            elif contenttype.startswith("text/"):
-                print(f"Ordinal is text. Here is the contents\n")
-                print(ordinal["data"].decode())
-                handled = True
+#            elif contenttype.startswith("text/"):
+#                print(f"Ordinal is text. Here is the contents\n")
+#                print(ordinal["data"].decode())
+#                handled = True
             if not handled:
-                print(f"Ordinal is a content-type that has no handler yet: {contenttype}")
+                print(f"- no handler yet for content-type: {contenttype}")
             if exportFilesToDataDirectory:
                 fileextension = getfileextensionfromcontenttype(contenttype)
                 exportFileName = ordinalsDirectory + "inscription-" + str(blocknumber) + "-" + str(ordinal["txidx"]) + "." + fileextension
-                print(f"Exporting file to {exportFileName}")
+                print(f"- exporting file to {exportFileName}")
                 bytesioblob = BytesIO(ordinal["data"])
                 with open(exportFileName, "wb") as f:
                     f.write(bytesioblob.getbuffer())
@@ -195,6 +220,14 @@ def createimage(blocknumber=1, width=480, height=320):
             print(f"Error processing ordinal: {e}")
             print(f"Size was {size} for content-type: {contenttype}")
 
+def getblocklist(u):
+    h = -1
+    b = []
+    if len(u) > 0:
+        j = vicariousnetwork.geturl(useTor, u, '{"vettedheight":-1,"blocklist":[]}', headers={})
+        b = j["blocklist"]
+        h = j["vettedheight"]
+    return (h > -1), h, b
 
 
 if __name__ == '__main__':
@@ -215,6 +248,13 @@ if __name__ == '__main__':
     overlayExifEnabled=True
     overlayTextColorBG=ImageColor.getrgb("#00000040")
     overlayTextColorFG=ImageColor.getrgb("#ffffffff")
+    blocklistURL=""
+    blocklistChecktime=0
+    blocklistActive=False
+    blocklistHeight=-1
+    blocklistDefinitions=[]
+    useTor=True
+    logging.getLogger("exifread").setLevel(logging.ERROR)
     # Override config
     if exists(configFile):
         with open(configFile) as f:
@@ -250,6 +290,10 @@ if __name__ == '__main__':
             overlayTextColorBG = ImageColor.getrgb(config["overlayTextColorBG"])
         if "overlayTextColorFG" in config:
             overlayTextColorFG = ImageColor.getrgb(config["overlayTextColorFG"])
+        if "blocklistURL" in config:
+            blocklistURL = config["blocklistURL"]
+        if "useTor" in config:
+            useTor = config["useTor"]
     # Data directories
     if not os.path.exists(dataDirectory):
         os.makedirs(dataDirectory)
