@@ -18,6 +18,7 @@ import time
 import vicariousbitcoin
 import vicariousnetwork
 import vicarioustext
+import vicariouswatermark
 import wand.color
 import wand.image
 
@@ -119,6 +120,8 @@ def createimage(blocknumber=1, width=480, height=320):
         print(f"No ordinals found in block {blocknumber}")
         return
     print(f"Found {ordcount} ordinals in block {blocknumber}.")
+    bn=f'{blocknumber:,}'.replace(',','/')
+    bn=bn.rpartition('/')[0]+"/"+str(blocknumber)
 
     ordcount = 0
     for ordinal in ordinals:
@@ -130,8 +133,10 @@ def createimage(blocknumber=1, width=480, height=320):
         contenttype = "undefined"
         try:
             if txidx in blockIndexesToSkip:
-                raise Exception("Blocked") # shows in log
-                # continue # silently skip blocked
+                reportAsBlockedInLog = False
+                if reportAsBlockedInLog:
+                    raise Exception("Blocked")
+                continue
             size = ordinal["size"] if "size" in ordinal else 0
             contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
             if contenttype in ["image/gif","image/jpeg","image/png","image/svg","image/svg+xml","image/webp"]:
@@ -190,16 +195,21 @@ def createimage(blocknumber=1, width=480, height=320):
                     vicarioustext.drawbottomrighttext(overlaydraw, "content-type: " + contenttype, 10, width, height-12, overlayTextColorFG)
                     vicarioustext.drawbottomrighttext(overlaydraw, "txid: " + ordinal["txid"], 10, width, height, overlayTextColorFG)
                     canvas.alpha_composite(overlayimg)
+                    overlayimg.close()
                 else:
                     # Footer line without overlay background
                     vicarioustext.drawbottomrighttext(draw, "txid: " + ordinal["txid"], 10, width, height, colorTextFG)
-                # Save it
+                # Watermark
+                vicariouswatermark.do(canvas,width=99)
+                # Save each unique name
                 if saveUniqueImageNames:
-                    ordoutputFile = uniqueOutputFile.replace(".png","-"+str(blocknumber)+"-"+str(ordinal["txidx"])+".png")
-#                    print(f"- saving image as {ordoutputFile}")
-                    canvas.save(ordoutputFile) # unique named
-#                print(f"- saving image as {outputFile}")
-                canvas.save(outputFile)    # puts latest in this single slot
+                    ordoutputFile = uniqueOutputFile.replace(".png","-"+bn+"-"+str(ordinal["txidx"])+".png")
+                    ordoutputFolder = ordoutputFile.rpartition('/')[0]
+                    if not os.path.exists(ordoutputFolder):
+                        os.makedirs(ordoutputFolder)
+                    canvas.save(ordoutputFile)
+                # Save the single name
+                canvas.save(outputFile)
                 canvas.close()
                 handled = True
 #            elif contenttype.startswith("text/"):
@@ -210,7 +220,10 @@ def createimage(blocknumber=1, width=480, height=320):
                 print(f"- no handler yet for content-type: {contenttype}")
             if exportFilesToDataDirectory:
                 fileextension = getfileextensionfromcontenttype(contenttype)
-                exportFileName = ordinalsDirectory + "inscription-" + str(blocknumber) + "-" + str(ordinal["txidx"]) + "." + fileextension
+                exportFileName = ordinalsDirectory + "inscription-"+bn+"-" + str(ordinal["txidx"]) + "." + fileextension
+                exportFolder = exportFileName.rpartition('/')[0]
+                if not os.path.exists(exportFolder):
+                    os.makedirs(exportFolder)
                 print(f"- exporting file to {exportFileName}")
                 bytesioblob = BytesIO(ordinal["data"])
                 with open(exportFileName, "wb") as f:
