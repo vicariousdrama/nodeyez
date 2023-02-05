@@ -65,6 +65,8 @@ def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
 
 # do a GET call on the specified url, and with response body, load into pillow image
 def getimagefromurl(useTor=True, url=None, headers={}):
+    if url.startswith("file://"):
+        return getimagefromfile(filepath=url)
     img = Image.new(mode="RGB", size=(1,1), color=ImageColor.getrgb("#7f007f")) # default response is a 1x1 purple
     try:
         proxies = gettorproxies() if useTor else {}
@@ -73,7 +75,7 @@ def getimagefromurl(useTor=True, url=None, headers={}):
         with requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False,stream=True) as response:
             response.raise_for_status()
             ct = response.headers['content-type']
-            if ct in ['image/png','image/bmp','image/gif']:
+            if ct in ['image/png','image/bmp','image/gif','image/jpeg']:
                 img = Image.open(response.raw)
             if ct in ['image/svg','image/svg+xml']:
                 response.raw.decode_content=True
@@ -87,6 +89,30 @@ def getimagefromurl(useTor=True, url=None, headers={}):
         print(f"error retrieving image from url {url}\n")
         print(f"{e}")
     return img
+
+def getimagefromfile(filepath=None):
+    img = Image.new(mode="RGB", size=(1,1), color=ImageColor.getrgb("#7f007f"))
+    try:
+        if filepath.startswith("file://"):
+            filepath = filepath[7:]
+            ext = filepath.rpartition('.')[2]
+            if ext not in ['png','bmp','gif','jpg','webp','tiff','svg']:
+                raise "Unsupported extension in getimagefromfile"
+            with open(filepath,'rb') as file:
+                if ext in ['png','bmp','gif','jpg','webp','tiff']:
+                    img = Image.open(file)
+                if ext in ['svg']:
+                    with wand.image.Image() as image:
+                        with wand.color.Color('transparent') as background_color:
+                            library.MagickSetBackgroundColor(image.wand, background_color.resource)
+                        image.read(blob=file.read(),format="svg")
+                        img = Image.open(io.BytesIO(image.make_blob("png32")))
+    except Exception as e:
+        print(f"error retrieving image from file {filepath}\n")
+        print(f"{e}")
+    return img
+
+
 
 def getblockclockapicall(url="http://21.21.21.21/api/show/text/NODEYEZ", blockclockPassword=""):
     if url == "http://21.21.21.21/api/show/text/NODEYEZ":
