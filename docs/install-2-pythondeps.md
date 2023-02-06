@@ -62,10 +62,10 @@ Display panels to get the most from your node
    sudo apt-get install apt-transport-tor
    ```
 
-### 5. Install ImageMagic libraries as follows
+### 5. Install ImageMagic and Inkscape libraries as follows
 
    ```sh
-   sudo apt-get install imagemagick
+   sudo apt-get install imagemagick inkscape
    ```
 
 ---

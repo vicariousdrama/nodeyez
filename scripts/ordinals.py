@@ -166,10 +166,27 @@ def createimage(blocknumber=1, width=480, height=320):
                             exif["Software"] = tags[tag]
                 if contenttype in ["image/svg", "image/svg+xml"]:
                     with wand.image.Image() as image:
-                        with wand.color.Color('transparent') as background_color:
-                            library.MagickSetBackgroundColor(image.wand, background_color.resource)
+                        #with wand.color.Color('transparent') as background_color:
+                        #    library.MagickSetBackgroundColor(image.wand, background_color.resource)
                         image.read(blob=BytesIO(ordinal["data"]),format="svg")
+                        #print(f"*** wand svg image width: {image.width}, height: {image.height}")
+                        #if exportFilesToDataDirectory:
+                        #    exportFileName = ordinalsDirectory + "inscription-"+bn+"-" + str(ordinal["txidx"]) + "-wand.png"
+                        #    exportFolder = exportFileName.rpartition('/')[0]
+                        #    if not os.path.exists(exportFolder):
+                        #        os.makedirs(exportFolder)
+                        #    print(f"- exporting file to {exportFileName}")
+                        #    image.save(filename=exportFileName)
                         img = Image.open(BytesIO(image.make_blob("png32")))
+                        #print(f"*** pil svg imm width: {img.width}, height: {img.height}")
+                        #if exportFilesToDataDirectory:
+                        #    exportFileName = ordinalsDirectory + "inscription-"+bn+"-" + str(ordinal["txidx"]) + "-pilimg.png"
+                        #    exportFolder = exportFileName.rpartition('/')[0]
+                        #    if not os.path.exists(exportFolder):
+                        #        os.makedirs(exportFolder)
+                        #    print(f"- exporting file to {exportFileName}")
+                        #    img.save(exportFileName)
+
                 # Resize to fit
                 img = resizeToWidth(img, width)
                 irw = float(img.height)/float(img.width)
