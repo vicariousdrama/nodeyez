@@ -8,6 +8,7 @@ import sys
 import time
 import vicarioustext
 import vicariousnetwork
+import vicariouswatermark
 
 def createimage(width=480, height=320):
     global last
@@ -38,8 +39,11 @@ def createimage(width=480, height=320):
         vicarioustext.drawcenteredtext(draw, "Price: " + bpt, 20, int(width/8*4), height-padtop)
     vicarioustext.drawbottomlefttext(draw, "Data from bisq", 16, 0, height, colorBisq)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
-    # Combine and save
+    # Combine
     composite = Image.alpha_composite(im, alpha_img)
+    # Watermark
+    vicariouswatermark.do(composite,width=140,box=(int(width/2)-50,height-60))
+    # Save
     print(f"Saving file to {outputFile}")
     composite.save(outputFile)
     im.close()

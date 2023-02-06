@@ -124,9 +124,8 @@ def getblockordinals(blocknum, blockIndexesToSkip=[]):
             txidx += 1
             if txidx in blockIndexesToSkip:
                 continue
-            txid = "?"
-            if "txid" in tx:
-                txid = tx["txid"]
+            txid = tx["txid"]
+            txsize = tx["size"]
             vinidx = 0
             if "vin" in tx:
                 for vin in tx["vin"]:
@@ -135,6 +134,13 @@ def getblockordinals(blocknum, blockIndexesToSkip=[]):
                         for txinwitness in vin["txinwitness"]:
                             match = re.match(thepattern, txinwitness)
                             if match is not None:
+                                # This is an ordinal inscription.
+                                # Get parent info
+                                parenttxid = ""
+                                parentsize = 0
+                                if "txid" in vin:
+                                    parenttxid = vin["txid"]
+                                    parentsize = gettransaction(parenttxid)["size"]
                                 #print(f"found ordinal in tx idx:{txidx} of block {blocknum}")
                                 g2 = match.group(2)
                                 pos = 0
@@ -184,7 +190,7 @@ def getblockordinals(blocknum, blockIndexesToSkip=[]):
                                     totaldatalen += (remaininghexlength/2)
                                 #print(f"- total data length: {totaldatalen}")
                                 # append an object
-                                ordinal = {"block":blocknum,"txid":txid,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"data":rawbytes}
+                                ordinal = {"block":blocknum,"txid":txid,"txsize":txsize,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"parenttxid":parenttxid,"parentsize":parentsize,"data":rawbytes}
                                 ordinals.append(ordinal)
     return ordinals
 
@@ -207,6 +213,19 @@ def getepochnum(blocknum):
 def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
     return min(blocknum, (int(epochnum * 2016) + 1))
+
+def gettransaction(txid, blockhash=""):
+    cmd = "bitcoin-cli getrawtransaction " + txid + " true "
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
+        return j
+    except subprocess.CalledProcessError as e:
+        print(e)
+        fakejson = "{\"txid\": \"" + txid + "\", 1, \"time\": 0}"
+        fakejson = '{"txid":"' + txid + '","hash":"?","size":0,"weight":0,"version":1,"vsize":0,"locktime":0,"vin":[],"vout":[]}'
+        return json.loads(fakejson)
+
 
 
 

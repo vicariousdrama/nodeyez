@@ -198,7 +198,7 @@
             <xsl:value-of select="number(substring-after($inscriptionid,'-'))" />
         </xsl:variable>
 
-        <xsl:if test="true() or ($blocknumber &lt;= 775079)">
+        <xsl:if test="true() or ($blocknumber &lt;= 775200)">
             <xsl:if test="not(contains('|774366-2057|774653-658|774718-424|774783-1743|774783-1841|',concat('|',$inscriptionid,'|')))">
             <xsl:if test="not(contains('|774787-756|774792-2014|774804-3311|775073-857|775079-964|',concat('|',$inscriptionid,'|')))">
                 <xsl:choose>

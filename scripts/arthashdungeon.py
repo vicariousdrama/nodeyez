@@ -12,6 +12,7 @@ import time
 import sys
 import vicariousbitcoin
 import vicarioustext
+import vicariouswatermark
 
 def dfsmazegen(x, y, d, t):
     global maze
@@ -79,7 +80,7 @@ def createimage(blocknumber=1, width=480, height=320):
     if len(sys.argv) > 1:
         outputFileBlock = outputFile.replace(".png","-" + str(blocknumber) + ".png")
     padtop=32
-    im       = Image.new(mode="RGB", size=(width, height), color=colorBackground)
+    im       = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw     = ImageDraw.Draw(im)
     iconsize = 32
     tileset  = Image.open(bitcoinTilesFile)
@@ -233,6 +234,8 @@ def createimage(blocknumber=1, width=480, height=320):
     #  - sats
     vicarioustext.drawlefttext(draw, "Blockhash Dungeon", 24, 0, int(padtop/2), colorTextFG, True)
     vicarioustext.drawrighttext(draw, "Level " + str(blocknumber), 24, width, int(padtop/2), colorTextFG, True)
+    # Watermark
+    vicariouswatermark.do(im,width=140,box=(int(width/2)-50,height-24))
     im.save(outputFileBlock)
     # cleanup resources
     logoset.close()

@@ -1,5 +1,5 @@
 {
-  "vettedheight": 775079,
+  "vettedheight": 775200,
   "blocklist": [
     {"blocknumber":774366,"idx":2057,"reason":"obscene"},
     {"blocknumber":774653,"idx":658,"reason":"obscene"},
@@ -10,6 +10,7 @@
     {"blocknumber":774792,"idx":2014,"reason":"obscene"},
     {"blocknumber":774804,"idx":3311,"reason":"obscene"},
     {"blocknumber":775073,"idx":857,"reason":"obscene"},
-    {"blocknumber":775079,"idx":964,"reason":"obscene"}
+    {"blocknumber":775079,"idx":964,"reason":"obscene"},
+    {"blocknumber":775115,"idx":1142,"reason":"obscene"}
   ]
 }

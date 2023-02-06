@@ -8,6 +8,7 @@ import sys
 import time
 import vicarioustext
 import vicariousnetwork
+import vicariouswatermark
 
 def drawsatssquare(draw,dc,dr,spf,satw,bpx,bpy):
     satsleft = spf
@@ -100,8 +101,14 @@ def createimage(width=480, height=320):
     vicarioustext.drawcenteredtext(draw, "Low: " + str(satsperfiatunithigh), 20, int(width/8*1), height-padtop)
     vicarioustext.drawbottomlefttext(draw, "Data from bisq", 16, 0, height, colorBisq)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
-    # Combine and save
+    # Combine
     composite = Image.alpha_composite(im, alpha_img)
+    # Watermark
+    if not showBigText:
+        vicariouswatermark.do(composite,width=100)
+    else:
+        vicariouswatermark.do(composite,width=140,box=(int(width/2)-50,height-padtop))
+    # Save
     print(f"Saving file to {outputFile}")
     composite.save(outputFile)
     im.close()
