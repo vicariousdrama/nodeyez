@@ -34,6 +34,7 @@ General
 - Migrated repository to local gitea service. Github is now only a mirror.
 - Deprecated support for Compass Mining Hardware, Gas Prices, Raretoshi
 - Improved Mock data for testing renderings
+- Added watermarks to renders
 
 ## 1.0.0
 

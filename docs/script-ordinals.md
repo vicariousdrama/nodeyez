@@ -25,22 +25,21 @@ the image, the block, and the txid.
 
    This script also supports optional command line arguments for a single run and exit.
 
-   1. Pass the desired block number as an argument as follows
+   1. Pass the desired block number or range as an argument as follows
 
    ```sh
    /usr/bin/env python3 ordinals.py 773046
+   # or
+   /usr/bin/env python3 ordinals.py 775000-775100
    ```
 
-   2. Pass the desired block number, width and height as arguments
+
+   2. Pass the desired block number or range, width and height as arguments
 
    ```sh
    /usr/bin/env python3 ordinals.py 774411 800 600
-   ```
-
-   You can also use this script as a convenience to process all blocks or block segments from the past
-
-   ```sh
-   for blocknum in {767430..774411}; do /usr/bin/env python3 ordinals.py $blocknum; done
+   # or
+   /usr/bin/env python3 ordinals.py 775123-775223 1920 1080
    ```
 
 

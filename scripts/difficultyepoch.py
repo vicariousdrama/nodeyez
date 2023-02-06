@@ -8,6 +8,7 @@ import sys
 import time
 import vicariousbitcoin
 import vicarioustext
+import vicariouswatermark
 
 def getcurrenttimeinseconds():
     cmd = "date -u +%s"
@@ -72,7 +73,7 @@ def createimage(width=480, height=320):
     blockw=int(math.floor(width/63))
     padleft=int(math.floor((width-(63*blockw))/2))
     padtop=36
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
+    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     for dc in range(63):
         for dr in range(32):
@@ -101,6 +102,7 @@ def createimage(width=480, height=320):
     vicarioustext.drawtoprighttext(draw, "In: ", 18, int(width/10*6), height-32, colorTextFG)
     vicarioustext.drawtoplefttext(draw, str(nextepochdesc), 18, int(width/10*6), height-32, colorTextFG)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
+    vicariouswatermark.do(im,100,box=(0,height-12))
     print(f"saving imager to {outputFile}")
     im.save(outputFile)
     if saveEachBlock:

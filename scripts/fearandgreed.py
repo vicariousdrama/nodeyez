@@ -12,6 +12,7 @@ import time
 import vicariousbitcoin
 import vicariousnetwork
 import vicarioustext
+import vicariouswatermark
 
 def getdatefile():
     return datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
@@ -53,7 +54,7 @@ def createimage(width=480, height=320):
     footerheight = 30
     infoheight = (height - headerheight - footerheight) * .3
     chartheight = (height - headerheight - footerheight) * .7
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
+    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
     vicarioustext.drawcenteredtext(draw, "Fear and Greed Index", 24, int(width/2), int(headerheight/2), colorTextFG, True)
@@ -90,6 +91,9 @@ def createimage(width=480, height=320):
     vicarioustext.drawrighttext(draw, "20%", 12, labelwidth, chart20, colorTextFG)
     vicarioustext.drawrighttext(draw, "0%", 12, labelwidth, chart0, colorTextFG)
     # - data plot
+    highestpct = 0.0
+    highestxpos = 0
+    highestypost = 0
     entrynum = 0
     plotbuf = 1
     xbuf = 0
@@ -104,6 +108,10 @@ def createimage(width=480, height=320):
         fngpct = entry["value"]
         xpos = chartright - (entrynum * plotbuf)
         ypos = chartbottom - int(math.floor((chartbottom-charttop) / 100.0 * float(fngpct)))
+        if float(fngpct) > highestpct:
+            highestpct = float(fngpct)
+            highestxpos = xpos
+            highestypos = ypos
         if ((xbuf+xpos-plotbuf) <= chartleft):
             break
         draw.ellipse(xy=[(xbuf+xpos-plotbuf,ybuf+ypos-plotbuf),(xbuf+xpos+plotbuf,ybuf+ypos+plotbuf)],fill=colorDataValue,outline=colorDataValue,width=1)
@@ -114,12 +122,12 @@ def createimage(width=480, height=320):
             dtyear = fngtime[0:4]
             dtmonth = fngtime[5:7]
             dtday = fngtime[8:10]
-            if int(dtmonth) % 3 == 0:
+            if int(dtmonth) % 3 == 1:
                 if int(dtday) == 1:
                     dtlabel = fngtime[0:7]
         else:
             dt_obj = datetime.fromtimestamp(int(fngtime))
-            if ((dt_obj.month % 3) == 0):
+            if ((dt_obj.month % 3) == 1):
                 if (dt_obj.day == 1):
                     dtlabel = str(dt_obj.year) + "-" + str(dt_obj.month).rjust(2,'0')
         if olddtlabel != dtlabel:
@@ -149,6 +157,15 @@ def createimage(width=480, height=320):
     if fnglength > 0:
         currentvalue = fnghistory["data"][0]["value"]
         currentlabel = fnghistory["data"][0]["value_classification"]
+        # indicate highest alue
+        if highestxpos > float(width/2):
+            # anchor bottom right
+            draw.rectangle([(highestxpos-50,highestypos-20),(highestxpos,highestypos-2)], outline=colorGraphLineLight, fill=colorBackground)
+            vicarioustext.drawcenteredtext(draw, str(int(highestpct)), 12, highestxpos-25, highestypos-11, colorDataValue)
+        else:
+            # anchor bottom left
+            draw.rectangle([(highestxpos+50,highestypos-20),(highestxpos,highestypos-2)], outline=colorGraphLineLight, fill=colorBackground)
+            vicarioustext.drawcenteredtext(draw, str(int(highestpct)), 12, highestxpos+25, highestypos-11, colorDataValue)
     print(f"Current Value: {currentvalue} - {currentlabel}")
     vicarioustext.drawcenteredtext(draw, currentvalue, 48, int(width/2), (headerheight+32), colorDataValue, True)
     vicarioustext.drawcenteredtext(draw, currentlabel, 20, int(width/2), (headerheight+64), colorDataValue, True)
@@ -158,6 +175,8 @@ def createimage(width=480, height=320):
     # Date and Time
     dt = "as of " + vicarioustext.getdateandtime()
     vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
+    # Watermark
+    vicariouswatermark.do(im,100)
     # Save to file
     print("Saving image")
     im.save(outputFile)

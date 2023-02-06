@@ -10,6 +10,7 @@ import sys
 import time
 import vicariousbitcoin
 import vicarioustext
+import vicariouswatermark
 
 def getGridImage(p):
     if os.path.exists(ipfsDirectory):
@@ -46,7 +47,7 @@ def createimage(width=480, height=320):
     halvingpct = float(nHeight - halvingbegin) / float(rows*cols)
     gridblocks = nHeight % (rows*cols)
     # start the image
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
+    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # grid for the current percent
     blockw=int(math.floor((width-1)/cols))
@@ -120,7 +121,7 @@ def createimage(width=480, height=320):
                 draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
     # header and footer
     padtop=36
-    vicarioustext.drawcenteredtext(draw, "Next Subsidy Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
+    vicarioustext.drawcenteredtext(draw, "Next Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
     vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
     # progress bar showing major percent
     padleft=0
@@ -139,6 +140,8 @@ def createimage(width=480, height=320):
         vicarioustext.drawlefttext(draw, pcttxt, 14, padleft+barwidth+2, padtop+(barheight/2), colorProgress, True)
     else:
         vicarioustext.drawrighttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth-4, padtop+(barheight/2), colorBackground, True)
+    # Watermark
+    vicariouswatermark.do(im,width=100)
     # save
     print("saving image")
     im.save(outputFile)

@@ -10,6 +10,7 @@ import sys
 import time
 import vicarioustext
 import vicariousnetwork
+import vicariouswatermark
 
 def convert_size(size_bytes):
    if size_bytes == 0:
@@ -164,10 +165,10 @@ def drawhistogrambar(draw,bw,curhistvsize,curhistsatfee,histx1,histx2,histy1,his
 
 def createimage(width=480, height=320):
     padtop=40
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
+    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # header
-    vicarioustext.drawcenteredtext(draw, "Mempool Block Fee Estimates", 24, int(width/2), int(padtop/2), colorTextFG, True)
+    vicarioustext.drawcenteredtext(draw, "Mempool Fees", 24, int(width/2), int(padtop/2), colorTextFG, True)
     # blocks
     mempoolblocks = vicariousnetwork.getmempoolblocks(useTor, urlmempool)
     global oldmempoolblocks
@@ -257,6 +258,8 @@ def createimage(width=480, height=320):
         vicarioustext.drawbottomlefttext(draw, "Data from mempool.space", 14, 0, height, colorMempool)
     else:
         vicarioustext.drawbottomlefttext(draw, "Data from sovereign node", 14, 0, height, colorMempool)
+    # Watermark
+    vicariouswatermark.do(im,width=100,box=(int(width/2)-50,height-28))
     print(f"saving image to {outputFile}")
     im.save(outputFile)
     im.close()

@@ -137,7 +137,11 @@ def createimage(blocknumber=1, width=480, height=320):
                 if reportAsBlockedInLog:
                     raise Exception("Blocked")
                 continue
-            size = ordinal["size"] if "size" in ordinal else 0
+            size = int(ordinal["size"]) if "size" in ordinal else 0
+            txsize = ordinal["txsize"]
+            parentsize = ordinal["parentsize"]
+            totalsize = txsize + parentsize
+            sizestr = f"data size: {size}, tx size: {txsize}, commitment tx size: {parentsize}, total size: {totalsize}"
             contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
             if contenttype in ["image/gif","image/jpeg","image/png","image/svg","image/svg+xml","image/webp"]:
                 canvas = Image.new(mode="RGBA", size=(width,height), color=colorBackground)
@@ -152,13 +156,13 @@ def createimage(blocknumber=1, width=480, height=320):
                     for tag in tags.keys():
                         if tag in ["Image Orientation","EXIF UserComment","Image Make","Image Model","EXIF LensModel"]:
                             exif[tag] = tags[tag]
-                        if tag in ["ImageWidth","EXIF ExifImageWidth"]:
+                        elif tag in ["ImageWidth","EXIF ExifImageWidth"]:
                             exif["ImageWidth"] = tags[tag]
-                        if tag in ["ImageLength","EXIF ExifImageLength"]:
+                        elif tag in ["ImageLength","EXIF ExifImageLength"]:
                             exif["ImageLength"] = tags[tag]
-                        if tag in ["DateTime", "Image DateTime", "EXIF DateTimeOriginal", "EXIF DateTimeDigitized"]:
+                        elif tag in ["DateTime", "Image DateTime", "EXIF DateTimeOriginal", "EXIF DateTimeDigitized"]:
                             exif["DateTime"] = tags[tag]
-                        if tag in ["Software","Image Software"]:
+                        elif tag in ["Software","Image Software"]:
                             exif["Software"] = tags[tag]
                 if contenttype in ["image/svg", "image/svg+xml"]:
                     with wand.image.Image() as image:
@@ -191,16 +195,16 @@ def createimage(blocknumber=1, width=480, height=320):
                         for k in exif:
                             exifidx += 1
                             vicarioustext.drawbottomrighttext(overlaydraw, k + ": " + str(exif[k]), 10, width, height-24-(exifidx*12), overlayTextColorFG)
-                    vicarioustext.drawbottomrighttext(overlaydraw, "size: " + str(int(size)) + " bytes", 10, width, height-24, overlayTextColorFG)
-                    vicarioustext.drawbottomrighttext(overlaydraw, "content-type: " + contenttype, 10, width, height-12, overlayTextColorFG)
-                    vicarioustext.drawbottomrighttext(overlaydraw, "txid: " + ordinal["txid"], 10, width, height, overlayTextColorFG)
+                    vicarioustext.drawbottomrighttext(overlaydraw, "content-type: " + contenttype, 10, width, height-24, overlayTextColorFG)
+                    vicarioustext.drawbottomrighttext(overlaydraw, sizestr, 10, width, height-12, overlayTextColorFG)
+                    vicarioustext.drawbottomrighttext(overlaydraw, ordinal["txid"], 9, width, height, overlayTextColorFG)
                     canvas.alpha_composite(overlayimg)
                     overlayimg.close()
                 else:
                     # Footer line without overlay background
                     vicarioustext.drawbottomrighttext(draw, "txid: " + ordinal["txid"], 10, width, height, colorTextFG)
                 # Watermark
-                vicariouswatermark.do(canvas,width=99)
+                vicariouswatermark.do(canvas,width=99,box=(0,height-12))
                 # Save each unique name
                 if saveUniqueImageNames:
                     ordoutputFile = uniqueOutputFile.replace(".png","-"+bn+"-"+str(ordinal["txidx"])+".png")
@@ -218,6 +222,7 @@ def createimage(blocknumber=1, width=480, height=320):
 #                handled = True
             if not handled:
                 print(f"- no handler yet for content-type: {contenttype}")
+                print(f"- {sizestr}")
             if exportFilesToDataDirectory:
                 fileextension = getfileextensionfromcontenttype(contenttype)
                 exportFileName = ordinalsDirectory + "inscription-"+bn+"-" + str(ordinal["txidx"]) + "." + fileextension
@@ -323,18 +328,24 @@ if __name__ == '__main__':
             print(f"Produces image(s) with Ordinal Inscription data")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
-            print(f"2) Pass the desired block number as an argument as follows")
+            print(f"2) Pass the desired block number or range as an argument as follows")
             arg0 = sys.argv[0]
-            print(f"   {arg0} 722231")
-            print(f"3) Pass the desired block number, width and height as arguments")
-            print(f"   {arg0} 722231 1920 1080")
+            print(f"   {arg0} 767430")
+            print(f"   {arg0} 767430-774999")
+            print(f"3) Pass the desired block number or range, width and height as arguments")
+            print(f"   {arg0} 775100 1920 1080")
+            print(f"   {arg0} 774000-774999 1920 1080")
             print(f"You may specify a custom configuration file at {configFile}")
             exit(0)
-        blocknumber = int(sys.argv[1])
+        blocknumbers = sys.argv[1].split('-')
+        blocknumber = int(blocknumbers[0])
+        blocknumberend = int(blocknumbers[1]) if len(blocknumbers) > 1 else blocknumber
         if len(sys.argv) > 3:
             width = int(sys.argv[2])
             height = int(sys.argv[3])
-        createimage(blocknumber,width,height)
+        while blocknumber <= blocknumberend:
+            createimage(blocknumber,width,height)
+            blocknumber += 1
         exit(0)
     # Loop
     oldblocknumber = 0

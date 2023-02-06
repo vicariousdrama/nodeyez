@@ -20,6 +20,7 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         draw.ellipse(xy=(x+2,y+2+((h)/4*3),x+tw-2,y+h-2),fill=colorThermometerUnfilled,outline=None,width=1) # bottom bulb
         draw.ellipse(xy=(x+2+((tw)/4*1),y+2,x-2+((tw)/4*3),y-2+((h)/4*1)),fill=colorThermometerUnfilled,outline=None,width=1) # top
         draw.rectangle(xy=(x+2+((tw)/4*1),y+2+((h)/8*1),x-2+((tw)/4*3),y-2+((h)/8*7)),fill=colorThermometerUnfilled,outline=None,width=1) # middle
+        # fill it
         barcolor=colorThermometerBar
         barpos=3
         if int(v) > 55:
@@ -28,22 +29,24 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         if int(v) > 65:
             barcolor=colorThermometerBarHot
             barpos=1
-        xo = (w * .025) # 4
-        yo = 0
-        draw.ellipse(xy=(x+xo,y+yo+(h/4*3),x+tw-xo,y+h-xo),fill=barcolor,outline=None,width=1)
-        draw.rectangle(xy=(x+4+((tw-x)/4*1),y+4+(h/8*barpos),x-4+((tw-x)/4*3),y-4+(h/8*7)),fill=barcolor,outline=None,width=1)
-        # lines
+        xo = math.ceil(w * .025) # 4
+        yo = 2
+        draw.ellipse(xy=(x+xo,y+yo+(h/4*3),x-xo+tw,y-yo+h),fill=barcolor,outline=None,width=1)
+        x1 = int( x+((tw)/4*1)+xo )
+        x2 = int( x+((tw)/4*3)-xo )
+        draw.rectangle(xy=(x1,y+yo+(h/8*barpos),x2,y-yo+(h/8*7)),fill=barcolor,outline=None,width=1)
+        # degree lines
         for j in range(8):
             draw.rectangle(xy=(x+6+((tw-x)/4*3),y+(h/4)+((h/2/8)*j),x+6+int(w*.125)+((tw-x)/4*3),y+(h/4)+((h/2/8)*j)),fill=colorThermometerOutline,outline=colorThermometerOutline,width=int(w*.02))
-        vicarioustext.drawtoprighttext(draw, v + "°", int(w*.3), x+w, y+(h/2), colorHeader, True)
-        vicarioustext.drawcenteredtext(draw, "Temp", int(w*.15), x+(w/2), y+(h*.08), colorHeader, True)
+        vicarioustext.drawtoprighttext(draw, v + "°", int(w*.3), x+w, y+int(h/2), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, "Temp", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
     if icon == "piestorage":
         if list(v.split())[5] == "error":
             drawicon(draw,"pieerror",x,y,w,h)
             return
         pct = int(list(v.split())[4].replace("%",""))
         gbf = list(v.split())[3]
-        pad = w * .1875
+        pad = int(w * .1875)
         ox = 2
         oy = 2
         if pct == 50:
@@ -61,26 +64,26 @@ def drawicon(draw,icon,x,y,w,h,v=None):
             slicecolor = colorPieDanger
             textcolor = colorPieDangerText
         draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=slicecolor,outline=colorPieOutline,width=1)
-        vicarioustext.drawtoplefttext(draw, "used", int(w*.10), x+(w/2)+ox, y+(h/2)+(h*.05), textcolor)
+        vicarioustext.drawtoplefttext(draw, "used", int(w*.10), x+(w/2)+ox, y+int(h/2)+int(h*.05), textcolor)
         ox = ox * -1
         oy = oy * -1
         sa = ea
         ea = 360
         draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=colorPieEmpty,outline=colorPieOutline,width=1)
-        vicarioustext.drawbottomlefttext(draw, "free", int(w*.10), x+(w/2)+ox, y+(h/2)-(h*.05), colorPieEmptyText)
-        vicarioustext.drawcenteredtext(draw, gbf + " free", int(w*.125), x+(w/2), y+h-(h*.0625), colorPieLabelText)
+        vicarioustext.drawbottomlefttext(draw, "free", int(w*.10), x+(w/2)+ox, y+(h/2)-int(h*.05), colorPieEmptyText)
+        vicarioustext.drawcenteredtext(draw, gbf + " free", int(w*.125), x+(w/2), y+h-int(h*.0625), colorPieLabelText)
     if icon == "sdcard":
         drawicon(draw,"piestorage",x,y,w,h,v)
-        vicarioustext.drawcenteredtext(draw, "/dev/root", int(w*.15), x+(w/2), y+(h*.08), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, "/dev/root", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
     if icon == "hdd":
         drawicon(draw,"piestorage",x,y,w,h,v)
-        vicarioustext.drawcenteredtext(draw, "/dev/sda1", int(w*.15), x+(w/2), y+(h*.08), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, "/dev/sda1", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
     if icon == "cpuload":
-        vicarioustext.drawcenteredtext(draw, "CPU Load", int(w*.15), x+(w/2), y+(h*.08), colorHeader, True)
-        vicarioustext.drawlefttext(draw, "1 min", int(w*.1125), x+(w*.0375), y+((h/8)*3), colorCPULabelText)
-        vicarioustext.drawlefttext(draw, "5 min", int(w*.1125), x+(w*.0375), y+((h/8)*5), colorCPULabelText)
-        vicarioustext.drawlefttext(draw, "15 min", int(w*.1125), x+(w*.0375), y+((h/8)*7), colorCPULabelText)
-        ttw = (w*.45)
+        vicarioustext.drawcenteredtext(draw, "CPU Load", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
+        vicarioustext.drawlefttext(draw, "1 min", int(w*.1125), x+int(w*.0375), y+(int(h/8)*3), colorCPULabelText)
+        vicarioustext.drawlefttext(draw, "5 min", int(w*.1125), x+int(w*.0375), y+(int(h/8)*5), colorCPULabelText)
+        vicarioustext.drawlefttext(draw, "15 min", int(w*.1125), x+int(w*.0375), y+(int(h/8)*7), colorCPULabelText)
+        ttw = int(w*.45)
         pcount = getprocessorcount()
         for j in range(3):
             draw.rounded_rectangle(xy=(x+ttw+3,y+((h/8)*((j*2)+2))+3,x+w,y+((h/8)*((j*2)+4))-3),radius=4,outline=colorCPUOutline,width=1)
@@ -97,8 +100,8 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         l = list(v.split())[0]
         p = list(v.split())[1]
         pad = 20
-        draw.arc(xy=(x+pad,y+(pad*2),x+w-pad,y+h),start=120,end=420,fill=colorMEMOutline,width=(w*.125))
-        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=colorMEMEmpty,width=((w*.125)-3))
+        draw.arc(xy=(x+pad,y+(pad*2),x+w-pad,y+h),start=120,end=420,fill=colorMEMOutline,width=int(w*.125))
+        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120+1,end=420-1,fill=colorMEMEmpty,width=(int(w*.125)-3))
         arccolor=colorMEMGood
         if int(p) == 0:
             p = "1"
@@ -107,9 +110,9 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         if int(p) > 90:
             arccolor=colorMEMDanger
         ea=120+int((420-120)*(float(p)/100))
-        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120,end=ea,fill=arccolor,width=((w*.125)-3))
-        vicarioustext.drawcenteredtext(draw, l, int(w*.15), x+(w/2), y+(h*.125), colorHeader, True)
-        vicarioustext.drawcenteredtext(draw, p + "%", int(w*.125), x+(w/2), y+(h/2)+(h*.125), colorMEMLabelText)
+        draw.arc(xy=(x+pad+2,y+(pad*2)+2,x+w-pad-2,y+h-2),start=120,end=ea,fill=arccolor,width=(int(w*.125)-3))
+        vicarioustext.drawcenteredtext(draw, l, int(w*.15), x+(w/2), y+int(h*.125), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, p + "%", int(w*.125), x+(w/2), y+(h/2)+int(h*.125), colorMEMLabelText)
     if icon == "datetime":
         vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, w, h)
 
