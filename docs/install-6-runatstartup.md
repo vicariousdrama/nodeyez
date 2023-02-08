@@ -33,6 +33,7 @@ automatically at startup.
    sudo systemctl enable nodeyez-fearandgreed.service
    sudo systemctl enable nodeyez-fiatprice.service
    sudo systemctl enable nodeyez-halving.service
+   sudo systemctl enable nodeyez-inscriptionmempool.service
    sudo systemctl enable nodeyez-ipaddress.service
    sudo systemctl enable nodeyez-lndhub.service
    sudo systemctl enable nodeyez-mempoolblocks.service
@@ -68,6 +69,7 @@ Only issue the systemctl start command for those services you want to run.
    sudo systemctl start nodeyez-fearandgreed.service
    sudo systemctl start nodeyez-fiatprice.service
    sudo systemctl start nodeyez-halving.service
+   sudo systemctl start nodeyez-inscriptionmempool.service
    sudo systemctl start nodeyez-ipaddress.service
    sudo systemctl start nodeyez-lndhub.service
    sudo systemctl start nodeyez-mempoolblocks.service

@@ -256,6 +256,7 @@ separate tab or window for convenience.
 - [block height](./script-blockheight.md)
 - [difficulty epoch](./script-difficultyepoch.md)
 - [halving countdown](./script-halving.md)
+- [inscription mempool](./script-inscriptionmempool.md)
 - [mempool blocks](./script-mempoolblocks.md)
 - [op return](./script-opreturn.md)
 - [ordinal inscriptions](./script-ordinals.md)

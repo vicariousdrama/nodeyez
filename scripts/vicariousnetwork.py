@@ -98,10 +98,10 @@ def getimagefromfile(filepath=None):
             ext = filepath.rpartition('.')[2]
             if ext not in ['png','bmp','gif','jpg','webp','tiff','svg']:
                 raise "Unsupported extension in getimagefromfile"
-            with open(filepath,'rb') as file:
-                if ext in ['png','bmp','gif','jpg','webp','tiff']:
-                    img = Image.open(file)
-                if ext in ['svg']:
+            if ext in ['png','bmp','gif','jpg','webp','tiff']:
+                img = Image.open(filepath)
+            if ext in ['svg']:
+                with open(filepath,'rb') as file:
                     with wand.image.Image() as image:
                         with wand.color.Color('transparent') as background_color:
                             library.MagickSetBackgroundColor(image.wand, background_color.resource)
