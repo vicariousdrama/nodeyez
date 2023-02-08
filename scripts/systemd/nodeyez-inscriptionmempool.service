@@ -1,0 +1,17 @@
+# Nodeyez: systemd unit for Inscription Mempool panel generation
+# /etc/systemd/system/nodeyez-inscriptionmempool.service
+
+[Unit]
+Description=Nodeyez image generator for Unmined Inscriptions in Mempool
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/inscriptionmempool.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

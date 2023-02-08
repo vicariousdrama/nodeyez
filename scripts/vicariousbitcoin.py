@@ -214,15 +214,25 @@ def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
     return min(blocknum, (int(epochnum * 2016) + 1))
 
-def gettransaction(txid, blockhash=""):
-    cmd = "bitcoin-cli getrawtransaction " + txid + " true "
+def getmempool():
+    cmd = "bitcoin-cli getrawmempool"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
         return j
     except subprocess.CalledProcessError as e:
         print(e)
-        fakejson = "{\"txid\": \"" + txid + "\", 1, \"time\": 0}"
+        fakejson = "[]"
+        return json.loads(fakejson)
+
+def gettransaction(txid, blockhash=""):
+    cmd = "bitcoin-cli getrawtransaction " + txid + " true 2>&1"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
+        return j
+    except subprocess.CalledProcessError as e:
+        print(e)
         fakejson = '{"txid":"' + txid + '","hash":"?","size":0,"weight":0,"version":1,"vsize":0,"locktime":0,"vin":[],"vout":[]}'
         return json.loads(fakejson)
 

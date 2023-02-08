@@ -23,6 +23,7 @@ New Panels and Enhancements
 - New Panel: Dual Image Display - Creates a composite of multiple images suitable for screens in portrait orientation. Based around 800x480 5" LCD screens.
 - Enhanced System Info - Improved scalability for temperature, piestorage, cpuload icons
 - New Panel: Ordinals - Displays images that have been embedded as inscriptions with optional blocklist
+- New Panel: Inscription Mempool - Display recent inscriptions in the mempool that are not yet mined into a block
 
 General
 - Updated macaroon creation to allow querying ForwardingHistory
