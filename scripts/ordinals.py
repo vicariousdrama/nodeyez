@@ -121,7 +121,9 @@ def createimage(blocknumber=1, width=480, height=320):
         return
     print(f"Found {ordcount} ordinals in block {blocknumber}.")
     bn=f'{blocknumber:,}'.replace(',','/')
-    bn=bn.rpartition('/')[0]+"/"+str(blocknumber)
+    bn1=str(blocknumber)[-3:][0]
+    bn2=str(blocknumber)[-3:][1]
+    bn=bn.rpartition('/')[0]+"/"+bn1+"/"+bn2+"/"+str(blocknumber)
 
     ordcount = 0
     for ordinal in ordinals:
