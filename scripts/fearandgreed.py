@@ -23,7 +23,15 @@ def makeDirIfNotExists(path):
         os.makedirs(path)
 
 def getNewestFile(fileDirectory):
-    files = glob.glob(fileDirectory + "*.json")
+    allDates = False
+    if allDates:
+        # Get all json files in the folder, rely solely on daily-data-retrieval for updates
+        files = glob.glob(fileDirectory + "*.json")
+    else:
+        # Restrict the glob pattern to just today
+        globpath = fileDirectory + datetime.utcnow().strftime("%Y-%m-%d") + "*.json"
+        files = glob.glob(globpath)
+    # find the most recently created from the files returned
     newestfile = ""
     if len(files) > 0:
         newestfile = max(files, key=os.path.getctime)
@@ -33,11 +41,13 @@ def getfnghistory():
     try:
         # Get reference to newest file
         fngfile = getNewestFile(fearAndGreedDataDirectory)
+        print(f"newest fngfile: {fngfile}")
         if len(fngfile) == 0:
             # If dont yet have a file, download and save one
             datefile = getdatefile()
             fngfile = fearAndGreedDataDirectory + datefile
-            vicariousnetwork.getandsavefile(url, fngfile)
+            print(f"Retrieving data from url: {url}, and will save to {fngfile}")
+            vicariousnetwork.getandsavefile(url=url, savetofile=fngfile)
         # Open the file
         print(f"Loading data from {fngfile}")
         with open(fngfile) as f:
