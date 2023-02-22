@@ -1,0 +1,17 @@
+    <!-- Mash controller -->
+    <script>
+    window.MashSettings = {
+      id: "a5c0d053-92ec-4b89-b7e4-fb089ab9b051"
+    };
+    var loader = function () {
+      window.Mash.init();
+    };
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.defer = true;
+    script.onload = loader;
+    script.src = "https://wallet.getmash.com/sdk/sdk.js";
+    var head = document.getElementsByTagName("head")[0];
+    head.appendChild(script);
+    </script>
+
