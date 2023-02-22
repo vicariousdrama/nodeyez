@@ -38,7 +38,11 @@ the following to return back to the privileged user
 
 ## Install for MyNodeBTC
 
-If you are using [MyNodeBTC](https://mynodebtc.com/), then you should follow 
+<mash-accordion markdown="1" key="nbcweb1" resource="549a2981-ae65-41e3-b620-6b22bec143cd" button-horizontal-align="center" button-vertical-align="bottom" button-text="Read More" button-variant="solid" button-size="md" loading-indicator-size="14">
+
+<div markdown="1">
+
+If you are using [MyNodeBTC](https://mynodebtc.com/), then you can follow 
 this section.  MyNodeBTC already comes with NGINX and will update over top of 
 configuration files. Thankfully, it also makes use of the sites-enabled and 
 [reverse-proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) 
@@ -49,71 +53,82 @@ features to make this a little easier.
 We want to enable the XSLT module, create a definition for the Nodeyez 
 dashboard on port 907, and our template that generates the dashboard view.
 
-   ```sh
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
-   sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
-   sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
-   sudo chown root:root /etc/nginx/*.xslt
-   ```
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
+sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+sudo chown root:root /etc/nginx/*.xslt
+```
 
 * Test the NGINX configuration and restart the service.
 
 There should be no errors when running the test with the first command.
 
-   ```sh
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ```
+```shell
+sudo nginx -t
+sudo systemctl restart nginx
+```
   
 * Enable Access Through Firewall
 
-   ```sh
-   sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
-   ```
+```shell
+sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
+```
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
 [Continue to Running Services at Startup](./install-6-runatstartup.md)
 
+</div>
+
+</mash-accordion>
+
 
 ## New Install of NGINX
 
-   ```sh
-   sudo apt install -y nginx
-   ```
+<mash-accordion markdown="1" key="nbcweb2" resource="549a2981-ae65-41e3-b620-6b22bec143cd" button-horizontal-align="center" button-vertical-align="bottom" button-text="Read More" button-variant="solid" button-size="md" loading-indicator-size="14">
+
+<div markdown="1">
+
+If you dont yet have nginx setup, the steps here will guide you for the installation
+and basic configuration of the web server.
+
+```shell
+sudo apt install -y nginx
+```
 
 * Create a self-signed TLS certificate (valid for 10 years)
 
-   ```sh
-   sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
-   ```
+```shell
+sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+```
 
 * To completely disable the NGINX webserver and configure the TCP reverse proxy
   for displaying the images, remove the default configuration and use the 
   premade nginx.conf file.
 
-   ```sh
-   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/nginx.conf /etc/nginx/nginx.conf
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
-   sudo chown root:root /etc/nginx/nginx.conf
-   sudo chown root:root /etc/nginx/imagegallery.xslt
-   ```
+```shell
+sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+sudo chown root:root /etc/nginx/nginx.conf
+sudo chown root:root /etc/nginx/imagegallery.xslt
+```
 
 * Test the NGINX configuration and restart the service.
 
-   ```sh
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ```
+```shell
+sudo nginx -t
+sudo systemctl restart nginx
+```
 
 * Enable Access Through Firewall
 
-   ```sh
-   sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
-   ```
+```shell
+sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
+```
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
@@ -123,84 +138,92 @@ And view a specific subfolder of data as a photo album at https://your-node-ip:9
 
 [Continue to Running Services at Startup](./install-6-runatstartup.md)
 
+</div>
+
+</mash-accordion>
+
+
 ## Modifying Existing NGINX setup
+
+<mash-accordion markdown="1" key="nbcweb3" resource="549a2981-ae65-41e3-b620-6b22bec143cd" button-horizontal-align="center" button-vertical-align="bottom" button-text="Read More" button-variant="solid" button-size="md" loading-indicator-size="14">
+
+<div markdown="1">
 
 If you already have nginx installed, then you really just need to add a local 
 server listening on a port, and an upstream node for optional SSL proxying.  
-Node that this is a very crude way of piggybacking the install.
-
-The premade configuration used in the prior section uses ports 906 for http, and
-907 for SSL.  Why port 907? No reason other then its placement in the 
-[BIP39 wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L907).
 
 * Copy in the stylesheet and set ownership
 
-   ```sh
-   sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
-   sudo chown root:root /etc/nginx/imagegallery.xslt
-   ```
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+sudo chown root:root /etc/nginx/imagegallery.xslt
+```
 
 * Edit the NGINX configuration file
 
-   ```sh
-   sudo nano /etc/nginx/nginx.conf
-   ```
+```shell
+sudo nano /etc/nginx/nginx.conf
+```
   
 * Add an upstream definition inside the stream block
 
-   ```nginx
-   upstream nodeyez {
-      server 127.0.0.1:906;
-   }
-   ```
+```nginx
+upstream nodeyez {
+   server 127.0.0.1:906;
+}
+```
 
 * Add a server definition to listen as ssl
 
-   ```nginx
-   server {
-      listen 907 ssl;
-      proxy_pass nodeyez;
-   }
-   ```
+```nginx
+server {
+   listen 907 ssl;
+   proxy_pass nodeyez;
+}
+```
   
 * At the bottom of the file, create an entirely new http block
 
-   ```nginx
-   http {
-     include mime.types;
-     server {
-       listen 906;
-       root /home/nodeyez/nodeyez/imageoutput;
-       default_type text/html;
-       location / {
-         autoindex on;
-         autoindex_format xml;
-         xslt_string_param title $1;
-         xslt_stylesheet /etc/nginx/imagegallery.xslt;
-         try_files $uri $uri/ =404;
-       }
-     }
-   }
-   ```
+```nginx
+http {
+  include mime.types;
+  server {
+    listen 906;
+    root /home/nodeyez/nodeyez/imageoutput;
+    default_type text/html;
+    location / {
+      autoindex on;
+      autoindex_format xml;
+      xslt_string_param title $1;
+      xslt_stylesheet /etc/nginx/imagegallery.xslt;
+      try_files $uri $uri/ =404;
+    }
+  }
+}
+```
   
 * Save (CTRL+O) and exit (CTRL+X) the file
 
 * Test the NGINX configuration and restart the service.
 
-   ```sh
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ```
+```shell
+sudo nginx -t
+sudo systemctl restart nginx
+```
 
 * Enable Access Through Firewall
 
-   ```sh
-   sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
-   ```
+```shell
+sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
+```
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
 [Continue to Running Services at Startup](./install-6-runatstartup.md)
+
+</div>
+
+</mash-accordion>
 
 ---
 
