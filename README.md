@@ -1,19 +1,47 @@
+---
+title: NODEYEZ - Display panels to get the most from your node
+---
 # ![Nodeyez](./images/nodeyez.svg)
 Display panels to get the most from your node
 
-![animation](./images/nodeyez.gif)
+This project contains simple [scripts](./scripts) used to generate images representing different state about your node, market rates, mining and more.
 
-This repository contains simple [scripts](./scripts) used to generate images 
-representing different state about your node, market rates, mining and more.
+The images can be displayed via simple slideshow to attached screen on a Raspberry Pi, as well as to a website dashboard for browser based acess.
 
-The images can be displayed via simple slideshow to attached screen, or to a
-website dashboard.  The installation steps below will guide you through setting
-up both options.  Some scripts also have support for reporting data to a local [Blockclock Mini](https://blockclockmini.com/).
-For convenience, systemd service scripts are also available to allow for running
-them at startup automatically.
+In addition, some scripts have support for reporting data to a local [Blockclock Mini](https://blockclockmini.com/).
 
+For convenience, systemd service scripts are also available to allow for running them at startup automatically.
 
-<img src="./images/arthash-719360.png" width=196 /><img src="./images/arthashdungeon.png" width=196 /><img src="./images/blockheight.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/channelfees.png" width=196 /><img src="./images/compassminingstatus.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/f2pool.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/inscriptionmempool.png" width=196 /><img src="./images/ipaddress.png" width=196 /><img src="./images/lndhub.png" width=196 /><img src="./images/logo.png" width=196 /><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/opreturn.png" width=196 /><img src="./images/ordinals.png" width=196 /><img src="./images/rof-sample.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/utcclock.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<div class="slider">
+  <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
+  <div class="slide"><img src="./images/arthashdungeon.png" width=196 /></div>
+  <div class="slide"><img src="./images/blockheight.png" width=196 /></div>
+  <div class="slide"><img src="./images/channelbalance.png" width=196 /></div>
+  <div class="slide"><img src="./images/channelfees.png" width=196 /></div>
+  <div class="slide"><img src="./images/compassminingstatus.png" width=196 /></div>
+  <div class="slide"><img src="./images/difficultyepoch.png" width=196 /></div>
+  <div class="slide"><img src="./images/f2pool.png" width=196 /></div>
+  <div class="slide"><img src="./images/fearandgreed.png" width=196 /></div>
+  <div class="slide"><img src="./images/fiatprice.png" width=196 /></div>
+  <div class="slide"><img src="./images/inscriptionmempool.png" width=196 /></div>
+  <div class="slide"><img src="./images/ipaddress.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndhub.png" width=196 /></div>
+  <div class="slide"><img src="./images/logo.png" width=196 /></div>
+  <div class="slide"><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /></div>
+  <div class="slide"><img src="./images/mempoolblocks.png" width=196 /></div>
+  <div class="slide"><img src="./images/minerbraiins.png" width=196 /></div>
+  <div class="slide"><img src="./images/opreturn.png" width=196 /></div>
+  <div class="slide"><img src="./images/ordinals.png" width=196 /></div>
+  <div class="slide"><img src="./images/rof-sample.png" width=196 /></div>
+  <div class="slide"><img src="./images/satsperusd.png" width=196 /></div>
+  <div class="slide"><img src="./images/slushpool.png" width=196 /></div>
+  <div class="slide"><img src="./images/sysinfo.png" width=196 /></div>
+  <div class="slide"><img src="./images/utcclock.png" width=196 /></div>
+  <div class="slide"><img src="./images/whirlpoolclimix.png" width=196 /></div>
+  <div class="slide"><img src="./images/whirlpoolliquidity.png" width=196 /></div>
+  <button class="btn btn-next">&gt;</button>
+  <button class="btn btn-prev">&lt;</button>
+</div>
 
 ## Quick Menu of Info Panels
 

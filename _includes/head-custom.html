@@ -15,3 +15,24 @@
     head.appendChild(script);
     </script>
 
+    <!-- sliders from blog.logrocket.com/build-image-carousel-from-scratch-vanilla-javascript/  -->
+    <style>
+    .slider { width: 100%; max-with: 800px; height: 350px; position: relative; overflow: hidden; border-radius: 15px; }
+    .slide { width: 100%; max-width: 800px; height: 350px; position: absolute; transition: all 0.5s; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
+    .btn { position: absolute; width: 40px; height: 40px; padding: 10px; border: none; border-radius: 50%; z-index: 10px; cursor: pointer; background-color: #fff; font-size: 18px; }
+    .btn:active { transform: scale(1.1); }
+    .btn-prev { top: 45%; left: 2%; }
+    .btn-next { top: 45%; right: 2%; }
+    </style>
+    <script>
+    const slides = document.querySelectorAll(".slide");
+    slides.forEach((slide, indx) => { slide.style.transform = `translateX(${indx * 100}%)`; });
+    let curSlide = 0;
+    let maxSlide = slides.length - 1;
+    const nextSlide = document.querySelector(".btn-next");
+    nextSlide.addEventListener("click", function() { if(curSlide === maxSlide) {curSlide=0;} else {curSlide++;}; slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; }); });
+    const prevSlide = document.querySelector(".btn-prev");
+    prevSlide.addEventListener("click", function() { if(curSlide === 0) {curSlide=maxSlide;} else {curSlide--;}; slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; }); });
+    </script>
+
