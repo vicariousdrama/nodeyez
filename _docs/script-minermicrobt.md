@@ -114,5 +114,5 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minermicrobt.py](../sc
 
 ---
 
-[Home](../README.md) |
+[Home](../) |
 

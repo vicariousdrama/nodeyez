@@ -47,4 +47,4 @@ the bottom up.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 

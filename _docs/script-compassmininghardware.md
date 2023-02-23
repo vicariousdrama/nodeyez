@@ -68,5 +68,5 @@ sudo systemctl start nodeyez-compassmininghardware.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

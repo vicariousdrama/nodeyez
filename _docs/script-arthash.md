@@ -61,5 +61,5 @@ sudo systemctl start nodeyez-arthash.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

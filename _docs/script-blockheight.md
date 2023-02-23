@@ -56,5 +56,5 @@ sudo systemctl start nodeyez-blockheight.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

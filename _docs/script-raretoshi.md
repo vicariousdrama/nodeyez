@@ -64,5 +64,5 @@ Only static PNG and JPEG files are supported at this time.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

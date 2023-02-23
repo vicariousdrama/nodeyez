@@ -60,5 +60,5 @@ sudo systemctl start nodeyez-arthashdungeon.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

@@ -75,5 +75,5 @@ sudo systemctl start nodeyez-compassminingstatus.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

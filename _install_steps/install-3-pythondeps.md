@@ -61,4 +61,4 @@ sudo apt-get install imagemagick inkscape
 
 ---
 
-[Home](../README.md) | [Back to Display Screen](./install-2-displayscreen.md) | [Continue to Nodeyez](./install-4-nodeyez.md)
+[Home](../) | [Back to Display Screen](./install-2-displayscreen.md) | [Continue to Nodeyez](./install-4-nodeyez.md)

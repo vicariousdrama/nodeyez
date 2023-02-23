@@ -64,5 +64,5 @@ from this panel in future updates.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

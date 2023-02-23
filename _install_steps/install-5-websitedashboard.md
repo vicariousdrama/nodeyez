@@ -231,5 +231,5 @@ Now see if you can access the dashboard at https://your-node-ip:907
 
 ---
 
-[Home](../README.md) | [Back to Nodeyez User](./install-4-nodeyez.md) | [Continue to Running Services at Startup](./install-6-runatstartup.md)
+[Home](../) | [Back to Nodeyez User](./install-4-nodeyez.md) | [Continue to Running Services at Startup](./install-6-runatstartup.md)
 

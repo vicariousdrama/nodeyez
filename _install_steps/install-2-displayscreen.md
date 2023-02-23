@@ -224,4 +224,4 @@ you do have to make changes here, make note of them as you'll need to make simil
 
 ---
 
-[Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Python and Dependencies](./install-3-pythondeps.md)
+[Home](../) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Python and Dependencies](./install-3-pythondeps.md)

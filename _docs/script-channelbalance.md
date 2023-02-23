@@ -91,5 +91,5 @@ sudo systemctl start nodeyez-channelbalance.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 
