@@ -50,8 +50,8 @@ sudo raspi-config
 ```
 
 Choose the menu options for 
-- 3. Interface Options
-- P4 SPI.  
+- Choice 3. Interface Options
+- Choice P4 SPI.  
 
 Note that the raspi-config program has changed over time and your menu
 choices may differ. Ultimately, you're looking for the option to enable

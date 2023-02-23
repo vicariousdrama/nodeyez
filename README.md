@@ -52,7 +52,7 @@ Scripts can be run on their own, or run continuously in the background as a serv
 * [System Metrics](./docs/script-sysinfo.md)
 * [UTC Clock](./docs/script-utcclock.md)
 
-## Bitcoin Dependent
+## Bitcoin Panels
 
 All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
 
@@ -66,7 +66,7 @@ All of these panels can work with a local Bitcoin node. At this time, informatio
 * [OP_RETURN](./docs/script-opreturn.md)
 * [Ordinal Inscriptions](./docs/script-ordinals.md)
 
-## Lighting Dependent
+## Lighting (LND) Panels
 
 These panels can be configured to report on local LND based nodes, as well as remote ones over REST.
 
@@ -75,7 +75,7 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [LND Hub Account Balances](./docs/script-lndhub.md)
 * [Ring of Fire](./docs/script-rofstatus.md)
 
-## Mining Related
+## Mining Panels
 
 * [F2 Pool](./docs/script-f2pool.md)
 * [Luxor Pool](./docs/script-luxor-mining-hashrate.md)
@@ -83,7 +83,7 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [Miner - MicroBT](./docs/script-minermicrobt.md)
 * [Braiins Pool](./docs/script-slushpool.md)
 
-## Other Fun Stuff
+## Other Fun Panels
 
 * [Dual Image Display](./docs/script-nodeyezdual.md)
 * [Fear and Greed Index](./docs/script-fearandgreed.md)
@@ -103,11 +103,11 @@ The scripts are still available, but may not properly function as the data provi
 
 # Installation Procedures
 
-[Raspberry Pi](./docs/install-1-raspberrypinode.md)
-[Python and Dependencies](./docs/install-2-pythondeps.md)
-[Display Screen](./docs/install-3-displayscreen.md)
-[Nodeyez User](./docs/install-4-nodeyez.md)
-[Website Dashboard](./docs/install-5-websitedashboard.md)
-[Running at Startup](./docs/install-6-runatstartup.md)
+## [Raspberry Pi](./docs/install-1-raspberrypinode.md)
+## [Python and Dependencies](./docs/install-2-pythondeps.md)
+## [Display Screen](./docs/install-3-displayscreen.md)
+## [Nodeyez User](./docs/install-4-nodeyez.md)
+## [Website Dashboard](./docs/install-5-websitedashboard.md)
+## [Running at Startup](./docs/install-6-runatstartup.md)
 
 
