@@ -1,11 +1,8 @@
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
-
-[Home](../README.md) | [Back to Nodeyez User](./install-4-nodeyez.md) | [Continue to Running Services at Startup](./install-6-runatstartup.md)
-
+---
+title: NODEYEZ Website Dashboard
 ---
 
-## Setting up the Website Dashboard
+# Website Dashboard
 
 Whether you are using a display screen or not, you can also make the images 
 viewable via website dashboard.  The dashboard included in nodeyez looks like
@@ -26,9 +23,9 @@ Before beginning, make sure you are logged in as the privileged user.  If you
 continued here from the previous section logged in as `nodeyez`, then issue
 the following to return back to the privileged user
 
-   ```sh
-   exit
-   ```
+```shell
+exit
+```
 
 ## Choose ONE (1) of the following
 
@@ -86,6 +83,8 @@ Now see if you can access the dashboard at https://your-node-ip:907
 </mash-accordion>
 
 
+
+
 ## New Install of NGINX
 
 <mash-accordion markdown="1" key="nbcweb2" resource="549a2981-ae65-41e3-b620-6b22bec143cd" button-horizontal-align="center" button-vertical-align="bottom" button-text="Read More" button-variant="solid" button-size="md" loading-indicator-size="14">
@@ -141,6 +140,8 @@ And view a specific subfolder of data as a photo album at https://your-node-ip:9
 </div>
 
 </mash-accordion>
+
+
 
 
 ## Modifying Existing NGINX setup
@@ -224,6 +225,8 @@ Now see if you can access the dashboard at https://your-node-ip:907
 </div>
 
 </mash-accordion>
+
+
 
 ---
 

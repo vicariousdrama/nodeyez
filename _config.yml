@@ -3,7 +3,7 @@ markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
-  parse_block_html: true
+#  parse_block_html: true
 description: Display panels to get the most from your node
 header_image: /images/nodeyez.svg
 include: [".well-known"]
