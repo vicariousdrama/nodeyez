@@ -71,5 +71,5 @@ LND, etc.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

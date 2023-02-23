@@ -27,5 +27,5 @@ a Linux operating system that uses systemd and is Debian based.
 
 ---
 
-[Home](../README.md) | [Continue to Python and Dependencies](./install-2-pythondeps.md)
+[Home](../) | [Continue to Python and Dependencies](./install-2-pythondeps.md)
 

@@ -49,5 +49,5 @@ the top of the image.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

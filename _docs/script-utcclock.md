@@ -40,5 +40,5 @@ This script provides a simple rendering of the date and time
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

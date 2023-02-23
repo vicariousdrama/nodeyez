@@ -334,5 +334,5 @@ Terminate any existing background process before restarting the slideshow script
 
 ---
 
-[Home](../README.md) | [Back to Python and Dependencies](./install-3-pythondeps.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
+[Home](../) | [Back to Python and Dependencies](./install-3-pythondeps.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
 

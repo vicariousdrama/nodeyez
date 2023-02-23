@@ -76,5 +76,5 @@ me directly.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

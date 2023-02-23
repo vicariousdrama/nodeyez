@@ -62,5 +62,5 @@ file.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

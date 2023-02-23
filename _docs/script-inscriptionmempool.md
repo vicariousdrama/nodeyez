@@ -54,5 +54,5 @@ recent inscriptions will be generated as the output file.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

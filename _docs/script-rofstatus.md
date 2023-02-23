@@ -92,5 +92,5 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/rofstatus.py](../scrip
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

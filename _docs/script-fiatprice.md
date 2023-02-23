@@ -47,4 +47,4 @@ Bitcoin in US Dollar terms and then displays it graphically in large text
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 

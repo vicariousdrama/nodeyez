@@ -48,5 +48,5 @@ It depends on a bitcoin node running locally and fully synched.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

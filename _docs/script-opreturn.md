@@ -42,5 +42,5 @@ will be generated rendering the text values.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

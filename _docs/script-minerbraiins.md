@@ -91,5 +91,5 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/minerbraiins.py](../sc
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

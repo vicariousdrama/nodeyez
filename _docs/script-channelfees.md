@@ -92,5 +92,5 @@ sudo systemctl start nodeyez-channelfees.service
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

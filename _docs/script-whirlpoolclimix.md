@@ -48,5 +48,5 @@ generates a status panel of this information.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

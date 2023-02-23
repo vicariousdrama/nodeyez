@@ -45,5 +45,5 @@ with Docker.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

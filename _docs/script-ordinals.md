@@ -75,5 +75,5 @@ the image, the block, and the txid.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

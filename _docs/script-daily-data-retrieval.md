@@ -62,5 +62,5 @@ The script is installed at [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.p
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 

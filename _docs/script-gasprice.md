@@ -53,5 +53,5 @@ script.
 
 ---
 
-[Home](../README.md) | 
+[Home](../) | 
 
