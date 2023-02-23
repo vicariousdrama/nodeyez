@@ -10,72 +10,11 @@ addition, some scripts have support for reporting data to a local
 
 Scripts can be run on their own, or run continuously in the background as a service on system startup.
 
-## Sample Panels Created by Nodeyez
-<!-- sliders from blog.logrocket.com/build-image-carousel-from-scratch-vanilla-javascript/  -->
-<script>
-  function setupSliders() {
-    const slides = document.querySelectorAll(".slide");
-    slides.forEach((slide, indx) => { slide.style.transform = `translateX(${indx * 100}%)`; });
-    let curSlide = 0;
-    let maxSlide = slides.length - 1;
-    const nextSlide = document.querySelector(".btn-next");
-    nextSlide.addEventListener("click", function() {
-      if(curSlide === maxSlide) {curSlide=0;} else {curSlide++;};
-      slides.forEach((slide, indx) => {
-        slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`;
-      });
-    });
-    const prevSlide = document.querySelector(".btn-prev");
-    prevSlide.addEventListener("click", function() {
-      if(curSlide === 0) {curSlide=maxSlide;} else {curSlide--;};
-      slides.forEach((slide, indx) => {
-        slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`;
-      });
-    });
-    var sliderstyle = document.createElement('style');
-    sliderstyle.innerHTML = `
-    .slider { width: 100%; max-with: 600px; height: 400px; position: relative; overflow: hidden; border-radius: 15px; }
-    .slide { width: 100%; max-width: 600px; height: 400px; position: absolute; transition: all 0.5s; }
-    .slide img { width: 100%; height: 100%; object-fit: cover; }
-    .btn { position: absolute; width: 40px; height: 40px; padding: 10px; border: none; border-radius: 50%; z-index: 10px; cursor: pointer; background-color: #fff; font-size: 18px; }
-    .btn:active { transform: scale(1.1); }
-    .btn-prev { top: 45%; left: 2%; }
-    .btn-next { top: 45%; right: 2%; }
-    `;
-    document.head.appendChild(sliderstyle);
-  }
-  window.addEventListener('load', setupSliders);
-</script>
-<div class="slider">
-  <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
-  <div class="slide"><img src="./images/arthashdungeon.png" width=196 /></div>
-  <div class="slide"><img src="./images/blockheight.png" width=196 /></div>
-  <div class="slide"><img src="./images/channelbalance.png" width=196 /></div>
-  <div class="slide"><img src="./images/channelfees.png" width=196 /></div>
-  <div class="slide"><img src="./images/compassminingstatus.png" width=196 /></div>
-  <div class="slide"><img src="./images/difficultyepoch.png" width=196 /></div>
-  <div class="slide"><img src="./images/f2pool.png" width=196 /></div>
-  <div class="slide"><img src="./images/fearandgreed.png" width=196 /></div>
-  <div class="slide"><img src="./images/fiatprice.png" width=196 /></div>
-  <div class="slide"><img src="./images/inscriptionmempool.png" width=196 /></div>
-  <div class="slide"><img src="./images/ipaddress.png" width=196 /></div>
-  <div class="slide"><img src="./images/lndhub.png" width=196 /></div>
-  <div class="slide"><img src="./images/logo.png" width=196 /></div>
-  <div class="slide"><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /></div>
-  <div class="slide"><img src="./images/mempoolblocks.png" width=196 /></div>
-  <div class="slide"><img src="./images/minerbraiins.png" width=196 /></div>
-  <div class="slide"><img src="./images/opreturn.png" width=196 /></div>
-  <div class="slide"><img src="./images/ordinals.png" width=196 /></div>
-  <div class="slide"><img src="./images/rof-sample.png" width=196 /></div>
-  <div class="slide"><img src="./images/satsperusd.png" width=196 /></div>
-  <div class="slide"><img src="./images/slushpool.png" width=196 /></div>
-  <div class="slide"><img src="./images/sysinfo.png" width=196 /></div>
-  <div class="slide"><img src="./images/utcclock.png" width=196 /></div>
-  <div class="slide"><img src="./images/whirlpoolclimix.png" width=196 /></div>
-  <div class="slide"><img src="./images/whirlpoolliquidity.png" width=196 /></div>
-  <button class="btn btn-next">&gt;</button>
-  <button class="btn btn-prev">&lt;</button>
-</div>
+# Images
+
+A few sample images that you can produce on your node using Nodeyez are shown below
+
+<img src="./images/arthashdungeon.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Informational Panels
 

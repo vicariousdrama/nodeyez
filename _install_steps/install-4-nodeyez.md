@@ -1,6 +1,7 @@
 ---
 name: Nodeyez User and Code
 title: NODEYEZ Setup
+layout: default
 ---
 
 # Nodeyez
