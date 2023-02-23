@@ -1,16 +1,19 @@
 ---
 title: NODEYEZ - Display panels to get the most from your node
 ---
-# ![Nodeyez](./images/nodeyez.svg)
-Display panels to get the most from your node
+# About Nodeyez
 
-This project contains simple [scripts](./scripts) used to generate images representing different state about your node, market rates, mining and more.
+Nodeyez is a project that contains a variety of python [scripts](./scripts) to produce images based on your Bitcoin Node
 
-The images can be displayed via simple slideshow to attached screen on a Raspberry Pi, as well as to a website dashboard for browser based acess.
+Images can be displayed
+* to video output such as an attached screen on a Raspberry Pi
+* in a website dashboard for browser based acess
 
 In addition, some scripts have support for reporting data to a local [Blockclock Mini](https://blockclockmini.com/).
 
-For convenience, systemd service scripts are also available to allow for running them at startup automatically.
+Scripts can be run on their own, or run continuously in the background as a service on system startup.
+
+## Sample Panels Created by Nodeyez
 
 <div class="slider">
   <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
@@ -43,54 +46,64 @@ For convenience, systemd service scripts are also available to allow for running
   <button class="btn btn-prev">&lt;</button>
 </div>
 
-## Quick Menu of Info Panels
+## Informational Panels
 
-| Panel Name | Requires Bitcoin Node | Requires Lightning Service | Makes Remote Calls |
-| --- | --- | --- | --- |
-|                **_Local Only_** |
-| [ip address](./docs/script-ipaddress.md) | | | |
-| [system info](./docs/script-sysinfo.md) | | | |
-| [utc clock](./docs/script-utcclock.md) | | | |
-|                **_Bitcoin Dependent_** |
-| [art hash](./docs/script-arthash.md) | Yes | | |
-| [art hash dungeon](./docs/script-arthashdungeon.md) | Yes | | |
-| [block height](./docs/script-blockheight.md) | Yes | | |
-| [difficulty epoch](./docs/script-difficultyepoch.md) | Yes | | |
-| [halving countdown](./docs/script-halving.md) | Yes | | |
-| [inscription mempool](./docs/script-inscriptionmempool.md) | Yes | | | 
-| [mempool blocks](./docs/script-mempoolblocks.md) | | | Optional |
-| [op return](./docs/script-opreturn.md) | Yes | | |
-| [ordinal inscriptions](./docs/script-ordinals.md) | Yes | | | 
-|                **_Lightning Dependent_** |
-| [channel balance](./docs/script-channelbalance.md) | | Yes | |
-| [channel fees](./docs/script-channelfees.md) | | Yes | |
-| [lnd hub account balances](./docs/script-lndhub.md) | | Yes | |
-| [ring of fire](./docs/script-rofstatus.md) | | Yes | Yes |
-|                **_Mining Related_** |
-| [f2 pool](./docs/script-f2pool.md) | | | Yes |
-| [luxor pool](./docs/script-luxor-mining-hashrate.md) | | | Yes |
-| [miner - braiins](./docs/script-minerbraiins.md) | | | |
-| [miner - microbt](./docs/script-minermicrobt.md) | | | |
-| [slushpool](./docs/script-slushpool.md) | | | Yes |
-|                **_Other Fun Stuff_** |
-| [compass mining status](./docs/script-compassminingstatus.md) | | | Yes |
-| [dual image display](./docs/script-nodeyezdual.md) | | | Yes |
-| [fear and greed index](./docs/script-fearandgreed.md) | | | Yes |
-| [price of bitcoin](./docs/script-fiatprice.md) | | | Yes |
-| [sats per usd](./docs/script-satsperusd.md) | | | Yes |
-| [whirlpool cli mix status](./docs/script-whirlpoolclimix.md) | Yes | | |
-| [whirlpool liquidity](./docs/script-whirlpoolliquidity.md) | | | Optional |
-|                **_No Longer Supported_** |
-|                _The scripts are still available, but may not properly function as the data providers have changed from open standards or charge outrageous fees_ |
-| [compass mining hardware](./docs/script-compassmininghardware.md) | | | Yes |
-| [gas price](./docs/script-gasprice.md) | | | Yes |
-| [raretoshi](./docs/script-raretoshi.md) | | | Yes |
+* [IP Address](./docs/script-ipaddress.md)
+* [System Metrics](./docs/script-sysinfo.md)
+* [UTC Clock](./docs/script-utcclock.md)
 
+## Bitcoin Dependent
 
+All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
 
-## Installation Steps
+* [Art Hash](./docs/script-arthash.md)
+* [Blockhash Dungeon](./docs/script-arthashdungeon.md)
+* [Block Height](./docs/script-blockheight.md)
+* [Difficulty Epoch](./docs/script-difficultyepoch.md)
+* [Halving Countdown](./docs/script-halving.md)
+* [Inscription Mempool](./docs/script-inscriptionmempool.md)
+* [Mempool Blocks](./docs/script-mempoolblocks.md)
+* [OP_RETURN](./docs/script-opreturn.md)
+* [Ordinal Inscriptions](./docs/script-ordinals.md)
 
-1. [Raspberry Pi Node](./docs/install-1-raspberrypinode.md)
+## Lighting Dependent
+
+These panels can be configured to report on local LND based nodes, as well as remote ones over REST.
+
+* [Channel Balance](./docs/script-channelbalance.md)
+* [Channel Fees](./docs/script-channelfees.md)
+* [LND Hub Account Balances](./docs/script-lndhub.md)
+* [Ring of Fire](./docs/script-rofstatus.md)
+
+## Mining Related
+
+* [F2 Pool](./docs/script-f2pool.md)
+* [Luxor Pool](./docs/script-luxor-mining-hashrate.md)
+* [Miner - Braiins](./docs/script-minerbraiins.md)
+* [Miner - MicroBT](./docs/script-minermicrobt.md)
+* [Braiins Pool](./docs/script-slushpool.md)
+
+## Other Fun Stuff
+
+* [Dual Image Display](./docs/script-nodeyezdual.md)
+* [Fear and Greed Index](./docs/script-fearandgreed.md)
+* [Price of Bitcoin](./docs/script-fiatprice.md)
+* [Sats per USD](./docs/script-satsperusd.md)
+* [Whirlpool CLI Mix Status](./docs/script-whirlpoolclimix.md)
+* [Whirlpool Liquidity](./docs/script-whirlpoolliquidity.md)
+
+## No Longer Supported
+
+The scripts are still available, but may not properly function as the data providers have changed from open standards or charge exhorbitant fees.
+
+* [Compass Mining Hardware](./docs/script-compassmininghardware.md)
+* [Compass Mining Status](./docs/script-compassminingstatus.md)
+* [Gas Price](./docs/script-gasprice.md)
+* [Raretoshi](./docs/script-raretoshi.md)
+
+## Installation Documentation
+
+1. [Setup Raspberry Pi Node](./docs/install-1-raspberrypinode.md)
 2. [Python and Dependencies](./docs/install-2-pythondeps.md)
 3. [Display Screen](./docs/install-3-displayscreen.md)
 4. [Nodeyez User and this Git Repository](./docs/install-4-nodeyez.md)
