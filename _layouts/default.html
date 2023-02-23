@@ -18,7 +18,7 @@
   <body>
     <header>
       {% if site.header_image %}
-      <img src="{{ site.header_image }}" alt="{{ page.title | default: site.title | default: site.github.repository_name }}" />
+      <img src="{{ site.header_image }}" alt="{{ page.title | default: site.title | default: site.github.repository_name }}" class="header-image-color" />
       {% else %}
       <h1>{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
       {% endif %}
@@ -44,6 +44,7 @@
       </nav>
       <section>
         {{ content }}
+
       </section>
       <footer>
         {% if site.github.is_project_page %}

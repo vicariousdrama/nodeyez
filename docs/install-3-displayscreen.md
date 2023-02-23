@@ -79,15 +79,17 @@ the right.
 All images created by the scripts are in landscape mode, so you're rotation 
 should be either 90 or 270 depending on preferred orientation.  
 
-If you are using a Lightning Shell case from Cryptocloaks and your lightning bolt is...
-- ...on the right side of the screen: `rotate=90`
-- ...on the left side of the screen: `rotate=270`
+If you are using a [Lightning Shell case from Cryptocloaks](https://www.cryptocloaks.com/product/lightningshell/) and your lightning bolt is oriented...
+- ...to the right side of the screen: `rotate=90`
+- ...to the left side of the screen: `rotate=270`
+
+![Image of the CryptoCloaks Lightning Shell Case](https://www.cryptocloaks.com/wp-content/uploads/2018/10/IMG_20200529_061711-e1590762533451.jpg)
 
 Save (CTRL+O) and Exit (CTRL+X).
 
-## Install framebuffer image viewer
+## Framebuffer Image Viewer
 
-Don't be alarmed by the name. This is a simple utility to send video bytes to the framebuffer associated with the screen device for display.
+Don't be alarmed by the package name. This is a simple utility to send video bytes to the framebuffer associated with the screen device for display.
 
 ```shell
 sudo apt-get -y install fbi
@@ -122,7 +124,8 @@ rm logo.png
 ```
 
 You should see the picture of eyes as depicted below.  If you don't see this recheck your progress through the steps above.
-In rare situations, you may need to adjust the value of `--vt` (try `0`) or `--device` (try `/dev/fb1`).
+In rare situations, you may need to adjust the value of `--vt` (try `0`) or `--device` (try `/dev/fb1`).  If for some reason
+you do have to make changes here, make note of them as you'll need to make similar modifications to the slideshow.sh file.
 
 
 ![nodeyez logo](../images/logo.png)   

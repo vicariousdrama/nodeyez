@@ -101,13 +101,13 @@ The scripts are still available, but may not properly function as the data provi
 * [Gas Price](./docs/script-gasprice.md)
 * [Raretoshi](./docs/script-raretoshi.md)
 
-## Installation Documentation
+# Installation Procedures
 
-1. [Setup Raspberry Pi Node](./docs/install-1-raspberrypinode.md)
-2. [Python and Dependencies](./docs/install-2-pythondeps.md)
-3. [Display Screen](./docs/install-3-displayscreen.md)
-4. [Nodeyez User and this Git Repository](./docs/install-4-nodeyez.md)
-5. [Website Dashboard](./docs/install-5-websitedashboard.md)
-6. [Running Services at Startup](./docs/install-6-runatstartup.md)
+[Raspberry Pi](./docs/install-1-raspberrypinode.md)
+[Python and Dependencies](./docs/install-2-pythondeps.md)
+[Display Screen](./docs/install-3-displayscreen.md)
+[Nodeyez User](./docs/install-4-nodeyez.md)
+[Website Dashboard](./docs/install-5-websitedashboard.md)
+[Running at Startup](./docs/install-6-runatstartup.md)
 
 
