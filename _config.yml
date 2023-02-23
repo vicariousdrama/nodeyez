@@ -4,6 +4,14 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 #  parse_block_html: true
-description: Display panels to get the most from your node
+title: NODEYEZ - Display panels to get the most from your Bitcoin node
+description: Display panels and scripts to get the most from your Bitcoin node
+url: https://nodeyez.com
+twitter_username: vicariousdrama
 header_image: /images/nodeyez.svg
+collections:
+  docs:
+    output: true
+  install_steps:
+    output: true
 include: [".well-known"]
