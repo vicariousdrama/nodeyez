@@ -1,4 +1,5 @@
 ---
+name: Nodeyez User and Code
 title: NODEYEZ Setup
 ---
 
@@ -113,7 +114,7 @@ Whenever calling lncli with the nodeyez user, the macaroon path can now be provi
 
 `lncli --macaroonpath=/home/nodeyez/.lnd/nodeyez.macaroon getinfo`
 
-## Switch to Nodeyez
+## Switch to Nodeyez User
 
 Change to the nodeyez user
 
@@ -333,5 +334,5 @@ Terminate any existing background process before restarting the slideshow script
 
 ---
 
-[Home](../README.md) | [Back to Display Screen](./install-3-displayscreen.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
+[Home](../README.md) | [Back to Python and Dependencies](./install-3-pythondeps.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
 

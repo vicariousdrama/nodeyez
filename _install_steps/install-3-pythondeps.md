@@ -1,4 +1,5 @@
 ---
+name: Python and Dependencies
 title: Setting up Python and Dependencies
 ---
 
@@ -60,4 +61,4 @@ sudo apt-get install imagemagick inkscape
 
 ---
 
-[Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Display Screen](./install-3-displayscreen.md)
+[Home](../README.md) | [Back to Display Screen](./install-2-displayscreen.md) | [Continue to Nodeyez](./install-4-nodeyez.md)
