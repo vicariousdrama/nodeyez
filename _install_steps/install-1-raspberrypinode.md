@@ -1,5 +1,6 @@
 ---
 name: Raspberry Pi
+layout: default
 ---
 
 # Raspberry Pi Node

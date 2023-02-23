@@ -1,6 +1,7 @@
 ---
 name: Website Dashbaord
 title: NODEYEZ Website Dashboard
+layout: default
 ---
 
 # Website Dashboard

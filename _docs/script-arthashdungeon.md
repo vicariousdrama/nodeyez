@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Blockhash Dungeon
+layout: default
 ---
 
 # Blockhash Dungeon

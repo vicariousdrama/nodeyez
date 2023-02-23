@@ -1,6 +1,7 @@
 ---
 name: Running at Startup
 title: NODEYEZ Running at Startup
+layout: default
 ---
 
 # Running Services at Startup

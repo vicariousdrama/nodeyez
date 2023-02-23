@@ -7,15 +7,16 @@ kramdown:
 title: NODEYEZ - Display panels to get the most from your Bitcoin node
 description: Display panels and scripts to get the most from your Bitcoin node
 url: https://nodeyez.com
+baseurl: /nodeyez
 twitter_username: vicariousdrama
 header_image: /images/nodeyez.svg
 collections:
   docs:
     output: true
-    permalink: /docs/:path/
+    permalink: /docs/:path
   install_steps:
     output: true
-    permalink: /install_steps/:path/
+    permalink: /install_steps/:path
     order:
       - install-1-raspberrypinode.md
       - install-2-displayscreen.md

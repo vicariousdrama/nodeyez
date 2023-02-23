@@ -1,6 +1,7 @@
 ---
 name: Python and Dependencies
 title: Setting up Python and Dependencies
+layout: default
 ---
 
 # Setting up Python and Dependencies

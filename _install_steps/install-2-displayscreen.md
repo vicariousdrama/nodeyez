@@ -1,6 +1,7 @@
 ---
 name: Raspberry Pi Screen
 title: Raspberry Pi Screen Attached to GPIO pins
+layout: default
 ---
 
 # Display to an Attached Screen
