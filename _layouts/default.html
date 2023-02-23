@@ -42,13 +42,16 @@
       <nav>
         <ul></ul>
       </nav>
+      {% for install_step in site.install_steps %}
+      <div>{{ install_step.name }}</div>
+      {% endfor %}
       <section>
         {{ content }}
 
       </section>
       <footer>
         {% if site.github.is_project_page %}
-          <p>Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+          <p>Maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
       </footer>
     </div>
