@@ -1,11 +1,12 @@
-# ![Nodeyez](./images/nodeyez.svg)
-Display panels to get the most from your node
-
+---
+title: NODEYEZ Change Log
+---
 # CHANGELOG
 
-## Unreleased main branch
+## Main Branch
 
-New Panels and Enhancements
+**New Panels and Enhancements**
+
 - New panel: Miner Status for MicroBT Whatsminer
 - New panel: Channel Fees (requires updated macaroon)
 - New Panel: Halving Countdown - Progress to Next Subsidy Halving
@@ -25,7 +26,8 @@ New Panels and Enhancements
 - New Panel: Ordinals - Displays images that have been embedded as inscriptions with optional blocklist
 - New Panel: Inscription Mempool - Display recent inscriptions in the mempool that are not yet mined into a block
 
-General
+**General**
+
 - Updated macaroon creation to allow querying ForwardingHistory
 - Dimensions for any panel can be set via "width" and "height" in config file
 - Updated Compass Facilities list
@@ -39,10 +41,12 @@ General
 
 ## 1.0.0
 
-- Released 2022-05-07
-- Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](./commit/290fb01c39cef84ab77155eea437439825a304ca)
+Released 2022-05-07
 
-New Panels and Enhancements
+Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](./commit/290fb01c39cef84ab77155eea437439825a304ca)
+
+**New Panels and Enhancements**
+
 - New panel: Raretoshi
 - New panel: Compass Mining Hardware
 - New panel: Gas Price
@@ -55,7 +59,8 @@ New Panels and Enhancements
 - Enhanced Raretoshi panel to support QR code hyperlink
 - Enhanced Mempool panel to show fee histogram as a bar and improve config
 
-General
+**General**
+
 - Externalized configuration from scripts to json files
 - New script to retrieve/parse compass mining historical status
 - Added rudimentary mock-data support for Bitcoin and LND calls
@@ -65,7 +70,8 @@ General
 - Lots of new documentation
 - Systemd service scripts now all use /usr/bin/env to force execution path as mounted drive may disallow
 
-Bugfixes
+**Bugfixes**
+
 - Fixed some loop timeouts
 - Fixed f2pool crashing if account info could not be retrieved
 - Fixed daily data retrieval eixsts checks
@@ -78,10 +84,12 @@ Bugfixes
 
 ## 1.0.0-beta
 
-- Released: 2022-02-06
-- Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](./commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
+Released: 2022-02-06
 
-### Features
+Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](./commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
+
+**Features**
+
 - Add/update sample images
 - Added guidance for screen to put on Raspberry Pi
 - General organization/refactoring to improve maintainability
@@ -102,10 +110,11 @@ Bugfixes
 
 ## 1.0.0-alpha
 
-- Released: 2021-07-29
-- Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](./commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
+Released: 2021-07-29
+Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](./commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
 
-### Features
+**Features**
+
 - New panel: Block Height
 - New panel: Difficulty Epoch
 - New panel: Mempool Blocks

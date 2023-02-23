@@ -1,74 +1,63 @@
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
-
-[Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Display Screen](./install-3-displayscreen.md)
-
+---
+title: Setting up Python and Dependencies
 ---
 
-## Python and Dependencies
+# Setting up Python and Dependencies
 
-### 1.  Login to your node with a privileged user that can sudo.
+You will need to be logged into your system with a privileged user that can perform super user operations.
+
+If you are using a Raspberry Pi setup, you can login as these user names
+
     - MyNodeBTC: ssh as admin
     - Raspiblitz ssh as admin
     - Raspibolt: ssh as admin
     - Umbrel: ssh as umbrel
     - Default Raspbian: ssh as pi
 
-### 2. Install Python3.  The Raspberry Pi comes with Python 2.7, but the 
-   scripts require Python 3. 
+## Install Python3
 
-   ```sh
-   sudo apt-get install python3
-   ```
+For Raspberry Pi it'll normally come with Python 2.7, but the scripts require Python 3.  
 
-### 3. Install the Python Pillow library. 
+You can esure you have Python 3 by running the following
 
-   ```sh
-   sudo apt-get install libjpeg-dev zlib1g-dev
-   pip list | grep --ignore-case pi
-   ```
+```shell
+sudo apt-get install python3
+```
 
-   Sample output
+## Install Git
 
-   ```c
-   googleapis-common-protos 1.52.0
-   Pillow                   8.3.1
-   pip                      21.2.1
-   pipenv                   2020.6.2
-   RPi.GPIO                 0.7.0
-   typing-extensions        3.7.4.2
-   ```
+In future steps you'll use Git to clone this repo.
 
-   If neither PIL or Pillow is installed, then go ahead with the install as 
-   follows:
 
-   ```sh
-   pip install Pillow
-   ```
+```shell
+sudo apt install git
+```
 
-   You can upgrade Pillow to the latest using the following command:
+## Install Torify
 
-   ```sh
-   python3 -m pip install --upgrade Pillow
-   ```
+Torify is optionally used by some scripts that retrieve data from external sources in a privacy preserving way.
 
-   Some scripts make use of rounded_rectangle, which requires Pillow 8.2 or 
-   above.
+```shell
+sudo apt-get install apt-transport-tor
+```
 
-### 4. Install git and torify as follows
+## Install the Pillow Library
 
-   ```sh
-   sudo apt install git
-   sudo apt-get install apt-transport-tor
-   ```
+This library is a key python library used by the scripts for working with and rendering 2D graphics.
 
-### 5. Install ImageMagic and Inkscape libraries as follows
+```shell
+sudo apt-get install libjpeg-dev zlib1g-dev
+python3 -m pip install --upgrade Pillow
+```
 
-   ```sh
-   sudo apt-get install imagemagick inkscape
-   ```
+## Install ImageMagic and Inkscape
+
+These libraries are used for some of the image file type conversions
+
+```shell
+sudo apt-get install imagemagick inkscape
+```
 
 ---
 
 [Home](../README.md) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Display Screen](./install-3-displayscreen.md)
-

@@ -1,11 +1,8 @@
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
-
-[Home](../README.md) | [Back to Python and Dependencies](./install-2-pythondeps.md) | [Continue to Nodeyez](./install-4-nodeyez.md)
-
+---
+title: Raspberry Pi Screen Attached to GPIO pins
 ---
 
-## Display to a screen attached to GPIO pins
+# Display to a screen attached to GPIO pins
 
 The Raspberry Pi is a great single board computer (SBC) that offers multiple
 interfaces.  You can use the GPIO header pins to attach a premade display hat
@@ -34,89 +31,101 @@ I have some extras that I can sell.
 
 **To setup the screen**
 
-### 1.  Login to your node with a privileged user that can sudo.
-    - MyNodeBTC: ssh as admin
-    - Raspiblitz ssh as admin
-    - Raspibolt: ssh as admin
-    - Umbrel: ssh as umbrel
-    - Default Raspbian: ssh as pi
+## Login to your node
 
-### 2. Access the raspberry pi config program
+You will need to SSH into your node as a privileged user that can sudo
 
-   ```sh
-   sudo raspi-config
-   ```
+- MyNodeBTC: ssh as admin
+- Raspiblitz ssh as admin
+- Raspibolt: ssh as admin
+- Umbrel: ssh as umbrel
+- Default Raspbian: ssh as pi
 
-   Choose the menu options for 
-     - 3. Interface Options
-     - P4 SPI.  
+## Raspberry Pi Config program
 
-   Note that the raspi-config program has changed over time and your menu
-   choices may differ. Ultimately, you're looking for the option to enable
-   SPI to support access to the display attached to the GPIO pins
+Access the raspberry pi config program as follows
 
-   Save and exit the raspi-config program
+```shell
+sudo raspi-config
+```
 
-### 3. Edit the /boot/config.txt file
+Choose the menu options for 
+- 3. Interface Options
+- P4 SPI.  
 
-   ```sh
-   sudo nano /boot/config.txt
-   ```
+Note that the raspi-config program has changed over time and your menu
+choices may differ. Ultimately, you're looking for the option to enable
+SPI to support access to the display attached to the GPIO pins
 
-   Verify that it has a line reading `dtparam=spi=on`
+Save and exit the raspi-config program
 
-   You'll need to add a line at the bottom of the file for the screen as 
-   `dtoverlay=piscreen,speed=16000000,rotate=270`.  
 
-   The 270 rotation is a landscape mode with the ports for USB and ethernet to
-   the right.  
+## Edit /boot/config.txt
 
-   All images created by the scripts are in landscape mode, so you're rotation 
-   should be either 90 or 270 depending on preferred orientation.  
+Next, edit the /boot/config.txt file
 
-   If you are using a Lightning Shell case from Cryptocloaks 
-   - and your lightning bolt is on the right side of the screen: rotate=90
-   - and your lightning bolt is on the left side of the screen: rotate=270
+```shell
+sudo nano /boot/config.txt
+```
 
-   Save (CTRL+O) and Exit (CTRL+X).
+Verify that it has a line reading `dtparam=spi=on`
 
-### 4. Next, install the framebuffer image viewer 
+You'll need to add a line at the bottom of the file for the screen as 
+`dtoverlay=piscreen,speed=16000000,rotate=270`.  
 
-   ```sh
-   sudo apt-get -y install fbi
-   ```
+The 270 rotation is a landscape mode with the ports for USB and ethernet to
+the right.  
 
-### 5. Reboot. You'll need to reboot before the changes for boot and the GPIO pins
-   are enabled for the screen.  
+All images created by the scripts are in landscape mode, so you're rotation 
+should be either 90 or 270 depending on preferred orientation.  
 
-   You should do a safe shutdown or reset. Don't simply turn off the power by
-   flipping a switch or pulling the plug if you can avoid it.
+If you are using a Lightning Shell case from Cryptocloaks and your lightning bolt is...
+- ...on the right side of the screen: `rotate=90`
+- ...on the left side of the screen: `rotate=270`
 
-   If you're running a node package like MyNodeBTC, then use the web interface
-   power cycle the device cleanly.  
+Save (CTRL+O) and Exit (CTRL+X).
 
-   From the command line you can use `sudo init 6`.
+## Install framebuffer image viewer
 
-### 6. After waiting for the pi to restart, log to your node with a privileged user that can sudo.
-    - MyNodeBTC: ssh as admin
-    - Raspiblitz ssh as admin
-    - Raspibolt: ssh as admin
-    - Umbrel: ssh as umbrel
-    - Default Raspbian: ssh as pi
+Don't be alarmed by the name. This is a simple utility to send video bytes to the framebuffer associated with the screen device for display.
 
-### 7. Do a quick test to verify that the screen can display an image
+```shell
+sudo apt-get -y install fbi
+```
 
-   ```sh
-   cd /tmp
-   wget https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png
-   sudo fbi --vt 1 --autozoom --device /dev/fb0 -1 logo.png
-   rm logo.png
-   ```
+## Reboot
 
-   You should see the picture of eyes as depicted below.  If you don't see this
-   recheck your progress through the steps above.
+You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  
 
-   ![nodeyez logo](../images/logo.png)   
+You should do a safe shutdown or reset. Don't simply turn off the power by flipping a switch or pulling the plug if you can avoid it.
+
+If you're running a node package like MyNodeBTC or Umbrel etc., then use the web interface power cycle the device cleanly.
+
+From the command line you can simply call `sudo init 6`
+
+
+## Log Back In
+
+After waiting for the pi to restart, log to your node with the same user
+
+## Quick Test
+
+Do a quick test to verify that the screen can display an image.
+
+We'll download an image from Nodeyez github repo, and then display it to the screen
+
+```shell
+cd /tmp
+wget https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png
+sudo fbi --vt 1 --autozoom --device /dev/fb0 -1 logo.png
+rm logo.png
+```
+
+You should see the picture of eyes as depicted below.  If you don't see this recheck your progress through the steps above.
+In rare situations, you may need to adjust the value of `--vt` (try `0`) or `--device` (try `/dev/fb1`).
+
+
+![nodeyez logo](../images/logo.png)   
 
 ---
 
