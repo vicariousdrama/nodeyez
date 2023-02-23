@@ -1,0 +1,7 @@
+{% for install_step in site.install_steps %}
+<h2>
+<a href="{{ site.baseurl }}{{ install_step.url }}">
+  {{ install_step.name }}
+</a>
+</h2>
+{% endfor %}
