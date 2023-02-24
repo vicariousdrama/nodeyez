@@ -1,7 +1,9 @@
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
+---
+title: Script - Daily Data Retrieval
+layout: default
+---
 
-## Daily Data Retrieval
+# Daily Data Retrieval
 
 This script is purely used to gather information from remote resources on a
 periodic basis.  While its named daily data retrieval, in truth it runs
@@ -13,54 +15,64 @@ they report on a point in time when they are run.  Going forward there will
 be a push to transition to using the data collected from this script which
 will also allow for more graphing trends.
 
-The script is installed at [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
+## Script Location
 
-* Before running this script you must have met dependencies
+The script is installed at 
+[/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
 
-  - beautifulsoup4 is required for compass mining scripts to parse HTML
+## Dependencies
 
-  ```sh
-  python3 -m pip install beautifulsoup4
-  ```
+Before running this script you must have met dependencies
 
-  - pandas is required for luxor scripts to use the client library for data retrieval
+- beautifulsoup4 is required for compass mining scripts to parse HTML
 
-  ```sh
-  python3 -m pip install pandas
-  ```
+```shell
+python3 -m pip install beautifulsoup4
+```
 
-* To run this script
+- pandas is required for luxor scripts to use the client library for data retrieval
 
-   ```sh
-   cd /home/nodeyez/nodeyez/scripts
-   /usr/bin/env python3 daily-data-retrieval.py
-   ```
+```shell
+python3 -m pip install pandas
+```
 
-   Press CTRL+C to stop the process
+## Configuration
 
-* To configure this script
+Currently there is no external configuration file.  Within the __main__ part
+of the script are the defaults.  The following data sets are all set to be
+retrieved, at varying intervals.
 
-   Currently there is no external configuration file.  Within the __main__ part
-   of the script are the defaults.  The following data sets are all set to be
-   retrieved, at varying intervals.
+| Data Set | Interval | Config File | Configuration Documentation |
+| --- | --- | --- | --- |
+| Bisq | 1 hour | [/home/nodeyez/nodeyez/config/satsperusd.json](../sample-config/satsperusd.json) | [doc](./script-satsperusd.md) |
+| CollectAPI | 24 hours | [/home/nodeyez/nodeyez/config/collectapi.json](../sample-config/collectapi.json) | [doc](./config-collectapi.md) |
+| Compass Hardware | 1 hour | [/home/nodeyez/nodeyez/config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
+| Compass Status | 23 hours | [/home/nodeyez/nodeyez/config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
+| F2 Pool | 23 hours | [/home/nodeyez/nodeyez/config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
+| Fear and Greed | 12 hours | [/home/nodeyez/nodeyez/config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
+| Luxor | 23 hours | [/home/nodeyez/nodeyez/config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
+| Slushpool | 23 hours | [/home/nodeyez/nodeyez/config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
 
-   | Data Set | Interval | Config File | Configuration Documentation |
-   | --- | --- | --- | --- |
-   | Bisq | 1 hour | [/home/nodeyez/nodeyez/config/satsperusd.json](../sample-config/satsperusd.json) | [doc](./script-satsperusd.md) |
-   | CollectAPI | 24 hours | [/home/nodeyez/nodeyez/config/collectapi.json](../sample-config/collectapi.json) | [doc](./config-collectapi.md) |
-   | Compass Hardware | 1 hour | [/home/nodeyez/nodeyez/config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
-   | Compass Status | 23 hours | [/home/nodeyez/nodeyez/config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
-   | F2 Pool | 23 hours | [/home/nodeyez/nodeyez/config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
-   | Fear and Greed | 12 hours | [/home/nodeyez/nodeyez/config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
-   | Luxor | 23 hours | [/home/nodeyez/nodeyez/config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
-   | Slushpool | 23 hours | [/home/nodeyez/nodeyez/config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
+Until this file is externalized, you are strongly encouraged to only make
+changes to whether a data set is enabled or not.  Any future updates may
+overwrite your customizations to the script.
 
+## Run Directly
 
-   Until this file is externalized, you are strongly encouraged to only make
-   changes to whether a data set is enabled or not.  Any future updates may
-   overwrite your customizations to the script.
+To run this script
 
----
+```shell
+cd /home/nodeyez/nodeyez/scripts
+/usr/bin/env python3 daily-data-retrieval.py
+```
 
-[Home](../) | 
+Press CTRL+C to stop the process
 
+## Run at Startup
+
+To enable the script to run at startup, as the privileged user run the following
+
+```shell
+sudo systemctl enable nodeyez-daily-data-retrieval.service
+sudo systemctl start nodeyez-daily-data-retrieval.service
+```

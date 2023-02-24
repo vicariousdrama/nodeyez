@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Arthash - Geometric artwork based on blockhash
+layout: default
 ---
 
 # Art Hash

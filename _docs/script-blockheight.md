@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Block Height script
+layout: default
 ---
 
 # Block Height

@@ -1,14 +1,20 @@
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
+---
+name: Script - Compass Mining Status
+title: Compass Mining Status
+layout: default
+---
 
-## Compass Mining Status
+# Compass Mining Status
 
 This script cretaes an image denoting the high level status of facilities with
 Compass Mining as reported on their [status page](https://status.compassmining.io)
 
-The script is installed at [/home/nodeyez/nodeyez/scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
-
 ![sample image of compass mining status](../images/compassminingstatus.png)
+
+## Script Location
+
+The script is installed at 
+[/home/nodeyez/nodeyez/scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
 
 ## Configuration
 

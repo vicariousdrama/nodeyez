@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Channel Balance script
+layout: default
 ---
 
 ## Channel Balance

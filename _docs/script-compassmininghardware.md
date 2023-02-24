@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Compass Mining Hardware script
+layout: default
 ---
 
 # Compass Mining Hardware
