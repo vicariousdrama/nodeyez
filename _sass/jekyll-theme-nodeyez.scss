@@ -363,6 +363,14 @@ footer {
   bottom:20px;
   text-align: right;
   line-height: 16px;
+
+  p {
+    color: #bbb;
+    a {
+      color: #bbb;
+      &:hover { color: #999; }
+    }
+  }
 }
 
 @media print, screen and (max-width: 1060px) {
@@ -418,7 +426,15 @@ footer {
     left:auto;
     bottom:auto;
     width:auto;
+
+    p {
+      color: #bbb;
+      a {
+        color: #bbb;
+        &:hover { color: #999; }
+      }
     }
+  }
 }
 
 @media print, screen and (max-width: 720px) {
@@ -511,6 +527,14 @@ footer {
     left:auto;
     bottom:auto;
     width:auto;
+
+    p {
+      color: #bbb;
+      a {
+        color: #bbb;
+        &:hover { color: #999; }
+      }
+    }
   }
 }
 
@@ -526,5 +550,13 @@ footer {
     left:auto;
     bottom:auto;
     width:auto;
+
+    p {
+      color: #bbb;
+      a {
+        color: #bbb;
+        &:hover { color: #999; }
+      }
+    }
   }
 }

@@ -126,7 +126,7 @@ After waiting for the pi to restart, log to your node with the same user.  Proce
 
 ## Using DSI Screen
 
-The Dispaly Serial Interface (DSI) connector is a small connector on the side
+The Display Serial Interface (DSI) connector is a small connector on the side
 opposite the USB and Ethernet ports on a Raspberry Pi.  Though screens that use
 this interface tend to cost more, there are significant advantages in this
 approach
@@ -240,4 +240,4 @@ you do have to make changes here, make note of them as you'll need to make simil
 
 ---
 
-[Home](../) | [Back to Raspberry Pi Node](install-1-raspberrypinode.md) | [Continue to Python and Dependencies](install-3-pythondeps.md)
+[Home](../) | [Back to Raspberry Pi Node]({% link _install_steps/install-1-raspberrypinode.md %}) | [Continue to Python and Dependencies]({% link _install_steps/install-3-pythondeps.md %})
