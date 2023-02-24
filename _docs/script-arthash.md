@@ -1,5 +1,7 @@
 ---
-title: NODEYEZ Arthash - Geometric artwork based on blockhash
+panelgroup: Bitcoin Panels
+name: Arthash
+title: Arthash - Geometric artwork based on blockhash
 layout: default
 ---
 

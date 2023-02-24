@@ -1,6 +1,6 @@
 ---
 name: Configuring CollectAPI
-title: NODEYEZ Configuring collectapi
+title: Configuring for Collectapi
 ---
 
 # Configuration for collectapi.json

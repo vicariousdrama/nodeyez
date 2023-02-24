@@ -1,5 +1,7 @@
 ---
-title: NODEYEZ Block Height script
+panelgroup: Bitcoin Panels
+name: Block Height
+title: Block Height for Bitcoin
 layout: default
 ---
 

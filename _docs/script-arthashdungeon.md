@@ -1,5 +1,7 @@
 ---
-title: NODEYEZ Blockhash Dungeon
+panelgroup: Bitcoin Panels
+name: Blockhash Dungeon
+title: Blockhash Dungeon
 layout: default
 ---
 

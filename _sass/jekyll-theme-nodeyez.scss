@@ -1,11 +1,18 @@
 /*
-Based on Leap Day for GitHub Pages
-by Matt Graham
+Based on Leap Day (by Matt Graham) for GitHub Pages
 */
 
 @import "normalize";
 @import "fonts";
 @import "rouge-base16-dark";
+@import "mash";
+
+div.highlight {
+  pre.highlight {
+    overflow-y: auto;
+    max-height: 205px;
+  }
+}
 
 body {
   font:14px/22px 'Quattrocento Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -61,7 +68,16 @@ a small {
 }
 
 ul{
-  list-style-image:url('../images/2-yellow-small-t.gif');
+  zlist-style-image:url('../images/2-yellow-small-t.gif');
+  list-style: none;
+}
+
+ul li::before {
+  content: "\26A1";
+  color: #fc0;
+  display: inline-blck;
+  width: 1em;
+  margin-left: -1em;
 }
 
 strong {

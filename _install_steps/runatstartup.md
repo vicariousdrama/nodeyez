@@ -25,7 +25,6 @@ sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-channelfees.service
-sudo systemctl enable nodeyez-compassminingstatus.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
@@ -61,7 +60,6 @@ sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-channelfees.service
-sudo systemctl start nodeyez-compassminingstatus.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
@@ -136,7 +134,7 @@ And press CTRL+C to stop viewing the logs for that service
 Stopping a service is just as easy as starting one.
 
 ```shell
-sudo systemctl stop nodeyez-compassminingstatus.service
+sudo systemctl stop nodeyez-ordinals.service
 ```
 
 ## Disabling a Service
@@ -145,9 +143,9 @@ If you desire to disable a service so it does not automatically start you can
 issue a command structured like this
 
 ```shell
-sudo systemctl disable nodeyez-compassminingstatus.service
+sudo systemctl disable nodeyez-ordinals.service
 ```
 
 ---
 
-[Home](../) | [Back to Website Dashboard]({% link _install_steps/install-5-websitedashboard.md %}) 
+[Home](../) | [Back to Website Dashboard]({% link _install_steps/websitedashboard.md %}) 

@@ -1,5 +1,6 @@
 ---
-title: Script - Daily Data Retrieval
+name: Daily Data Retrieval
+title: Daily Data Retrieval script
 layout: default
 ---
 

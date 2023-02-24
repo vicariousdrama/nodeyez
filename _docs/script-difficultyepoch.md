@@ -1,6 +1,7 @@
 ---
-name: Script - Difficulty Epoch
-title: NODEYEZ Difficulty Epoch Script
+panelgroup: Bitcoin Panels
+name: Difficulty Epoch
+title: Difficulty Epoch Script
 layout: default
 ---
 
