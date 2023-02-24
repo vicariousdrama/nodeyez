@@ -148,4 +148,4 @@ sudo systemctl disable nodeyez-ordinals.service
 
 ---
 
-[Home](../) | [Back to Website Dashboard]({% link _install_steps/websitedashboard.md %}) 
+[Home](../) | [Back to Website Dashboard]({% link _install_steps/5websitedashboard.md %}) 

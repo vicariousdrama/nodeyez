@@ -48,56 +48,56 @@ Scripts can be run on their own, or run continuously in the background as a serv
 
 ## Informational Panels
 
-* [IP Address](./docs/script-ipaddress.md)
-* [System Metrics](./docs/script-sysinfo.md)
-* [UTC Clock](./docs/script-utcclock.md)
+* [IP Address]({% link _docs/script-ipaddress.md %})
+* [System Metrics]({% link _docs/script-sysinfo.md %})
+* [UTC Clock]({% link _docs/script-utcclock.md %})
 
 ## Bitcoin Panels
 
 All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
 
-* [Art Hash](./docs/script-arthash.md)
-* [Blockhash Dungeon](./docs/script-arthashdungeon.md)
-* [Block Height](./docs/script-blockheight.md)
-* [Difficulty Epoch](./docs/script-difficultyepoch.md)
-* [Halving Countdown](./docs/script-halving.md)
-* [Inscription Mempool](./docs/script-inscriptionmempool.md)
-* [Mempool Blocks](./docs/script-mempoolblocks.md)
-* [OP_RETURN](./docs/script-opreturn.md)
-* [Ordinal Inscriptions](./docs/script-ordinals.md)
+* [Art Hash]({% link _docs/script-arthash.md %})
+* [Blockhash Dungeon]({% link _docs/script-arthashdungeon.md %})
+* [Block Height]({% link _docs/script-blockheight.md %})
+* [Difficulty Epoch]({% link _docs/script-difficultyepoch.md %})
+* [Halving Countdown]({% link _docs/script-halving.md %})
+* [Inscription Mempool]({% link _docs/script-inscriptionmempool.md %})
+* [Mempool Blocks]({% link _docs/script-mempoolblocks.md %})
+* [OP_RETURN]({% link _docs/script-opreturn.md %})
+* [Ordinal Inscriptions]({% link _docs/script-ordinals.md %})
 
 ## Lighting (LND) Panels
 
 These panels can be configured to report on local LND based nodes, as well as remote ones over REST.
 
-* [Channel Balance](./docs/script-channelbalance.md)
-* [Channel Fees](./docs/script-channelfees.md)
-* [LND Hub Account Balances](./docs/script-lndhub.md)
-* [Ring of Fire](./docs/script-rofstatus.md)
+* [Channel Balance]({% link _docs/script-channelbalance.md %})
+* [Channel Fees]({% link _docs/script-channelfees.md %})
+* [LND Hub Account Balances]({% link _docs/script-lndhub.md %})
+* [Ring of Fire]({% link _docs/script-rofstatus.md %})
 
 ## Mining Panels
 
-* [F2 Pool](./docs/script-f2pool.md)
-* [Luxor Pool](./docs/script-luxor-mining-hashrate.md)
-* [Miner - Braiins](./docs/script-minerbraiins.md)
-* [Miner - MicroBT](./docs/script-minermicrobt.md)
-* [Braiins Pool](./docs/script-slushpool.md)
+* [F2 Pool]({% link _docs/script-f2pool.md %})
+* [Luxor Pool]({% link _docs/script-luxor-mining-hashrate.md %})
+* [Miner - Braiins]({% link _docs/script-minerbraiins.md %})
+* [Miner - MicroBT]({% link _docs/script-minermicrobt.md %})
+* [Braiins Pool]({% link _docs/script-slushpool.md %})
 
 ## Other Fun Panels
 
-* [Dual Image Display](./docs/script-nodeyezdual.md)
-* [Fear and Greed Index](./docs/script-fearandgreed.md)
-* [Price of Bitcoin](./docs/script-fiatprice.md)
-* [Sats per USD](./docs/script-satsperusd.md)
-* [Whirlpool CLI Mix Status](./docs/script-whirlpoolclimix.md)
-* [Whirlpool Liquidity](./docs/script-whirlpoolliquidity.md)
+* [Dual Image Display]({% link _docs/script-nodeyezdual.md %})
+* [Fear and Greed Index]({% link _docs/script-fearandgreed.md %})
+* [Price of Bitcoin]({% link _docs/script-fiatprice.md %})
+* [Sats per USD]({% link _docs/script-satsperusd.md %})
+* [Whirlpool CLI Mix Status]({% link _docs/script-whirlpoolclimix.md %})
+* [Whirlpool Liquidity]({% link _docs/script-whirlpoolliquidity.md %})
 
 ## No Longer Supported
 
 The scripts are still available, but may not properly function as the data providers have changed from open standards or charge exhorbitant fees.
 
-* [Compass Mining Hardware](./docs/script-compassmininghardware.md)
-* [Compass Mining Status](./docs/script-compassminingstatus.md)
-* [Gas Price](./docs/script-gasprice.md)
-* [Raretoshi](./docs/script-raretoshi.md)
+* [Compass Mining Hardware]({% link _docs/script-compassmininghardware.md %})
+* [Compass Mining Status]({% link _docs/script-compassminingstatus.md %})
+* [Gas Price]({% link _docs/script-gasprice.md %})
+* [Raretoshi]({% link _docs/script-raretoshi.md %})
 

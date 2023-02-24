@@ -1,22 +1,29 @@
 ---
 name: Documentation Index
 layout: default
+groups:
+  - Informational Panels
+  - Bitcoin Panels
+  - Lightning Panels
+  - Mining Panels
+  - Other Fun Panels
 ---
 
 # Documentation Index
 
-<ol>
+{% for groupname in page.groups %}
+## {{ groupname }}
+
 {% for item in site.docs %}
 {% if item.panelgroup %}
 {% unless page.name == item.name %}
-| {{ item.panelgroup }} | <a href="{{ item.url }}">{{ item.name }}</a> |
-{% endunless %}
-{% else %}
-{% unless page.name == item.name %}
-| {{ item.panelgroup }} | <a href="{{ item.url }}">{{ item.name }}</a> |
-{% endunless %}
+{% if item.panelgroup == groupname %}
+-  <a href="{{ item.url }}">{{ item.name }}</a>
+{% endif %}
+{% endunloess %}
 {% endif %}
 {% endfor %}
-</ol>
+{% endfor %}
+
 
 
