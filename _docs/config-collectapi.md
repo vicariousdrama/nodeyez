@@ -1,4 +1,5 @@
 ---
+name: Configuring CollectAPI
 title: NODEYEZ Configuring collectapi
 ---
 

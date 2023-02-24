@@ -29,7 +29,7 @@
       <div class="downloads">
         <ul>
           <li><a href="{% link index.md %}" class="button">Home</a></li>
-          <li><a href="{% link _install_steps/index.md %}" class="button">Install</a></li>
+          <li><a href="{% link _install_steps/index.md %}" class="button">Install Steps</a></li>
           <li><a href="{% link _docs/index.md %}" class="button">Docs</a></li>
           <li><a href="{{ site.github.repository_url }}" class="button">View On GitHub</a></li>
           {% if site.show_downloads %}
@@ -41,11 +41,9 @@
     </div><!-- end banner -->
 
     <div class="wrapper">
-      <ul>
-        {% for install_step in site.install_steps %}
-        <li class="tag-h1"><a href="{{ install_step.url }}"{{ install_step.name }}</a></li>
-        {% endfor %} 
-      </ul>
+      <nav>
+        <ul></ul>
+      </nav>
       <section>
         {{ content }}
 

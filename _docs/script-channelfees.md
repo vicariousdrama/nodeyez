@@ -1,5 +1,6 @@
 ---
 title: NODEYEZ Channel Fees script
+layout: default
 ---
 
 # Channel Fees
