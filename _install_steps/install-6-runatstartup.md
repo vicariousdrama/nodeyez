@@ -120,7 +120,7 @@ In the above example, we've chosen to only run some of the services, and one of
 them is showing that they failed.  Viewing the logs can help when diagnosing
 the cause of failure.
 
-## Viewing logs
+## Viewing Logs
 
 You can view the logs using journalctl like this
 
@@ -150,5 +150,4 @@ sudo systemctl disable nodeyez-compassminingstatus.service
 
 ---
 
-[Home](../) | [Back to Website Dashboard](./install-5-websitedashboard.md) 
-
+[Home](../) | [Back to Website Dashboard]({% install install-5-websitedashboard.md %}) 

@@ -155,12 +155,22 @@ Next, edit the /boot/config.txt file
 sudo nano /boot/config.txt
 ```
 
-The settings I've setup are as follows.
+Comment out the following lines by putting a # mark at the beginning of the line
 
 ```c
-display_auto_detect=1
-disable_splash=1
+# camera_auto_detect=1
+# dtoverlay=vc4-kms-v3d
+```
 
+You can optionally disable the standard splash screen on bootup
+
+```c
+disable_splash=1
+```
+
+Then add this section to the bottom
+
+```c
 [all]
 # Enable Display for 5 inch LCD
 dtoverlay=vc4-kms-DPI-5inch,backlight-def-brightness=2
@@ -168,24 +178,29 @@ display_rotate=3
 dtoverlay=rpi-backlight
 ```
 
-You may want a different value for display_rotate depending on the orientation
+You may prefer a different value for `display_rotate` depending on the orientation
 you choose for your display
 - display_rotate=0: standard
 - display_rotate=1: 90 degrees
 - display_rotate=2: 180 degrees
 - display_rotate=3: 270 degrees
 
+Save (CTRL+O) and Exit (CTRL+X).
 
-I also commented out options I did not need
+### Install Overlay File
 
-```c
-# camera_auto_detect=1
-# dtoverlay=vc4-kms-v3d
+This screen is using a custom overlay. Download and install into the overlays
+folder following these commands.
+
+```shell
+cd /tmp
+wget https://www.waveshare.net/w/upload/8/86/vc4-kms-DPI-5inch.dtbo
+sudo mv vc4-kms-DPI-5inch.dtbo /boot/overlays/vc4-kms-DPI-5inch.dtbo
 ```
 
 ### Reboot
 
-You'll need to reboot before the changes for boot and the GPIO pins are enabled for the screen.  
+You'll need to reboot before the changes to use the new overlay driver take effect.
 
 You should do a safe shutdown or reset. Don't simply turn off the power by flipping a switch or pulling the plug if you can avoid it.
 
@@ -225,4 +240,4 @@ you do have to make changes here, make note of them as you'll need to make simil
 
 ---
 
-[Home](../) | [Back to Raspberry Pi Node](./install-1-raspberrypinode.md) | [Continue to Python and Dependencies](./install-3-pythondeps.md)
+[Home](../) | [Back to Raspberry Pi Node](install-1-raspberrypinode.md) | [Continue to Python and Dependencies](install-3-pythondeps.md)

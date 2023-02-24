@@ -13,7 +13,7 @@ body {
   font-weight:300;
   margin: 0px;
   padding:0px 0 20px 0px;
-  background: url(../images/body-background.png) #eae6d1;
+  background: url(../images/background.png) #eae6d1;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -98,9 +98,9 @@ code {
 }
 
 pre {
-  padding:8px 15px;
+  padding:8px 6px;
   background: #333333;
-  border-radius: 3px;
+  border-radius: 9px;
   border:1px solid #c7c7c7;
   overflow: auto;
   overflow-y: hidden;
@@ -326,7 +326,7 @@ nav {
 
         a {
           font-weight: bold;
-          color: #333;
+          color: #ddd;
         }
 
         + .tag-h2 {
@@ -343,7 +343,7 @@ nav {
     }
 
     a {
-      color: #666;
+      color: #bbb;
 
       &:hover { color: #999; }
     }

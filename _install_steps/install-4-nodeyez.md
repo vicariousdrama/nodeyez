@@ -36,13 +36,14 @@ Filesystem      Size  Used Avail Use% Mounted on
 ```
 
 In the above output example, there are two file systems. The one at `/dev/root`
-is 29G in size and represents the SD card mounted at the root of the system.
+is 29G in size and represents a 32GB SD card mounted at the root of the system.
 The second one is `/dev/sda1`, a 1TB external drive with over 400 GB free having
 a mount point of `/mnt/ext`.  Your mount point for /dev/sda1 may be different.
-For example, MyNodeBTC uses a mount point of /mnt/hdd. 
+For example, MyNodeBTC uses a mount point of /mnt/hdd. Umbrel uses /mnt/data.
 
-Only do this next block if you have an external drive attached. Modify 
-`/dev/sda1` as desired to reference a different filesystem.
+Only do this next block if you have an external drive attached with the root drive
+referencing a small partition as above.  Modify `/dev/sda1` as desired to 
+reference a different filesystem (e.g. /dev/sda  or /dev/sdb4  etc).
 
 ```shell
 EXT_DRIVE_MOUNT=`df|grep /dev/sda1|awk '{print $6}'`
@@ -309,17 +310,17 @@ generated images to the screen using the slideshow script installed at
 If you are currently logged in as nodeyez, `exit` back to the priviledged user,
 then run the following
 
-   ```sh
-   cd /home/nodeyez/nodeyez/scripts
-   sudo ./slideshow.sh &
-   ```
+```shell
+cd /home/nodeyez/nodeyez/scripts
+sudo ./slideshow.sh &
+```
 
 A process ID (PID) number will be displayed as output to the console for the
 background process. You may also find this process ID with this command:
 
-   ```sh
-   ps aux | grep slideshow | grep -v grep | awk '{print $2}'
-   ```
+```shell
+ps aux | grep slideshow | grep -v grep | awk '{print $2}'
+```
 
 You should start seeing images display on your screen.  If you dont see any
 images, then edit the `/home/nodeyez/nodeyez/scripts/slideshow.sh` file, and 
@@ -328,12 +329,12 @@ the script again it will now show any errors to the console.
 
 Terminate any existing background process before restarting the slideshow script
 
-   ```sh
-   for p in `ps aux | grep slideshow | grep -v grep | awk '{print $2}'`; do sudo kill $p; done
-   sudo /home/nodeyez/nodeyez/scripts/slideshow.sh &
-   ```
+```shell
+for p in `ps aux | grep slideshow | grep -v grep | awk '{print $2}'`; do sudo kill $p; done
+sudo /home/nodeyez/nodeyez/scripts/slideshow.sh &
+```
 
 ---
 
-[Home](../) | [Back to Python and Dependencies](./install-3-pythondeps.md) | [Continue to Website Dashboard](./install-5-websitedashboard.md)
+[Home](../) | [Back to Python and Dependencies]({% link install-3-pythondeps.md %}) | [Continue to Website Dashboard]({% link install-5-websitedashboard.md %})
 

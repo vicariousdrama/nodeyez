@@ -10,11 +10,11 @@ You will need to be logged into your system with a privileged user that can perf
 
 If you are using a Raspberry Pi setup, you can login as these user names
 
-    - MyNodeBTC: ssh as admin
-    - Raspiblitz ssh as admin
-    - Raspibolt: ssh as admin
-    - Umbrel: ssh as umbrel
-    - Default Raspbian: ssh as pi
+- MyNodeBTC: ssh as admin
+- Raspiblitz ssh as admin
+- Raspibolt: ssh as admin
+- Umbrel: ssh as umbrel
+- Default Raspbian: ssh as pi
 
 ## Install Python3
 

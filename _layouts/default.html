@@ -40,11 +40,12 @@
 
     <div class="wrapper">
       <nav>
-        <ul></ul>
+        <ul>
+        {% for install_step in site.install_steps %}
+        <li>{{ install_step.name }}</li>
+        {% endfor %} 
+        </ul>
       </nav>
-      {% for install_step in site.install_steps %}
-      <div>{{ install_step.name }}</div>
-      {% endfor %}
       <section>
         {{ content }}
 
