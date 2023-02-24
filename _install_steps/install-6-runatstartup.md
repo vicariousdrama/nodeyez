@@ -150,4 +150,4 @@ sudo systemctl disable nodeyez-compassminingstatus.service
 
 ---
 
-[Home](../) | [Back to Website Dashboard]({% install _install_steps/install-5-websitedashboard.md %}) 
+[Home](../) | [Back to Website Dashboard]({% link _install_steps/install-5-websitedashboard.md %}) 
