@@ -1,4 +1,5 @@
-theme: jekyll-theme-leap-day
+#theme: jekyll-theme-leap-day
+remote_theme: vicariousdrama/nodeyez
 markdown: kramdown
 kramdown:
   input: GFM
