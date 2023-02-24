@@ -39,5 +39,5 @@ a Linux operating system that uses systemd and is Debian based.
 
 ---
 
-[Home](../) | [Continue to Display Screen]({% link _install_steps/displayscreen.md %})
+[Home](../) | [Continue to Display Screen]({% link _install_steps/2displayscreen.md %})
 
