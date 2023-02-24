@@ -28,5 +28,5 @@ a Linux operating system that uses systemd and is Debian based.
 
 ---
 
-[Home](../) | [Continue to Python and Dependencies](./install-2-displayscreen.md)
+[Home](../) | [Continue to Python and Dependencies](./install-2-displayscreen.html)
 
