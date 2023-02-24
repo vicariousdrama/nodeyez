@@ -1,5 +1,7 @@
 ---
-title: NODEYEZ Channel Balance script
+panelgroup: Lightning Panels
+name: Channel Balance
+title: Channel Balance script
 layout: default
 ---
 

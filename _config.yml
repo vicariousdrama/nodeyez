@@ -15,14 +15,49 @@ collections:
   docs:
     output: true
     permalink: /docs/:path
+    order:
+      - index.md
+      - script-ipaddress.md
+      - script-sysinfo.md
+      - script-utcclock.md
+      - script-arthashdungeon.md
+      - script-arthash.md
+      - script-blockheight.md
+      - script-difficultyepoch.md
+      - script-halving.md
+      - script-inscriptionmempool.md
+      - script-mempoolblocks.md
+      - script-opreturn.md
+      - script-ordinals.md
+      - script-channelbalance.md
+      - script-channelfees.md
+      - script-lndhub.md
+      - script-rofstatus.md
+      - script-f2pool.md
+      - script-luxor-mining-hashrate.md
+      - script-minerbraiins.md
+      - script-minermicrobt.md
+      - script-slushpool.md
+      - script-nodeyezdual.md
+      - script-fearandgreed.md
+      - script-fiatprice.md
+      - script-satsperusd.md
+      - script-whirlpoolclimix.md
+      - script-whirlpoolliquidity.md
+      - script-compassmininghardware.md
+      - script-compassminingstatus.md
+      - script-gasprice.md
+      - script-raretoshi.md
+      - script-daily-data-retrieval.md
+      - config-collectapi.md
   install_steps:
     output: true
     permalink: /install_steps/:path
     order:
-      - install-1-raspberrypinode.md
-      - install-2-displayscreen.md
-      - install-3-pythondeps.md
-      - install-4-nodeyez.md
-      - install-5-websitedashboard.md
-      - install-6-runatstartup.md
+      - yournode.md
+      - displayscreen.md
+      - pythondeps.md
+      - nodeyez.md
+      - websitedashboard.md
+      - runatstartup.md
 include: [".well-known"]

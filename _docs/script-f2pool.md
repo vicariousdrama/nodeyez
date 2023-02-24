@@ -1,14 +1,11 @@
 ---
-name: Script - F2 Pool
-title: NODEYEZ F2 Pool Script
+panelgroup: Mining Panels
+name: F2 Pool
+title: F2 Pool
 layout: default
 ---
 
-
-# ![Nodeyez](../images/nodeyez.svg)
-Display panels to get the most from your node
-
-## F2 Pool
+# F2 Pool
 
 The script prepares an image summarizing recent 24 hour summary for an F2 Pool
 account.  The current hashrate is depicted, along with a graph showing the

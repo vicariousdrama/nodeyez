@@ -1,13 +1,19 @@
 ---
-name: Raspberry Pi Screen
-title: Raspberry Pi Screen Attached to GPIO pins
+name: Display Screen
+title: Display Screen for Raspberry Pi
 layout: default
 ---
 
 # Display to an Attached Screen
 
-This step is optional. If you dont want to attach a screen to your Raspberry
-Pi, proceed with the next section: [Python and Dependencies](./install-3-pythondeps.md)
+This step is optional. 
+
+If you are not using a Raspberry Pi, or you don't want to attach a screen to
+your Raspberry Pi, then you can proceed with the next section:
+[Python and Dependencies](./install-3-pythondeps.md)
+
+If you later choose to add a screen to your Raspberry Pi, you can come back
+and do this step later.
 
 The Raspberry Pi is a great single board computer (SBC) that offers multiple
 interfaces.
@@ -240,4 +246,4 @@ you do have to make changes here, make note of them as you'll need to make simil
 
 ---
 
-[Home](../) | [Back to Raspberry Pi Node]({% link _install_steps/install-1-raspberrypinode.md %}) | [Continue to Python and Dependencies]({% link _install_steps/install-3-pythondeps.md %})
+[Home](../) | [Back to Your Node]({% link _install_steps/yournode.md %}) | [Continue to Python and Dependencies]({% link _install_steps/pythondeps.md %})

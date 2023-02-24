@@ -1,5 +1,7 @@
 ---
-title: NODEYEZ Channel Fees script
+panelgroup: Lightning Panels
+name: Channel Fees
+title: Channel Fees script
 layout: default
 ---
 

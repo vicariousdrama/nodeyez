@@ -1,6 +1,7 @@
 ---
-name: Script - Compass Mining Status
-title: Compass Mining Status
+panelgroup: Other Fun Panels
+name: Compass Mining Status
+title: Compass Mining Status Script
 layout: default
 ---
 
@@ -15,6 +16,16 @@ Compass Mining as reported on their [status page](https://status.compassmining.i
 
 The script is installed at 
 [/home/nodeyez/nodeyez/scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
+
+## Dependencies
+
+Before running this script you must have met dependencies
+
+- beautifulsoup4 is required for compass mining scripts to parse HTML
+
+```shell
+python3 -m pip install beautifulsoup4
+```
 
 ## Configuration
 
@@ -46,16 +57,6 @@ nano /home/nodeyez/nodeyez/config/compassminingstatus.json
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 
 After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
-## Dependencies
-
-Before running this script you must have met dependencies
-
-- beautifulsoup4 is required for compass mining scripts to parse HTML
-
-```shell
-python3 -m pip install beautifulsoup4
-```
 
 ## Run Directly
 

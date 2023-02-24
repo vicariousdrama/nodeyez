@@ -1,5 +1,7 @@
 ---
-title: System Information Panel
+panelgroup: Informational Panels
+name: System Metrics
+title: System Metrics Script
 layout: default
 ---
 
@@ -85,7 +87,7 @@ To enable the script to run at startup, as the privileged user run the following
 ```shell
 sudo systemctl enable nodeyez-sysinfo.service
 sudo systemctl start nodeyez-sysinfo.service
-
+```
 
 ---
 
