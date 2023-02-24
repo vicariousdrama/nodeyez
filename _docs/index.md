@@ -18,9 +18,9 @@ groups:
 {% if item.panelgroup %}
 {% unless page.name == item.name %}
 {% if item.panelgroup == groupname %}
--  <a href="{{ item.url }}">{{ item.name }}</a>
+- <a href="{{ item.url }}">{{ item.name }}</a>
 {% endif %}
-{% endunloess %}
+{% endunless %}
 {% endif %}
 {% endfor %}
 {% endfor %}

@@ -15,9 +15,11 @@ of Raspberry Pi boards, this was a very common choice because of its small form
 factor, and low power demands (15 watt).  
 
 Another common option is to use an older desktop or laptop.  Anything made in
-the past few years is going to be powerful enough, but even older systems can
-get new life (One of my nodes is running on an 8 year old ASUS laptop). Whatever
-your choice, 
+the past few years is likely to be powerful enough.  From a hardware specification
+standpoint, consider the following to be a reasonable minimum
+- Multicore processor (4+ cores)
+- 4GB of RAM or more
+- 1TB SSD or larger
 
 If you are brand new to Linux then I would recommend the following
 
