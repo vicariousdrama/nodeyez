@@ -2,21 +2,24 @@
 Local control of some of the style colors that is configured via the mash website
 The mash-primary-color-h, s, and l is used in defining the hover colors
 */
---mash-darken-hover-percentage: -10%;
---mash-darken-active-percentage: 30%;
---mash-lighten-hover-percentage: 58%;
---mash-lighten-active-percentage: 25%;
---mash-contrast-ratio: 40%;
---mash-button-solid-hover: hsl( var(--mash-primary-color-h), var(--mash-primary-color-s), calc(var(--mash-primary-color-l) - var(--mash-darken-hover-percentage)) );
---mash-button-solid-active: hsl( var(--mash-primary-color-h), var(--mash-primary-color-s), calc(var(--mash-primary-color-l) - var(--mash-darken-active-percentage)) );
---mash-contrast-switch: calc((var(--mash-primary-color-l) - var(--mash-contrast-ratio)) * -100);
---mash-button-solid-text-color: hsl(0, 0%, var(--mash-contrast-switch));
---mash-button-outlined-hover: hsla( var(--mash-primary-color-h), var(--mash-primary-color-s), var(--mash-primary-color-l), 0.2 );
---mash-button-outlined-active: hsla( var(--mash-primary-color-h), var(--mash-primary-color-s), var(--mash-primary-color-l), 0.5 );
---mash-button-outlined-text-color: #fc0;
 
---mash-primary-color-h: 214;
---mash-primary-color-s: 48%;
---mash-primary-color-l: 47%;
---mash-primary-color: #fc0
---mash-font-family: 'Quattrocento Sans', "Helvetica Neue", "Helvetica", Arial, sans-serif;
+:root {
+  --mash-darken-hover-percentage: -10%;
+  --mash-darken-active-percentage: 30%;
+  --mash-lighten-hover-percentage: 58%;
+  --mash-lighten-active-percentage: 25%;
+  --mash-contrast-ratio: 40%;
+  --mash-button-solid-hover: hsl( var(--mash-primary-color-h), var(--mash-primary-color-s), calc(var(--mash-primary-color-l) - var(--mash-darken-hover-percentage)) );
+  --mash-button-solid-active: hsl( var(--mash-primary-color-h), var(--mash-primary-color-s), calc(var(--mash-primary-color-l) - var(--mash-darken-active-percentage)) );
+  --mash-contrast-switch: calc((var(--mash-primary-color-l) - var(--mash-contrast-ratio)) * -100);
+  --mash-button-solid-text-color: hsl(0, 0%, var(--mash-contrast-switch));
+  --mash-button-outlined-hover: hsla( var(--mash-primary-color-h), var(--mash-primary-color-s), var(--mash-primary-color-l), 0.2 );
+  --mash-button-outlined-active: hsla( var(--mash-primary-color-h), var(--mash-primary-color-s), var(--mash-primary-color-l), 0.5 );
+  --mash-button-outlined-text-color: #fc0;
+
+  --mash-primary-color-h: 214;
+  --mash-primary-color-s: 48%;
+  --mash-primary-color-l: 47%;
+  --mash-primary-color: #fc0
+  --mash-font-family: 'Quattrocento Sans', "Helvetica Neue", "Helvetica", Arial, sans-serif;
+}
