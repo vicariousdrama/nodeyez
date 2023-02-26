@@ -4,7 +4,7 @@ name: Mempool Blocks
 title: Mempool Blocks Script
 layout: default
 description: Summary of mempool.space data for upcoming blocks with estimated fee rates and the fee band across blocks
-imageurl: ../iamges/mempoolblocks.png
+imageurl: ../images/mempoolblocks.png
 ---
 
 # Mempool Blocks
