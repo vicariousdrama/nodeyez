@@ -54,5 +54,5 @@ Choose which panels you want to run from the [Panel Index]({% link _install_step
 
 Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
 
-You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama]
+You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama)
 

@@ -47,11 +47,15 @@ If you dont see any images, then edit the slideshow script file
 nano /home/nodeyez/nodeyez/scripts/slideshow.sh
 ```
 
-Locate the line that initiates the fbi commmand (around line 12)
+Locate the line that initiates the fbi commmand (around line 12) which looks like this
 
-Remove the part at the end that redirects to stdout and stderr to /dev/null.
+```
+fbi --vt 1 --autozoom --timeout ${timeperimage} --device /dev/fb0 --noreadahead --cachemem 0 --noverbose --norandom ${globtodisplay} > /dev/null 2>&1
+```
 
-You can do this by removing this part at the end of the line `> /dev/null 2>&1`.
+Comment the part at the end that redirects to stdout and stderr to /dev/null.
+
+You can do this by placing a `#` right before this at the end of the line `> /dev/null 2>&1`.
 
 Save (Press CTRL+O) and exit (Press CTRL+X)
 
@@ -66,8 +70,8 @@ Now any errors will be reported to the console.
 
 You may need to change the parameters of the fbi command to
 
-- Use a different virtual terminal (Try 0 or 1)
-- Use a different device for output (Try /dev/fb0 or /dev/fb1)
+- Use a different virtual terminal (Try 0 or 1 as the value for `--vt`)
+- Use a different device for output (Try /dev/fb0 or /dev/fb1 as the value for `--device`)
 
 
 ## Run at Startup

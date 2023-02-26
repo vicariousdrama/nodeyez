@@ -76,12 +76,13 @@ div.wrapper section ul li::before {
   content: "\26A1";
   color: #fc0;
   display: inline-block;
-  width: 1em;
+  width: 1.5em;
   margin-left: -1.5em;
 }
 
 div.wrapper section ul li p {
   margin-block-start: 0em;
+  display: inline;
 }
 
 strong {
