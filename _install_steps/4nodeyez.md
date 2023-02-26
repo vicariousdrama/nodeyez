@@ -241,21 +241,11 @@ python3 -m pip install exifread --upgrade
 fi
 ```
 
-- beatifulsoup4 - This is a library for extracting data from HTML and XML
-   files. Within Nodeyez, it is used by the Compass Mining Status script
-   and the Daily Data Retrieval script.
-
-- pandas - This is a data analysis library. Within Nodeyez, it is used by
-   the Luxor GraphQL client for transforming/mapping results from API calls
-
-- qrcode - This library allows for creating qrcodes based on text input and
-   is used by Nodeyez as part of the Raretoshi script.
-
-- Wand - This library is a binding to ImageMagick for Python. It is used
-   by Nodeyez for handling filetypes that pillow is unable to such as
-   scalable vector graphics (SVG)
-
-   exifread - This library can parse out EXIF data from Image files
+- beatifulsoup4 - This is a library for extracting data from HTML and XML files. Within Nodeyez, it is used by the Compass Mining Status script and the Daily Data Retrieval script.
+- pandas - This is a data analysis library. Within Nodeyez, it is used by the Luxor GraphQL client for transforming/mapping results from API calls
+- qrcode - This library allows for creating qrcodes based on text input and is used by Nodeyez as part of the Raretoshi script.
+- Wand - This library is a binding to ImageMagick for Python. It is used by Nodeyez for handling filetypes that pillow is unable to such as scalable vector graphics (SVG)
+- exifread - This library can parse out EXIF data from Image files
 
 
 ---
