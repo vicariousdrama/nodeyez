@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Sats per USD
 title: Sats per USD Script
 layout: default
+description: Shows the current fiat valuation of Bitcoin in US Dollar terms renders as the number of Satoshis you can acquire per Dollar sold.
+imageurl: ../images/satsperusd.png
 ---
 
 # Sats per USD

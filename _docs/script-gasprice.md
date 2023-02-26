@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Gas Prices
 title: Gas Prices Script
 layout: default
+description: Produces an image displaying the gas price for a region in the United States or Canada using CollectAPI data
+imageurl: ../images/gasprice.png
 ---
 
 # Gas Price

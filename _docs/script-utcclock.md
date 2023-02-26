@@ -3,6 +3,8 @@ panelgroup: Informational Panels
 name: UTC Clock
 title: UTC Clock Script
 layout: default
+description: Renders the date and time. Simple
+imageurl: ../images/utcclock.png
 ---
 
 # UTC Clock

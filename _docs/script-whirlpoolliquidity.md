@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Whirlpool Liquidity
 title: Whirlpool Liquidity Status
 layout: default
+description: Shows the Whirlpool pool status indicating number of premixers and remixers in each pool
+imageurl: ../images/whirlpoolliquidity.png
 ---
 
 # Whirlpool Liquidity

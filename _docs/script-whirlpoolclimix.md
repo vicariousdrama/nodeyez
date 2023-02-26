@@ -3,6 +3,8 @@ panelgroup: Other Fun Stuff
 name: Whirlpool CLI Mix Status
 title: Whirlpool CLI Mix Status script
 layout: default
+description: Depicts the status of your Whirlpool Client for whether its connected and participating in mixes
+imageurl: ../images/whirlpoolclimix.png
 ---
 
 # Whirlpool CLI Mix

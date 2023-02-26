@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Arthash
 title: Arthash - Geometric artwork based on blockhash
 layout: default
+description: Create geometric artwork based on the Bitcoin Blockhash
+imageurl: ../images/arthash-719360.png
 ---
 
 # Art Hash

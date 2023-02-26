@@ -3,6 +3,8 @@ panelgroup: Mining Panels
 name: Miner MicroBT
 title: Miner MicroBT Script
 layout: default
+description: Rendering of miner status for a MicroBT miner using the CGMiner interface for data. Plots the hashrate and shows power, fan speed etc.
+imageurl: ../images/minermicrobt.png
 ---
 
 # Miner - MicroBT

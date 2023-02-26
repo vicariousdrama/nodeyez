@@ -3,6 +3,8 @@ panelgroup: Lightning Panels
 name: Channel Fees
 title: Channel Fees script
 layout: default
+description: Summary report of ratio of value sent and received in channel, fees paid and earned through channels
+imageurl: ../images/channelfees.png
 ---
 
 # Channel Fees

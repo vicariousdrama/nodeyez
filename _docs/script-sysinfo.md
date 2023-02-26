@@ -3,6 +3,8 @@ panelgroup: Informational Panels
 name: System Metrics
 title: System Metrics Script
 layout: default
+description: Renders the CPU temperature, Free Drive space, CPU and Memory Usage
+imageurl: ../images/sysinfo.png
 ---
 
 # System Information

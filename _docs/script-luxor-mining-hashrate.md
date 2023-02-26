@@ -3,6 +3,8 @@ panelgroup: Mining Panels
 name: Luxor Mining Hashrate
 title: Luxor Mining Hashrate Script
 layout: default
+description: Creates images for each month of hashrate data available for Luxor mining pool account
+imageurl: ../images/luxor-mining-hashrate-2021-12.png
 ---
 
 # Luxor Mining Hashrate

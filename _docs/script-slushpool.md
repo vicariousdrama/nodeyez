@@ -3,6 +3,8 @@ panelgroup: Mining Panels
 name: Braiins Pool
 title: Braiins Pool Script
 layout: default
+description: Creates a graph of earnings over the past 30 days of participation in Braiins pool
+imageurl: ../images/slushpool.png
 ---
 
 # Braiins Mining Pool

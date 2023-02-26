@@ -3,11 +3,13 @@ panelgroup: Other Fun Panels
 name: Compass Mining Status
 title: Compass Mining Status Script
 layout: default
+description: Prepares an image showin the high level status of facilities that are in Maintenance, Critical, Major issue status
+imageurl: ../images/compassminingstatus.png
 ---
 
 # Compass Mining Status
 
-This script cretaes an image denoting the high level status of facilities with
+This script creates an image denoting the high level status of facilities with
 Compass Mining as reported on their [status page](https://status.compassmining.io)
 
 ![sample image of compass mining status](../images/compassminingstatus.png)
