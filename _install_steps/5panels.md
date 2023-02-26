@@ -24,7 +24,7 @@ You can click links for panels you are interested in configuring and running.
 {% unless page.name == item.name %}
 {% if item.panelgroup == groupname %}
 <tr>
-<td><a href="{{ item.url }}">{{ item.name }}</a></td>
+<td width="65%"><a href="{{ item.url }}">{{ item.name }}</a></td>
 <td rowspan="2">
 {% if item.imageurl %}
 <img src="{{ item.imageurl }}" />
