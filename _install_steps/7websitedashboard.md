@@ -232,5 +232,5 @@ Now see if you can access the dashboard at https://your-node-ip:907
 
 ---
 
-[Home](../) | [Back to Nodeyez User]({% link _install_steps/4nodeyez.md %}) | [Continue to Running Services at Startup]({% link _install_steps/6runatstartup.md %})
+[Home](../) | [Back to Slideshow]({% link _install_steps/6slideshow.md %}) | [Continue to Running Services at Startup]({% link _install_steps/8runatstartup.md %})
 

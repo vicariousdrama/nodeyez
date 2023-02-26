@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Blockhash Dungeon
 title: Blockhash Dungeon
 layout: default
+description: Generates a maze display remiscent of legacy video games based on the Bitcoin Blockhash. The maze is rendered semi deterministically and features customizable tilesets for the floor and walls and logos.
+imageurl: ../images/arthashdungeon.pnd
 ---
 
 # Blockhash Dungeon

@@ -336,5 +336,5 @@ sudo /home/nodeyez/nodeyez/scripts/slideshow.sh &
 
 ---
 
-[Home](../) | [Back to Python and Dependencies]({% link _install_steps/3pythondeps.md %}) | [Continue to Website Dashboard]({% link _install_steps/5websitedashboard.md %})
+[Home](../) | [Back to Python and Dependencies]({% link _install_steps/3pythondeps.md %}) | [Continue to Panel Index]({% link _install_steps/5panels.md %})
 
