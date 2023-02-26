@@ -3,6 +3,8 @@ panelgroup: Lightning Panels
 name: Ring of Fire Status
 title: Ring of Fire Status script
 layout: default
+description: Shows status of Lightning nodes participating in a defined ring with their up/down state, and the channels between them.
+imageurl: ../images/rof-sample.png
 ---
 
 ## Ring of Fire Status

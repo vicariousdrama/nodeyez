@@ -7,6 +7,7 @@ groups:
   - Lightning Panels
   - Mining Panels
   - Other Fun Panels
+  - Composite Displays
 ---
 
 # Panel Index

@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Raretoshi
 title: Raretoshi Script
 layout: default
+description: Renders NFTs from Raretoshi with overlays showing author, title, edition and owner info
+imageurl: ../images/raretoshi.png
 ---
 
 # Raretoshi

@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Fiat Price
 title: Fiat Price Script
 layout: default
+description: Shows the current fiat valuation of Bitcoin in US Dollar terms from Bisq marketplace
+imageurl: ../images/fiatprice.png
 ---
 
 # Fiat Price

@@ -3,6 +3,8 @@ panelgroup: Composite Displays
 name: Two Image Display
 title: Two Image Display Script
 layout: default
+description: Builds a composite display image stacking from bottom up intended for a portrait oriented display.  Use with 5" DSI screen mounted to a Cryptocloaks Triton case
+imageurl: ../images/nodeyezdual.png
 ---
 
 # Two Image Display

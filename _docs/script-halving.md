@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Halving Countdown
 title: Halving Countdown Script
 layout: default
+description: Percent progress to the next halving period. A new picture is chosen to fill the grid for each whole percent
+imageurl: ../images/halving.png
 ---
 
 # Halving Countdown

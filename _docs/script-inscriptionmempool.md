@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Unmined Inscriptions Mempool
 title: Unmined Inscriptions Mempool Script
 layout: default
+description: Shows thumbnail representations of the most recently added inscriptions to the mempool which are not yet mined.
+imageurl: ../images/inscriptionmempool.png
 ---
 
 # Unmined Inscriptions in Mempool

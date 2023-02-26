@@ -1,5 +1,5 @@
 ---
-name: Website Dashbaord
+name: Website Dashboard
 title: NODEYEZ Website Dashboard
 layout: default
 ---

@@ -46,58 +46,13 @@ Scripts can be run on their own, or run continuously in the background as a serv
   <button class="btn btn-prev">&lt;</button>
 </div>
 
-## Informational Panels
+## Install and Configure
 
-* [IP Address]({% link _docs/script-ipaddress.md %})
-* [System Metrics]({% link _docs/script-sysinfo.md %})
-* [UTC Clock]({% link _docs/script-utcclock.md %})
+To setup Nodeyez, follow the [Install Steps]({% link _install_steps/index.md %}).
 
-## Bitcoin Panels
+Choose which panels you want to run from the [Panel Index]({% link _install_steps/5panels.md %}).
 
-All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
+Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
 
-* [Art Hash]({% link _docs/script-arthash.md %})
-* [Blockhash Dungeon]({% link _docs/script-arthashdungeon.md %})
-* [Block Height]({% link _docs/script-blockheight.md %})
-* [Difficulty Epoch]({% link _docs/script-difficultyepoch.md %})
-* [Halving Countdown]({% link _docs/script-halving.md %})
-* [Inscription Mempool]({% link _docs/script-inscriptionmempool.md %})
-* [Mempool Blocks]({% link _docs/script-mempoolblocks.md %})
-* [OP_RETURN]({% link _docs/script-opreturn.md %})
-* [Ordinal Inscriptions]({% link _docs/script-ordinals.md %})
-
-## Lighting (LND) Panels
-
-These panels can be configured to report on local LND based nodes, as well as remote ones over REST.
-
-* [Channel Balance]({% link _docs/script-channelbalance.md %})
-* [Channel Fees]({% link _docs/script-channelfees.md %})
-* [LND Hub Account Balances]({% link _docs/script-lndhub.md %})
-* [Ring of Fire]({% link _docs/script-rofstatus.md %})
-
-## Mining Panels
-
-* [F2 Pool]({% link _docs/script-f2pool.md %})
-* [Luxor Pool]({% link _docs/script-luxor-mining-hashrate.md %})
-* [Miner - Braiins]({% link _docs/script-minerbraiins.md %})
-* [Miner - MicroBT]({% link _docs/script-minermicrobt.md %})
-* [Braiins Pool]({% link _docs/script-slushpool.md %})
-
-## Other Fun Panels
-
-* [Dual Image Display]({% link _docs/script-nodeyezdual.md %})
-* [Fear and Greed Index]({% link _docs/script-fearandgreed.md %})
-* [Price of Bitcoin]({% link _docs/script-fiatprice.md %})
-* [Sats per USD]({% link _docs/script-satsperusd.md %})
-* [Whirlpool CLI Mix Status]({% link _docs/script-whirlpoolclimix.md %})
-* [Whirlpool Liquidity]({% link _docs/script-whirlpoolliquidity.md %})
-
-## No Longer Supported
-
-The scripts are still available, but may not properly function as the data providers have changed from open standards or charge exhorbitant fees.
-
-* [Compass Mining Hardware]({% link _docs/script-compassmininghardware.md %})
-* [Compass Mining Status]({% link _docs/script-compassminingstatus.md %})
-* [Gas Price]({% link _docs/script-gasprice.md %})
-* [Raretoshi]({% link _docs/script-raretoshi.md %})
+You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama]
 

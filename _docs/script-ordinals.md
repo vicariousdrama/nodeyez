@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Ordinal Inscriptions
 title: Ordinal Inscriptions Script
 layout: default
+description: Parses out ordinal inscriptions from blocks, creates display wrappers for each with metadata
+imageurl: ../images/ordinals.png
 ---
 
 # Ordinal Inscriptions

@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Block Height
 title: Block Height for Bitcoin
 layout: default
+description: Renders an image of the current block height. Simple. Refined.
+imageurl: ../images/blockheight.png
 ---
 
 # Block Height

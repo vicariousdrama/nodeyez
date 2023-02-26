@@ -3,6 +3,8 @@ panelgroup: Lightning Panels
 name: LNDHub Account Balances
 title: LNDHub Account Balances Script
 layout: default
+description: Summary of accounts in a local LNDHub instance with reporting of receives and spends, balance, and fees the hub has earned per account
+imageurl: ../images/lndhub.png
 ---
 
 # LND Hub Account Balances

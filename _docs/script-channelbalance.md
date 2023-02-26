@@ -3,6 +3,8 @@ panelgroup: Lightning Panels
 name: Channel Balance
 title: Channel Balance script
 layout: default
+description: Summary report of LND channel balances with graphical bars showing relative percentage of channel balance on local or remote
+imageurl: ../images/channelbalance.png
 ---
 
 ## Channel Balance

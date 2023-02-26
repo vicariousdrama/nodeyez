@@ -3,6 +3,8 @@ panelgroup: Other Fun Panels
 name: Fear and Greed Index
 title: Fear and Greed Script
 layout: default
+description: Graphs the Fear and Greed index from alternative.me with a moving average trend over time and indicator of highest value
+imageurl: ../images/fearandgreed.png
 ---
 
 # Fear and Greed Index

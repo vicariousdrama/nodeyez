@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: Difficulty Epoch
 title: Difficulty Epoch Script
 layout: default
+description: An image of the progress through current difficulty epoch denoting blocks expected (green), ahead of schedule (yellow), or behind schedule (red) with estimate of next increase.
+imageurl: ../images/difficultyepoch.png
 ---
 
 # Difficulty Epoch

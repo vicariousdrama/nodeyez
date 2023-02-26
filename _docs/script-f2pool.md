@@ -3,6 +3,8 @@ panelgroup: Mining Panels
 name: F2 Pool
 title: F2 Pool
 layout: default
+description: A graphed 24 hour summary of earnings and current hash rate for F2 Pool account
+imageurl: ../images/f2pool.png
 ---
 
 # F2 Pool

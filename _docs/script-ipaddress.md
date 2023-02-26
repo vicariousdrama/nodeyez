@@ -3,6 +3,8 @@ panelgroup: Informational Panels
 name: IP Address
 title: IP Address Script
 layout: default
+description: Enumerates the IP addresses for identification. Simple
+imageurl: ../images/ipaddress.png
 ---
 
 # IP Address

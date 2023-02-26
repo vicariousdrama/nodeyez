@@ -1,6 +1,9 @@
 ---
+name: Compass Mining Hardware
 title: NODEYEZ Compass Mining Hardware script
 layout: default
+description: Shows the quad of lowest priced, highest hashrate, cheapest hashrate, and most efficient hashrate machines currently for sale in the Compass Mining reseller marketplace
+imageurl: ../images/compassmininghardware.png
 ---
 
 # Compass Mining Hardware

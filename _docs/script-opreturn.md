@@ -3,6 +3,8 @@ panelgroup: Bitcoin Panels
 name: OP_RETURN
 title: OP_RETURN Script
 layout: default
+description: Creates an image showing the text entries added in OP_RETURN
+imageurl: ../images/opreturn.png
 ---
 
 # OP_RETURN

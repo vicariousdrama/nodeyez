@@ -3,6 +3,8 @@ panelgroup: Mining Panels
 name: Miner - Braiins OS
 title: Miner - Braiins OS Script
 layout: default
+description: Shows the current metrics (power, temperature, fan, pool info) and graphed hashrate over time with moving average for a Braiins based miner and can be configured with warnings if ranges arent met.  Great for an Antminer S9
+imageurl: ../images/minerbraiins.png
 ---
 
 # Miner - Braiins OS

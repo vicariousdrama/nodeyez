@@ -79,5 +79,5 @@ sudo systemctl enable nodeyez-slideshow.service
 sudo systemctl start nodeyez-slideshow.service
 ```
 
-[Home](../) | [Back to Python and Dependencies]({% link _install_steps/5panels.md %}) | [Continue to Website Dashboard]({% link _install_steps/7websitedashboard.md %})
+[Home](../) | [Back to Panel Index]({% link _install_steps/5panels.md %}) | [Continue to Website Dashboard]({% link _install_steps/7websitedashboard.md %})
 
