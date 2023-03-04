@@ -52,7 +52,7 @@ nano /home/nodeyez/nodeyez/config/blockstats.json
 | colorGraphOutline | The color to use for outlining charts and their labels. Default `#888888` |
 | colorGraphValue | The color to use for primary value in chart for fee rates. Default `#FF8888` |
 | colorGraphAverage | The color to use for the average value line drawn across fee rates. Default `#8888FF` |
-| colorBands | An array of colors to use for multi valued charts. Default:<br />`{<br />&nbsp;&nbsp;&quot;#FFFF00&quot;,<br />&nbsp;&nbsp;&quot;#0000FF&quot;,<br />&nbsp;&nbsp;&quot;#00FF00&quot;,<br />&nbsp;&nbsp;&quot;#808000&quot;,<br />&nbsp;&nbsp;&quot;#FF0000&quot;,<br />&nbsp;&nbsp;&quot;#00FFFF&quot;,<br />&nbsp;&nbsp;&quot;#800000&quot;,<br />&nbsp;&nbsp;&quot;#808080&quot;,<br />&nbsp;&nbsp;&quot;#008000&quot;,<br />&nbsp;&nbsp;&quot;#800080&quot;,<br />&nbsp;&nbsp;&quot;#FF00FF&quot;,<br />&nbsp;&nbsp;&quot;#008080&quot;<br/>}` |
+| colorBands | An array of colors to use for multi valued charts. Default: <ul><li>#FFFF00</li><li>#0000FF</li><li>#00FF00</li><li>#808000</li><li>#FF0000</li><li>#00FFFF</li><li>#800000</li><li>#808080</li><li>#008000</li><li>#800080</li><li>#FF00FF</li><li>#008080</li></ul> |
 | logStatsForRanges | Indicates whether summary stats should be reported to log output. Default: `true` |
 | showStatsBlock | Indicates whether the stats block image should be created. Default: `true` |
 | showFeeRates | Indicates whether the fee rates image should be created. Default: `true` |
