@@ -23,6 +23,7 @@ automatically at startup.
 sudo systemctl enable nodeyez-arthash.service
 sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
+sudo systemctl enable nodeyez-blockstats.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-channelfees.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
@@ -58,6 +59,7 @@ Only issue the systemctl start command for those services you want to run.
 sudo systemctl start nodeyez-arthash.service
 sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
+sudo systemctl start nodeyez-blockstats.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-channelfees.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
