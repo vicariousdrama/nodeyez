@@ -5,13 +5,18 @@
 Description=Nodeyez image generator for Unmined Inscriptions in Mempool
 StartLimitIntervalSec=600
 StartLimitBurst=2
+Wants=bitcoind.service
+After=bitcoind.service
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStartPre=/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
+ExecStartPre=/bin/chown nodeyez:nodeyez /home/nodeyez/.bitcoin/.cookie
 ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/inscriptionmempool.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30
+PermissionsStartOnly=true
 
 [Install]
 WantedBy=multi-user.target

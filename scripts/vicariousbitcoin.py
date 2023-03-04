@@ -194,6 +194,45 @@ def getblockordinals(blocknum, blockIndexesToSkip=[]):
                                 ordinals.append(ordinal)
     return ordinals
 
+def getblockstats(blocknum, verbosity=1):
+    if useMockData:
+        if exists("../mock-data/getblockstats.json"):
+            with open("../mock-data/getblockstats.json") as f:
+                return json.load(f)
+    cmd = "bitcoin-cli getblockstats " + str(blocknum)
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
+        return j
+    except subprocess.CalledProcessError as e:
+        print(e)
+        fakejson = '{"avgfee": 0, "avgfeerate": 0, "avgtxsize": 0, "blockhash": "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048", "feerate_percentiles": [0, 0, 0, 0, 0], "height": 1, "ins": 0, "maxfee": 0, "maxfeerate": 0,"maxtxsize": 0, "medianfee": 0, "mediantime": 1231469665, "mediantxsize": 0, "minfee": 0, "minfeerate": 0, "mintxsize": 0, "outs": 1, "subsidy": 5000000000, "swtotal_size": 0, "swtotal_weight": 0, "swtxs": 0, "time": 1231469665, "total_out": 0, "total_size": 0, "total_weight": 0, "totalfee": 0, "txs": 1, "utxo_increase": 1, "utxo_size_inc": 117}'
+        return json.loads(fakejson)
+
+def getblockscriptpubkeytypes(blocknum):
+    r = {}
+    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vin[].prevout.scriptPubKey.type"
+    try:
+        t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        lines = cmdoutput.splitlines()
+        for line in lines:
+            t[line] = 1 if line not in t else t[line] + 1
+        r["vin"] = t
+    except subprocess.CalledProcessError as e:
+        print(e)
+    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vout[].prevout.scriptPubKey.type"
+    try:
+        t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        lines = cmdoutput.splitlines()
+        for line in lines:
+            t[line] = 1 if line not in t else t[line] + 1
+        r["vout"] = t
+    except subprocess.CalledProcessError as e:
+        print(e)
+    return r
+
 def getcurrentblock():
     if useMockData:
         return 726462

@@ -5,13 +5,7 @@ title: NODEYEZ - Display panels to get the most from your node
 
 Nodeyez is a project that contains a variety of python [scripts](./scripts) to produce images based on your Bitcoin Node
 
-Images can be displayed
-* to video output such as an attached screen on a Raspberry Pi
-* in a website dashboard for browser based acess
-
-In addition, some scripts have support for reporting data to a local [Blockclock Mini](https://blockclockmini.com/).
-
-Scripts can be run on their own, or run continuously in the background as a service on system startup.
+Scripts can be run on their own, or configured as a background service on system startup.
 
 ## Sample Panels Created by Nodeyez
 
@@ -19,6 +13,9 @@ Scripts can be run on their own, or run continuously in the background as a serv
   <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
   <div class="slide"><img src="./images/arthashdungeon.png" width=196 /></div>
   <div class="slide"><img src="./images/blockheight.png" width=196 /></div>
+  <div class="slide"><img src="./images/blockstats.png" width=196 /></div>
+  <div class="slide"><img src="./images/blockstats-feerates.png" width=196 /></div>
+  <div class="slide"><img src="./images/blockstats-segwit.png" width=196 /></div>
   <div class="slide"><img src="./images/channelbalance.png" width=196 /></div>
   <div class="slide"><img src="./images/channelfees.png" width=196 /></div>
   <div class="slide"><img src="./images/compassminingstatus.png" width=196 /></div>
@@ -51,6 +48,8 @@ Scripts can be run on their own, or run continuously in the background as a serv
 To setup Nodeyez, follow the [Install Steps]({% link _install_steps/index.md %}).
 
 Choose which panels you want to run from the [Panel Index]({% link _install_steps/5panels.md %}).
+
+View generated images via website dashboard. 
 
 Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
 
