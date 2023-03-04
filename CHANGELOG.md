@@ -25,6 +25,7 @@ title: NODEYEZ Change Log
 - Enhanced System Info - Improved scalability for temperature, piestorage, cpuload icons
 - New Panel: Ordinals - Displays images that have been embedded as inscriptions with optional blocklist
 - New Panel: Inscription Mempool - Display recent inscriptions in the mempool that are not yet mined into a block
+- New Panel: Block Stats - Renders an image of stats for the current block height including inputs, outputs, transaction count, percentage of segwit, the size of the block and utxo set change, fee rates and fees for transactions. Optionally renders time series data for fee rates and segwit
 
 **General**
 
@@ -38,6 +39,7 @@ title: NODEYEZ Change Log
 - Deprecated support for Compass Mining Hardware, Gas Prices, Raretoshi
 - Improved Mock data for testing renderings
 - Added watermarks to renders
+- Updated the markdown and jekyll themes for website, now available at https://nodeyez.com
 
 ## 1.0.0
 

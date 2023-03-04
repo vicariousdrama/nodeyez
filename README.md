@@ -29,6 +29,7 @@ All of these panels can work with a local Bitcoin node. At this time, informatio
 * [Art Hash](./_docs/script-arthash.md)
 * [Blockhash Dungeon](./_docs/script-arthashdungeon.md)
 * [Block Height](./_docs/script-blockheight.md)
+* [Block Stats](./_docs/script-blockstats.md)
 * [Difficulty Epoch](./_docs/script-difficultyepoch.md)
 * [Halving Countdown](./_docs/script-halving.md)
 * [Inscription Mempool](./_docs/script-inscriptionmempool.md)

@@ -12,7 +12,7 @@ groups:
 
 # Panel Index
 
-You can click links for panels you are interested in configuring and running.
+Click the links for panels you want more guidance on for configuring and running.
 
 {% for groupname in page.groups %}
 ## {{ groupname }}
@@ -29,7 +29,13 @@ You can click links for panels you are interested in configuring and running.
 {% if item.imageurl %}
 <img src="{{ item.imageurl }}" />
 {% else %}
+{% if item.images %}
+{% for imageurl in item.images %}
+<img src="{{ imageurl }}" />
+{% endfor %}
+{% else %}
 no image defined
+{% endif %}
 {% endif %}
 </td>
 </tr>

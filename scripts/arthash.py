@@ -131,4 +131,5 @@ if __name__ == '__main__':
     while True:
         blocknumber = vicariousbitcoin.getcurrentblock()
         createimage(blocknumber, width, height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)
