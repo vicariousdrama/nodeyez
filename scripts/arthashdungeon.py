@@ -101,6 +101,7 @@ def createimage(blocknumber=1, width=480, height=320):
     yoffset  = int((height - ((maxrow+1)*iconsize))/2)
     thingmap = []
     global maze
+    maze=[]
     byteidx  = len(blockhash)
     # get theme (currently assumes 2 themes wide in the tileset)
     byteidx  -= 2
