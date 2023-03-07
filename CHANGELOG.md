@@ -16,16 +16,14 @@ title: NODEYEZ Change Log
 - New Panel: LND Hub Account Balances - Relies on local redis backing store to show account info
 - New Panel: OP_RETURN - Renders text from OP_RETURN values
 - New Panel: Price of Bitcoin - Shows the price of 1 BTC in fiat terms based on the US dollar valuation
-- Enhanced Blockhash Dungeon - Fixed bug with floor tiles
-- Enhanced Channel Balances - Cleaner lines, new default colors, option to display amounts and support remote LND hosts
-- Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout, add renderStyle
-- Enhanced Sats Per USD - dynamically scale size of sat grid based on current total
-- Enhanced System Info - Cleaner lines, better thermometer bulb alignment
 - New Panel: Dual Image Display - Creates a composite of multiple images suitable for screens in portrait orientation. Based around 800x480 5" LCD screens.
-- Enhanced System Info - Improved scalability for temperature, piestorage, cpuload icons
 - New Panel: Ordinals - Displays images that have been embedded as inscriptions with optional blocklist
 - New Panel: Inscription Mempool - Display recent inscriptions in the mempool that are not yet mined into a block
 - New Panel: Block Stats - Renders an image of stats for the current block height including inputs, outputs, transaction count, percentage of segwit, the size of the block and utxo set change, fee rates and fees for transactions. Optionally renders time series data for fee rates and segwit
+- Enhanced Channel Balances - Cleaner lines, new default colors, option to display amounts and support remote LND hosts
+- Enhanced Mempool - show sumary of tx in mempool, block count and time, fix for timeout, add renderStyle
+- Enhanced Sats Per USD - dynamically scale size of sat grid based on current total
+- Enhanced System Info - Cleaner lines, better thermometer bulb alignment, improved scaling for temperature, pie storage and cpu load icons
 
 **General**
 
@@ -40,6 +38,11 @@ title: NODEYEZ Change Log
 - Improved Mock data for testing renderings
 - Added watermarks to renders
 - Updated the markdown and jekyll themes for website, now available at https://nodeyez.com
+
+**Bugfixes**
+
+- Fixed Blockhash Dungeon seeder and perpetual growth bug
+- Fixed floortiles bug in Blockhash Dungeon
 
 ## 1.0.0
 

@@ -107,7 +107,7 @@ using C-Lightning or another implementation, you may need to alter the paths.
 ```shell
 sudo mkdir -p /home/nodeyez/.lnd
 sudo cp /home/bitcoin/.lnd/tls.cert /home/nodeyez/.lnd/tls.cert
-lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments --save_to ${HOME}/nodeyez.macaroon
+lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to ${HOME}/nodeyez.macaroon
 sudo mv ${HOME}/nodeyez.macaroon /home/nodeyez/.lnd/nodeyez.macaroon
 sudo chown -R nodeyez:nodeyez /home/nodeyez/.lnd
 ```
@@ -190,7 +190,9 @@ nodeyez scripts make at this time.
   "permissions": [
     "uri:/lnrpc.Lightning/ChannelBalance",
     "uri:/lnrpc.Lightning/ConnectPeer",
+    "uri:/lnrpc.Lightning/DecodePayReq",
     "uri:/lnrpc.Lightning/DisconnectPeer",
+    "uri:/lnrpc.Lightning/FeeReport",
     "uri:/lnrpc.Lightning/ForwardingHistory",
     "uri:/lnrpc.Lightning/GetInfo",
     "uri:/lnrpc.Lightning/GetNodeInfo",
