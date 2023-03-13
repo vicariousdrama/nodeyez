@@ -251,42 +251,43 @@ def getAndSaveLuxorHashrateInfo():
         with open(filename, 'a', encoding="utf-8") as outfile:
             json.dump(resp, outfile)
         print("ok.\n")
-    except Error as e:
+    except Exception as e:
         print("error\n")
         print(e)
 
 # --------------------------------------------------------------------------------------------------------------------
-# getAndSaveSlushpoolInfo
+# getAndSaveBraiinspoolInfo
 #
-# Retrieves information from Slushpool for an account via REST
+# Retrieves information from Braiins pool for an account via REST (p.k.a Slushpool)
 # API documentation at https://help.slushpool.com/en/support/solutions/articles/77000433512-api-configuration-guide
+#    now at            https://help.braiins.com/en/support/solutions/articles/77000433512-api-configuration-guide
 # --------------------------------------------------------------------------------------------------------------------
-def getAndSaveSlushpoolInfo():
+def getAndSaveBraiinspoolInfo():
     print("---")
-    if not enableSlushpool:
-        print("WARNING: Call to getAndSaveSlushpoolInfo made but enableSlushpool is False")
+    if not enableBraiinspool:
+        print("WARNING: Call to getAndSaveBraiinspoolInfo made but enableBraiinspool is False")
         return
-    with open(configFileSlushpool) as f:
+    with open(configFileBraiinspool) as f:
         config = json.load(f)
     headers = {"Slushpool-Auth-Token": config["authtoken"]}
-    getAndSaveSlushpoolFile("pool stats", "poolstats/", "https://slushpool.com/stats/json/btc", headers)
-    getAndSaveSlushpoolFile("user performance", "userprofile/", "https://slushpool.com/accounts/profile/json/btc", headers)
-    getAndSaveSlushpoolFile("90 day daily rewards", "dailyreward/", "https://slushpool.com/accounts/reward/json/btc", headers)
-    getAndSaveSlushpoolFile("worker performance", "workers/", "https://slushpool.com/accounts/workers/json/btc", headers)
+    getAndSaveBraiinspoolFile("pool stats", "poolstats/", "https://pool.braiins.com/stats/json/btc", headers)
+    getAndSaveBraiinspoolFile("user performance", "userprofile/", "https://pool.braiins.com/accounts/profile/json/btc", headers)
+    getAndSaveBraiinspoolFile("90 day daily rewards", "dailyreward/", "https://pool.braiins.com/accounts/rewards/json/btc", headers)
+    getAndSaveBraiinspoolFile("worker performance", "workers/", "https://pool.braiins.com/accounts/workers/json/btc", headers)
 
 # --------------------------------------------------------------------------------------------------------------------
-# getAndSaveSlushpoolFile
+# getAndSaveBraiinspoolFile
 #
 # Helper method to build directories as needed, log what being done, and download respective file
 # --------------------------------------------------------------------------------------------------------------------
-def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, headers):
+def getAndSaveBraiinspoolFile(comment, subdirectory, fileurl, headers):
     datefile = getdatefile()
-    folder=slushpoolDataDirectory + subdirectory
+    folder=braiinspoolDataDirectory + subdirectory
     makeDirIfNotExists(folder)
     filename=folder + datefile
     print("-")
-    print(f"Retrieving and saving Slushpool {comment} to {filename}")
-    time.sleep(6)  # slushpool throttles/blocks if more than 1 per 5 seconds
+    print(f"Retrieving and saving Braiins pool {comment} to {filename}")
+    time.sleep(6)  # braiins pool throttles/blocks if more than 1 per 5 seconds
     getAndSaveFile(fileurl, filename, headers)
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -295,13 +296,13 @@ def getAndSaveSlushpoolFile(comment, subdirectory, fileurl, headers):
 if __name__ == '__main__':
     # Defaults
     enableBisq = True
-    enableCollectAPI = True
+    enableCollectAPI = False # No free data available
     enableCompassHardware = False # API changed. Data no longer available
-    enableCompassStatus = True
-    enableF2Pool = True
+    enableCompassStatus = False # Deprecated
+    enableF2Pool = False
     enableFearAndGreed = True
     enableLuxor = True
-    enableSlushpool = True
+    enableBraiinspool = True
     dataDirectory="/home/nodeyez/nodeyez/data/"
     configFolder="/home/nodeyez/nodeyez/config/"
     configFileBisq=configFolder + "satsperusd.json"
@@ -311,7 +312,7 @@ if __name__ == '__main__':
     configFileF2Pool=configFolder + "f2pool.json"
     configFileFearAndGreed=configFolder + "fearandgreed.json"
     configFileLuxor=configFolder + "luxor.json"
-    configFileSlushpool=configFolder + "slushpool.json"
+    configFileBraiinspool=configFolder + "braiinspool.json"
     sleepInterval=300 # This is for the main loop controller
     # Time Intervals for remote data pulls
     sleepIntervalBisq=3600
@@ -321,7 +322,7 @@ if __name__ == '__main__':
     sleepIntervalF2Pool=82800
     sleepIntervalFearAndGreed=41400
     sleepIntervalLuxor=82800
-    sleepIntervalSlushpool=82800
+    sleepIntervalBraiinspool=82800
     lastTimeBisq=0
     lastTimeCollectAPI=0
     lastTimeCompassHardware=0
@@ -329,7 +330,7 @@ if __name__ == '__main__':
     lastTimeF2Pool=0
     lastTimeFearAndGreed=0
     lastTimeLuxor=0
-    lastTimeSlushpool=0
+    lastTimeBraiinspool=0
     # Check that config exists
     if enableBisq and not exists(configFileBisq):
         enableBisq = False
@@ -360,10 +361,10 @@ if __name__ == '__main__':
         enableLuxor = False
         print(f"The Luxor configuration file was not defined at {configFileLuxor}")
         print(f"Luxor data will not be downloaded")
-    if enableSlushpool and not exists(configFileSlushpool):
-        enableSlushpool = False
-        print(f"The Slushpool configuration file was not defined at {configFileSlushpool}")
-        print(f"Slushpool data will not be downloaded")
+    if enableBraiinspool and not exists(configFileBraiinspool):
+        enableBraiinspool = False
+        print(f"The Braiins pool configuration file was not defined at {configFileBraiinspool}")
+        print(f"Braiins pool data will not be downloaded")
     # Data directories
     if not exists(dataDirectory):
         os.makedirs(dataDirectory)
@@ -388,9 +389,9 @@ if __name__ == '__main__':
     luxorDataDirectory = dataDirectory + "luxor/"
     if enableLuxor:
         makeDirIfNotExists(luxorDataDirectory)
-    slushpoolDataDirectory = dataDirectory + "slushpool/"
-    if enableSlushpool:
-        makeDirIfNotExists(slushpoolDataDirectory)
+    braiinspoolDataDirectory = dataDirectory + "braiinspool/"
+    if enableBraiinspool:
+        makeDirIfNotExists(braiinspoolDataDirectory)
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
@@ -400,18 +401,21 @@ if __name__ == '__main__':
             print(f"2) Pass the desired API identifier to retrieve and exit")
             arg0 = sys.argv[0]
             print(f"   {arg0} bisq")
+            print(f"   {arg0} braiinspool")
             print(f"   {arg0} collectapi")
             print(f"   {arg0} compassmininghardware")
             print(f"   {arg0} compsasminingstatus")
             print(f"   {arg0} f2pool")
             print(f"   {arg0} fearandgreed")
             print(f"   {arg0} luxor")
-            print(f"   {arg0} slushpool")
         else:
             apistub = sys.argv[1]
             if apistub == 'bisq':
                 if enableBisq:
                     getAndSaveBisqInfo()
+            elif apistub == 'braiinspool':
+                if enableBraiinspool:
+                    getAndSaveBraiinspoolInfo()
             elif apistub == 'collectapi':
                 if enableCollectAPI:
                     getAndSaveCollectAPIInfo()
@@ -430,9 +434,6 @@ if __name__ == '__main__':
             elif apistub == 'luxor':
                 if enableLuxor:
                     getAndSaveLuxorHashrateInfo()
-            elif apistub == 'slushpool':
-                if enableSlushpool:
-                    getAndSaveSlushpoolInfo()
             else:
                 print("Value not recognized. Call the program with --help for more guidance")
                 exit(1)
@@ -443,6 +444,9 @@ if __name__ == '__main__':
         if enableBisq and currentTime > lastTimeBisq + sleepIntervalBisq:
             getAndSaveBisqInfo()
             lastTimeBisq = currentTime if lastTimeBisq == 0 else lastTimeBisq + sleepIntervalBisq
+        if enableBraiinspool and currentTime > lastTimeBraiinspool + sleepIntervalBraiinspool:
+            getAndSaveBraiinspoolInfo()
+            lastTimeBraiinspool = currentTime if lastTimeBraiinspool == 0 else lastTimeBraiinspool + sleepIntervalBraiinspool
         if enableCollectAPI and currentTime > lastTimeCollectAPI + sleepIntervalCollectAPI:
             getAndSaveCollectAPIInfo()
             lastTimeCollectAPI = currentTime if lastTimeCollectAPI == 0 else lastTimeCollectAPI + sleepIntervalCollectAPI
@@ -461,9 +465,6 @@ if __name__ == '__main__':
         if enableLuxor and currentTime > lastTimeLuxor + sleepIntervalLuxor:
             getAndSaveLuxorHashrateInfo()
             lastTimeLuxor = currentTime if lastTimeLuxor == 0 else lastTimeLuxor + sleepIntervalLuxor
-        if enableSlushpool and currentTime > lastTimeSlushpool + sleepIntervalSlushpool:
-            getAndSaveSlushpoolInfo()
-            lastTimeSlushpool = currentTime if lastTimeSlushpool == 0 else lastTimeSlushpool + sleepIntervalSlushpool
         print("---")
         print(f"Done retrieving data for this round. sleeping for {sleepInterval}")
         time.sleep(sleepInterval)

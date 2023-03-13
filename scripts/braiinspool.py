@@ -57,7 +57,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     # Header
-    vicarioustext.drawcenteredtext(draw, "SlushPool Mining Summary", 24, int(width/2), int(headerheight/2), colorHeader, True)
+    vicarioustext.drawcenteredtext(draw, "Braiins Pool Mining Summary", 24, int(width/2), int(headerheight/2), colorHeader, True)
     # Hashrate
     hashrate = getaccounthashrate(accountprofile)
     vicarioustext.drawcenteredtext(draw, "Hashrate", 16, (width/4*1), (headerheight + (hashheight/2) - 24), colorTextFG)
@@ -133,7 +133,7 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
     maoldy = -1
     for reward in accountrewards["btc"]["daily_rewards"]:
         days = days + 1
-        # skip the first day entry, something not right, and it doesnt show on slushpool.com
+        # skip the first day entry, something not right, and it doesnt show on pool.braiins.com
         if days < (daystoskip + 1):
            continue
         if days > totaldays + 1:
@@ -199,9 +199,9 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/nodeyez/nodeyez/config/slushpool.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/slushpool.png"
-    authtoken = "--put-your-auth-token-in-nodeyez/config/slushpool.json--"
+    configFile = "/home/nodeyez/nodeyez/config/braiinspool.json"
+    outputFile = "/home/nodeyez/nodeyez/imageoutput/braiinspool.png"
+    authtoken = "--put-your-auth-token-in-nodeyez/config/braiinspool.json--"
     useTor=True
     priceUrl = "https://bisq.markets/bisq/api/markets/ticker"
     priceCheckInterval = 10800	                      # controls how often (in seconds), the market price is checked.  10800 is once every 3 hours
@@ -211,9 +211,9 @@ if __name__ == '__main__':
     height=320
     sleepInterval = 600                               # controls how often this display panel is updated. 600 is once every 10 minutes
     colorHeader=ImageColor.getrgb("#ffffff")          # The header text color. Need to pass to also specify bolding
-    colorMiningReward=ImageColor.getrgb("#6b50ff")    # Slushpool mining rewards color
-    colorBOSReward=ImageColor.getrgb("#fb82a8")       # Slushpool BOS rewards color
-    colorReferralReward=ImageColor.getrgb("#00bac5")  # Slushpool referral rewards color
+    colorMiningReward=ImageColor.getrgb("#6b50ff")    # Braiins pool mining rewards color
+    colorBOSReward=ImageColor.getrgb("#fb82a8")       # Braiins pool BOS rewards color
+    colorReferralReward=ImageColor.getrgb("#00bac5")  # Braiins pool referral rewards color
     colorGraphLineLight=ImageColor.getrgb("#a0a0a0")  # Chart border left and bottom
     colorGraphLineDark=ImageColor.getrgb("#606060")   # Chart border top and right
     colorMovingAverage=ImageColor.getrgb("#d69f06")   # The moving average line
@@ -237,8 +237,8 @@ if __name__ == '__main__':
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
-        if "slushpool" in config:
-            config = config["slushpool"]
+        if "braiinspool" in config:
+            config = config["braiinspool"]
         if "authtoken" in config:
             authtoken = config["authtoken"]
         else:
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     # Check for single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
-            print(f"Creates a summary image of Slushpool account with the current hashrate, and the")
+            print(f"Creates a summary image of Braiins pool account with the current hashrate, and the")
             print(f"account earnings depicted for yesterday and today, and a graph of past 30 days")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
@@ -303,11 +303,11 @@ if __name__ == '__main__':
     # Loop
     while True:
         print("Getting account profile and rewards")
-        accountprofile = vicariousnetwork.getslushpoolaccountprofile(True, authtoken)
+        accountprofile = vicariousnetwork.getbraiinspoolaccountprofile(True, authtoken)
         time.sleep(6)
-        accountrewards = vicariousnetwork.getslushpoolaccountrewards(True, authtoken)
+        accountrewards = vicariousnetwork.getbraiinspoolaccountrewards(True, authtoken)
         time.sleep(6)
-        poolstats = vicariousnetwork.getslushpoolstats(True, authtoken)
+        poolstats = vicariousnetwork.getbraiinspoolstats(True, authtoken)
         if price_countdown <= 0:
             print("Getting updated prices")
             price_last, price_high, price_low = vicariousnetwork.getpriceinfo(True, priceUrl, price_last, price_high, price_low)

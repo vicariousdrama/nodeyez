@@ -38,11 +38,13 @@ title: NODEYEZ Change Log
 - Improved Mock data for testing renderings
 - Added watermarks to renders
 - Updated the markdown and jekyll themes for website, now available at https://nodeyez.com
+- Slushpool renamed to Braiins pool
 
 **Bugfixes**
 
 - Fixed Blockhash Dungeon seeder and perpetual growth bug
 - Fixed floortiles bug in Blockhash Dungeon
+- Daily Data Retrieval has url corrections for Braiins pool
 
 ## 1.0.0
 

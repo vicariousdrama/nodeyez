@@ -1,5 +1,6 @@
 ---
 name: Panel Index
+title: NODEYEZ Panels
 layout: default
 groups:
   - Informational Panels

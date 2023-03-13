@@ -14,7 +14,7 @@ Scripts can be run on their own, or run continuously in the background as a serv
 
 A few sample images that you can produce on your node using Nodeyez are shown below
 
-<img src="./images/arthashdungeon.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/slushpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/arthashdungeon.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/braiinspool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Informational Panels
 
@@ -52,7 +52,7 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [Luxor Pool](./_docs/script-luxor-mining-hashrate.md)
 * [Miner - Braiins](./_docs/script-minerbraiins.md)
 * [Miner - MicroBT](./_docs/script-minermicrobt.md)
-* [Braiins Pool](./_docs/script-slushpool.md)
+* [Braiins Pool](./_docs/script-braiinspool.md)
 
 ## Other Fun Panels
 
