@@ -74,11 +74,13 @@ The scripts are still available, but may not properly function as the data provi
 
 # Installation Procedures
 
-1. [Raspberry Pi](./_install_steps/install-1-raspberrypinode.md)
-2. [Python and Dependencies](./_install_steps/install-2-pythondeps.md)
-3. [Display Screen](./_install_steps/install-3-displayscreen.md)
-4. [Nodeyez User](./_install_steps/install-4-nodeyez.md)
-5. [Website Dashboard](./_install_steps/install-5-websitedashboard.md)
-6. [Running at Startup](./_install_steps/install-6-runatstartup.md)
+1. [Your Node](./_install_steps/1yournode.md)
+2. [Display Screen](./_install_steps/2displayscreen.md)
+3. [Python and Dependencies](./_install_steps/3pythondeps.md)
+4. [Nodeyez User Setup](./_install_steps/4nodeyez.md)
+5. [Panel Selection](./_install_steps/5panels.md)
+6. [Slideshow Config](./_install_steps/6slideshow.md)
+7. [Website Dashboard](./_install_steps/7websitedashboard.md)
+8. [Running at Startup](./_install_steps/8runatstartup.md)
 
 

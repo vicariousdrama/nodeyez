@@ -7,6 +7,21 @@ title: NODEYEZ Change Log
 
 **New Panels and Enhancements**
 
+**General**
+
+- Linking tagged commits back to Github as a public mirror
+
+**Bugfixes**
+
+
+## 23.03
+
+Released: 2023-03-13
+
+Tagged Commit: [e8c0f38c6c1035bcaae88d9d629e75fe17483223](https://github.com/vicariousdrama/nodeyez/commit/e8c0f38c6c1035bcaae88d9d629e75fe17483223)
+
+**New Panels and Enhancements**
+
 - New panel: Miner Status for MicroBT Whatsminer
 - New panel: Channel Fees (requires updated macaroon)
 - New Panel: Halving Countdown - Progress to Next Subsidy Halving
@@ -50,7 +65,7 @@ title: NODEYEZ Change Log
 
 Released 2022-05-07
 
-Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](./commit/290fb01c39cef84ab77155eea437439825a304ca)
+Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](https://github.com/vicariousdrama/nodeyez/commit/290fb01c39cef84ab77155eea437439825a304ca)
 
 **New Panels and Enhancements**
 
@@ -93,7 +108,7 @@ Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](./commit/290fb01c39cef
 
 Released: 2022-02-06
 
-Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](./commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
+Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](https://github.com/vicariousdrama/nodeyez/commit/e7571c06acd68f0ee58e228d294137b09a103d2a)
 
 **Features**
 
@@ -118,7 +133,8 @@ Tagged Commit: [e7571c06acd68f0ee58e228d294137b09a103d2a](./commit/e7571c06acd68
 ## 1.0.0-alpha
 
 Released: 2021-07-29
-Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](./commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
+
+Tagged Commit: [81073d0d8720f6ae77bd209d20fa3d7db59e33a4](https://github.com/vicariousdrama/nodeyez/commit/81073d0d8720f6ae77bd209d20fa3d7db59e33a4)
 
 **Features**
 
