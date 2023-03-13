@@ -1,5 +1,6 @@
 ---
 name: Documentation Index
+title: NODEYEZ Panels
 layout: default
 groups:
   - Informational Panels

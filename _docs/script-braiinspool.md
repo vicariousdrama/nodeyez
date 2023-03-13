@@ -4,7 +4,7 @@ name: Braiins Pool
 title: Braiins Pool Script
 layout: default
 description: Creates a graph of earnings over the past 30 days of participation in Braiins pool
-imageurl: ../images/slushpool.png
+imageurl: ../images/braiinspool.png
 ---
 
 # Braiins Mining Pool
@@ -14,7 +14,7 @@ mining pool account. To use it, you'll want to add a profile for monitoring
 with read access. You can do that on the [Access Profiles page](https://pool.braiins.com/settings/access/). 
 The Limited read-only permission is sufficient for the API calls made.
 
-![sample image of slushpool](../images/slushpool.png)
+![sample image of braiins pool](../images/braiinspool.png)
 
 The pricing and profitability estimates are based on a steady load with no
 variance in hashrate and does not take into account change in market price
@@ -24,27 +24,27 @@ from this panel in future updates.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/slushpool.py](../scripts/slushpool.py)
+[/home/nodeyez/nodeyez/scripts/braiinspool.py](../scripts/braiinspool.py)
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/slushpool.json
+nano /home/nodeyez/nodeyez/config/braiinspool.json
 ```
 
 You must set the authtoken field with your API access token
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/slushpool.png` |
+| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/braiinspool.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
-| authtoken | Create your API access  token at https://slushpool.com/settings/access/ with limited read-only access, and not web access |
+| authtoken | Create your API access  token at https://pool.braiins.com/settings/access/ with limited read-only access, and not web access |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 | priceurl | The url that provides the pricing information from bisq marketplace. Default `https://bisq.markets/bisq/api/markets/ticker` |
 | priceCheckInterval | The amount of time, in seconds, the script should wait before checking the price again to use for profitability. 10800 is 3 hours. Default `10800` |
@@ -69,7 +69,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
 ```shell
 cd /home/nodeyez/nodeyez/scripts
-/usr/bin/env python3 slushpool.py
+/usr/bin/env python3 braiinspool.py
 ```
 
 Press CTRL+C to stop the process
@@ -79,8 +79,8 @@ Press CTRL+C to stop the process
 To enable the script to run at startup, as the privileged user run the following
 
 ```shell
-sudo systemctl enable nodeyez-slushpool.service
-sudo systemctl start nodeyez-slushpool.service
+sudo systemctl enable nodeyez-braiinspool.service
+sudo systemctl start nodeyez-braiinspool.service
 ```
 
 ---

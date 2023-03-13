@@ -24,6 +24,7 @@ sudo systemctl enable nodeyez-arthash.service
 sudo systemctl enable nodeyez-arthashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-blockstats.service
+sudo systemctl enable nodeyez-braiinspool.service
 sudo systemctl enable nodeyez-channelbalance.service
 sudo systemctl enable nodeyez-channelfees.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
@@ -44,7 +45,6 @@ sudo systemctl enable nodeyez-ordinals.service
 sudo systemctl enable nodeyez-rofstatus.service
 sudo systemctl enable nodeyez-satsperusd.service
 sudo systemctl enable nodeyez-slideshow.service
-sudo systemctl enable nodeyez-slushpool.service
 sudo systemctl enable nodeyez-sysinfo.service
 sudo systemctl enable nodeyez-utcclock.service
 sudo systemctl enable nodeyez-whirlpoolclimix.service
@@ -60,6 +60,7 @@ sudo systemctl start nodeyez-arthash.service
 sudo systemctl start nodeyez-arthashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-blockstats.service
+sudo systemctl start nodeyez-braiinspool.service
 sudo systemctl start nodeyez-channelbalance.service
 sudo systemctl start nodeyez-channelfees.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
@@ -80,7 +81,6 @@ sudo systemctl start nodeyez-ordinals.service
 sudo systemctl start nodeyez-rofstatus.service
 sudo systemctl start nodeyez-satsperusd.service
 sudo systemctl start nodeyez-slideshow.service
-sudo systemctl start nodeyez-slushpool.service
 sudo systemctl start nodeyez-sysinfo.service
 sudo systemctl start nodeyez-utcclock.service
 sudo systemctl start nodeyez-whirlpoolclimix.service

@@ -248,25 +248,25 @@ def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="/home/nodeyez/nod
 def getraretoshiuserinfo(useTor=True, raretoshiDataDirectory="/home/nodeyez/nodeyez/data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     return getraretoshiuserinfo2(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
 
-def getslushpoolheaders(authtoken):
+def getbraiinspoolheaders(authtoken):
     headers = {"SlushPool-Auth-Token": authtoken}
     return headers
 
-def getslushpoolaccountprofile(useTor=True, authtoken="invalid"):
-    url = "https://slushpool.com/accounts/profile/json/btc/"
-    headers = getslushpoolheaders(authtoken)
+def getbraiinspoolaccountprofile(useTor=True, authtoken="invalid"):
+    url = "https://pool.braiins.com/accounts/profile/json/btc/"
+    headers = getbraiinspoolheaders(authtoken)
     defaultResponse = '{"btc":{"confirmed_reward":null,"unconfirmed_reward":"0.00000000","estimated_reward":"0.00000000","hash_rate_unit":"Gh/s","hash_rate_5m": 0.0000}}'
     return geturl(useTor, url, defaultResponse, headers)
 
-def getslushpoolaccountrewards(useTor=True, authtoken="invalid"):
-    url = "https://slushpool.com/accounts/rewards/json/btc/"
-    headers = getslushpoolheaders(authtoken)
+def getbraiinspoolaccountrewards(useTor=True, authtoken="invalid"):
+    url = "https://pool.braiins.com/accounts/rewards/json/btc/"
+    headers = getbraiinspoolheaders(authtoken)
     defaultResponse = '{"btc":{"daily_rewards":[]}}'
     return geturl(useTor, url, defaultResponse, headers)
 
-def getslushpoolstats(useTor=True, authtoken="invalid"):
-    url = "https://slushpool.com/stats/json/btc/"
-    headers = getslushpoolheaders(authtoken)
+def getbraiinspoolstats(useTor=True, authtoken="invalid"):
+    url = "https://pool.braiins.com/stats/json/btc/"
+    headers = getbraiinspoolheaders(authtoken)
     defaultResponse = '{"btc":{"blocks":{"0":{"date_found":0,"mining_duration":0,"total_shares":0,"state":"confirmed","confirmations_left":0,"value": "0.00000000","user_reward": "0.00000000","pool_scoring_hash_rate": 0.000000}}}}'
     return geturl(useTor, url, defaultResponse, headers)
 

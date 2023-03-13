@@ -1,10 +1,10 @@
 {
-  "authtoken.comment": "Create your API access  token at https://slushpool.com/settings/access/ with limited read-only access, and not web access",
+  "authtoken.comment": "Create your API access  token at https://pool.braiins.com/settings/access/ with limited read-only access, and not web access",
   "authtoken.type": "string",
   "authtoken": "--put-your-auth-token-here--",
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/slushpool.png",
+  "outputFile": "/home/nodeyez/nodeyez/imageoutput/braiinspool.png",
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
   "useTor": true,
