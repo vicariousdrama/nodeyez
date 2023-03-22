@@ -45,7 +45,7 @@ def getsvgfile():
     global svgfile
     if svgfile is None:
 #        svgfile = vicariousnetwork.getimagefromurl(True,"https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg")
-        svgfile = vicariousnetwork.getimagefromurl(True,"file:///home/nodeyez/nodeyez/images/nodeyez.svg")
+        svgfile = vicariousnetwork.getimagefromurl(True,"file://../images/nodeyez.svg")
     return svgfile
 
 def do(canvas, width=80, box=(0,0), reducealpha=0, recolor=True, recolortorandom=True, recolorfrom=(102,102,102), recolorto=(255,255,255)):

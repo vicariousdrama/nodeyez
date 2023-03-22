@@ -7,7 +7,7 @@ layout: default
 # Running Services at Startup
 
 You can run the scripts you so choose automatically at startup so that you don't
-have to login and manually start them after a power outage.  To do this, copy 
+have to login and manually start them after a power outage or system reboot.  To do this, copy 
 the service scripts to the appropriate systemd folder
 
 ```shell
@@ -150,4 +150,4 @@ sudo systemctl disable nodeyez-ordinals.service
 
 ---
 
-[Home](../) | [Back to Website Dashboard]({% link _install_steps/7websitedashboard.md %}) 
+[Home](../) | [Back to Website Dashboard]({% link _install_steps/7websitedashboard.md %}) | [Continue to Development Environment]({% link _install_steps/9developer.md %})

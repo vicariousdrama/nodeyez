@@ -20,19 +20,19 @@ the bottom up.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/nodeyezdual.py](../scripts/nodeyezdual.py).
+[../scripts/nodeyezdual.py](../scripts/nodeyezdual.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/nodeyezdual.json
+nano ../config/nodeyezdual.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/nodeyezdual.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/nodeyezdual.png` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `800` |
@@ -51,7 +51,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 nodeyezdual.py
 ```
 

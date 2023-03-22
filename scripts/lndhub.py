@@ -178,8 +178,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/lndhub.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/lndhub.png"
+    configFile="../config/lndhub.json"
+    outputFile = "../imageoutput/lndhub.png"
     width=480
     height=320
     sleepInterval=86400

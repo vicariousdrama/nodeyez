@@ -499,9 +499,9 @@ def createimages(blocknumber=1, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/blockstats.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/blockstats.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/blockstats.json"
+    outputFile="../imageoutput/blockstats.png"
+    dataDirectory="../data/"
     width=480
     height=320
     sleepInterval=300

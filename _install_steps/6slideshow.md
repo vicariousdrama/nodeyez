@@ -12,11 +12,11 @@ generated images to the screen using the slideshow script
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/slideshow.sh](../scripts/slideshow.sh)
+[../scripts/slideshow.sh](../scripts/slideshow.sh)
 
 ## Run Diretly
 
-If you are currently logged in as nodeyez, `exit` back to the priviledged user
+If you are currently logged in as user nodeyez, `exit` back to the privileged user
 
 ```shell
 if [ "`whoami`" == "nodeyez" ]; then

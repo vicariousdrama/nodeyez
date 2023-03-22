@@ -1,10 +1,10 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/gasprice.png",
+  "outputFile": "../imageoutput/gasprice.png",
   "dataDirectory.comment": "The path where data is downloaded to",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/nodeyez/nodeyez/data/",
+  "dataDirectory": "../data/",
   "dataCountry.comment": "The preferred gas price data set to use",
   "dataCountry.type": "string",
   "dataCountry": "USA",

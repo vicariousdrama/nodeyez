@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/fearandgreed.png",
+  "outputFile": "../imageoutput/fearandgreed.png",
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
   "useTor": true,
@@ -10,7 +10,7 @@
   "url": "https://api.alternative.me/fng/?limit=0&format=json&date_format=cn",
   "dataDirectory.comment": "The path to store downloaded files. A subfolder for caching fearandgreed resources will be created if its doesn't exist",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/nodeyez/nodeyez/data/",
+  "dataDirectory": "../data/",
   "width.comment": "The width, in pixels to generate the image. Default is 480",
   "width.type": "integer",
   "width": 480,

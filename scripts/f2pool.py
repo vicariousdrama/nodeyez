@@ -171,8 +171,8 @@ def createimage(accountinfo, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/f2pool.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/f2pool.png"
+    configFile="../config/f2pool.json"
+    outputFile="../imageoutput/f2pool.png"
     account = "--put-your-account-name-in---nodeyez/config/f2pool.json"
     useTor = True
     hashrateLowThreshold = 60000000000000 # 60 TH is 60,000,000,000,000 or 60 followed by 12 zeros
@@ -256,4 +256,5 @@ if __name__ == '__main__':
     while True:
         accountinfo = vicariousnetwork.getf2poolaccountinfo(useTor, account)
         createimage(accountinfo,width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

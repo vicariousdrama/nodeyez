@@ -23,32 +23,32 @@ the image, the block, and the txid.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/ordinals.py](../scripts/ordinals.py).
+[../scripts/ordinals.py](../scripts/ordinals.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/ordinals.json
+nano ../config/ordinals.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/ordinals.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/ordinals.png` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
 | colorTextFG | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
-| dataDirectory | The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist. Default `/home/nodeyez/nodeyez/data/` |
+| dataDirectory | The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist. Default `../data/` |
 | exportFilesToDataDirectory | Indicates whether files should be exported to the data directory. Default `true` |
 | saveUniqueImageNames | Indicates whether unique image names should be created for each inscription. Default `true` |
 | overlayTextEnabled | Indicates whether annotations should be labeled over the image to display the transaction id, content type and size information. Default `true` |
 | overlayExifEnabled | Indicates whether key exif data found in images should be labeled over the image in the annotation block. Default `true` |
 | overlayTextBG | If overlayTextEnabled is true, this is the color of the annotation text background overlay expressed as a Hexadecimal color specifier. Default `#00000080` |
 | overlayTextFG | If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| uniqueOutputFile | The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension. Default `/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png` |
+| uniqueOutputFile | The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension. Default `../imageoutput/ordinals/ordinals.png` |
 | blocklistURL | An optional URL to a resource that provides a list of block inscriptions not to extract. Default `https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/sample-config/ordblocklist.json` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 
@@ -59,7 +59,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 ordinals.py
 ```
 

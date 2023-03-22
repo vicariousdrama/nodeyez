@@ -143,7 +143,7 @@ def overrideFromConfig(d):
 def setDefaults():
     global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorBarOutline, colorBarFilled
     global colorBarEmpty, displayBalances, width, height, sleepInterval, pageSize, headerText
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/channelbalance.png"
+    outputFile = "../imageoutput/channelbalance.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorNodeOffline=ImageColor.getrgb("#ffa500")
     colorNodeDead=ImageColor.getrgb("#ff0000")
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     # Defaults
     setDefaults()
     # Override config
-    configFile = "/home/nodeyez/nodeyez/config/channelbalance.json"
+    configFile = "../config/channelbalance.json"
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)

@@ -13,8 +13,8 @@ import vicariousnetwork
 
 # ===============================================================================================================================
 # SPECIAL DEPENDENCY: To use this script, you should have gas price data downloaded to the the following location
-#      /home/nodeyez/nodeyez/data/collectapi/gasprice/allusaprice
-#      /home/nodeyez/nodeyez/data/collectapi/gasprice/canada
+#      ../data/collectapi/gasprice/allusaprice
+#      ../data/collectapi/gasprice/canada
 # You can get this data from the collectapi.com website using an API Key.  The free plan allows for making 100 requests per
 # month and the gas price data is updated daily.  You can and should make use of the daily-data-retrieval.py script and service
 # to retrieve this information for you so you dont waste your free api calls on testing.
@@ -148,9 +148,9 @@ def processdata(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/gasprice.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/gasprice.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/gasprice.json"
+    outputFile="../imageoutput/gasprice.png"
+    dataDirectory="../data/"
     dataCountry="USA"
     dataState="California"
     randomCountry=True
@@ -222,4 +222,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         processdata(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

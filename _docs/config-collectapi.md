@@ -7,7 +7,7 @@ title: Configuring for Collectapi
 
 This configuration file is used for defining resources to be retrieved from the
 https://collectapi.com site.  It is used in conjuction with the 
-[/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](./script-daily-data-retrieval.md)
+[../scripts/daily-data-retrieval.py](./script-daily-data-retrieval.md)
 script.
 
 To make use of this configuration in the daily-data-retrieval script, you will
@@ -17,10 +17,10 @@ then create an API Token.
 To configure this file
 
 ```shell
-nano /home/nodeyez/nodeyez/config/collectapi.json
+nano ../config/collectapi.json
 ```
 
-Definitions to support the [/home/nodeyez/nodeyez/scripts/gasprice.py](./script-gasprice.md) script
+Definitions to support the [../scripts/gasprice.py](./script-gasprice.md) script
 
 Assuming an apikey of `thIsIsAsamPleAPIkey:aNd4Del1n3at3dValue`
 

@@ -33,8 +33,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/ipaddress.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/ipaddress.png"
+    configFile="../config/ipaddress.json"
+    outputFile="../imageoutput/ipaddress.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     width=480
@@ -73,4 +73,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

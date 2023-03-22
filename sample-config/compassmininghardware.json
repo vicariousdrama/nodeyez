@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png",
+  "outputFile": "../imageoutput/compassmininghardware.png",
   "hardwareurl.comment": "The url that provides current compass mining hardware prices for featured, reseller, and at home ASICs",
   "hardwareurl.type": "string",
   "hardwareurl": "https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc",

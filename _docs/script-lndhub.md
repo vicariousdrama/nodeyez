@@ -39,19 +39,19 @@ me directly.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/lndhub.py](../scripts/lndhub.py).
+[../scripts/lndhub.py](../scripts/lndhub.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/lndhub.json
+nano ../config/lndhub.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/lndhub.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/lndhub.png` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
@@ -81,7 +81,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 * To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 lndhub.py
 ```
 

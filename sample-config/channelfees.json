@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The base path to save the generated image. A numeric suffix will automatically be created before the .png file extension.",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/channelfees.png",
+  "outputFile": "../imageoutput/channelfees.png",
   "colorTextFG.comment": "The color of the text expressed as a Hexadecimal color specifier",
   "colorTextFG.type": "string",
   "colorTextFG": "#ffffff",
@@ -61,7 +61,7 @@
       "macaroon.type": "string",
       "macaroon": "0201036....",
       "overridedefaults.comment": "You can override any field key/value defined above for this specific node",
-      "outputFile": "/home/nodeyez/nodeyez/imageoutput/channelbalance-node1.png",
+      "outputFile": "../imageoutput/channelbalance-node1.png",
       "headerText": "Node1 Fees and Earnings",
       "pageSize": 10,
       "colorBackground": "#202000"

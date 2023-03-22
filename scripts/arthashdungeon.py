@@ -247,10 +247,10 @@ def createimage(blocknumber=1, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/arthashdungeon.json"
-    bitcoinLogosFile="/home/nodeyez/nodeyez/images/arthash-dungeon-bitcoin-logos.png"
-    bitcoinTilesFile="/home/nodeyez/nodeyez/images/arthash-dungeon-bitcoin-tiles.png"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/arthashdungeon.png"
+    configFile="../config/arthashdungeon.json"
+    bitcoinLogosFile="../images/arthash-dungeon-bitcoin-logos.png"
+    bitcoinTilesFile="../images/arthash-dungeon-bitcoin-tiles.png"
+    outputFile="../imageoutput/arthashdungeon.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     width=480

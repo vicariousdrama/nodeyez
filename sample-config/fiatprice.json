@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/fiatprice.png",
+  "outputFile": "../imageoutput/fiatprice.png",
   "priceurl.comment": "The url that provides the pricing information from bisq marketplace",
   "priceurl.type": "string",
   "priceurl": "https://bisq.markets/bisq/api/markets/ticker",

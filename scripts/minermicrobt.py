@@ -589,9 +589,9 @@ def isValidMiner():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/minermicrobt.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/minermicrobt.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/minermicrobt.json"
+    outputFile="../imageoutput/minermicrobt.png"
+    dataDirectory="../data/"
     minerlabel=""
     mineraddress=""
     width=480
@@ -706,4 +706,5 @@ if __name__ == '__main__':
             print(f"Saving hash history")
             saveMinerHashHistory(minerhashhistory)
             lastSaved = int(time.time())
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

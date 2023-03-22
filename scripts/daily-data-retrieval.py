@@ -303,8 +303,8 @@ if __name__ == '__main__':
     enableFearAndGreed = True
     enableLuxor = True
     enableBraiinspool = True
-    dataDirectory="/home/nodeyez/nodeyez/data/"
-    configFolder="/home/nodeyez/nodeyez/config/"
+    dataDirectory="../data/"
+    configFolder="../config/"
     configFileBisq=configFolder + "satsperusd.json"
     configFileCollectAPI=configFolder + "collectapi.json"
     configFileCompassHardware=configFolder + "compassmininghardware.json"

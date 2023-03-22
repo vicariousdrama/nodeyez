@@ -1,6 +1,6 @@
 ---
 name: Display Screen
-title: Display Screen for Raspberry Pi
+title: NODEYEZ Display Screen for Raspberry Pi
 layout: default
 ---
 
@@ -246,4 +246,4 @@ you do have to make changes here, make note of them as you'll need to make simil
 
 ---
 
-[Home](../) | [Back to Your Node]({% link _install_steps/1yournode.md %}) | [Continue to Python and Dependencies]({% link _install_steps/3pythondeps.md %})
+[Home](../) | [Back to Your Node]({% link _install_steps/1yournode.md %}) | [Continue to Tools]({% link _install_steps/3tools.md %})

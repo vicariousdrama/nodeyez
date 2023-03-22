@@ -11,7 +11,7 @@ import time
 import sys
 
 # Configuration =================================================================================
-outputFile="/home/nodeyez/nodeyez/imageoutput/tile-from-text-to-base2.png"
+outputFile="../imageoutput/tile-from-text-to-base2.png"
 # 1 - Number of Tiles Wide
 tilesWide = 1
 # 2 - Width of Tile in Pixels

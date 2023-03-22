@@ -19,7 +19,7 @@ Only static PNG and JPEG files are supported at this time.
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/raretoshi.py](../scripts/raretoshi.py).
+[../scripts/raretoshi.py](../scripts/raretoshi.py).
 
 ## Dependencies
 
@@ -36,18 +36,18 @@ python3 -m pip install qrcode
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/raretoshi.json
+nano ../config/raretoshi.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/raretoshi.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/raretoshi.png` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
-| dataDirectory | The base path for the directory to store downloaded files. A subfolder for caching IPFS resources will be created if it doesnt exist. Default `/home/nodeyez/nodeyez/data/` |
+| dataDirectory | The base path for the directory to store downloaded files. A subfolder for caching IPFS resources will be created if it doesnt exist. Default `../data/` |
 | raretoshiUser | The name of the raretoshi user to use in selecting images from their collection. This value is case-sensitive. Default `BTCTKVR` |
 | downloadConnectTimeout | The amount of time, in seconds, to allow for connecting to remote resource before cancelling. Default `5` |
 | downloadMaxTimeout | The amount of time, in seconds, to allow for downloading a remote resource before cancelling. Default `20` |
@@ -69,7 +69,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 * To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 raretoshi.py
 ```
 

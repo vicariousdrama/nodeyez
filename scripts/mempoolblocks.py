@@ -273,8 +273,8 @@ def isMempoolSpace():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/mempoolblocks.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/mempoolblocks.png"
+    configFile="../config/mempoolblocks.json"
+    outputFile="../imageoutput/mempoolblocks.png"
     urlmempool="https://mempool.space/api/v1/fees/mempool-blocks"
     urlfeerecs="https://mempool.space/api/v1/fees/recommended"
     urlfeehistogram="https://mempool.space/api/mempool"

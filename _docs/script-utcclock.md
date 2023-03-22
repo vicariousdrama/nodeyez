@@ -15,19 +15,19 @@ This script provides a simple rendering of the date and time
 
 ## Script Location
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/utcclock.py](../scripts/utcclock.py)
+[../scripts/utcclock.py](../scripts/utcclock.py)
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/utcclock.json
+nano ../config/utcclock.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/utcclock.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/utcclock.png` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#602060` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
@@ -43,7 +43,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 * To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 ./utcclock.py
 ```
 

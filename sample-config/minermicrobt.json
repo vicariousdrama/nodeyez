@@ -1,10 +1,10 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/minermicrobt.png",
+  "outputFile": "../imageoutput/minermicrobt.png",
   "dataDirectory.comment": "The base path for the directory to store hashrate history",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/nodeyez/nodeyez/data/",
+  "dataDirectory": "../data/",
   "miners.comment": "An array of one or more miners",
   "miners.type": "array",
   "miners": [

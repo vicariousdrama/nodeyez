@@ -18,19 +18,19 @@ generates a status panel of this information.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/whirlpoolclimax.py](../scripts/whirlpoolclimax.py).
+[../scripts/whirlpoolclimax.py](../scripts/whirlpoolclimax.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/whirlpoolclimix.json
+nano ../config/whirlpoolclimix.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/whirlpoolclimix.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/whirlpoolclimix.png` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
@@ -52,7 +52,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 whirlpoolclimix.py
 ```
 

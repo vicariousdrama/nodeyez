@@ -17,7 +17,7 @@ Compass Mining as reported on their [status page](https://status.compassmining.i
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
+[../scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
 
 ## Dependencies
 
@@ -34,12 +34,12 @@ python3 -m pip install beautifulsoup4
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/compassminingstatus.json
+nano ../config/compassminingstatus.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/compassminingstatus.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/compassminingstatus.png` |
 | statusurl | The url that provides current compass mining facility status. Default `https://status.compassmining.io/` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
@@ -65,7 +65,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 compassminingstatus.py
 ```
 

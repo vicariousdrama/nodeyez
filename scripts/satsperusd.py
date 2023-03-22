@@ -117,8 +117,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/satsperusd.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/satsperusd.png"
+    configFile="../config/satsperusd.json"
+    outputFile="../imageoutput/satsperusd.png"
     priceurl="https://bisq.markets/bisq/api/markets/ticker"
     useTor=True
     satshape="square" # may be one of these: ['square','circle']
@@ -187,4 +187,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

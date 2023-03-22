@@ -19,19 +19,19 @@ number of open channels.  It depends on a lighting node.
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/channelfees.py](../scripts/channelfees.py).
+[../scripts/channelfees.py](../scripts/channelfees.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/channelfees.json
+nano ../config/channelfees.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/channelfees.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/channelfees.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorNodeOffline | The color of the text for an offline node expressed as a Hexadecimal color specifier. Default `#ffa500` |
 | colorNodeDead | The color of the text for a node that has been offline for 1008 blocks expressed as a Hexadecimal color specifier. Default `#ff0000` |
@@ -78,7 +78,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 channelfees.py
 ```
 

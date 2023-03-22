@@ -107,8 +107,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/compassmininghardware.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png"
+    configFile="../config/compassmininghardware.json"
+    outputFile="../imageoutput/compassmininghardware.png"
     hardwareurl="https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc"
     useTor=True
     colorTextFG=ImageColor.getrgb("#ffffff")
@@ -176,4 +176,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

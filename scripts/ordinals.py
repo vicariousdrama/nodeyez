@@ -251,10 +251,10 @@ def getblocklist(u):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/ordinals.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/ordinals.png"
-    uniqueOutputFile="/home/nodeyez/nodeyez/imageoutput/ordinals/ordinals.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/ordinals.json"
+    outputFile="../imageoutput/ordinals.png"
+    uniqueOutputFile="../imageoutput/ordinals/ordinals.png"
+    dataDirectory="../data/"
     exportFilesToDataDirectory=True
     saveUniqueImageNames=True
     colorTextFG=ImageColor.getrgb("#ffffff")

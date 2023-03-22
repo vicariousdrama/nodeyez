@@ -156,8 +156,8 @@ def createimage(width=480, height=800):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/nodeyezdual.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/nodeyezdual.png"
+    configFile="../config/nodeyezdual.json"
+    outputFile="../imageoutput/nodeyezdual.png"
     useTor=False
     width=480
     height=800
@@ -234,5 +234,5 @@ if __name__ == '__main__':
     while True:
         createimage(width,height)
         ### Wait till next run
-        print(f"Sleeping {sleepInterval} seconds")
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

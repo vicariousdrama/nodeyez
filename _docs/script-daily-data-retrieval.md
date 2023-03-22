@@ -19,7 +19,7 @@ will also allow for more graphing trends.
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
+[../scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
 
 ## Dependencies
 
@@ -45,14 +45,14 @@ retrieved, at varying intervals.
 
 | Data Set | Interval | Config File | Configuration Documentation |
 | --- | --- | --- | --- |
-| Bisq | 1 hour | [/home/nodeyez/nodeyez/config/satsperusd.json](../sample-config/satsperusd.json) | [doc](./script-satsperusd.md) |
-| CollectAPI | 24 hours | [/home/nodeyez/nodeyez/config/collectapi.json](../sample-config/collectapi.json) | [doc](./config-collectapi.md) |
-| Compass Hardware | 1 hour | [/home/nodeyez/nodeyez/config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
-| Compass Status | 23 hours | [/home/nodeyez/nodeyez/config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
-| F2 Pool | 23 hours | [/home/nodeyez/nodeyez/config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
-| Fear and Greed | 12 hours | [/home/nodeyez/nodeyez/config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
-| Luxor | 23 hours | [/home/nodeyez/nodeyez/config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
-| Slushpool | 23 hours | [/home/nodeyez/nodeyez/config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
+| Bisq | 1 hour | [../config/satsperusd.json](../sample-config/satsperusd.json) | [doc](./script-satsperusd.md) |
+| CollectAPI | 24 hours | [../config/collectapi.json](../sample-config/collectapi.json) | [doc](./config-collectapi.md) |
+| Compass Hardware | 1 hour | [../config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
+| Compass Status | 23 hours | [../config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
+| F2 Pool | 23 hours | [../config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
+| Fear and Greed | 12 hours | [../config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
+| Luxor | 23 hours | [../config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
+| Slushpool | 23 hours | [../config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
 
 Until this file is externalized, you are strongly encouraged to only make
 changes to whether a data set is enabled or not.  Any future updates may
@@ -63,7 +63,7 @@ overwrite your customizations to the script.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 daily-data-retrieval.py
 ```
 

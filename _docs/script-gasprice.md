@@ -17,12 +17,12 @@ United States or Canada.
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/gasprice.py](../scripts/gasprice.py).
+[../scripts/gasprice.py](../scripts/gasprice.py).
 
 ## Dependencies
 
 It depends on data being retrieved from [collectapi](./config-collectapi.md) via the
-[/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py)(../scripts/daily-data-retrieval.py)
+[../scripts/daily-data-retrieval.py)(../scripts/daily-data-retrieval.py)
 script.
 
 ## Configuration
@@ -30,13 +30,13 @@ script.
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/gasprice.json
+nano ../config/gasprice.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/gasprice.png` |
-| dataDirectory | The path where data about gas prices have been downloaded to. Default `/home/nodeyez/nodeyez/data/` |
+| outputFile | The path to save the generated image. Default `../imageoutput/gasprice.png` |
+| dataDirectory | The path where data about gas prices have been downloaded to. Default `../data/` |
 | dataCountry | The preferred gas price data set to use. Default `USA`. Allowed values: `USA`, `CAN` |
 | dataState | The preferred state or province to look up gas prices for. Default `California`. Allowed values: Any named state or province |
 | randomCountry | Indicates whether the country for gas price data should be chosen randomly. Default `true` |
@@ -59,7 +59,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 gasprice.py
 ```
 

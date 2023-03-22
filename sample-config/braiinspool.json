@@ -4,7 +4,7 @@
   "authtoken": "--put-your-auth-token-here--",
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/braiinspool.png",
+  "outputFile": "../imageoutput/braiinspool.png",
   "useTor.comment": "Indicates whether remote calls should use torify for privacy. Experimental",
   "useTor.type": "boolean",
   "useTor": true,

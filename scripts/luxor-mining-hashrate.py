@@ -194,8 +194,8 @@ def createimage(hashrate_history, date_prefix, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/luxor.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/luxor-mining-hashrate.png"
+    configFile="../config/luxor.json"
+    outputFile = "../imageoutput/luxor-mining-hashrate.png"
     apikey = "--configure-in--nodeyez/config/luxor.json"
     username = "--configure-in--nodeyez/config/luxor.json"
     subheadingText = "S19 Pro 110TH"
@@ -294,4 +294,5 @@ if __name__ == '__main__':
         # only run once if an argument was passed
         if len(sys.argv) > 1:
             break
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

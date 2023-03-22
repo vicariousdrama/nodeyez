@@ -22,14 +22,14 @@ file.
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/f2pool.py](../scripts/f2pool.py).
+[../scripts/f2pool.py](../scripts/f2pool.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/f2pool.json
+nano ../config/f2pool.json
 ```
   
 You should set the following at a minimum
@@ -41,7 +41,7 @@ You should set the following at a minimum
 | --- | --- |
 | account | Your account name on f2pool. **required** |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/f2pool.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/f2pool.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | hashrateLowThreshold | The hashrate level for which hashing should be considered low. Default `60000000000000` |
@@ -66,7 +66,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 f2pool.py
 ```
 

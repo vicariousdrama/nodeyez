@@ -141,7 +141,7 @@ def setfontandcolor(config):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/rofstatus.json"
+    configFile="../config/rofstatus.json"
     width=480
     height=320
     sleepInterval = 900
@@ -171,4 +171,5 @@ if __name__ == '__main__':
             else:
                 setfontandcolor(config)
             checknodestatus(ring["nodes"],width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

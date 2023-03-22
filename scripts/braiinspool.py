@@ -199,8 +199,8 @@ def createimage(accountrewards, accountprofile, poolstats, price_last, width=480
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/nodeyez/nodeyez/config/braiinspool.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/braiinspool.png"
+    configFile = "../config/braiinspool.json"
+    outputFile = "../imageoutput/braiinspool.png"
     authtoken = "--put-your-auth-token-in-nodeyez/config/braiinspool.json--"
     useTor=True
     priceUrl = "https://bisq.markets/bisq/api/markets/ticker"
@@ -318,4 +318,5 @@ if __name__ == '__main__':
         createimage(accountrewards,accountprofile,poolstats,price_last,width,height)
         if len(sys.argv) > 1:
             exit(0)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

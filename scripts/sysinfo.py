@@ -173,8 +173,8 @@ def getmemusage(memtype,label):
         return label + " ?"
 
 # Defaults
-configFile="/home/nodeyez/nodeyez/config/sysinfo.json"
-outputFile="/home/nodeyez/nodeyez/imageoutput/sysinfo.png"
+configFile="../config/sysinfo.json"
+outputFile="../imageoutput/sysinfo.png"
 width=480
 height=320
 sleepInterval=30
@@ -296,4 +296,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

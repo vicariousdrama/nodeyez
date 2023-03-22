@@ -1,10 +1,10 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/blockstats.png",
+  "outputFile": "../imageoutput/blockstats.png",
   "dataDirectory.comment": "The base path for the directory to store saved files to improve performance by caching blockstats data.",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/nodeyez/nodeyez/data/",
+  "dataDirectory": "../data/",
   "width.comment": "The width, in pixels to generate the image. Default is 480",
   "width.type": "integer",
   "width": 480,
