@@ -20,27 +20,27 @@ is to improve for other miners over time.
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/minerbraiins.py](../scripts/minerbraiins.py).
+[../scripts/minerbraiins.py](../scripts/minerbraiins.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/minerbraiins.json
+nano ../config/minerbraiins.json
 ```
 
 You must set the address for the miner
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/minerbraiins.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/minerbraiins.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `60` |
-| dataDirectory | The base path for the directory to store hashrate history. Default `/home/nodeyez/nodeyez/data/` |
+| dataDirectory | The base path for the directory to store hashrate history. Default `../data/` |
 | colorHot | The color to show the temperature exceeding the hot threshold expressed as a Hexadecimal color specifier. Default `#ffaa00` |
 | colorDangerous | The color to show the temperature exceeding the dangerous threshold expressed as a Hexadecimal color specifier. Default `#ff0000` | 
 | colorHashrateBox | The color of the border, average line and label backgrounds for the hashrate graph expressed as a Hexadecimal color specifier. Default `#202020` |
@@ -93,7 +93,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 minerbraiins.py
 ```
 

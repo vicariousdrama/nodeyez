@@ -79,8 +79,8 @@ def createimage(blocknumber=1, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/arthash.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/arthash.png"
+    configFile="../config/arthash.json"
+    outputFile="../imageoutput/arthash.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorShapeOutline=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")

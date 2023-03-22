@@ -126,7 +126,7 @@ def createimage(width=480, height=320):
         print(f"This is for https://raretoshi.com/a/{slug}")
         return
     # temp
-    #sourceFile = "/home/nodeyez/nodeyez/data/ipfs/Qme9Wp6V2G38ADrunUrZLun7MgRiUdvEqn72XR5ykek81o"
+    #sourceFile = "../data/ipfs/Qme9Wp6V2G38ADrunUrZLun7MgRiUdvEqn72XR5ykek81o"
     sourceImage=Image.open(sourceFile)
     sourceImage=sourceImage.convert("RGBA")
     sourceWidth=int(sourceImage.getbbox()[2])
@@ -232,10 +232,10 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/raretoshi.json"
+    configFile="../config/raretoshi.json"
     raretoshiUser="BTCTKVR"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/raretoshi.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    outputFile="../imageoutput/raretoshi.png"
+    dataDirectory="../data/"
     useTor=True
     downloadConnectTimeout=5
     downloadMaxTimeout=20
@@ -336,5 +336,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
-        print(f"Sleeping for {sleepInterval} seconds")
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

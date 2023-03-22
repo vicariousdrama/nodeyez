@@ -1,10 +1,10 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/inscriptionmempool.png",
+  "outputFile": "../imageoutput/inscriptionmempool.png",
   "dataDirectory.comment": "The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist.",
   "dataDirectory.type": "string",
-  "dataDirectory": "/home/nodeyez/nodeyez/data/",
+  "dataDirectory": "../data/",
   "width.comment": "The width, in pixels to generate the image. Default is 480",
   "width.type": "integer",
   "width": 480,

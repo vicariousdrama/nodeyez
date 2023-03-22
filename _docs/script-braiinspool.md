@@ -24,21 +24,21 @@ from this panel in future updates.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/braiinspool.py](../scripts/braiinspool.py)
+[../scripts/braiinspool.py](../scripts/braiinspool.py)
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/braiinspool.json
+nano ../config/braiinspool.json
 ```
 
 You must set the authtoken field with your API access token
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/braiinspool.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/braiinspool.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
@@ -68,7 +68,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 * To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 braiinspool.py
 ```
 

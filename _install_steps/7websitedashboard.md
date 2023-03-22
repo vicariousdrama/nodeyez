@@ -21,12 +21,12 @@ version of that one.
 There are multiple options for setting up the dashboard.  Choose the most
 appropriate based on your raspberry pi node
 
-Before beginning, make sure you are logged in as the privileged user.  If you
-continued here from the previous section logged in as `nodeyez`, then issue
-the following to return back to the privileged user
+If you are currently logged in as user nodeyez, `exit` back to the privileged user
 
 ```shell
+if [ "`whoami`" == "nodeyez" ]; then
 exit
+fi
 ```
 
 ## Choose ONE (1) of the following

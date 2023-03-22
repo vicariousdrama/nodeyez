@@ -77,8 +77,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/compassminingstatus.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/compassminingstatus.png"
+    configFile="../config/compassminingstatus.json"
+    outputFile="../imageoutput/compassminingstatus.png"
     statusurl="https://status.compassmining.io/"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorGoodText=ImageColor.getrgb("#40ff40")
@@ -154,4 +154,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width, height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

@@ -18,8 +18,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/blockheight.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/blockheight.png"
+    configFile="../config/blockheight.json"
+    outputFile="../imageoutput/blockheight.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     width=480
@@ -55,4 +55,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

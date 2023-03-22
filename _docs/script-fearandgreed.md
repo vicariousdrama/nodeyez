@@ -19,22 +19,22 @@ the top of the image.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
+[../scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/fearandgreed.json
+nano ../config/fearandgreed.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/fearandgreed.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/fearandgreed.png` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 | url | The url that provides the fear and greed information. Default `https://api.alternative.me/fng/?limit=0&format=json&date_format=cn` |
-| dataDirectory | The path to store downloaded files. A subfolder for caching fearandgreed resources will be created if its doesn't exist. Default `/home/nodeyez/nodeyez/data/` |
+| dataDirectory | The path to store downloaded files. A subfolder for caching fearandgreed resources will be created if its doesn't exist. Default `../data/` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `43200` |
@@ -54,7 +54,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 fearandgreed.py
 ```
 

@@ -52,7 +52,7 @@
       "shortlabel": "Sample",
       "imagefilename.comment": "The path to save the generated image for this ring",
       "imagefilename.type": "string",
-      "imagefilename": "/home/nodeyez/nodeyez/imageoutput/rof-sample.png",
+      "imagefilename": "../imageoutput/rof-sample.png",
       "telegramgroup.comment": "An arbitrary field value for information about the ring",
       "telegramgroup.type": "string",
       "telegramgroup": "",

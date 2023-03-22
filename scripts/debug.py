@@ -4,8 +4,8 @@ import subprocess
 import time
 import vicarioustext
 
-outputFile="/home/nodeyez/nodeyez/imageoutput/debug.png"
-monitorfolder="/home/nodeyez/nodeyez/imageoutput/"
+outputFile="../imageoutput/debug.png"
+monitorfolder="../imageoutput/"
 monitorage=10
 colorFFFFFF=ImageColor.getrgb("#ffffff")
 colorFF0000=ImageColor.getrgb("#ff0000")

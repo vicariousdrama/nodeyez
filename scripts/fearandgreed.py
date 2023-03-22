@@ -195,11 +195,11 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/fearandgreed.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/fearandgreed.png"
+    configFile="../config/fearandgreed.json"
+    outputFile = "../imageoutput/fearandgreed.png"
     useTor=True
     url="https://api.alternative.me/fng/?limit=0&format=json&date_format=cn"
-    dataDirectory = "/home/nodeyez/nodeyez/data/"
+    dataDirectory = "../data/"
     width=480
     height=320
     sleepInterval=43200
@@ -261,4 +261,5 @@ if __name__ == '__main__':
         # only run once if an argument was passed
         if len(sys.argv) > 1:
             break
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

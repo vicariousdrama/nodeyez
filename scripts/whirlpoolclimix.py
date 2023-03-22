@@ -201,10 +201,10 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/nodeyez/nodeyez/config/whirlpoolclimix.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/whirlpoolclimix.png"
-    logoSamouraiFile = "/home/nodeyez/nodeyez/images/samourai.png"
-    dataDirectory = "/home/nodeyez/nodeyez/data/"
+    configFile = "../config/whirlpoolclimix.json"
+    outputFile = "../imageoutput/whirlpoolclimix.png"
+    logoSamouraiFile = "../images/samourai.png"
+    dataDirectory = "../data/"
     useTor=False
     whirlpoolurl="https://127.0.0.1:8899"             # Your local whirlpool cli instance
     apiKey=""
@@ -283,4 +283,5 @@ if __name__ == '__main__':
         print("Image created")
         if len(sys.argv) > 1:
             exit(0)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

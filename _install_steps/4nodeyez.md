@@ -209,38 +209,49 @@ nodeyez scripts make at this time.
 Again, this step should be done as the nodeyez user
 
 ```shell
-if [ "`whoami`" == "nodeyez" ]; then
-cd /home/nodeyez ; git clone https://github.com/vicariousdrama/nodeyez.git
-fi
+cd ~ ; git clone https://github.com/vicariousdrama/nodeyez.git
 ```
 
 ## Create folders
 
-Create folders and set scripts as executable as the nodeyez user
+Create folders and copy sample configuration files
 
 ```shell
-if [ "`whoami`" == "nodeyez" ]; then
-mkdir -p /home/nodeyez/nodeyez/config
-mkdir -p /home/nodeyez/nodeyez/data
-mkdir -p /home/nodeyez/nodeyez/imageoutput
-cp /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
-fi
+cd ~/nodeyez
+mkdir -p ./config
+mkdir -p ./data
+mkdir -p ./imageoutput
+cp ./sample-config/*.json ./config
 ```
 
-## Install Python Packages
+## Create Python Environment
 
-These will get installed in the user installation area for Nodeyez user and may
-take some time to download and build, particularly the pandas package.
+A virtual environment will be used for the Nodeyez user when
+running scripts to help isolate versions from other uses of
+Python on the system
 
 ```shell
-if [ "`whoami`" == "nodeyez" ]; then
+python3 -m venv ~/.pyenv/nodeyez
+```
+
+Activate the new virtual environment
+
+```shell
+source ~/.pyenv/nodeyez/bin/activate
+```
+
+Finally, install modules used by scripts into the virtual environment
+
+```shell
 python3 -m pip install Pillow --upgrade
 python3 -m pip install beautifulsoup4 --upgrade
 python3 -m pip install pandas --upgrade
 python3 -m pip install qrcode --upgrade
 python3 -m pip install Wand --upgrade
 python3 -m pip install exifread --upgrade
-fi
+python3 -m pip install urllib3 --upgrade
+python3 -m pip install requests --upgrade
+python3 -m pip install redis --upgrade
 ```
 
 - beatifulsoup4 - This is a library for extracting data from HTML and XML files. Within Nodeyez, it is used by the Compass Mining Status script and the Daily Data Retrieval script.
@@ -248,9 +259,11 @@ fi
 - qrcode - This library allows for creating qrcodes based on text input and is used by Nodeyez as part of the Raretoshi script.
 - Wand - This library is a binding to ImageMagick for Python. It is used by Nodeyez for handling filetypes that pillow is unable to such as scalable vector graphics (SVG)
 - exifread - This library can parse out EXIF data from Image files
-
+- urllib3 - This library provides handy wrappes to act as an HTTP client when making requests
+- requests - This library provides a higher level api for HTTP clients
+- redis - This library provides for a redis client that is used by the LNDHub script
 
 ---
 
-[Home](../) | [Back to Python and Dependencies]({% link _install_steps/3pythondeps.md %}) | [Continue to Panel Index]({% link _install_steps/5panels.md %})
+[Home](../) | [Back to Tools]({% link _install_steps/3tools.md %}) | [Continue to Panel Index]({% link _install_steps/5panels.md %})
 

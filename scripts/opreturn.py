@@ -77,8 +77,8 @@ def createimage(blocknumber=1, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/opreturn.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/opreturn.png"
+    configFile="../config/opreturn.json"
+    outputFile="../imageoutput/opreturn.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorTextFG1=ImageColor.getrgb("#ff7f00")
     colorTextFG2=ImageColor.getrgb("#dddd00")
@@ -135,5 +135,5 @@ if __name__ == '__main__':
         if oldblocknumber != blocknumber:
             createimage(blocknumber,width,height)
             oldblocknumber = blocknumber
-        #print(f"sleeping for {sleepInterval} seconds")
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

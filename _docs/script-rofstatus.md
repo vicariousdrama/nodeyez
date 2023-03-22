@@ -25,7 +25,7 @@ connection attempts, there is a delay between each ring being processed.
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/rofstatus.py](../scripts/rofstatus.py)
+[../scripts/rofstatus.py](../scripts/rofstatus.py)
 
 
 ## Configuration
@@ -33,7 +33,7 @@ The script is installed at
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/rofstatus.json
+nano ../config/rofstatus.json
 ```
 
 | field name | description  |
@@ -72,7 +72,7 @@ __rings__
 | --- | --- |
 | name | The name of the ring. Not used in image renderings. Default `Sample Ring` |
 | shortlabel | A short label for the ring to be displayed on the generated image. Default `Sample` |
-| imagefilename | The path to save the generated image fo this ring.  Each defined ring should have a unique value. Default `/home/nodeyez/nodeyez/imageoutput/rof-sample.png` |
+| imagefilename | The path to save the generated image fo this ring.  Each defined ring should have a unique value. Default `../imageoutput/rof-sample.png` |
 | telegramgroup | An arbitrary field value for information about the ring.  Not used in image renderings. Default is unset |
 | telegramadmin | An arbitrary field value specifying the coordinator of the ring. Not used in image renderings. Default is unset |
 | imagesettings | The settings to apply to the image generated from this ring. The structure is defined above |
@@ -94,7 +94,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 rofstatus.py
 ```
 

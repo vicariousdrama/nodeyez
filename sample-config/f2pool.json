@@ -7,7 +7,7 @@
   "useTor": true,
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/f2pool.png",
+  "outputFile": "../imageoutput/f2pool.png",
   "hashrateLowThreshold.comment": "The hashrate level for which hashing should be considered low",
   "hashrateLowThreshold.type": "integer",
   "hashrateLowThreshold": 60000000000000,

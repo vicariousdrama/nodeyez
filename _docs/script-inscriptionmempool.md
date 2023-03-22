@@ -22,20 +22,20 @@ recent inscriptions will be generated as the output file.
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyez/scripts/inscriptionmempool.py](../scripts/inscriptionmempool.py)
+[../scripts/inscriptionmempool.py](../scripts/inscriptionmempool.py)
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/inscriptionmempool.json
+nano ../config/inscriptionmempool.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/inscriptionmempool.png` |
-| dataDirectory | The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist. Default `/home/nodeyez/nodeyez/data/` |
+| outputFile | The path to save the generated image. Default `../imageoutput/inscriptionmempool.png` |
+| dataDirectory | The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist. Default `../data/` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `10` |
@@ -49,7 +49,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 inscriptionmempool.py
 ```
 

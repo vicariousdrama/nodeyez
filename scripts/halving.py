@@ -33,7 +33,7 @@ def getGridImage(p):
         if filegood:
             return rImage
     # default
-    return Image.open("/home/nodeyez/nodeyez/images/logo.png").convert("RGBA")
+    return Image.open("../images/logo.png").convert("RGBA")
 
 
 def createimage(width=480, height=320):
@@ -158,9 +158,9 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/halving.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/halving.png"
-    ipfsDirectory="/home/nodeyez/nodeyez/data/ipfs"
+    configFile="../config/halving.json"
+    outputFile="../imageoutput/halving.png"
+    ipfsDirectory="../data/ipfs"
     colorGrid=ImageColor.getrgb("#404040")
     colorProgress=ImageColor.getrgb("#40FF40")
     colorTextFG=ImageColor.getrgb("#ffffff")

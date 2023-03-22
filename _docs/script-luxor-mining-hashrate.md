@@ -16,7 +16,7 @@ Luxor Tech mining pool account.
 
 Status: Beta. 
 
-See also the [/home/nodeyez/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py)
+See also the [../scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py)
 script and [documentation](./script-daily-data-retrieval.md) which retrieves the
 same information but doesn't produce the images. In time this script will be
 updated to use that common data.
@@ -24,7 +24,7 @@ updated to use that common data.
 ## Script Location
 
 The script is installed at
-[/home/nodeyez/nodeyez/scripts/luxor-mining-hashrate.py](../scripts/luxor-mining-hashrate.py).
+[../scripts/luxor-mining-hashrate.py](../scripts/luxor-mining-hashrate.py).
 
 ## Dependencies
 
@@ -49,7 +49,7 @@ python3 -m pip install pandas
 To configure this script override the default configuration as follows
 
 ```sh
-nano /home/nodeyez/nodeyez/config/luxor.json
+nano ../config/luxor.json
 ```
 
 - You must have an account with [Luxor](https://beta.luxor.tech/) and an
@@ -57,7 +57,7 @@ nano /home/nodeyez/nodeyez/config/luxor.json
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/luxor-mining-hashrate.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/luxor-mining-hashrate.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | width | The width, in pixels, to generate the image. Default `480` |
@@ -86,7 +86,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 luxor-mining-hashrate.py
 ```
 

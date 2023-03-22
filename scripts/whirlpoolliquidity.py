@@ -136,7 +136,7 @@ def drawlogo(im, canvaswidth, canvasheight, targetWidth):
     newLogo.close()
 
 def drawwhirl(im, x, y, c="grey"):
-    logoWhirlpoolFile = "/home/nodeyez/nodeyez/images/whirlpool-" + c + "-32.png"
+    logoWhirlpoolFile = "../images/whirlpool-" + c + "-32.png"
     if not exists(logoWhirlpoolFile):
         return
     i = Image.open(logoWhirlpoolFile)
@@ -214,10 +214,10 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile = "/home/nodeyez/nodeyez/config/whirlpoolliquidity.json"
-    outputFile = "/home/nodeyez/nodeyez/imageoutput/whirlpoolliquidity.png"
-    logoSamouraiFile = "/home/nodeyez/nodeyez/images/samourai.png"
-    dataDirectory = "/home/nodeyez/nodeyez/data/"
+    configFile = "../config/whirlpoolliquidity.json"
+    outputFile = "../imageoutput/whirlpoolliquidity.png"
+    logoSamouraiFile = "../images/samourai.png"
+    dataDirectory = "../data/"
     useTor=True
     whirlpoolurl="http://udkmfc5j6zvv3ysavbrwzhwji4hpyfe3apqa6yst7c7l32mygf65g4ad.onion"
     apiKey=""
@@ -290,4 +290,5 @@ if __name__ == '__main__':
         print("Image created")
         if len(sys.argv) > 1:
             exit(0)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

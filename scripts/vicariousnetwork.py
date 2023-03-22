@@ -26,7 +26,7 @@ def gettorproxies():
 
 
 # do a GET call on specified url, save response body contents as file, return 0 if success, 1 if error
-def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png", savetofile="/home/nodeyez/nodeyez/data/logo.png", headers={}):
+def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png", savetofile="../data/logo.png", headers={}):
     try:
         proxies = gettorproxies() if useTor else {}
         timeout = gettimeouts()
@@ -156,7 +156,7 @@ def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker"
         price_low = int(math.floor(float(j["btc_usd"]["low"])))
     return (price_last,price_high,price_low)
 
-def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="/home/nodeyez/nodeyez/data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
+def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     userFilename = raretoshiUser + ".json"
     localFilename = raretoshiDataDirectory + userFilename
     tempFilename = localFilename + ".tmp"
@@ -191,7 +191,7 @@ def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="/home/nodeyez/nod
                 print("Error raised reading {localFilename} as json")
     return userInfo, userInfoLast
 
-def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="/home/nodeyez/nodeyez/data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
+def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     userFilename = raretoshiUser + ".json"
     localFilename = raretoshiDataDirectory + userFilename
     tempFilename = localFilename + ".tmp"
@@ -245,7 +245,7 @@ def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="/home/nodeyez/nod
     print("falling back to getraretoshiuserinfo1 logic")
     return getraretoshiuserinfo1(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
 
-def getraretoshiuserinfo(useTor=True, raretoshiDataDirectory="/home/nodeyez/nodeyez/data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
+def getraretoshiuserinfo(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     return getraretoshiuserinfo2(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
 
 def getbraiinspoolheaders(authtoken):

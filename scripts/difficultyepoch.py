@@ -114,8 +114,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/difficultyepoch.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/difficultyepoch.png"
+    configFile="../config/difficultyepoch.json"
+    outputFile="../imageoutput/difficultyepoch.png"
     colorGrid=ImageColor.getrgb("#404040")
     colorAhead=ImageColor.getrgb("#FFFF40")
     colorBehind=ImageColor.getrgb("#FF0000")

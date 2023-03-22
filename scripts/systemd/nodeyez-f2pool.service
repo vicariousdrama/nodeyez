@@ -8,7 +8,7 @@ StartLimitBurst=2
 
 [Service]
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStart=/usr/bin/env python3 /home/nodeyez/nodeyez/scripts/f2pool.py
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/f2pool.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

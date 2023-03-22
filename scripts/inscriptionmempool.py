@@ -267,9 +267,9 @@ def saveset(k, s):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/inscriptionmempool.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/inscriptionmempool.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/inscriptionmempool.json"
+    outputFile="../imageoutput/inscriptionmempool.png"
+    dataDirectory="../data/"
     width=480
     height=320
     sleepInterval = 10
@@ -413,6 +413,6 @@ if __name__ == '__main__':
         if runonce:
             break
 
-        print(f"sleeping for {sleepInterval}")
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)
 

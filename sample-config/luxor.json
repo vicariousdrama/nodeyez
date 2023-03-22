@@ -7,7 +7,7 @@
   "username": "--your-luxor-account-name--",
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/luxor-mining-hashrate.png",
+  "outputFile": "../imageoutput/luxor-mining-hashrate.png",
   "subheadingText.comment": "A label beneath the main header useful for identifying the miner",
   "subheadingText.type": "string",
   "subheadingText": "Miner Type or Name / Location",

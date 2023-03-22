@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 from PIL import Image, ImageDraw
 
-sourceFile="/home/nodeyez/nodeyez/images/nodeyez-catseyes.png"
-outputFile="/home/nodeyez/nodeyez/imageoutput/logo.png"
+sourceFile="../images/nodeyez-catseyes.png"
+outputFile="../imageoutput/logo.png"
 stretchEdge=True
 
 def createimage(width=480, height=320):

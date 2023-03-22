@@ -28,20 +28,20 @@ An additional image can be produced to graph segwit prevalence over time
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/blockstats.py](../scripts/blockstats.py).
+[../scripts/blockstats.py](../scripts/blockstats.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/blockstats.json
+nano ../config/blockstats.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Optional additional images use a suffix based on this name. Default `/home/nodeyez/nodeyez/imageoutput/blockstats.png` |
-| dataDirectory | The base path for the directory to store saved files. This helps improve performance as a file is used to cache blockstats data. Default `/home/nodeyez/nodeyez/data/` |
+| outputFile | The path to save the generated image. Optional additional images use a suffix based on this name. Default `../imageoutput/blockstats.png` |
+| dataDirectory | The base path for the directory to store saved files. This helps improve performance as a file is used to cache blockstats data. Default `../data/` |
 | width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
@@ -66,7 +66,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 blockstats.py
 ```
 

@@ -1,7 +1,7 @@
 {
   "outputFile.comment": "The path to save the generated image",
   "outputFile.type": "string",
-  "outputFile": "/home/nodeyez/nodeyez/imageoutput/mempoolblocks.png",
+  "outputFile": "../imageoutput/mempoolblocks.png",
   "urlmempool.comment": "The url for the mempool blocks information. If you are running your own mempool.space service on MyNodeBTC, then use http://127.0.0.1:4080/api/v1/fees/mempool-blocks",
   "urlmempool.type": "string",
   "urlmempool": "https://mempool.space/api/v1/fees/mempool-blocks",

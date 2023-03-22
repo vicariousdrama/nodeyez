@@ -2,7 +2,7 @@
 
 # the framebuffer image viewer (fbi) needs root so run this script with sudo
 # install fbi via  `sudo apt-get -y install fbi`
-globtodisplay="/home/nodeyez/nodeyez/imageoutput/*.png"
+globtodisplay="../imageoutput/*.png"
 timeperimage=3
 while true
 do

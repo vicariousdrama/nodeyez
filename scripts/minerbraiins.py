@@ -539,9 +539,9 @@ def isValidMiner():
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/minerbraiins.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/minerbraiins.png"
-    dataDirectory="/home/nodeyez/nodeyez/data/"
+    configFile="../config/minerbraiins.json"
+    outputFile="../imageoutput/minerbraiins.png"
+    dataDirectory="../data/"
     minerlabel=""
     mineraddress=""
     width=480
@@ -653,4 +653,5 @@ if __name__ == '__main__':
             print(f"Saving hash history")
             saveMinerHashHistory(minerhashhistory)
             lastSaved = int(time.time())
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

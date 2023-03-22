@@ -17,19 +17,19 @@ Compass Mining reseller marketplace.
 ## Script Location
 
 The script is installed at 
-[/home/nodeyez/nodeyez/scripts/compassmininghardware.py](../scripts/compassmininghardware.py).
+[../scripts/compassmininghardware.py](../scripts/compassmininghardware.py).
 
 ## Configuration
 
 To configure this script override the default configuration as follows
 
 ```shell
-nano /home/nodeyez/nodeyez/config/compassmininghardware.json
+nano ../config/compassmininghardware.json
 ```
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `/home/nodeyez/nodeyez/imageoutput/compassmininghardware.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/compassmininghardware.png` |
 | hardwareurl | The url that provides current compass mining hardware prices for featured, reseller, and at home ASICs. Default `https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
@@ -53,7 +53,7 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 To run this script
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
+cd ../scripts
 /usr/bin/env python3 compassmininghardware.py
 ```
 

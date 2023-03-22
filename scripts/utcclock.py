@@ -33,8 +33,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/utcclock.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/utcclock.png"
+    configFile="../config/utcclock.json"
+    outputFile="../imageoutput/utcclock.png"
     width=480
     height=320
     sleepInterval=30
@@ -79,4 +79,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

@@ -52,8 +52,8 @@ def createimage(width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="/home/nodeyez/nodeyez/config/fiatprice.json"
-    outputFile="/home/nodeyez/nodeyez/imageoutput/fiatprice.png"
+    configFile="../config/fiatprice.json"
+    outputFile="../imageoutput/fiatprice.png"
     priceurl="https://bisq.markets/bisq/api/markets/ticker"
     useTor=True
     width=480
@@ -121,4 +121,5 @@ if __name__ == '__main__':
     # Loop
     while True:
         createimage(width,height)
+        print(f"sleeping for {sleepInterval} seconds")
         time.sleep(sleepInterval)

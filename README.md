@@ -76,11 +76,10 @@ The scripts are still available, but may not properly function as the data provi
 
 1. [Your Node](./_install_steps/1yournode.md)
 2. [Display Screen](./_install_steps/2displayscreen.md)
-3. [Python and Dependencies](./_install_steps/3pythondeps.md)
+3. [Tools](./_install_steps/3tools.md)
 4. [Nodeyez User Setup](./_install_steps/4nodeyez.md)
 5. [Panel Selection](./_install_steps/5panels.md)
 6. [Slideshow Config](./_install_steps/6slideshow.md)
 7. [Website Dashboard](./_install_steps/7websitedashboard.md)
 8. [Running at Startup](./_install_steps/8runatstartup.md)
-
-
+9. [Development Environment](._install_steps/9developer.md)
