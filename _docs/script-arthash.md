@@ -13,23 +13,18 @@ This script produces geometric artwork deterministically based on Bitcoin
 Blockhash values. It depends on a bitcoin node running locally and fully
 synched.
 
-
 ![sample image depicting hash as colored triangles](../images/arthash-719360.png)
 
 ## Script Location
 
 The script is installed at 
-[../scripts/arthash.py](../scripts/arthash.py). 
+[~/nodeyez/scripts/arthash.py](../scripts/arthash.py). 
 
 ## Configuration
 
-To configure this script
+To configure this script, edit the `~/nodeyez/config/arthash.json` file
 
-Override the default configuration as follows
-
-```sh
-nano ../config/arthash.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -41,28 +36,24 @@ nano ../config/arthash.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+And run it
+```shell
 python arthash.py
 ```
 
 Press CTRL+C to stop the process
-
 
 ## Run at Startup
 
@@ -77,4 +68,3 @@ sudo systemctl start nodeyez-arthash.service
 ---
 
 [Home](../) | 
-

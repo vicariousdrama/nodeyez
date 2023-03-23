@@ -22,20 +22,17 @@ file.
 ## Script Location
 
 The script is installed at
-[../scripts/f2pool.py](../scripts/f2pool.py).
+[~/nodeyez/scripts/f2pool.py](../scripts/f2pool.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/f2pool.json` file
 
-```sh
-nano ../config/f2pool.json
-```
+Fields are defined below
   
 You should set the following at a minimum
 - account
 - hashrateLowThreshold: recommend setting this to 10% below your expected hashrate.
-
 
 | field name | description |
 | --- | --- |
@@ -59,23 +56,20 @@ You should set the following at a minimum
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python f2pool.py
 ```
 
@@ -94,4 +88,3 @@ sudo systemctl start nodeyez-f2pool.service
 ---
 
 [Home](../) | 
-

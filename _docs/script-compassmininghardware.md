@@ -17,15 +17,13 @@ Compass Mining reseller marketplace.
 ## Script Location
 
 The script is installed at 
-[../scripts/compassmininghardware.py](../scripts/compassmininghardware.py).
+[~/nodeyez/scripts/compassmininghardware.py](../scripts/compassmininghardware.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/compassmininghardware.json` file
 
-```shell
-nano ../config/compassmininghardware.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -46,28 +44,24 @@ nano ../config/compassmininghardware.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python compassmininghardware.py
 ```
 
 Press CTRL+C to stop the process
-
 
 ## Run at Startup
 
@@ -79,8 +73,6 @@ sudo systemctl enable nodeyez-compassmininghardware.service
 sudo systemctl start nodeyez-compassmininghardware.service
 ```
 
-
 ---
 
 [Home](../) | 
-

@@ -18,15 +18,13 @@ graphically
 ## Script Location
 
 This script is installed at
-[/home/nodeyez/nodeyz/scripts/satsperusd.py](../scripts/satsperusd.py).
+[~/nodeyez/scripts/satsperusd.py](../scripts/satsperusd.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/satsperusd.json` file
 
-```shell
-nano ../config/satsperusd.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -46,23 +44,20 @@ nano ../config/satsperusd.json
 | colorSatAmount | The color of the text for the current sats per dollar expressed as a Hexadecimal color specifier. Default `#4040407f` |
 | colorSatAmountShadow | The color of the text shadow for the current sats per dollar expressed as a Hexadecimal color specifier. Default `#ffffff7f` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python satsperusd.py
 ```
 
@@ -78,8 +73,6 @@ sudo systemctl enable nodeyez-satsperusd.service
 sudo systemctl start nodeyez-satsperusd.service
 ```
 
-
 ---
 
 [Home](../) | 
-

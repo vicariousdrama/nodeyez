@@ -17,25 +17,13 @@ Compass Mining as reported on their [status page](https://status.compassmining.i
 ## Script Location
 
 The script is installed at 
-[../scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
-
-## Dependencies
-
-Before running this script you must have met dependencies
-
-- beautifulsoup4 is required for compass mining scripts to parse HTML
-
-```shell
-python3 -m pip install beautifulsoup4
-```
+[~/nodeyez/scripts/compassminingstatus.py](../scripts/compassminingstatus.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/compassminingstatus.json` file
 
-```shell
-nano ../config/compassminingstatus.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -58,23 +46,20 @@ nano ../config/compassminingstatus.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python compassminingstatus.py
 ```
 
@@ -93,4 +78,3 @@ sudo systemctl start nodeyez-compassminingstatus.service
 ---
 
 [Home](../) | 
-

@@ -39,15 +39,13 @@ me directly.
 ## Script Location
 
 This script is installed at
-[../scripts/lndhub.py](../scripts/lndhub.py).
+[~/nodeyez/scripts/lndhub.py](../scripts/lndhub.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/lndhub.json` file
 
-```shell
-nano ../config/lndhub.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -74,23 +72,20 @@ snippet in the config file as follows
 "f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0": "Samantha"
 ```
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python lndhub.py
 ```
 
@@ -109,4 +104,3 @@ sudo systemctl start nodeyez-lndhub.service
 ---
 
 [Home](../) | 
-

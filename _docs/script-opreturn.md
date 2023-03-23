@@ -18,15 +18,13 @@ will be generated rendering the text values.
 ## Script Location
 
 The script is installed at
-[../scripts/opreturn.py](../scripts/opreturn.py).
+[~/nodeyez/scripts/opreturn.py](../scripts/opreturn.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/opreturn.json` file
 
-```shell
-nano ../config/opreturn.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -39,23 +37,20 @@ nano ../config/opreturn.json
 | colorTextFG1 | The primary color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#ff7f00` |
 | colorTextFG2 | The alternate color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#dddd00` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python opreturn.py
 ```
 
@@ -74,4 +69,3 @@ sudo systemctl start nodeyez-opreturn.service
 ---
 
 [Home](../) | 
-

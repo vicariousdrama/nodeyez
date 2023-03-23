@@ -19,15 +19,13 @@ the top of the image.
 ## Script Location
 
 This script is installed at
-[../scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
+[~/nodeyez/scripts/fearandgreed.py](../scripts/fearandgreed.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/fearandgreed.json` file
 
-```shell
-nano ../config/fearandgreed.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -45,25 +43,20 @@ nano ../config/fearandgreed.json
 | colorGraphLineDark | The color to draw the top and right and background dashed lines of the graph outline expressed as a Hexadecimal color specifier. Default `#606060` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 
-
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python fearandgreed.py
 ```
 
@@ -82,4 +75,3 @@ sudo systemctl start nodeyez-daily-data-retrieval.service
 ---
 
 [Home](../) | 
-

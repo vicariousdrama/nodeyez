@@ -17,15 +17,13 @@ Bitcoin in US Dollar terms and then displays it graphically in large text
 ## Script Location
 
 The script is installed at
-[../scripts/fiatprice.py](../scripts/fiatprice.py).
+[~/nodeyez/scripts/fiatprice.py](../scripts/fiatprice.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/fiatprice.json` file
 
-```shell
-nano ../config/fiatprice.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -44,23 +42,20 @@ nano ../config/fiatprice.json
 | colorPriceDown | The color of the text for the current price when declining expressed as a Hexadecimal color specifier. Default `#ff4040ff` |
 | colorPriceShadow | The color of the text shadow for the current price expressed as a Hexadecimal color specifier. Default `#ffffff7f` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python fiatprice.py
 ```
 

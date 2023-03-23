@@ -22,15 +22,13 @@ recent inscriptions will be generated as the output file.
 ## Script Location
 
 This script is installed at
-[../scripts/inscriptionmempool.py](../scripts/inscriptionmempool.py)
+[~/nodeyez/scripts/inscriptionmempool.py](../scripts/inscriptionmempool.py)
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/inscriptionmempool.json` file
 
-```sh
-nano ../config/inscriptionmempool.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -42,23 +40,20 @@ nano ../config/inscriptionmempool.json
 | colorTextFG | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python inscriptionmempool.py
 ```
 
@@ -85,4 +80,3 @@ sudo systemctl start nodeyez-inscriptionmempool.service
 ---
 
 [Home](../) | 
-

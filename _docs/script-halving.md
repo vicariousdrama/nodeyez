@@ -19,15 +19,13 @@ is 210000 blocks, each whole percent represents 2100 blocs making for a nice lay
 ## Script Location
 
 The script is installed at 
-[../scripts/halving.py](../scripts/halving.py).
+[~/nodeyez/scripts/halving.py](../scripts/halving.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/halving.json` file
 
-```shell
-nano ../config/halving.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -44,23 +42,20 @@ nano ../config/halving.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `540` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python halving.py
 ```
 

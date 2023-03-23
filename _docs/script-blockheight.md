@@ -17,15 +17,13 @@ It depends on a bitcoin node running locally and fully synched.
 ## Script Location
 
 The script is installed at 
-[../scripts/blockheight.py](../scripts/blockheight.py).
+[~/nodeyez/scripts/blockheight.py](../scripts/blockheight.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/blockheight.json` file
 
-```shell
-nano ../config/blockheight.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -36,23 +34,20 @@ nano ../config/blockheight.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `120` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Running Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python blockheight.py
 ```
 

@@ -24,15 +24,13 @@ from this panel in future updates.
 ## Script Location
 
 This script is installed at
-[../scripts/braiinspool.py](../scripts/braiinspool.py)
+[~/nodeyez/scripts/braiinspool.py](../scripts/braiinspool.py)
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/braiinspool.json` file
 
-```shell
-nano ../config/braiinspool.json
-```
+Fields are defined below
 
 You must set the authtoken field with your API access token
 
@@ -61,23 +59,20 @@ You must set the authtoken field with your API access token
 | colorBreakEvenMiss | The color of the text showing the break even amount when it is not met expressed as a Hexadecimal color specifier. Default `#ff0000` |
 | colorBreakEvenGood | The color of the text showing the break even amount when it is met expressed as a Hexadecimal color specifier. Default `#00ff00` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python braiinspool.py
 ```
 
@@ -96,4 +91,3 @@ sudo systemctl start nodeyez-braiinspool.service
 ---
 
 [Home](../) | 
-

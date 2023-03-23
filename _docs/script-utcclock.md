@@ -15,15 +15,13 @@ This script provides a simple rendering of the date and time
 
 ## Script Location
 This script is installed at
-[../scripts/utcclock.py](../scripts/utcclock.py)
+[~/nodeyez/scripts/utcclock.py](../scripts/utcclock.py)
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/utcclock.json` file
 
-```shell
-nano ../config/utcclock.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -36,23 +34,20 @@ nano ../config/utcclock.json
 | colorTextDate | The color to render the current date expressed as a Hexadecimal color specifier. Default `#f1c232` |
 | colorTextTime | The color to render the current time expressed as a Hexadecimal color specifier. Default `#6aa84f` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python utcclock.py
 ```
 
@@ -71,4 +66,3 @@ sudo systemctl start nodeyez-utcclock.service
 ---
 
 [Home](../) | 
-

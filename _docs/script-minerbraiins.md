@@ -20,15 +20,13 @@ is to improve for other miners over time.
 ## Script Location
 
 The script is installed at
-[../scripts/minerbraiins.py](../scripts/minerbraiins.py).
+[~/nodeyez/scripts/minerbraiins.py](../scripts/minerbraiins.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/minerbraiins.json` file
 
-```sh
-nano ../config/minerbraiins.json
-```
+Fields are defined below
 
 You must set the address for the miner
 
@@ -56,7 +54,6 @@ __miner__
 | minerlabel | A unique label to give this miner. If provided, it is used as the label in the header area of the image |
 | mineraddress | *required* The ip or host address for your miner on your local lan, accessible from the host running the script |
 | expectations | An optional structure defining expectations to monitor for. A setting out of range will cause a warning to be rendered. The structure is defined below |
-
 
 __expectations__
 
@@ -86,23 +83,20 @@ __pools__
 | url | The url for a pool that is expected to be configured |
 | user | The user for a pool that is expected to be configured in username.worker format |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python minerbraiins.py
 ```
 

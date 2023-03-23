@@ -19,16 +19,13 @@ It depends on a lighting node.
 ## Script Location
 
 The script is installed at 
-[../scripts/channelbalance.py](../scripts/channelbalance.py).
-
+[~/nodeyez/scripts/channelbalance.py](../scripts/channelbalance.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/channelbalance.json` file
 
-```shell
-nano ../config/channelbalance.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -71,24 +68,21 @@ nano ../config/channelbalance.json
 | height | Override the height, in pixels, to generate the image. |
 | pageSize | Override the number of channels to represent per page rendered. |
 | headerText | Override the text to use in the header area. |
-   
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python channelbalance.py
 ```
 
@@ -107,4 +101,3 @@ sudo systemctl start nodeyez-channelbalance.service
 ---
 
 [Home](../) | 
-

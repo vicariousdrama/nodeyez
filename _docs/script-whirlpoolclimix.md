@@ -1,5 +1,5 @@
 ---
-panelgroup: Other Fun Stuff
+panelgroup: Other Fun Panels
 name: Whirlpool CLI Mix Status
 title: Whirlpool CLI Mix Status script
 layout: default
@@ -18,15 +18,13 @@ generates a status panel of this information.
 ## Script Location
 
 This script is installed at
-[../scripts/whirlpoolclimax.py](../scripts/whirlpoolclimax.py).
+[~/nodeyez/scripts/whirlpoolclimax.py](../scripts/whirlpoolclimax.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/whirlpoolclimix.json` file
 
-```sh
-nano ../config/whirlpoolclimix.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -45,23 +43,20 @@ nano ../config/whirlpoolclimix.json
 | colorDataOff | The color of the indicator when something is off/false. Default `#ff4040` |
 | colorTextFG | The color of all other text labels and values expressed as a Hexadecimal color specifier. Default `#ffffff` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```
 python whirlpoolclimix.py
 ```
 
@@ -80,4 +75,3 @@ sudo systemctl start nodeyez-whirlpoolclimix.service
 ---
 
 [Home](../) | 
-

@@ -23,15 +23,13 @@ with Docker.
 ## Script Location
 
 The script is installed at
-[../scripts/ipaddress.py](../scripts/ipaddress.py).
+[~/nodeyez/scripts/ipaddress.py](../scripts/ipaddress.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/ipaddress.json` file
 
-```shell
-nano ../config/ipaddress.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -42,23 +40,20 @@ nano ../config/ipaddress.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `120` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the script folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python ipaddress.py
 ```
 
@@ -77,4 +72,3 @@ sudo systemctl start nodeyez-ipaddress.service
 ---
 
 [Home](../) | 
-

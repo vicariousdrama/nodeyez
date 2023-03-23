@@ -22,15 +22,13 @@ From API port 4028 on the miner it uses the data from pools+summary+devs
 ## Script Location
 
 The script is installed at 
-[../scripts/minermicrobt.py](../scripts/minermicrobt.py).
+[~/nodeyez/scripts/minermicrobt.py](../scripts/minermicrobt.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/minermicrobt.json` file
 
-```shell
-nano ../config/minermicrobt.json
-```
+Fields are defined below
 
 You must set the address for the miner
 
@@ -59,7 +57,6 @@ __miner__
 | minerlabel | A unique label to give this miner. If provided, it is used as the label in the header area of the image |
 | mineraddress | *required* The ip or host address for your miner on your local lan, accessible from the host running the script |
 | expectations | An optional structure defining expectations to monitor for. A setting out of range will cause a warning to be rendered. The structure is defined below |
-
 
 __expectations__
 
@@ -108,24 +105,20 @@ __fans__
 | low | An optional property to define the low end of expected fan speed, in RPMs. |
 | high | An optional property to define the high end of expected fan speed, in RPMs. |
 
-
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python minermicrobt.py
 ```
 
@@ -141,8 +134,6 @@ sudo systemctl enable nodeyez-minermicrobt.service
 sudo systemctl start nodeyez-minermicrobt.service
 ```
 
-
 ---
 
 [Home](../) |
-
