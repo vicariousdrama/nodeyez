@@ -99,13 +99,13 @@ def getdriveratio(path="/$"):
 
 # get drive2 path
 def getdrive2path():
-    cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | grep -v /snap | sort | wc -l"
+    cmd = "df -t ext4 | grep / | awk '{print $6}' | sort | wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         if len(cmdoutput) > 0:
             drivecount = int(cmdoutput)
             if drivecount > 1:
-                cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | grep -v /snap | sort | sed -n 2p"
+                cmd = "df -t ext4 | grep / | awk '{print $6}' | sort | sed -n 2p"
                 drive2path = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
                 return drive2path
     except subprocess.CalledProcessError as e:
