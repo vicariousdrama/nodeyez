@@ -48,9 +48,18 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
 To run this script
 
+Ensure the virtual environment is activated
+
 ```shell
-cd ../scripts
-/usr/bin/env python3 inscriptionmempool.py
+source ~/.pyenv/nodeyez/bin/activate
+```
+
+And then run it
+
+```shell
+cd ~/nodeyez/scripts
+
+python inscriptionmempool.py
 ```
 
 Press CTRL+C to stop the process
@@ -60,7 +69,7 @@ This script also supports optional command line arguments for a single run and e
 1. Pass the desired width and height as arguments as follows
 
 ```shell
-/usr/bin/env python3 inscriptionmempool.py 1920 1080
+python inscriptionmempool.py 1920 1080
 ```
 
 ## Run at Startup
@@ -69,6 +78,7 @@ To enable the script to run at startup, as the privileged user run the following
 
 ```shell
 sudo systemctl enable nodeyez-inscriptionmempool.service
+
 sudo systemctl start nodeyez-inscriptionmempool.service
 ```
 

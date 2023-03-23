@@ -14,32 +14,19 @@ generated images to the screen using the slideshow script
 The script is installed at
 [../scripts/slideshow.sh](../scripts/slideshow.sh)
 
-## Run Diretly
+## Run Directly
 
 If you are currently logged in as user nodeyez, `exit` back to the privileged user
-
-```shell
-if [ "`whoami`" == "nodeyez" ]; then
-exit
-fi
-```
 
 Then run the following
 
 ```shell
-cd /home/nodeyez/nodeyez/scripts
-sudo ./slideshow.sh &
+sudo bash -c 'cd /home/nodeyez/nodeyez/scripts && ./slideshow.sh'
 ```
 
-A process ID (PID) number will be displayed as output to the console for the
-background process. You may also find this process ID with this command:
+This will test the script and begin running through the images in the nodeyez imageoutput folder.
 
-```shell
-ps aux | grep slideshow | grep -v grep | awk '{print $2}'
-```
-
-You should start seeing images display on your screen.  
-
+Press `q` to exit the framebuffer imageviewer display, and then CTRL+C to terminate the script.
 
 If you dont see any images, then edit the slideshow script file
 
@@ -63,7 +50,6 @@ Terminate any existing background process before restarting the slideshow script
 
 ```shell
 for p in `ps aux | grep slideshow | grep -v grep | awk '{print $2}'`; do sudo kill $p; done
-sudo /home/nodeyez/nodeyez/scripts/slideshow.sh &
 ```
 
 Now any errors will be reported to the console.
@@ -80,6 +66,7 @@ To enable the script to run at startup, as the privileged user run the following
 
 ```shell
 sudo systemctl enable nodeyez-slideshow.service
+
 sudo systemctl start nodeyez-slideshow.service
 ```
 

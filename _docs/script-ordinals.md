@@ -49,7 +49,7 @@ nano ../config/ordinals.json
 | overlayTextBG | If overlayTextEnabled is true, this is the color of the annotation text background overlay expressed as a Hexadecimal color specifier. Default `#00000080` |
 | overlayTextFG | If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | uniqueOutputFile | The path to save individual generated images for each inscription. This is a base path where the block number and index of the transaction in the block will be included at the end of the file name but before the extension. Default `../imageoutput/ordinals/ordinals.png` |
-| blocklistURL | An optional URL to a resource that provides a list of block inscriptions not to extract. Default `https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/sample-config/ordblocklist.json` |
+| blocklistURL | An optional URL to a resource that provides a list of block inscriptions not to extract. Default `https://nodeyez.com/sample-config/ordblocklist.json` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 
 After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
@@ -58,9 +58,18 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
 To run this script
 
+Ensure the virtual environment is activated
+
 ```shell
-cd ../scripts
-/usr/bin/env python3 ordinals.py
+source ~/.pyenv/nodeyez/bin/activate
+```
+
+And then run it
+
+```shell
+cd ~/nodeyez/scripts
+
+python ordinals.py
 ```
 
 Press CTRL+C to stop the process
@@ -70,18 +79,18 @@ This script also supports optional command line arguments for a single run and e
 1. Pass the desired block number or range as an argument as follows
 
 ```sh
-/usr/bin/env python3 ordinals.py 773046
+python ordinals.py 773046
 # or
-/usr/bin/env python3 ordinals.py 775000-775100
+python ordinals.py 775000-775100
 ```
 
 
 2. Pass the desired block number or range, width and height as arguments
 
 ```sh
-/usr/bin/env python3 ordinals.py 774411 800 600
+python ordinals.py 774411 800 600
 # or
-/usr/bin/env python3 ordinals.py 775123-775223 1920 1080
+python ordinals.py 775123-775223 1920 1080
 ```
 
 ## Run at Startup
@@ -90,6 +99,7 @@ To enable the script to run at startup, as the privileged user run the following
 
 ```shell
 sudo systemctl enable nodeyez-ordinals.service
+
 sudo systemctl start nodeyez-ordinals.service
 ```
 
