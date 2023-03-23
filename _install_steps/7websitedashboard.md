@@ -21,13 +21,7 @@ version of that one.
 There are multiple options for setting up the dashboard.  Choose the most
 appropriate based on your raspberry pi node
 
-If you are currently logged in as user nodeyez, `exit` back to the privileged user
-
-```shell
-if [ "`whoami`" == "nodeyez" ]; then
-exit
-fi
-```
+If you are currently logged in as user nodeyez, `exit` back to the privileged user.
 
 ## Choose ONE (1) of the following
 
@@ -54,10 +48,15 @@ dashboard on port 907, and our template that generates the dashboard view.
 
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
+
 sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+
 sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+
 sudo chown root:root /etc/nginx/*.xslt
 ```
 
@@ -67,6 +66,7 @@ There should be no errors when running the test with the first command.
 
 ```shell
 sudo nginx -t
+
 sudo systemctl restart nginx
 ```
   
@@ -112,9 +112,13 @@ sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nginx-se
 
 ```shell
 sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+
 sudo chown root:root /etc/nginx/nginx.conf
+
 sudo chown root:root /etc/nginx/imagegallery.xslt
 ```
 
@@ -122,6 +126,7 @@ sudo chown root:root /etc/nginx/imagegallery.xslt
 
 ```shell
 sudo nginx -t
+
 sudo systemctl restart nginx
 ```
 
@@ -159,6 +164,7 @@ server listening on a port, and an upstream node for optional SSL proxying.
 
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+
 sudo chown root:root /etc/nginx/imagegallery.xslt
 ```
 
@@ -211,6 +217,7 @@ http {
 
 ```shell
 sudo nginx -t
+
 sudo systemctl restart nginx
 ```
 

@@ -66,7 +66,7 @@ from amazon [here](https://www.amazon.com/gp/product/B07V9WW96D)
   or [here](https://www.amazon.com/gp/product/B083C12N57).  
 
 If you can't source one from any of the above, reach out to me on 
-[Twitter](https://twitter.com/vicariousdrama) or [Nostr]
+[Twitter](https://twitter.com/vicariousdrama) or [Nostr](https://snort.social/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza)
 I have some extras that I can sell.
 
 **To setup the screen**
@@ -200,7 +200,9 @@ folder following these commands.
 
 ```shell
 cd /tmp
+
 wget https://www.waveshare.net/w/upload/8/86/vc4-kms-DPI-5inch.dtbo
+
 sudo mv vc4-kms-DPI-5inch.dtbo /boot/overlays/vc4-kms-DPI-5inch.dtbo
 ```
 
@@ -232,8 +234,11 @@ We'll download an image from Nodeyez github repo, and then display it to the scr
 
 ```shell
 cd /tmp
-wget https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png
+
+wget https://nodeyez.com/images/logo.png
+
 sudo fbi --vt 1 --autozoom --device /dev/fb0 -1 logo.png
+
 rm logo.png
 ```
 

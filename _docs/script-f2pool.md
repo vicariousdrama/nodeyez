@@ -65,13 +65,21 @@ After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
 
 To run this script
 
+Ensure the virtual environment is activated
+
 ```shell
-cd ../scripts
-/usr/bin/env python3 f2pool.py
+source ~/.pyenv/nodeyez/bin/activate
+```
+
+And then run it
+
+```shell
+cd ~/nodeyez/scripts
+
+python f2pool.py
 ```
 
 Press CTRL+C to stop the process
-
 
 ## Run at Startup
 
@@ -79,6 +87,7 @@ To enable the script to run at startup, as the privileged user run the following
 
 ```shell
 sudo systemctl enable nodeyez-f2pool.service
+
 sudo systemctl start nodeyez-f2pool.service
 ```
 

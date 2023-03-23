@@ -16,9 +16,9 @@ When this project was first created, it was setup on a Raspberry Pi and the typi
 installation approach was a MicroSD card for the OS to boot from and a larger
 performant drive attached externally via USB3.
 
-If you are using a MicroSD card, then it is preferable to run Nodeyez from the 
+**If you are using a MicroSD card, then it is preferable to run Nodeyez from the 
 external drive, and store created images and data there as well to reduce the 
-potential to wear out the microsd card.
+potential to wear out the microsd card.**
 
 Determine if you have an external drive attached. List all of your file systems of 
 type ext4 as follows:
@@ -41,23 +41,29 @@ The second one is `/dev/sda1`, a 1TB external drive with over 400 GB free having
 a mount point of `/mnt/ext`.  Your mount point for /dev/sda1 may be different.
 For example, MyNodeBTC uses a mount point of /mnt/hdd. Umbrel uses /mnt/data.
 
-Only do this next block if you have an external drive attached with the root drive
-referencing a small partition as above.  Modify `/dev/sda1` as desired to 
+**Only do this next block if you have an external drive attached with the root drive referencing a small partition as above.**
+
+Modify `/dev/sda1` as desired to 
 reference a different filesystem (e.g. /dev/sda  or /dev/sdb4  etc).
 
 ```shell
 EXT_DRIVE_MOUNT=`df|grep /dev/sda1|awk '{print $6}'`
+
 NODEYEZ_HOME=${EXT_DRIVE_MOUNT}/nodeyez
+
 sudo adduser --home ${NODEYEZ_HOME} --gecos "" --disabled-password nodeyez
+
 sudo ln -s ${NODEYEZ_HOME} /home/nodeyez
+
 sudo chown -R nodeyez:nodeyez /home/nodeyez
 ```
 
-If you don't have an external drive, then you'll do this command which will use
-the default locations for the home folder and create it on the root volume.
+**If you only have a single drive, then  you'll do this command which will use
+the default locations for the home folder and create it on the root volume.**
 
 ```shell
 NODEYEZ_HOME=/home/nodeyez
+
 sudo adduser --gecos "" --disabled-password nodeyez
 ```
 
@@ -73,7 +79,7 @@ sudo adduser nodeyez debian-tor
 
 Add Bitcoin configuration for nodeyez from existing configuration.
 
-You can skip this step if you are not using any scripts that require Bitcoin.
+**You can skip this step if you are not using any scripts that require Bitcoin.**
 
 Technically we only need the rpcauth or rpcuser and rpcpassword settings to
 allow bitcoin-cli to work, but this is the easiest way to setup that I've found
@@ -88,8 +94,11 @@ clarity here, please open an issue or pull request.*
 
 ```shell
 sudo mkdir -p /home/nodeyez/.bitcoin
+
 sudo cp /home/bitcoin/.bitcoin/bitcoin.conf /home/nodeyez/.bitcoin/bitcoin.conf
+
 sudo cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
+
 sudo chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin
 ```
 
@@ -97,7 +106,7 @@ sudo chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin
 
 Add LND tls cert and bake a macaroon specific to nodeyez
 
-You can skip this step if you are not using any scripts that require Lightning.
+**You can skip this step if you are not using any scripts that require Lightning.**
 
 As with the bitcoin step above, this assumes that the node is setup with an LND
 (Lightning Network Daemon) implementation under the bitcoin user.  If you are
@@ -106,9 +115,13 @@ using C-Lightning or another implementation, you may need to alter the paths.
 
 ```shell
 sudo mkdir -p /home/nodeyez/.lnd
+
 sudo cp /home/bitcoin/.lnd/tls.cert /home/nodeyez/.lnd/tls.cert
+
 lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to ${HOME}/nodeyez.macaroon
+
 sudo mv ${HOME}/nodeyez.macaroon /home/nodeyez/.lnd/nodeyez.macaroon
+
 sudo chown -R nodeyez:nodeyez /home/nodeyez/.lnd
 ```
 
@@ -209,7 +222,9 @@ nodeyez scripts make at this time.
 Again, this step should be done as the nodeyez user
 
 ```shell
-cd ~ ; git clone https://github.com/vicariousdrama/nodeyez.git
+cd ~
+
+git clone https://github.com/vicariousdrama/nodeyez.git
 ```
 
 ## Create folders
@@ -218,9 +233,13 @@ Create folders and copy sample configuration files
 
 ```shell
 cd ~/nodeyez
+
 mkdir -p ./config
+
 mkdir -p ./data
+
 mkdir -p ./imageoutput
+
 cp ./sample-config/*.json ./config
 ```
 
@@ -243,15 +262,7 @@ source ~/.pyenv/nodeyez/bin/activate
 Finally, install modules used by scripts into the virtual environment
 
 ```shell
-python3 -m pip install Pillow --upgrade
-python3 -m pip install beautifulsoup4 --upgrade
-python3 -m pip install pandas --upgrade
-python3 -m pip install qrcode --upgrade
-python3 -m pip install Wand --upgrade
-python3 -m pip install exifread --upgrade
-python3 -m pip install urllib3 --upgrade
-python3 -m pip install requests --upgrade
-python3 -m pip install redis --upgrade
+python3 -m pip install --upgrade Pillow beautifulsoup4 pandas qrcode Wand exifread urllib3 requests redis
 ```
 
 - beatifulsoup4 - This is a library for extracting data from HTML and XML files. Within Nodeyez, it is used by the Compass Mining Status script and the Daily Data Retrieval script.
