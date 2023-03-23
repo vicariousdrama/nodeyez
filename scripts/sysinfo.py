@@ -7,6 +7,7 @@ import math
 import subprocess
 import sys
 import time
+import vicariousstat
 import vicarioustext
 
 def drawicon(draw,icon,x,y,w,h,v=None):
@@ -72,12 +73,6 @@ def drawicon(draw,icon,x,y,w,h,v=None):
         draw.pieslice(xy=(x+pad+ox,y+pad+oy,x+w+ox-pad,y+h+oy-pad),start=sa,end=ea,fill=colorPieEmpty,outline=colorPieOutline,width=1)
         vicarioustext.drawbottomlefttext(draw, "free", int(w*.10), x+(w/2)+ox, y+(h/2)-int(h*.05), colorPieEmptyText)
         vicarioustext.drawcenteredtext(draw, gbf + " free", int(w*.125), x+(w/2), y+h-int(h*.0625), colorPieLabelText)
-    if icon == "sdcard":
-        drawicon(draw,"piestorage",x,y,w,h,v)
-        vicarioustext.drawcenteredtext(draw, "/dev/root", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
-    if icon == "hdd":
-        drawicon(draw,"piestorage",x,y,w,h,v)
-        vicarioustext.drawcenteredtext(draw, "/dev/sda1", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
     if icon == "cpuload":
         vicarioustext.drawcenteredtext(draw, "CPU Load", int(w*.15), x+int(w/2), y+int(h*.08), colorHeader, True)
         vicarioustext.drawlefttext(draw, "1 min", int(w*.1125), x+int(w*.0375), y+(int(h/8)*3), colorCPULabelText)
@@ -122,8 +117,17 @@ def createimage(width=480, height=320):
     im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
     draw = ImageDraw.Draw(im)
     drawicon(draw,"thermometer",5,5,bw-10,bh-10,v=str(gettemp()))
-    drawicon(draw,"sdcard",5+bw,5,bw-10,bh-10,v=str(getdrivefree("/dev/root")))
-    drawicon(draw,"hdd",5+bw+bw,5,bw-10,bh-10,v=str(getdrivefree("/dev/sda1")))
+    # Drive 1 (SDCard or Root)
+    drive1info = vicariousstat.getdrive1info()                  # ('/', '21G', '74') = tuple of mount point, free space, free percent
+    drive1infov = "X X X " + drive1info[1] + " " + str(100-int(drive1info[2])) + "% " + drive1info[0]
+    drawicon(draw,"piestorage",5+bw,5,bw-10,bh-10,drive1infov)
+    vicarioustext.drawcenteredtext(draw, "Root Drive", int(bw*.15), (5+bw)+((bh-10)/2), 5+((bh-10)*.08), colorHeader, True)
+    # Drive 2 (External HDD)
+    drive2info = vicariousstat.getdrive2info()                  # ('/mnt/hdd', '254G', '29') = tuple of mount point, free space, free percent
+    if drive2info[0] != "None":
+        drive2infov = "X X X " + drive2info[1] + " " + str(100-int(drive2info[2])) + "% " + drive2info[0]
+        drawicon(draw,"piestorage",5+bw+bw,5,bw-10,bh-10,drive2infov)
+        vicarioustext.drawcenteredtext(draw, "2nd Drive", int(bw*.15), (5+bw)+((bh-10)/2), 5+((bh-10)*.08), colorHeader, True)
     drawicon(draw,"cpuload",5,bh+5,bw,bh-10,v=str(getloadavg()))
     drawicon(draw,"memory",5+bw,bh+5,bw,bh-10,v=str(getmemusage("Mem","RAM")))
     drawicon(draw,"memory",5+bw+bw,bh+5,bw,bh-10,v=str(getmemusage("Swap","Swap")))

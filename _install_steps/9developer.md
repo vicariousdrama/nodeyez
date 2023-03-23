@@ -87,8 +87,6 @@ From the Search bar, look for and install the following extensions:
 
 - systemd-unit-file [from coolbear]: Language support for systemd unit files
 
-- View Image for Python Debugging [from Elazar Cohen] - simply view the image of the image variables when debugging python
-
 ## Choose Python Interpreter
 
 When in Visual Studio Code, we want to make sure that we're using the environment that we setup previously.  Access the command palette by either the shortcut (CTRL+SHIFT+P) or from the View menu.

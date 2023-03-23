@@ -10,9 +10,11 @@ title: NODEYEZ Change Log
 **General**
 
 - Linking tagged commits back to Github as a public mirror
+- Add guidance for Development Environment
 
 **Bugfixes**
 
+- Fix display of System Info drive icons if only one drive
 
 ## 23.03
 
