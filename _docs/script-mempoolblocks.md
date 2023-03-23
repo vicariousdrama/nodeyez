@@ -23,15 +23,13 @@ can configure that instance instead for more privacy.
 ## Script Location
 
 The script is installed at 
-[../scripts/mempoolblocks.py](../scripts/mempoolblocks.py).
+[~/nodeyez/scripts/mempoolblocks.py](../scripts/mempoolblocks.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/mempoolblocks.json` file
 
-```shell
-nano ../config/mempoolblocks.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -111,23 +109,20 @@ histogramSatLevels: [
 ]
 ```
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python mempoolblocks.py
 ```
 
@@ -146,4 +141,3 @@ sudo systemctl start nodeyez-mempoolblocks.service
 ---
 
 [Home](../) | 
-

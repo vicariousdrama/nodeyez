@@ -21,15 +21,13 @@ It depends on a bitcoin node running locally and fully synched.
 
 ## Script Location
 The script is installed at
-[../scripts/difficultyepoch.py](../scripts/difficultyepoch.py).
+[~/nodeyez/scripts/difficultyepoch.py](../scripts/difficultyepoch.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/difficultyepoch.json` file
 
-```shell
-nano ../config/difficultyepoch.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -45,24 +43,20 @@ nano ../config/difficultyepoch.json
 | height | The height, in pixels, to generate the image. Default `320` |
 | sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `540` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python difficultyepoch.py
 ```
 
@@ -82,4 +76,3 @@ sudo systemctl start nodeyez-difficultyepoch.service
 ---
 
 [Home](../) | 
-

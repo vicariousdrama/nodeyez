@@ -19,23 +19,7 @@ will also allow for more graphing trends.
 ## Script Location
 
 The script is installed at 
-[../scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
-
-## Dependencies
-
-Before running this script you must have met dependencies
-
-- beautifulsoup4 is required for compass mining scripts to parse HTML
-
-```shell
-python3 -m pip install beautifulsoup4
-```
-
-- pandas is required for luxor scripts to use the client library for data retrieval
-
-```shell
-python3 -m pip install pandas
-```
+[~/nodeyez/scripts/daily-data-retrieval.py](../scripts/daily-data-retrieval.py).
 
 ## Configuration
 
@@ -60,19 +44,18 @@ overwrite your customizations to the script.
 
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python daily-data-retrieval.py
 ```
 

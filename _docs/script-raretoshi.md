@@ -19,25 +19,13 @@ Only static PNG and JPEG files are supported at this time.
 ## Script Location
 
 The script is installed at
-[../scripts/raretoshi.py](../scripts/raretoshi.py).
-
-## Dependencies
-
-Before running this script you must have met dependencies
-
-- qrcode is required to generate qr codes on the image to link to the asset
-
-```shell
-python3 -m pip install qrcode
-```
+[~/nodeyez/scripts/raretoshi.py](../scripts/raretoshi.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/raretoshi.json` file
 
-```shell
-nano ../config/raretoshi.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -62,23 +50,20 @@ nano ../config/raretoshi.json
 | qrCodeSize | If qrCodeEnabled is true, then this indicates the qr code box size for each pixel. Default `2` |
 | userInfoInterval | The amount of time, in seconds, the script should wait before refreshing the user information from raretoshi. Default `3600` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python raretoshi.py
 ```
 
@@ -97,4 +82,3 @@ sudo systemctl start nodeyez-raretoshi.service
 ---
 
 [Home](../) | 
-

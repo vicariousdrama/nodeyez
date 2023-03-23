@@ -28,15 +28,13 @@ An additional image can be produced to graph segwit prevalence over time
 ## Script Location
 
 The script is installed at 
-[../scripts/blockstats.py](../scripts/blockstats.py).
+[~/nodeyez/scripts/blockstats.py](../scripts/blockstats.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/blockstats.json` file
 
-```shell
-nano ../config/blockstats.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -58,24 +56,20 @@ nano ../config/blockstats.json
 | showFeeRates | Indicates whether the fee rates image should be created. Default: `true` |
 | showSegwitPrevalence | Indicates whether the segwit prevalence image should be created. Default `true` |
 
-
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Running Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python blockstats.py
 ```
 
@@ -94,4 +88,3 @@ sudo systemctl start nodeyez-blockstats.service
 ---
 
 [Home](../) | 
-

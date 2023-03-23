@@ -22,16 +22,13 @@ LND, etc.
 ## Script Location
 
 This script is installed at
-[../scripts/sysinfo.py](../scripts/sysinfo.py)
-
+[~/nodeyez/scripts/sysinfo.py](../scripts/sysinfo.py)
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/sysinfo.json` file
 
-```sh
-nano ../config/sysinfo.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -69,23 +66,20 @@ nano ../config/sysinfo.json
 | colorMEMDanger | The color to fill the memory arc for used memory when in the danger rnage expressed as a Hexadecimal color specifier. Default `#ff0000` |
 | colorMEMLabelText | The color of the labels for the memory arc displays expressed as a Hexadecimal color specifier. Default `#ffffff` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-* To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python sysinfo.py
 ```
 
@@ -104,4 +98,3 @@ sudo systemctl start nodeyez-sysinfo.service
 ---
 
 [Home](../) | 
-

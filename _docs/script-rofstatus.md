@@ -25,16 +25,13 @@ connection attempts, there is a delay between each ring being processed.
 ## Script Location
 
 The script is installed at 
-[../scripts/rofstatus.py](../scripts/rofstatus.py)
-
+[~/nodeyez/scripts/rofstatus.py](../scripts/rofstatus.py)
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/rofstatus.json` file
 
-```shell
-nano ../config/rofstatus.json
-```
+Fields are defined below
 
 | field name | description  |
 | ------------- |---------------------------------------- |
@@ -44,13 +41,11 @@ nano ../config/rofstatus.json
 | imagesettings | The default settings to apply to images generated unless overridden within a ring. The structure is defined below. |
 | rings | An array collection of defined rings to monitor and produce images for. The structure is defined below. |
 
-
 __imagesettings__
 
 | field name | description |
 | --- | --- |
 | colors | A structure of the color settings to apply to image generated. The structure is defined below |
-
 
 __colors__
 
@@ -65,7 +60,6 @@ __colors__
 | textshadow | The default color of the text shadow for the ring name expressed as a Hexadecimal color specifier. Default `#000000` |
 | background | The background color of the image expressed as a Hexadecimal color specifier. Default `#000000` |
 
-
 __rings__
 
 | field name | description |
@@ -78,7 +72,6 @@ __rings__
 | imagesettings | The settings to apply to the image generated from this ring. The structure is defined above |
 | nodes | An array of node objects where each represents a lightning node participant in this ring, in order. The structure is defined below |
 
-
 __node__
 
 | field name | description |
@@ -87,23 +80,20 @@ __node__
 | operator | A short label to identify the node |
 
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python rofstatus.py
 ```
 
@@ -119,8 +109,6 @@ sudo systemctl enable nodeyez-rofstatus.service
 sudo systemctl start nodeyez-rofstatus.service
 ```
 
-
 ---
 
 [Home](../) | 
-

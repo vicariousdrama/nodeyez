@@ -20,15 +20,13 @@ the bottom up.
 ## Script Location
 
 This script is installed at
-[../scripts/nodeyezdual.py](../scripts/nodeyezdual.py).
+[~/nodeyez/scripts/nodeyezdual.py](../scripts/nodeyezdual.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/nodeyezdual.json` file
 
-```sh
-nano ../config/nodeyezdual.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -44,23 +42,20 @@ nano ../config/nodeyezdual.json
 | dividerHeight | The height of an optional divider bar between images. Use 0 for no divider bar. Default 10 |
 | dividerBuffer | The height of optiona buffer between images and the divider bar. Use 0 for no buffer. Default 5 |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python nodeyezdual.py
 ```
 

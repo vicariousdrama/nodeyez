@@ -18,15 +18,13 @@ the information.
 ## Script Location
 
 This script is installed at
-[../scripts/whirlpoolliquidity.py](../scripts/whirlpoolliquidity.py).
+[~/nodeyez/scripts/whirlpoolliquidity.py](../scripts/whirlpoolliquidity.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/whirlpoolliquidity.json` file
 
-```shell
-nano ../config/whirlpoolliquidity.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -46,23 +44,20 @@ nano ../config/whirlpoolliquidity.json
 | colorElapsed | The color of the text label for elapsed time expressed as a Hexadecimal color specifier. Default `#aaaaaa` |
 | colorTextFG | The color of all other text labels and values expressed as a Hexadecimal color specifier. Default `#ffffff` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python whirlpoolliquidity.py
 ```
 
@@ -78,8 +73,6 @@ sudo systemctl enable nodeyez-whirlpoolliquidity.service
 sudo systemctl start nodeyez-whirlpoolliquidity.service
 ```
 
-
 ---
 
 [Home](../) | 
-

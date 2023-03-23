@@ -23,15 +23,13 @@ the image, the block, and the txid.
 ## Script Location
 
 This script is installed at
-[../scripts/ordinals.py](../scripts/ordinals.py).
+[~/nodeyez/scripts/ordinals.py](../scripts/ordinals.py).
 
 ## Configuration
 
-To configure this script override the default configuration as follows
+To configure this script, edit the `~/nodeyez/config/ordinals.json` file
 
-```sh
-nano ../config/ordinals.json
-```
+Fields are defined below
 
 | field name | description |
 | --- | --- |
@@ -52,23 +50,20 @@ nano ../config/ordinals.json
 | blocklistURL | An optional URL to a resource that provides a list of block inscriptions not to extract. Default `https://nodeyez.com/sample-config/ordblocklist.json` |
 | useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
 
-After making changes, Save (CTRL+O) and Exit (CTRL+X) nano.
-
 ## Run Directly
 
-To run this script
-
 Ensure the virtual environment is activated
-
 ```shell
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-And then run it
-
+Change to the scripts folder
 ```shell
 cd ~/nodeyez/scripts
+```
 
+Run it
+```shell
 python ordinals.py
 ```
 
@@ -78,16 +73,15 @@ This script also supports optional command line arguments for a single run and e
 
 1. Pass the desired block number or range as an argument as follows
 
-```sh
+```shell
 python ordinals.py 773046
 # or
 python ordinals.py 775000-775100
 ```
 
-
 2. Pass the desired block number or range, width and height as arguments
 
-```sh
+```shell
 python ordinals.py 774411 800 600
 # or
 python ordinals.py 775123-775223 1920 1080
@@ -106,4 +100,3 @@ sudo systemctl start nodeyez-ordinals.service
 ---
 
 [Home](../) | 
-
