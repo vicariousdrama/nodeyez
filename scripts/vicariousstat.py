@@ -99,18 +99,19 @@ def getdriveratio(path="/$"):
 
 # get drive2 path
 def getdrive2path():
-    cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | sort | wc -l"
+    cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | grep -v /snap | sort | wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         if len(cmdoutput) > 0:
             drivecount = int(cmdoutput)
             if drivecount > 1:
-                cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | sort | sed -n 2p"
+                cmd = "lsblk --output MOUNTPOINT | grep / | grep -v /boot | grep -v /snap | sort | sed -n 2p"
                 drive2path = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
                 return drive2path
     except subprocess.CalledProcessError as e:
         print(e)
         return "?"
+    return None
 
 # get drive1 info
 def getdrive1info():
@@ -122,7 +123,7 @@ def getdrive1info():
 # get drive2 info
 def getdrive2info():
     drive2path = getdrive2path()
-    if drive2path == "?":
+    if drive2path is None or drive2path == "?":
         return "None", 0, 0
     else:
         drivefree = getdrivefree(drive2path)
