@@ -1,5 +1,5 @@
 ---
-name: Running the Slideshow
+name: Running the Slideshow (Optional)
 title: Running the Slideshow
 layout: default
 ---

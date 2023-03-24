@@ -1,5 +1,5 @@
 ---
-name: Display Screen
+name: Display Screen (Optional)
 title: NODEYEZ Display Screen for Raspberry Pi
 layout: default
 ---
@@ -10,7 +10,7 @@ This step is optional.
 
 If you are not using a Raspberry Pi, or you don't want to attach a screen to
 your Raspberry Pi, then you can proceed with the next section:
-[Python and Dependencies](./install-3-pythondeps.md)
+[Tools]({% link _install_steps/3tools.md %})
 
 If you later choose to add a screen to your Raspberry Pi, you can come back
 and do this step later.
