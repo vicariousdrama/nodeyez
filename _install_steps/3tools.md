@@ -59,6 +59,13 @@ These libraries are used for some of the image file type conversions
 sudo apt-get install imagemagick inkscape
 ```
 
+## Install JQ
+
+This provides for JSON processing
+```shell
+sudo apt-get insall jq
+```
+
 ---
 
 [Home](../) | [Back to Display Screen]({% link _install_steps/2displayscreen.md %}) | [Continue to Nodeyez]({% link _install_steps/4nodeyez.md %})

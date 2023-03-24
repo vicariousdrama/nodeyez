@@ -82,4 +82,10 @@ The scripts are still available, but may not properly function as the data provi
 6. [Slideshow Config](./_install_steps/6slideshow.md)
 7. [Website Dashboard](./_install_steps/7websitedashboard.md)
 8. [Running at Startup](./_install_steps/8runatstartup.md)
-9. [Development Environment](./_install_steps/9developer.md)
+
+# Development Environment
+
+1. [Python and IDE](./_developer/1basicsetup.md)
+2. [Run and Change Code](./_developer/2runandchange.md)
+3. [Regtest](./_developer/3regtest.md)
+

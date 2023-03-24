@@ -57,10 +57,10 @@ def drawLabel(draw, s, fontsize, anchorposition, anchorx, anchory):
 def getFieldMinMaxAvgValues(thelist, thefield):
     if len(thelist) == 0:
         return -1, -1, -1
-    valuemin = 99999999
+    valuemin = None
     valuemax = 0
-    valueminx0 = 99999999
-    valueminx1 = 99999999
+    valueminx0 = None
+    valueminx1 = None
     total = 0
     thefieldparts = thefield.split(".")
     for item in thelist:
@@ -73,10 +73,10 @@ def getFieldMinMaxAvgValues(thelist, thefield):
                 bOK = False
         v = 0 if not bOK else int(o)
         total += v
-        valuemin = v if v < valuemin else valuemin
+        valuemin = v if valuemin is None or v < valuemin else valuemin
         valuemax = v if v > valuemax else valuemax
-        valueminx0 = v if v < valueminx0 and v > 0 else valueminx0
-        valueminx1 = v if v < valueminx1 and v > 1 else valueminx1
+        valueminx0 = v if valueminx0 is None or v < valueminx0 and v > 0 else valueminx0
+        valueminx1 = v if valueminx1 is None or v < valueminx1 and v > 1 else valueminx1
     valueavg = int(float(total) / float(len(thelist)))
     return valuemin, valuemax, valueavg, valueminx0, valueminx1
 
@@ -94,7 +94,7 @@ def drawBarChart(draw, left, top, width, height, thelist, fieldname, showlabels,
         # get current value
         curval = int(item[fieldname])
         # determine y coordinate for column based on value
-        py = float(curval) / float(high)
+        py = 1.0 if high <= 0 else float(curval) / float(high)
         y = top + int((1.0 - py) * height)
         y = top if y < top else y
         y = top + height - 1 if y > top + height - 1 else y
@@ -107,7 +107,7 @@ def drawBarChart(draw, left, top, width, height, thelist, fieldname, showlabels,
         # plot the value as a vertical bar
         draw.rectangle(xy=[(x,y),(x,top+height-1)],fill=colorGraphValue)
     # draw average line
-    avgy = top + int(   (1.0-(float(avg) / float(high))) * height)
+    avgy = top if high == 0 else top + int(   (1.0-(float(avg) / float(high))) * height)
     draw.line(xy=[(left,avgy),(left+width-1,avgy)],fill=colorGraphAverage,width=2)
     # draw box
     draw.rectangle(xy=[(left,top),(left+width-1,top+height-1)],outline=colorGraphOutline,width=1)
@@ -137,7 +137,7 @@ def drawStackedPercentageBarChart(draw, left, top, width, height, thelist, field
     field0 = fieldnames[0]
     totalprovided = len(field0) > 0
     # determine chart range (if first field name isn't empty, it represents the total range)
-    chartlow, charthigh = 99999999, -1
+    chartlow, charthigh = None, 0
     if totalprovided:
         chartlow, charthigh, _, _, _ = getFieldMinMaxAvgValues(thelist, field0)
     else:
@@ -145,7 +145,7 @@ def drawStackedPercentageBarChart(draw, left, top, width, height, thelist, field
             if len(fieldname) == 0:
                 continue
             low, high, _, _, _ = getFieldMinMaxAvgValues(thelist, fieldname)
-            chartlow = low if low < chartlow else chartlow
+            chartlow = low if chartlow is None or low < chartlow else chartlow
             charthigh = high if high > charthigh else charthigh
     # process each column from right to left
     l = len(thelist)
@@ -259,6 +259,7 @@ def updateBlockStatsHistory(blocknumber, itemsneeded):
         if blockheight > startblock:
             startblock = blockheight + 1
     # fetch to tip as needed
+    startblock = 1 if startblock < 1 else startblock
     if startblock < blocknumber:
         print(f"Fetching blockstats history from {startblock} to {blocknumber}")
         for i in range(startblock, blocknumber+1):
@@ -273,6 +274,7 @@ def updateBlockStatsHistory(blocknumber, itemsneeded):
     # check if need at beginning
     if len(blockstatshistory) < itemsneeded:
         startblock = blocknumber - itemsneeded
+        startblock = 1 if startblock < 1 else startblock
         endblock = blockstatshistory[0]["height"]
         print(f"Fetching blockstats history from {startblock} to {endblock}")
         for i in range(endblock, startblock-1, -1):
@@ -567,7 +569,7 @@ if __name__ == '__main__':
         if "colorBands" in config:
             colorBands.clear()
             for colorValue in config["colorBands"]:
-                colorBands.append(ImageCOlor.getrgb(colorValue))
+                colorBands.append(ImageColor.getrgb(colorValue))
         if "logStatsForRanges" in config:
             logStatsForRanges = config["logStatsForRanges"]
         if "showStatsBlock" in config:

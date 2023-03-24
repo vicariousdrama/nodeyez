@@ -53,5 +53,7 @@ View generated images via website dashboard.
 
 Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
 
+For guidance on setting up a development environment, start with the [Python and IDE Setup]({% link _developer/1basicsetup.md %}).
+
 You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama)
 

@@ -1,0 +1,7 @@
+{
+    "activeProfile": "default",
+    "profiles": {
+        "default": "",
+        "regtest1": "-conf=${HOME}/nodeyez/config/bitcoinregtest1.conf -datadir=${HOME}/nodeyez/data/bitcoinregtest1 -chain=regtest"
+    }
+}

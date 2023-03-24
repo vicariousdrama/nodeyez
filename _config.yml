@@ -12,6 +12,9 @@ url: https://nodeyez.com
 twitter_username: vicariousdrama
 header_image: /images/nodeyez.svg
 collections:
+  developer:
+    output: true
+    permalink: /developer/:path
   docs:
     output: true
     permalink: /docs/:path
