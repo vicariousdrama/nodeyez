@@ -13,8 +13,17 @@ useMockData=False
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
+# support for profile options in config, mainly for development
+bitcoinCLIOptions=""
+if exists("../config/bitcoin-cli.json"):
+    with open("../config/bitcoin-cli.json") as f:
+        bitcoinCLIConfig = json.load(f)
+        if "activeProfile" in bitcoinCLIConfig and "profiles" in bitcoinCLIConfig:
+            if bitcoinCLIConfig["activeProfile"] in bitcoinCLIConfig["profiles"]:
+                bitcoinCLIOptions=bitcoinCLIConfig["profiles"][bitcoinCLIConfig["activeProfile"]]
+
 def countblockopreturns(blocknum):
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 2|grep asm|grep OP_RETURN|wc -l"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep asm|grep OP_RETURN|wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return int(cmdoutput)
@@ -23,7 +32,7 @@ def countblockopreturns(blocknum):
         return 0
 
 def countblockordinals(blocknum):
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 2|grep hex|grep 0063036f72640101|wc -l"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep hex|grep 0063036f72640101|wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return int(cmdoutput)
@@ -36,7 +45,7 @@ def getblock(blocknum, verbosity=1):
         if exists("../mock-data/getblock.json"):
             with open("../mock-data/getblock.json") as f:
                 return json.load(f)
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` " + str(verbosity)
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` " + str(verbosity)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -51,7 +60,7 @@ def getblockhash(blocknumber=1):
         if exists("../mock-data/getblockhash.json"):
             with open("../mock-data/getblockhash.json") as f:
                 return f.readline()
-    cmd = "bitcoin-cli getblockhash " + str(blocknumber)
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknumber)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return cmdoutput
@@ -199,7 +208,7 @@ def getblockstats(blocknum, verbosity=1):
         if exists("../mock-data/getblockstats.json"):
             with open("../mock-data/getblockstats.json") as f:
                 return json.load(f)
-    cmd = "bitcoin-cli getblockstats " + str(blocknum)
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockstats " + str(blocknum)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -211,7 +220,7 @@ def getblockstats(blocknum, verbosity=1):
 
 def getblockscriptpubkeytypes(blocknum):
     r = {}
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vin[].prevout.scriptPubKey.type"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vin[].prevout.scriptPubKey.type"
     try:
         t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -221,7 +230,7 @@ def getblockscriptpubkeytypes(blocknum):
         r["vin"] = t
     except subprocess.CalledProcessError as e:
         print(e)
-    cmd = "bitcoin-cli getblock `bitcoin-cli getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vout[].prevout.scriptPubKey.type"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vout[].prevout.scriptPubKey.type"
     try:
         t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -236,7 +245,7 @@ def getblockscriptpubkeytypes(blocknum):
 def getcurrentblock():
     if useMockData:
         return 726462
-    cmd = "bitcoin-cli getblockchaininfo"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockchaininfo"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -254,7 +263,7 @@ def getfirstblockforepoch(blocknum):
     return min(blocknum, (int(epochnum * 2016) + 1))
 
 def getmempool():
-    cmd = "bitcoin-cli getrawmempool"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawmempool"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -265,7 +274,7 @@ def getmempool():
         return json.loads(fakejson)
 
 def gettransaction(txid, blockhash=""):
-    cmd = "bitcoin-cli getrawtransaction " + txid + " true 2>&1"
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawtransaction " + txid + " true 2>&1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         j = json.loads(cmdoutput)
@@ -274,9 +283,6 @@ def gettransaction(txid, blockhash=""):
         print(e)
         fakejson = '{"txid":"' + txid + '","hash":"?","size":0,"weight":0,"version":1,"vsize":0,"locktime":0,"vin":[],"vout":[]}'
         return json.loads(fakejson)
-
-
-
 
 # ------ Lightning LND Related ------------------------------------------------------
 
@@ -314,7 +320,7 @@ def attemptconnectrest(nodeinfo, node):
         return attemptconnect(nodeinfo)
     nodestatus = 0
     pubkey = nodeinfo["node"]["pub_key"]
-    addr = getnodeaddressrest(nodeinfo, node)
+    addr = getnodeaddress(nodeinfo, node)
     if addr == "0.0.0.0:65535":
         return nodestatus # 0
     errorResponse = '{"error":"failed command"}'
@@ -528,7 +534,7 @@ def isnodeconnectedrest(pubkey, node):
         return isnodeconnected(pubkey)
     nodepeers = getnodepeersrest(node)
     if "peers" in nodepeers:
-        for peer in j["peers"]:
+        for peer in nodepeers["peers"]:
             if pubkey == peer["pub_key"]:
                 return True
     return False

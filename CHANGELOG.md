@@ -10,11 +10,14 @@ title: NODEYEZ Change Log
 **General**
 
 - Linking tagged commits back to Github as a public mirror
-- Add guidance for Development Environment
+- Add guidance for Developers, including setting up Regtest
+- Add missing dependencies Pysocks and JQ
 
 **Bugfixes**
 
-- Fix display of System Info drive icons if only one drive
+- Fix System Info drive icons if only one drive
+- Fix Blockstats handling of 0 fee and negative block numbers
+- Fix Ring of Fire error when LND attempt to connect to nodes
 
 ## 23.03
 
