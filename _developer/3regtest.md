@@ -184,4 +184,4 @@ rm -rf ~/nodeyez/data/bitcoinregtest1/regtest
 
 ---
 
-[Home](../) | [Back to Running and Changing Scripts]({% link _developer/2basicsetup.md %})
+[Home](../) | [Back to Running and Changing Scripts]({% link _developer/2runandchange.md %})
