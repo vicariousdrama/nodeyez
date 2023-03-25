@@ -145,7 +145,7 @@ approach
 I only have experience working with the [800x480 DSI screen](https://www.amazon.com/dp/B091FYFNV8),
 which I've mounted on my setup in portrait orientation.  This allows me to
 display 2 of the images created by Nodeyez scripts simultaneously using the
-[Nodeyez Dual](./script-nodeyezdual.md) script. 
+[Two Image Display]({% link _docs/script-nodeyezdual.md %}) script. 
 
 Regardless of which DSI screen you choose, consider picking up an 
 [assortment of ribbon lengths](https://www.amazon.com/dp/B08662272F) unless you

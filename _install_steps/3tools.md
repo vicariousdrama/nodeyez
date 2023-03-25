@@ -23,7 +23,7 @@ For Raspberry Pi it'll normally come with Python 2.7, but the scripts require Py
 You can esure you have Python 3 by running the following
 
 ```shell
-sudo apt-get install python3
+sudo apt-get install python3 python3-venv
 ```
 
 ## Install Git

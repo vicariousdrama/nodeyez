@@ -8,6 +8,12 @@ layout: default
 
 If you want to make improvements to Nodeyez, it's strongly recommended to have a code environment independent of the Nodeyez user.  This section will guide you through setting up development using Visual Studio Code as an IDE.  This guide assumes that the user is working on an Ubuntu or Debian based platform.
 
+# Install Tools
+
+```shell
+sudo apt-get install python3 python3-venv git apt-transport-tor libjpeg-dev zlib1g-dev imagemagick inkspace -y
+```
+
 # Python Environment
 
 Create an environment for Nodeyez, activate it, and install modules referenced
@@ -31,11 +37,7 @@ git clone https://github.com/vicariousdrama/nodeyez.git
 
 cd ~/nodeyez
 
-mkdir -p ./config
-
-mkdir -p ./data
-
-mkdir -p ./imageoutput
+mkdir -p ./{config,data,imageoutput,temp}
 
 cp ./sample-config/*.json ./config
 ```
@@ -60,12 +62,6 @@ By default, installing the .deb package should have created shortcuts to Visual 
 From the command line, you can launch Visual Code from any path via the following:
 
 ```shell
-code .
-```
-
-To launch from our Nodeyez repository folder, just switch to the path first
-
-```shell
 cd ~/nodeyez
 
 code .
@@ -79,11 +75,9 @@ Access the Extensions view by either the shortcut (CTRL+SHIFT+X), or from expand
 
 From the Search bar, look for and install the following extensions:
 
-- GitLens - Git supercharged [from GitKraken] - Sueprcharge Git with VS Code -- Visualize code authorship at a glance via Git blame annotations and CodeLens, seamlessly navigate and explore Git repositories, gain valuable insights via rich visualizations and powerful comparison commands, and so much more.
+- Python [from Microsoft]: IntelliSense (Pylance), Linting, Debugging (multi-threaded, remote), Jupyter Notebooks, code formatting, refactoring, unit tests, and more.
 
 - Pylance [from Microsoft]: A performant, feature-rich language server for Python ins VS Code
-
-- Python [from Microsoft]: IntelliSense (Pylance), Linting, Debugging (multi-threaded, remote), Jupyter Notebooks, code formatting, refactoring, unit tests, and more.
 
 - systemd-unit-file [from coolbear]: Language support for systemd unit files
 

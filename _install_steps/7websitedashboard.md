@@ -78,7 +78,7 @@ sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
-[Continue to Running Services at Startup](./install-6-runatstartup.md)
+[Continue to Running Services at Startup]({% link _install_steps/8runatstartup.md %})
 
 </div>
 
@@ -142,7 +142,7 @@ You can also get to lists of files in the data directory at https://your-node-ip
 
 And view a specific subfolder of data as a photo album at https://your-node-ip:907/album/
 
-[Continue to Running Services at Startup](./install-6-runatstartup.md)
+[Continue to Running Services at Startup]({% link _install_steps/8runatstartup.md %})
 
 </div>
 
@@ -229,7 +229,7 @@ sudo ufw allow 907 comment 'allow access to nodeyez images over ssl'
  
 Now see if you can access the dashboard at https://your-node-ip:907
 
-[Continue to Running Services at Startup](./install-6-runatstartup.md)
+[Continue to Running Services at Startup]({% link _install_steps/8runatstartup.md %})
 
 </div>
 

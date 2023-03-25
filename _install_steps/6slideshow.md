@@ -12,7 +12,7 @@ generated images to the screen using the slideshow script
 ## Script Location
 
 The script is installed at
-[../scripts/slideshow.sh](../scripts/slideshow.sh)
+[~/nodeyez/scripts/slideshow.sh](../scripts/slideshow.sh)
 
 ## Run Directly
 
