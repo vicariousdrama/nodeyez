@@ -22,13 +22,12 @@ potential to wear out the microsd card.**
 
 The following script segment will determine if the default /home path is stored
 on flash media, and if so create and link it on the first external hard drive
-under the mount point
-
+under the mount point.
 
 ```shell
 DRIVECOUNT=$(df -t ext4 | grep / | awk '{print $6}' | sort | wc -l)
 ISMMC=$(findmnt -n -o SOURCE --target /home | grep "mmcblk" | wc -l)
-if [ $DRIVECOUNT -gt 1] && [ $ISMMC -gt 0 ]; then
+if [ $DRIVECOUNT -gt 1 ] && [ $ISMMC -gt 0 ]; then
   EXT_DRIVE_MOUNT=$(df -t ext4 | grep / | awk '{print $6}' | sort | sed -n 2p)
 fi
 if [ -z ${EXT_DRIVE_MOUNT+x} ]; then
@@ -54,7 +53,7 @@ sudo adduser nodeyez debian-tor
 
 Add Bitcoin configuration for nodeyez from existing configuration.
 
-**You can [skip this step](#swith-to-nodeyez-user) if you are not using any scripts that require Bitcoin.**
+**You can [skip this step](#switch-to-nodeyez-user) if you are not using any scripts that require Bitcoin.**
 
 Technically we only need the rpcauth or rpcuser and rpcpassword settings to
 allow bitcoin-cli to work, but this is the easiest way to setup that I've found
@@ -81,7 +80,7 @@ sudo chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin
 
 Add LND tls cert and bake a macaroon specific to nodeyez
 
-**You can [skip this step](#swith-to-nodeyez-user) if you are not using any scripts that require Lightning.**
+**You can [skip this step](#switch-to-nodeyez-user) if you are not using any scripts that require Lightning.**
 
 As with the bitcoin step above, this assumes that the node is setup with an LND
 (Lightning Network Daemon) implementation under the bitcoin user.  If you are
@@ -208,7 +207,7 @@ git clone https://github.com/vicariousdrama/nodeyez.git
 Create folders and copy sample configuration files
 
 ```shell
-mkdir -p ~/nodeyez/{config,data,imageoutput}
+mkdir -p ~/nodeyez/{config,data,imageoutput,temp}
 
 cp ~/nodeyez/sample-config/*.json ~/nodeyez/config
 ```

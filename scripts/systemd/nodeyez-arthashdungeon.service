@@ -12,6 +12,7 @@ Wants=bitcoind.service
 After=bitcoind.service
 
 [Service]
+EnvironmentFile=/etc/nodeyez.conf
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
 ExecStartPre=/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
 ExecStartPre=/bin/chown nodeyez:nodeyez /home/nodeyez/.bitcoin/.cookie

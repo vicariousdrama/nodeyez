@@ -12,6 +12,7 @@ the service scripts to the appropriate systemd folder
 
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/systemd/*.service /etc/systemd/system/
+sudo cp /home/nodeyez/nodeyez/scripts/systemd/nodeyez.conf /etc/nodeyez.conf
 ```
 
 ## Enable services

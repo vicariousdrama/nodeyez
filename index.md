@@ -55,5 +55,7 @@ Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}
 
 For guidance on setting up a development environment, start with the [Python and IDE Setup]({% link _developer/1basicsetup.md %}).
 
+[Change Log]({% link CHANGELOG.md %})
+
 You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama)
 
