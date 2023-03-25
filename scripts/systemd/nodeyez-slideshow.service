@@ -7,6 +7,7 @@ StartLimitIntervalSec=600
 StartLimitBurst=2
 
 [Service]
+EnvironmentFile=/etc/nodeyez.conf
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
 ExecStart=/usr/bin/env bash /home/nodeyez/nodeyez/scripts/slideshow.sh
 User=root

@@ -9,6 +9,7 @@ Wants=lnd.service
 After=lnd.service
 
 [Service]
+EnvironmentFile=/etc/nodeyez.conf
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
 ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/rofstatus.py
 User=nodeyez

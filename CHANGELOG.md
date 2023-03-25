@@ -12,6 +12,8 @@ title: NODEYEZ Change Log
 - Linking tagged commits back to Github as a public mirror
 - Add guidance for Developers, including setting up Regtest
 - Add missing dependencies Pysocks and JQ
+- Set temp folder for image magick
+- Establish EnvironmentFile for services
 
 **Bugfixes**
 
