@@ -79,7 +79,7 @@ def getcpucount():
 
 # get drive free
 def getdrivefree(path="/$"):
-    cmd = "printf \"%s\" \"$(df -h|grep '" + path + "'|awk '{print $4}')\" 2>/dev/null"
+    cmd = "printf \"%s\" \"$(df -h|grep '" + path + "'|sed -n 1p|awk '{print $4}')\" 2>/dev/null"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         return cmdoutput
@@ -89,7 +89,7 @@ def getdrivefree(path="/$"):
 
 # get drive free percent
 def getdriveratio(path="/$"):
-    cmd = "printf \"%.0f\" \"$(df | grep '" + path + "'|awk '{print $4/$2*100 }')\" 2>/dev/null"
+    cmd = "printf \"%.0f\" \"$(df | grep '" + path + "'|sed -n 1p|awk '{print $4/$2*100 }')\" 2>/dev/null"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         return cmdoutput
