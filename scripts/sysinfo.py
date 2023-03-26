@@ -127,7 +127,7 @@ def createimage(width=480, height=320):
     if drive2info[0] != "None":
         drive2infov = "X X X " + drive2info[1] + " " + str(100-int(drive2info[2])) + "% " + drive2info[0]
         drawicon(draw,"piestorage",5+bw+bw,5,bw-10,bh-10,drive2infov)
-        vicarioustext.drawcenteredtext(draw, "2nd Drive", int(bw*.15), (5+bw)+((bh-10)/2), 5+((bh-10)*.08), colorHeader, True)
+        vicarioustext.drawcenteredtext(draw, "2nd Drive", int(bw*.15), (5+bw+bw)+((bh-10)/2), 5+((bh-10)*.08), colorHeader, True)
     drawicon(draw,"cpuload",5,bh+5,bw,bh-10,v=str(getloadavg()))
     drawicon(draw,"memory",5+bw,bh+5,bw,bh-10,v=str(getmemusage("Mem","RAM")))
     drawicon(draw,"memory",5+bw+bw,bh+5,bw,bh-10,v=str(getmemusage("Swap","Swap")))

@@ -205,8 +205,15 @@ def getAndSaveF2PoolAccountInfo():
     print(f"Retrieving and saving F2Pool info to {datefile}")
     with open(configFileF2Pool) as f:
         config = json.load(f)
+    if "account" not in config:
+        print("F2Pool account not set. Skipping")
+        return
+    account = config["account"]
+    if len(account) == 0 or "--your-account-name-on-f2pool--" in account:
+        print("F2Pool account not set. Skipping")
+        return
     filename = f2PoolDataDirectory + datefile
-    fileurl = "https://api.f2pool.com/bitcoin/" + config["account"]
+    fileurl = "https://api.f2pool.com/bitcoin/" + account
     getAndSaveFile(fileurl, filename)
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -246,6 +253,12 @@ def getAndSaveLuxorHashrateInfo():
         filename = luxorDataDirectory + datefile
         apikey = config["apikey"]
         username = config["username"]
+        if len(apikey) == 0 or "--your-luxor" in apikey:
+            print(f"Luxor apikey not set. Skipping")
+            return
+        if len(username) == 0 or "--your-luxor" in username:
+            print(f"Luxor username not set. Skipping")
+            return
         LUXORAPI = API(host = 'https://api.beta.luxor.tech/graphql', method='POST', org='luxor', key=apikey)
         resp = LUXORAPI.get_hashrate_score_history(username,'BTC',100)
         with open(filename, 'a', encoding="utf-8") as outfile:
@@ -269,7 +282,14 @@ def getAndSaveBraiinspoolInfo():
         return
     with open(configFileBraiinspool) as f:
         config = json.load(f)
-    headers = {"Slushpool-Auth-Token": config["authtoken"]}
+    if "authtoken" not in config:
+        print("Braiinspool authtoken not set. Skipping")
+        return
+    authtoken = config["authtoken"]
+    if len(authtoken) == 0 or "--put-your-auth-token-here--" in authtoken:
+        print("Braiinspool authtoken not set. Skipping")
+        return
+    headers = {"Slushpool-Auth-Token": authtoken}
     getAndSaveBraiinspoolFile("pool stats", "poolstats/", "https://pool.braiins.com/stats/json/btc", headers)
     getAndSaveBraiinspoolFile("user performance", "userprofile/", "https://pool.braiins.com/accounts/profile/json/btc", headers)
     getAndSaveBraiinspoolFile("90 day daily rewards", "dailyreward/", "https://pool.braiins.com/accounts/rewards/json/btc", headers)
@@ -301,8 +321,8 @@ if __name__ == '__main__':
     enableCompassStatus = False # Deprecated
     enableF2Pool = False
     enableFearAndGreed = True
-    enableLuxor = True
-    enableBraiinspool = True
+    enableLuxor = False
+    enableBraiinspool = False
     dataDirectory="../data/"
     configFolder="../config/"
     configFileBisq=configFolder + "satsperusd.json"
