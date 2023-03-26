@@ -51,13 +51,13 @@ sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabl
 
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
 
-sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
 
 sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
 
 sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
 
-sudo chown root:root /etc/nginx/*.xslt
+sudo chown root:root /etc/nginx/nodeyez*.xslt
 ```
 
 * Test the NGINX configuration and restart the service.
@@ -103,23 +103,27 @@ sudo apt install -y nginx
 * Create a self-signed TLS certificate (valid for 10 years)
 
 ```shell
-sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
 ```
 
-* To completely disable the NGINX webserver and configure the TCP reverse proxy
-  for displaying the images, remove the default configuration and use the 
-  premade nginx.conf file.
+* Drop in our config
 
 ```shell
-sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
 
-sudo cp /home/nodeyez/nodeyez/scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
 
-sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
 
-sudo chown root:root /etc/nginx/nginx.conf
+sudo chown root:root /etc/nginx/nodeyez*.xslt
 
-sudo chown root:root /etc/nginx/imagegallery.xslt
+sudo mkdir -p /etc/nginx/nodeyez
+
+sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
+
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+
+sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
 ```
 
 * Test the NGINX configuration and restart the service.
@@ -157,61 +161,60 @@ And view a specific subfolder of data as a photo album at https://your-node-ip:9
 
 <div markdown="1">
 
-If you already have nginx installed, then you really just need to add a local 
-server listening on a port, and an upstream node for optional SSL proxying.  
+If you already have nginx installed, then you'll need to make some configuration
+decisions based on the existing configuration
 
-* Copy in the stylesheet and set ownership
-
+First, capture any existing SSL certificate paths
 ```shell
-sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
+line_ssl_certificate=$(sudo nginx -T 2>&1 | grep "ssl_certificate " | sed -n 1p)
 
-sudo chown root:root /etc/nginx/imagegallery.xslt
+line_ssl_certificate_private=$(sudo nginx -T 2>&1 | grep "ssl_certificate_private " | sed -n 1p)
 ```
+If there is an existing ssl certificate and key, we will reference it later.
 
-* Edit the NGINX configuration file
+The Nodeyez Website Dashboard depends on using XSLT templates for generating a
+directory listing. To support this, the XSLT module must be enabled.
 
+Check if its enabled already.
 ```shell
-sudo nano /etc/nginx/nginx.conf
-```
-  
-* Add an upstream definition inside the stream block
-
-```nginx
-upstream nodeyez {
-   server 127.0.0.1:906;
-}
+sudo nginx -T 2>&1 | grep "xslt"
 ```
 
-* Add a server definition to listen as ssl
+If there is no response, then xslt filter module is not yet loaded. Add it
+as follows
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
 
-```nginx
-server {
-   listen 907 ssl;
-   proxy_pass nodeyez;
-}
+sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
 ```
-  
-* At the bottom of the file, create an entirely new http block
 
-```nginx
-http {
-  include mime.types;
-  server {
-    listen 906;
-    root /home/nodeyez/nodeyez/imageoutput;
-    default_type text/html;
-    location / {
-      autoindex on;
-      autoindex_format xml;
-      xslt_string_param title $1;
-      xslt_stylesheet /etc/nginx/imagegallery.xslt;
-      try_files $uri $uri/ =404;
-    }
-  }
-}
+Next, copy the site config and initial ssl config
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+
+sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+
+sudo mkdir -p /etc/nginx/nodeyez
+
+sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
 ```
-  
-* Save (CTRL+O) and exit (CTRL+X) the file
+
+If ssl_certificate info was found, then we'll use that in place of our drop in which
+assumes a self-signed cert. Otherwise, we'll ensure that a self signed cert exists
+```shell
+if [ ${#line_ssl_certificate} -gt 0 ]; then
+  sudo rm /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+  sudo echo $line_ssl_certificate >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+  sudo echo $line_ssl_certificate_private >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+else
+  sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+fi
+```
+
+Finally, set ownership of the nodeyez configuration directory in nginx
+```shell
+sudo chown root:root -R /etc/nginx/nodeyez
+```
 
 * Test the NGINX configuration and restart the service.
 

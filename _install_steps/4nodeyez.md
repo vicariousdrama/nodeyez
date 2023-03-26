@@ -209,6 +209,8 @@ Create folders and copy sample configuration files
 ```shell
 mkdir -p ~/nodeyez/{config,data,imageoutput,temp}
 
+mkdir -p ~/nodeyez/imageoutput/ordinals
+
 cp ~/nodeyez/sample-config/*.json ~/nodeyez/config
 ```
 

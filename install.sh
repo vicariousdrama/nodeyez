@@ -95,6 +95,7 @@ if [ ! -d "/home/nodeyez/nodeyez" ]; then
   echo "Cloning Nodeyez"
   sudo -u nodeyez git clone https://github.com/vicariousdrama/nodeyez.git /home/nodeyez/nodeyez
   sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/{config,data,imageoutput,temp}
+  sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/imageoutput/ordinals
   sudo -u nodeyez cp /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
   sudo chown -R nodeyez:nodeyez /home/nodeyez/nodeyez
   CLONED_REPO=1
@@ -117,79 +118,78 @@ sudo -u nodeyez -s source /home/nodeyez/.pyenv/nodeyez/bin/activate && /home/nod
 
 # Website dashboard
 if [ $(which nginx | wc -l) -gt 0 ]; then
-  # nginx is installed
+  # nginx is already installed
   if [ -d "/mnt/hdd/mynode" ]; then
     # we are installing on a mynode environment
-    echo "Configuring Nodeyez Dashboard in NGINX running on MyNodeBTC"
+    echo "Configuring Nodeyez Dashboard in NGINX"
     # enable xslt module
     sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
     sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
     # copy xslt templates
-    sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
-    sudo chown root:root /etc/nginx/*.xslt
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
+    sudo chown root:root /etc/nginx/nodeyez*.xslt
     # site config
-    sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez_mynode.conf /etc/nginx/sites-enabled/https_nodeyez.conf
     sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
     ISMYNODE=1
     CREATED_WEBSITE=1
   else
-    # this is some other environment that has nginx already
-    # we can't safely do this automatically based on current knowledge
-    if [ 1 -eq 0 ]; then
-      echo "I also like to live dangerously"
-      # determine if xslt module is loaded
-      if [ $(nginx -V 2>&1 | tr ' ' '\n' | egrep -i 'xslt' | wc -l) -gt 0 ]; then
-        echo "XSLT module is loaded for NGINX"
-      else
-        echo "Configuring NGINX to load XSLT module"
-        sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
-        sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
-      fi
-      # copy xslt templates
-      sudo cp /home/nodeyez/nodeyez/scripts/nginx/*.xslt /etc/nginx/
-      sudo chown root:root /etc/nginx/*.xslt
-      # site config
-      sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
-      # - comment out mynode references
-      #sudo sed -i 's/^[^[#]*mynode/#&/' /etc/nginx/sites-enabled/https_nodeyez.conf 
-      # - delete lines with mynode references
-      sudo sed -i 's/mynode/d' /etc/nginx/sites-enabled/https_nodeyez.conf
-      # - add some cert info
-      line_ssl_certificate=$(sudo nginx -T 2>&1 | grep "ssl_certificate " | sed -n 1p)
-      line_ssl_certificate_private=$(sudo nginx -T 2>&1 | grep "ssl_certificate_private " | sed -n 1p)
-      line_ssl_session_cache="ssl_session_cache shared:SSL:1m;"
-      line_ssl_session_timeout="ssl_session_timeout 4h;"
-      line_ssl_protocols="ssl_session_protocols TLSv1.2 TLSv1.3;"
-      line_ssl_prefer_server_ciphers="ssl_prefer_server_ciphers on;"
-      # the above 6 lines need to be inserted at line 5
-      sudo sed -i "5i\\
-      $line_ssl_certificate\\
-      $line_ssl_certificate_private\\
-      $line_ssl_session_cache\\
-      $line_ssl_session_timeout\\
-      $line_ssl_protocols\\
-      $line_ssl_prefer_server_ciphers\\
-      " /etc/nginx/sites-enabled/https_nodeyez.conf
-      sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
-      CREATED_WEBSITE=1
+    # Generic NGINX
+    # get some ssl cert info
+    line_ssl_certificate=$(sudo nginx -T 2>&1 | grep "ssl_certificate " | sed -n 1p)
+    line_ssl_certificate_private=$(sudo nginx -T 2>&1 | grep "ssl_certificate_private " | sed -n 1p)
+    # drop in our base config
+    # determine if xslt module is loaded
+    if [ $(nginx -V 2>&1 | tr ' ' '\n' | egrep -i 'xslt' | wc -l) -gt 0 ]; then
+      echo "XSLT module is loaded for NGINX"
     else
-      echo "NGINX already exists. Unable to automatically configure"
+      echo "Configuring NGINX to load XSLT module"
+      sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+      sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
     fi
+    # copy xslt templates
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
+    sudo chown root:root /etc/nginx/nodeyez*.xslt
+    # site config
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+    sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+    # ssl config
+    sudo mkdir -p /etc/nginx/nodeyez
+    sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
+    # assign back first cert and key if detected from earlier
+    if [ ${#line_ssl_certificate} -gt 0 ]; then
+      sudo rm /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+      sudo echo $line_ssl_certificate >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+      sudo echo $line_ssl_certificate_private >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+    else
+      sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+    fi
+    sudo chown root:root -R /etc/nginx/nodeyez
+    CREATED_WEBSITE=1 
   fi
 else
   # nginx is not yet installed
   sudo apt install -y nginx
-  sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
-  sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-  sudo cp /home/nodeyez/nodeyez/scripts/nginx/nginx.conf /etc/nginx/nginx.conf
-  sudo cp /home/nodeyez/nodeyez/scripts/nginx/imagegallery.xslt /etc/nginx/imagegallery.xslt
-  sudo chown root:root /etc/nginx/nginx.conf
-  sudo chown root:root /etc/nginx/imagegallery.xslt  
+  # make a self signed cert
+  sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+  # enable xslt module
+  sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+  sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+  # templates
+  sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
+  sudo chown root:root /etc/nginx/nodeyez*.xslt
+  # nodeyez config referencing our freshly minted self signed certs
+  sudo mkdir -p /etc/nginx/nodeyez
+  sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
+  # site config
+  sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+  sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
   CREATED_WEBSITE=1
 fi
 if [ $CREATED_WEBSITE -eq 1 ]; then
   # enable port 907 to the dashboard
   sudo ufw allow 907 comment 'allow Nodeyez Dashboard HTTPS'
+  sudo ufw enable
   # restart nginx
   sudo systemctl restart nginx
   # get weburl
