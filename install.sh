@@ -1,13 +1,43 @@
 #!/usr/bin/env bash
 
-# Check that the scritp is started as root
+# Check that the script is started as root
 if [ "$EUID" -ne 0 ]; then 
   echo "Please run as root or with sudo as follows"
   echo "wget -qO- https://nodeyez.com/install.sh | sudo bash"
   exit
 fi
 
-# Nodeyez installation script (these are not user settable flags, do not change)
+# Require a Debian based distro (or rather, must have access to /usr/bin/apt)
+if [ ! -f "/usr/bin/apt" ]; then
+  echo "This install script requires the Advanced Package Tool (apt), on Debian and derivative systems"
+  exit
+fi
+
+# For now, only proceed if 64 bit
+# 32 Bit raspberry pi seems to be lacking some key dependencies like 
+# tor, nginx-commons, imagemagick and possibly others
+if [ ! $(getconf LONG_BIT) -eq 64 ]; then
+  echo "This install script requires a 64 bit operating system to satisfy dependencies"
+  exit
+fi
+
+# Check for supported hardware - Intel/AMD or Raspberry Pi ARM chips
+MACHINEOK=0
+machine_hardware=$(uname -m)
+if [ $machine_hardware == "x86_64" ]; then
+  # Intel or AMD chip
+  MACHINEOK=1
+fi
+if [ $machine_hardware == "aarch64" ]; then
+  # Raspberry Pi and RockPro using ARM chip
+  MACHINEOK=1
+fi
+if [ $MACHINEOK -eq 0 ]; then
+  echo "This install script has only been tested on x86_64 and aarch64"
+  exit
+fi
+
+# Initialize variables that we'll check later
 CREATED_USER=0
 GRANTED_BITCOIN=0
 GRANTED_LND=0
