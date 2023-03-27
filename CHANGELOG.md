@@ -14,6 +14,8 @@ title: NODEYEZ Change Log
 - Add missing dependencies Pysocks and JQ
 - Set temp folder for image magick
 - Establish EnvironmentFile for services
+- Normalized NGINX Configurations
+- Added Install and Uninstall scripts
 
 **Bugfixes**
 
