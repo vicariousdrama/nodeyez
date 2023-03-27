@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-minerbraiins.service
 
 [Unit]
-Description=Nodeyez image generator for Miner Status for Whatsminer
+Description=Miner Status for Whatsminer models
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

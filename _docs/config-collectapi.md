@@ -28,6 +28,7 @@ Assuming an apikey of `thIsIsAsamPleAPIkey:aNd4Del1n3at3dValue`
 {
   "dailyretrieve": [
     {
+      "enabled": false,
       "url": "https://api.collectapi.com/gasPrice/allUsaPrice",
       "headers": [
         "authorization: apikey thIsIsAsamPleAPIkey:aNd4Del1n3at3dValue",
@@ -36,6 +37,7 @@ Assuming an apikey of `thIsIsAsamPleAPIkey:aNd4Del1n3at3dValue`
       "saveToSubfolder": "gasprice/allusaprice"
     },
     {
+      "enabled": false,
       "url": "https://api.collectapi.com/gasPrice/canada",
       "headers": [
         "authorization: apikey thIsIsAsamPleAPIkey:aNd4Del1n3at3dValue",

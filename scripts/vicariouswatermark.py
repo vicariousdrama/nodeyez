@@ -44,7 +44,6 @@ svgfile = None
 def getsvgfile():
     global svgfile
     if svgfile is None:
-#        svgfile = vicariousnetwork.getimagefromurl(True,"https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg")
         svgfile = vicariousnetwork.getimagefromurl(True,"file://../images/nodeyez.svg")
     return svgfile
 

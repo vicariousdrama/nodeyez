@@ -6,6 +6,8 @@ layout: default
 
 # Nodeyez
 
+If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then this step is already done for you and you can skip ahead to setting up the [Slideshow]({% link _install_steps/6slideshow.md %}) or using the [Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool.
+
 Now we get to specifics of the Nodeyez user and cloning this repository.
 
 You should be logged in as a privileged user to enter these commands.
@@ -233,7 +235,7 @@ source ~/.pyenv/nodeyez/bin/activate
 Finally, install modules used by scripts into the virtual environment
 
 ```shell
-python3 -m pip install --upgrade Pillow beautifulsoup4 pandas qrcode Wand exifread urllib3 requests redis pysocks
+python3 -m pip install --upgrade Pillow beautifulsoup4 pandas qrcode Wand exifread urllib3 requests redis pysocks whiptail-dialogs
 ```
 
 - beatifulsoup4 - For screenscraping extracting data from HTML and XML files. Within Nodeyez, it is used by the Compass Mining Status script and the Daily Data Retrieval script.

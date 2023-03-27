@@ -7,21 +7,32 @@ title: NODEYEZ Change Log
 
 **New Panels and Enhancements**
 
+- Renamed arthashdungeon to blockhashdungeon
+- Renamed channelbalance to lndchannelbalance
+- Renamed channelfees to lndchannelfees
+- Improved support for pruned bitcoin nodes
+- Miner Braiins, Miner MicroBT, LND Channel Balance, LND Channel Fees and Ring of Fire now support nested configs that are selectively not enabled
+- New nodeyez-config tool!
+
 **General**
 
 - Linking tagged commits back to Github as a public mirror
 - Add guidance for Developers, including setting up Regtest
-- Add missing dependencies Pysocks and JQ
+- Add dependencies Pysocks, JQ, and whiptail-dialogs
 - Set temp folder for image magick
 - Establish EnvironmentFile for services
 - Normalized NGINX Configurations
-- Added Install and Uninstall scripts
+- Add install/uninstall scripts for Raspibolt, Raspiblitz, MyNodeBTC
+- Synched service names to panel scripts
+- Revamped sample-config files with data types, choices, defaults
 
 **Bugfixes**
 
 - Fix System Info drive icons if only one drive
 - Fix Blockstats handling of 0 fee and negative block numbers
 - Fix Ring of Fire error when LND attempt to connect to nodes
+- Fix sample config files with missing commas and quotes
+- Fix mempoolblocks service script to be able to start without bitcoin
 
 ## 23.03
 

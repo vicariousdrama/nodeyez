@@ -162,22 +162,22 @@ if __name__ == '__main__':
     width=480
     height=800
     sleepInterval=30
-    headerSVG="https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/nodeyez.svg"
+    headerSVG="https://nodeyez.com/images/nodeyez.svg"
     topImages= [
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/arthash-719360.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/arthashdungeon.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/blockheight.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/channelbalance.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/channelfees.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/difficultyepoch.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/halving.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/utcclock.png",
+        "https://nodeyez.com/images/arthash-719360.png",
+        "https://nodeyez.com/images/blockhashdungeon.png",
+        "https://nodeyez.com/images/blockheight.png",
+        "https://nodeyez.com/images/lndchannelbalance.png",
+        "https://nodeyez.com/images/lndchannelfees.png",
+        "https://nodeyez.com/images/difficultyepoch.png",
+        "https://nodeyez.com/images/halving.png",
+        "https://nodeyez.com/images/utcclock.png",
     ]
     bottomImages= [
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/fearandgreed.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/fiatprice.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/mempoolblocks.png",
-        "https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/satsperusd.png",
+        "https://nodeyez.com/images/fearandgreed.png",
+        "https://nodeyez.com/images/fiatprice.png",
+        "https://nodeyez.com/images/mempoolblocks.png",
+        "https://nodeyez.com/images/satsperusd.png",
     ]
     colorBackground=ImageColor.getrgb("#000000")
     dividerHeight=10

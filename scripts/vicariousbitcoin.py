@@ -13,6 +13,27 @@ useMockData=False
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
+# Pruned Block Height for tracking lowest block we can return data for
+prunedBlockHeight = None
+prunedBlockDiff = None
+prunedMode = True
+def setPrunedBlockHeight():
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockchaininfo"
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+        j = json.loads(cmdoutput)
+        if "pruned" in j:
+            if "pruneheight" in j:
+                prunedBlockHeight = int(j["pruneheight"])
+        else:
+            prunedBlockHeight = 0
+            prunedMode = False
+        prunedBlockDiff = int(j["blocks"]) - prunedBlockHeight
+    except subprocess.CalledProcessError as e:
+        if prunedBlockHeight is None:
+            prunedBlockHeight = 9999999
+        print(e)
+
 # support for profile options in config, mainly for development
 bitcoinCLIOptions=""
 if exists("../config/bitcoin-cli.json"):
@@ -23,6 +44,11 @@ if exists("../config/bitcoin-cli.json"):
                 bitcoinCLIOptions=bitcoinCLIConfig["profiles"][bitcoinCLIConfig["activeProfile"]]
 
 def countblockopreturns(blocknum):
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to countblockopreturns for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return 0
     cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep asm|grep OP_RETURN|wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -32,6 +58,11 @@ def countblockopreturns(blocknum):
         return 0
 
 def countblockordinals(blocknum):
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to countblockordinals for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return 0
     cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep hex|grep 0063036f72640101|wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -45,6 +76,12 @@ def getblock(blocknum, verbosity=1):
         if exists("../mock-data/getblock.json"):
             with open("../mock-data/getblock.json") as f:
                 return json.load(f)
+    fakejson = "{\"confirmations\": 1, \"time\": 0}"
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return json.loads(fakejson)
     cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` " + str(verbosity)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -52,27 +89,36 @@ def getblock(blocknum, verbosity=1):
         return j
     except subprocess.CalledProcessError as e:
         print(e)
-        fakejson = "{\"confirmations\": 1, \"time\": 0}"
         return json.loads(fakejson)
 
-def getblockhash(blocknumber=1):
+def getblockhash(blocknum=1):
     if useMockData:
         if exists("../mock-data/getblockhash.json"):
             with open("../mock-data/getblockhash.json") as f:
                 return f.readline()
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknumber)
+    fakeresult = "0000000000000000000000000000000000000000000000000000000000000000"
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblockhash for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return fakeresult
+    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
         return cmdoutput
     except subprocess.CalledProcessError as e:
         print(e)
-        return "0000000000000000000000000000000000000000000000000000000000000000"
+        return fakeresult
 
 def getblockopreturns(blocknum):
     if useMockData:
         return ["This is an example OP_RETURN", "Another OP_RETURN found in the block", "Only utf-8 or ascii decodable OP_RETURNs are rendered","Support for\nmulti-line OP_RETURN values\nexists as well","Some spammy OP_RETURN values are excluded","There must be at least one space","Lengthy OP_RETURN values without new lines may end up running off the side of the image","It depends on the fontsize set, which is based on number of OP_RETURN\nentries in the block","NODEYEZ","Nodeyez - Display panels to get the most from your node","NODEYEZ","NODEYEZ"]
-
     opreturns = []
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblockopreturns for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return opreturns
     if countblockopreturns(blocknum) == 0:
         return opreturns
     b = getblock(blocknum, 2)
@@ -117,12 +163,15 @@ def getblockopreturns(blocknum):
                                         pass
 #                                if hasError:
 #                                    opreturns.append(ophex)
-
-
     return opreturns
 
 def getblockordinals(blocknum, blockIndexesToSkip=[]):
     ordinals = []
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblockordinals for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return ordinals
     if countblockordinals(blocknum) == 0:
         return ordinals
     b = getblock(blocknum, 2)
@@ -208,6 +257,12 @@ def getblockstats(blocknum, verbosity=1):
         if exists("../mock-data/getblockstats.json"):
             with open("../mock-data/getblockstats.json") as f:
                 return json.load(f)
+    fakejson = '{"avgfee": 0, "avgfeerate": 0, "avgtxsize": 0, "blockhash": "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048", "feerate_percentiles": [0, 0, 0, 0, 0], "height": 1, "ins": 0, "maxfee": 0, "maxfeerate": 0,"maxtxsize": 0, "medianfee": 0, "mediantime": 1231469665, "mediantxsize": 0, "minfee": 0, "minfeerate": 0, "mintxsize": 0, "outs": 1, "subsidy": 5000000000, "swtotal_size": 0, "swtotal_weight": 0, "swtxs": 0, "time": 1231469665, "total_out": 0, "total_size": 0, "total_weight": 0, "totalfee": 0, "txs": 1, "utxo_increase": 1, "utxo_size_inc": 117}'
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblockstats for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return json.loads(fakejson)
     cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockstats " + str(blocknum)
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
@@ -215,11 +270,15 @@ def getblockstats(blocknum, verbosity=1):
         return j
     except subprocess.CalledProcessError as e:
         print(e)
-        fakejson = '{"avgfee": 0, "avgfeerate": 0, "avgtxsize": 0, "blockhash": "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048", "feerate_percentiles": [0, 0, 0, 0, 0], "height": 1, "ins": 0, "maxfee": 0, "maxfeerate": 0,"maxtxsize": 0, "medianfee": 0, "mediantime": 1231469665, "mediantxsize": 0, "minfee": 0, "minfeerate": 0, "mintxsize": 0, "outs": 1, "subsidy": 5000000000, "swtotal_size": 0, "swtotal_weight": 0, "swtxs": 0, "time": 1231469665, "total_out": 0, "total_size": 0, "total_weight": 0, "totalfee": 0, "txs": 1, "utxo_increase": 1, "utxo_size_inc": 117}'
         return json.loads(fakejson)
 
 def getblockscriptpubkeytypes(blocknum):
     r = {}
+    if prunedBlockHeight is None:
+        setPrunedBlockHeight()
+    if prunedBlockHeight > blocknum:
+        print(f"Call to getblockstats for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        return r
     cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vin[].prevout.scriptPubKey.type"
     try:
         t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}

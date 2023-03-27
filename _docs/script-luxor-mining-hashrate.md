@@ -28,7 +28,7 @@ The script is installed at
 
 ## Configuration
 
-To configure this script, edit the `~/nodeyez/config/luxor.json` file
+To manually configure this script, edit the `~/nodeyez/config/luxor.json` file
 
 Fields are defined below
 

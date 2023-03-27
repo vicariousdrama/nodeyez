@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-fiatprice.service
 
 [Unit]
-Description=Nodeyez image generator for Price of Bitcoin in fiat
+Description=Fiat Price of Bitcoin
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

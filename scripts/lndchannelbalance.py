@@ -143,7 +143,7 @@ def overrideFromConfig(d):
 def setDefaults():
     global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorBarOutline, colorBarFilled
     global colorBarEmpty, displayBalances, width, height, sleepInterval, pageSize, headerText
-    outputFile = "../imageoutput/channelbalance.png"
+    outputFile = "../imageoutput/lndchannelbalance.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorNodeOffline=ImageColor.getrgb("#ffa500")
     colorNodeDead=ImageColor.getrgb("#ff0000")
@@ -162,12 +162,12 @@ if __name__ == '__main__':
     # Defaults
     setDefaults()
     # Override config
-    configFile = "../config/channelbalance.json"
+    configFile = "../config/lndchannelbalance.json"
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
-        if "channelbalance" in config:
-            config = config["channelbalance"]
+        if "lndchannelbalance" in config:
+            config = config["lndchannelbalance"]
         overrideFromConfig(config)
     else:
         config = {}

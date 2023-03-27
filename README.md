@@ -14,7 +14,7 @@ Scripts can be run on their own, or run continuously in the background as a serv
 
 A few sample images that you can produce on your node using Nodeyez are shown below
 
-<img src="./images/arthashdungeon.png" width=196 /><img src="./images/channelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/braiinspool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/blockhashdungeon.png" width=196 /><img src="./images/lndchannelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/braiinspool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Informational Panels
 
@@ -27,7 +27,7 @@ A few sample images that you can produce on your node using Nodeyez are shown be
 All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
 
 * [Art Hash](./_docs/script-arthash.md)
-* [Blockhash Dungeon](./_docs/script-arthashdungeon.md)
+* [Blockhash Dungeon](./_docs/script-blockhashdungeon.md)
 * [Block Height](./_docs/script-blockheight.md)
 * [Block Stats](./_docs/script-blockstats.md)
 * [Difficulty Epoch](./_docs/script-difficultyepoch.md)
@@ -41,8 +41,8 @@ All of these panels can work with a local Bitcoin node. At this time, informatio
 
 These panels can be configured to report on local LND based nodes, as well as remote ones over REST.
 
-* [Channel Balance](./_docs/script-channelbalance.md)
-* [Channel Fees](./_docs/script-channelfees.md)
+* [LND Channel Balance](./_docs/script-lndchannelbalance.md)
+* [LND Channel Fees](./_docs/script-lndchannelfees.md)
 * [LND Hub Account Balances](./_docs/script-lndhub.md)
 * [Ring of Fire](./_docs/script-rofstatus.md)
 
@@ -74,6 +74,7 @@ The scripts are still available, but may not properly function as the data provi
 
 # Installation Procedures
 
+0. [Quick Start](./_install_steps/0quickstart.md)
 1. [Your Node](./_install_steps/1yournode.md)
 2. [Display Screen](./_install_steps/2displayscreen.md)
 3. [Tools](./_install_steps/3tools.md)

@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-f2pool.service
 
 [Unit]
-Description=Nodeyez image generator for F2 Pool Mining Summary
+Description=F2 Pool Mining Summary
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-nodeyezdual.service
 
 [Unit]
-Description=Nodeyez image generator for stacked dual image to display
+Description=Nodeyez Dual Image Display
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

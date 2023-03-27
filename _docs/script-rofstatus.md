@@ -29,7 +29,13 @@ The script is installed at
 
 ## Configuration
 
-To configure this script, edit the `~/nodeyez/config/rofstatus.json` file
+To manage and configure this script, use the nodeyez-config tool
+
+```sh
+sudo nodeyez-config
+```
+
+To manually configure this script, edit the `~/nodeyez/config/rofstatus.json` file
 
 Fields are defined below
 
@@ -64,11 +70,12 @@ __rings__
 
 | field name | description |
 | --- | --- |
+| enabled | Inidicates whether this ring configuration is enabled for monitoring |
 | name | The name of the ring. Not used in image renderings. Default `Sample Ring` |
 | shortlabel | A short label for the ring to be displayed on the generated image. Default `Sample` |
 | imagefilename | The path to save the generated image fo this ring.  Each defined ring should have a unique value. Default `../imageoutput/rof-sample.png` |
-| telegramgroup | An arbitrary field value for information about the ring.  Not used in image renderings. Default is unset |
-| telegramadmin | An arbitrary field value specifying the coordinator of the ring. Not used in image renderings. Default is unset |
+| ringcommsgroup | An arbitrary field value for information about the ring.  Not used in image renderings. Default is unset |
+| ringadmin | An arbitrary field value specifying the coordinator of the ring. Not used in image renderings. Default is unset |
 | imagesettings | The settings to apply to the image generated from this ring. The structure is defined above |
 | nodes | An array of node objects where each represents a lightning node participant in this ring, in order. The structure is defined below |
 

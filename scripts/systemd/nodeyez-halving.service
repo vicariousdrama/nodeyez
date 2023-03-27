@@ -1,8 +1,8 @@
-# Nodeyez: systemd unit for Halving Countdown panel generation
+# Nodeyez: systemd unit for Halving Progress panel generation
 # /etc/systemd/system/nodeyez-halving.service
 
 [Unit]
-Description=Nodeyez image generator for Halving Countdown
+Description=Progress towards the next subsidy halving
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service

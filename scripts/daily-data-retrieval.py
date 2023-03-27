@@ -53,6 +53,12 @@ def getAndSaveCollectAPIInfo():
         config = json.load(f)
     if "dailyretrieve" in config:
         for dailyretrieve in config["dailyretrieve"]:
+            # check if enabled
+            enabled = True
+            if "enabled" in dailyretrieve:
+                enabled = dailyretrieve["enabled"]
+            if not enabled:
+                continue
             url = dailyretrieve["url"]
             subfolder = dailyretrieve["saveToSubfolder"]
             targetfolder = collectAPIDataDirectory + subfolder + "/"

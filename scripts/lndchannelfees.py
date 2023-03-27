@@ -183,7 +183,7 @@ def createimage(node, channels, firstidx, lastidx, pagenum, pageSize, fwdinghist
 def setDefaults():
     global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorRowBG1, colorRowBG2
     global colorRowFG1, colorRowFG2, width, height, sleepInterval, pageSize, headerText
-    outputFile = "../imageoutput/channelfees.png"
+    outputFile = "../imageoutput/lndchannelfees.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorNodeOffline=ImageColor.getrgb("#ffa500")
     colorNodeDead=ImageColor.getrgb("#ff0000")
@@ -235,12 +235,12 @@ if __name__ == '__main__':
     # Defaults
     setDefaults()
     # Override config
-    configFile = "../config/channelfees.json"
+    configFile = "../config/lndchannelfees.json"
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
-        if "channelfees" in config:
-            config = config["channelfees"]
+        if "lndchannelfees" in config:
+            config = config["lndchannelfees"]
         overrideFromConfig(config)
     else:
         config = {}

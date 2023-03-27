@@ -11,13 +11,13 @@ Scripts can be run on their own, or configured as a background service on system
 
 <div class="slider">
   <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
-  <div class="slide"><img src="./images/arthashdungeon.png" width=196 /></div>
+  <div class="slide"><img src="./images/blockhashdungeon.png" width=196 /></div>
   <div class="slide"><img src="./images/blockheight.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats-feerates.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats-segwit.png" width=196 /></div>
-  <div class="slide"><img src="./images/channelbalance.png" width=196 /></div>
-  <div class="slide"><img src="./images/channelfees.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndchannelbalance.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndchannelfees.png" width=196 /></div>
   <div class="slide"><img src="./images/compassminingstatus.png" width=196 /></div>
   <div class="slide"><img src="./images/difficultyepoch.png" width=196 /></div>
   <div class="slide"><img src="./images/f2pool.png" width=196 /></div>

@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-minerbraiins.service
 
 [Unit]
-Description=Nodeyez image generator for Miner Status running Braiins
+Description=Miner Status for miners running Braiins
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

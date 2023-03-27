@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-whirlpoolclimix.service
 
 [Unit]
-Description=Nodeyez image generator for Whirlpool CLI Mix Status
+Description=Whirlpool CLI Mix Status
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

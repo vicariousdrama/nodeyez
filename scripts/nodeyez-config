@@ -1,0 +1,555 @@
+#! /home/nodeyez/.pyenv/nodeyez/bin/python3
+# this package
+from whiptail import Whiptail
+import json
+import os
+import pwd
+import re
+import subprocess
+
+# Globals
+nodeyezServiceList = {}
+maxDescriptionLength = 58
+
+def msgError(e):
+    w = Whiptail(title=f"Error")
+    w.msgbox(e)
+
+def getCommandResult(cmd:str=None):
+    try:
+        cmdoutput = subprocess.check_output(f"{cmd} 2>&1", shell=True).decode("utf-8").strip()
+        return cmdoutput
+    except subprocess.CalledProcessError as e:
+        # swallow errors here and just return stdout
+        return e.stdout
+
+def getEffectiveUsername():
+    uid = os.geteuid()
+    return pwd.getpwuid(uid).pw_name
+
+def isServiceActive(serviceName:str=None):
+    cmd = f"systemctl is-active {serviceName}"
+    return (getCommandResult(cmd) == "active")
+
+def isServiceEnabled(serviceName:str=None):
+    cmd = f"systemctl is-enabled {serviceName}"
+    return (getCommandResult(cmd) == "enabled")
+    
+def getServiceProperty(serviceName:str=None, propertyName:str=None):
+    cmd = f"systemctl show {serviceName} --property={propertyName}"
+    result = getCommandResult(cmd)
+    if "=" in result:
+        return result.split("=")[1]
+    return result
+
+def getRunningNodeyezServices():
+    cmd = "systemctl list-units --type=service --state=active | grep nodeyez | awk '{print $1}'"
+    output = getCommandResult(cmd)
+    result = []
+    services = output.split("\n")
+    for service in services:
+        result.append(service.replace("nodeyez-","").replace(".service",""))
+    return result
+
+def populateNodeyezServiceList():
+    directory = "/etc/systemd/system/"
+    for serviceName in os.listdir(directory):
+        if serviceName.startswith("nodeyez-"):
+            serviceID = serviceName.split("nodeyez-")[1].split(".")[0]
+            serviceDescription = getServiceProperty(serviceName, "Description")
+            nodeyezServiceList[serviceID] = {
+                "serviceName":serviceName,
+                "serviceID":serviceID,
+                "serviceDescription":serviceDescription,
+            }
+
+def showServiceLogs(serviceName: str = None):
+    cmd = f"journalctl --lines=20 --unit={serviceName}"
+    result = getCommandResult(cmd)
+    w = Whiptail(title=f"Recent Log Entries for {serviceName}", backtitle=f"To view the full logs, review the output of journalctl -xeu {serviceName}")
+    msg = f"Up to 20 lines are displayed\n\n{result}"
+    w.msgbox(msg)
+
+def showServiceStatus(serviceName: str = None):
+    cmd = f"systemctl status {serviceName}"
+    result = getCommandResult(cmd)
+    w = Whiptail(title=f"Service Status for {serviceName}")
+    w.msgbox(result)
+
+def saveJSON(obj: dict = None, f: str = None):
+    if dict is None:
+        return
+    if f is None:
+        return
+    with open(f, "w") as f:
+        json.dump(obj, f, indent=2)
+
+def showConfigureMenu(serviceID: str = None, configPath: list = None):
+    if not hasConfigFile(serviceID):
+        return
+    try:
+        sampleConfigPath = f"/home/nodeyez/nodeyez/sample-config/{serviceID}.json"
+        actualConfigPath = f"/home/nodeyez/nodeyez/config/{serviceID}.json"
+        while True:
+            # load config files
+            with open(sampleConfigPath) as f:
+                sampleConfig = json.load(f)
+            if os.path.exists(actualConfigPath):
+                with open(actualConfigPath) as f:
+                    actualConfig =json.load(f)
+            else:
+                actualConfig = sampleConfig
+            
+            # find part that we are working on
+            # start with the whole config
+            sampleSubConfig = sampleConfig
+            actualSubConfig = actualConfig
+            actualSubConfigParent = None
+            subTypeName = "item"
+            jsonPath = ""
+            # traverse if configPath provided
+            if configPath is not None:
+                for pathPart in configPath:
+                    if re.match(r'^-?\d+$', pathPart) is not None:
+                        # number indicates list position
+                        listidx = int(pathPart)
+                        if type(sampleSubConfig) is not list:
+                            raise Exception(f"element is not a list in sample config from context {configPath}")
+                        if len(sampleSubConfig) == 0:
+                            raise Exception(f"sample config has no sample element defined in list to support context {configPath}")
+                        if type(actualSubConfig) is not list:
+                            raise Exception(f"element is not a list in actual config from context {configPath}")
+                        if len(actualSubConfig) < listidx + 1:
+                            raise Exception(f"element index {listidx} not found in actual config from context {configPath}")
+                        actualSubConfigParent = actualSubConfig
+                        actualSubConfig = actualSubConfig[listidx]
+                        sampleSubConfig = sampleSubConfig[0]
+                        jsonPath = f"{jsonPath}[{listidx}]"
+                    else:
+                        # string is field/key name
+                        if pathPart not in sampleSubConfig:
+                            raise Exception(f"key name: {pathPart} not defined in sample config from context {configPath}")
+                        sampleSubConfig = sampleSubConfig[pathPart]
+                        actualSubConfigParent = actualSubConfig
+                        actualSubConfig = sampleSubConfig if pathPart not in actualSubConfig else actualSubConfig[pathPart]
+                        subTypeName = pathPart + " item"
+                        jsonPath = pathPart if len(jsonPath) == 0 else f"{jsonPath}.{pathPart}"
+
+            # validate that both are of same type
+            if type(actualSubConfig) is not type(sampleSubConfig):
+                raise Exception(f"actualSubConfig type {type(actualSubConfig)} is not same as sampleSubConfig type {type(sampleSubConfig)} from context {configPath}")
+
+            dialogTitle = f"Manage config for {serviceID}"
+            if len(jsonPath) > 0:
+                dialogTitle = f"{dialogTitle} - {jsonPath}"
+            w = Whiptail(title=dialogTitle)
+
+            # now show menu based on this level
+            if type(actualSubConfig) is list:
+                # sample must have at least one element
+                if len(sampleSubConfig) == 0:
+                    raise Exception(f"sampleSubConfig has no elements from context {configPath}")
+                idx = -1
+                # show entries
+                sampleSubConfig0type = type(sampleSubConfig[0])
+                if sampleSubConfig0type is dict:
+                    items = []
+                    # look for _config_summary field
+                    t = None
+                    if "_config_summary" in sampleSubConfig[0]:
+                        t = sampleSubConfig[0]["_config_summary"]
+                    # edit options from dict
+                    for s in actualSubConfig:
+                        idx += 1
+                        if t is not None:
+                            # build descriptor with _config_summary value as template
+                            d = t
+                            for k in s.keys():
+                                if "." in k:
+                                    continue
+                                v = str(s[k])
+                                d = d.replace("{" + k + "}", v)
+                            items.append((f"Edit {idx}", d[:maxDescriptionLength]))
+                        else:
+                            # first element as descriptor
+                            for k in s.keys():
+                                if "." in k:
+                                    continue
+                                v = str(s[k])
+                                items.append((f"Edit {idx}", f"{k}={v}"[:maxDescriptionLength]))
+                                break
+                    # add option
+                    items.append(("Add", f"Add new {subTypeName}"))
+                    # Show menu
+                    msg = f"Select a {subTypeName} to modify or delete."
+                    r = w.menu(msg, items, prefix=" ")
+                    if r[1] != 0:
+                        # cancel, scape
+                        break
+                    if r[0] == "Add":
+                        actualSubConfig.append(sampleSubConfig[0])
+                        saveJSON(actualConfig, actualConfigPath)
+                    elif r[0] == "Clear":
+                        actualSubConfig = []
+                        saveJSON(actualConfig, actualConfigPath)
+                    else:
+                        idx = r[0].rpartition(" ")[2]
+                        newConfigPath = list(configPath)
+                        newConfigPath.append(idx)
+                        showConfigureMenu(serviceID=serviceID, configPath=newConfigPath)
+                elif sampleSubConfig0type in [str]: #,int,float,bool]:
+                    # build items up from the values
+                    items = []
+                    for v in actualSubConfig:
+                        idx += 1
+                        items.append((f"Edit {idx}",str(v)))
+                    # add option
+                    items.append(("Add", f"Add new value to the list"))
+                    # clear option
+                    items.append(("Clear", "Clear all values from the list"))
+                    # Show menu
+                    msg = f"Select a value to modify or delete."
+                    r = w.menu(msg, items, prefix=" ")
+                    if r[1] != 0:
+                        # cancel, escape
+                        break
+                    if r[0] == "Add":
+                        msg = f"Provide a new value to be added to the list"
+                        r2 = w.inputbox(msg)
+                        if r2[1] == 0: # ok pressed
+                            if len(r2[0]) > 0: # and value provided
+                                actualSubConfig.append(r2[0])
+                                saveJSON(actualConfig, actualConfigPath)
+                    elif r[0] == "Clear":
+                        actualSubConfig = []
+                        saveJSON(actualConfig, actualConfigPath)
+                    else:
+                        idx = int(r[0].rpartition(" ")[2])
+                        currentvalue = actualSubConfig[idx]
+                        msg = f"Modify value. Or empty the value to remove it from the list.\nCurrent value is {currentvalue}"
+                        r2 = w.inputbox(msg=msg, default=currentvalue)
+                        if r2[1] == 0: # ok pressed
+                            if len(r2[0]) > 0: # updated value
+                                actualSubConfig[idx] = r2[0]
+                            else: # removing entry
+                                del actualSubConfig[idx]
+                            saveJSON(actualConfig, actualConfigPath)
+                else:
+                    # unhandled type, back out
+                    raise Exception(f"unhandled type {sampleSubConfig0type}")
+            elif type(actualSubConfig) is dict:
+                # iterate properties at this level
+                items = []
+                arrayProperties = []
+                objectProperties = []
+                for k in sampleSubConfig:
+                    if k.endswith(".type"):
+                        propertyName = k.replace(".type","")
+                        if propertyName == "_config_summary":
+                            # dont show config summary definition as an editable property
+                            continue
+                        if propertyName in sampleSubConfig:
+                            if sampleSubConfig[k] == "array":
+                                arrayProperties.append(propertyName)
+                            elif sampleSubConfig[k] == "object":
+                                objectProperties.append(propertyName)
+                            else:                       
+                                if propertyName in actualSubConfig:
+                                    cv = str(actualSubConfig[propertyName])
+                                    # star it out if its a password field
+                                    if sampleSubConfig[k] == "password":
+                                        cv = "*" * len(cv)
+                                else:
+                                    cv = str(sampleSubConfig[propertyName])
+                                items.append((propertyName, cv))
+                            # if sampleSubConfig[k]
+                        # if propertyName in sampleSubConfig
+                    # if k.endswith(".type")
+                # for k in sampleConfig
+                # list object and array properties
+                if len(objectProperties) > 0 or len(arrayProperties) > 0:
+                    if len(items) > 0:
+                        items.append(("-----", "-----"))
+                    for k in objectProperties:
+                        commentfield = f"{k}.comment"
+                        comment = f"Manage {k} config"
+                        if commentfield in sampleSubConfig:
+                            comment = sampleSubConfig[commentfield]
+                        items.append((f"Manage {k}", comment))
+                    for k in arrayProperties:
+                        commentfield = f"{k}.comment"
+                        comment = f"Manage {k} entries"
+                        if commentfield in sampleSubConfig:
+                            comment = sampleSubConfig[commentfield]
+                        items.append((f"Manage {k}", comment))
+                # list actions available if working on an entry
+                if configPath is not None:
+                    if re.match(r'^-?\d+$', configPath[-1]) is not None:
+                        itemNumber = int(configPath[-1]) + 1
+                        items.append(("-----", "-----"))
+                        items.append((f"Delete entry", f"Delete this {subTypeName} from {serviceID}"))
+                msg = "Select a property to modify"
+                r = w.menu(msg, items, prefix="= ")
+                if r[1] != 0:
+                    # cancel, escape
+                    break
+                if r[0].startswith("Manage "):
+                    partToManage = r[0].rpartition(" ")[2]
+                    if configPath is None:
+                        newConfigPath = [partToManage]
+                    else:
+                        newConfigPath = list(configPath)
+                        newConfigPath.append(partToManage)
+                    showConfigureMenu(serviceID=serviceID, configPath=newConfigPath)
+                elif r[0].startswith("Delete "):
+                    msg = "Are you sure you want to delete this item"
+                    deleteConfirmed = w.yesno(msg)
+                    if deleteConfirmed:
+                        idx = int(configPath[-1])
+                        del actualSubConfigParent[idx]
+                        saveJSON(actualConfig, actualConfigPath)
+                        break
+                elif r[0].startswith("-"):
+                    # ignore divider
+                    pass
+                else:
+                    # setup prompt for new value for this property
+                    propertyName = r[0]
+                    # comment for the prompt
+                    commentfield = f"{propertyName}.comment"
+                    comment = sampleSubConfig[commentfield] if commentfield in sampleSubConfig else f"Specify a new value for the {propertyName} property"
+                    # get default value
+                    defaultValue = ""
+                    defaultValue = sampleSubConfig[f"{propertyName}"]
+                    defaultValue = str(defaultValue)
+                    usingDefault = True
+                    # get current value
+                    if f"{propertyName}" in actualSubConfig:
+                        currentValue = actualSubConfig[f"{propertyName}"]
+                        usingDefault = False
+                    else:
+                        currentValue = defaultValue
+                    currentValue = str(currentValue)
+                    # determine data type
+                    dataType = sampleSubConfig[f"{propertyName}.type"]
+                    # adjust data type
+                    if dataType == "string" and defaultValue.startswith("#"):
+                        dataType = "color"
+                    # convert data type based on property name
+                    if "password" in propertyName.lower():
+                        dataType = "password"
+                    if propertyName in ["authtoken", "apikey"]:
+                        dataType = "password"
+                    # adust message based on type (dont show password)
+                    if dataType in ["boolean","color","float","integer","string"]:
+                        comment = f"{comment}\nDefault value: {defaultValue}"
+                    # check for choices
+                    allowedChoices = None
+                    choicesfield = f"{propertyName}.choices"
+                    if choicesfield in sampleSubConfig:
+                        allowedChoices = sampleSubConfig[choicesfield]
+                    validationMsg = ""
+                    saved = False
+                    while not saved:
+                        if dataType in ["boolean","overrideboolean"]:
+                            items = []
+                            # True
+                            propertyStatus = "on" if \
+                                (currentValue == "True") and \
+                                ((dataType == "boolean") or (not usingDefault)) \
+                                else "off"
+                            items.append(("True", "", propertyStatus))
+                            # False
+                            propertyStatus = "on" if \
+                                (currentValue == "False") and \
+                                ((dataType == "boolean") or (not usingDefault)) \
+                                else "off"
+                            items.append(("False", "", propertyStatus))
+                            # Default
+                            if dataType == "overrideboolean":
+                                propertyStatus = "on" if usingDefault else "off"
+                                items.append(("Default", f"({defaultValue})", propertyStatus))
+                            msg = comment
+                            r = w.radiolist(msg, items)
+                            if r[1] != 0:
+                                break
+                            # get and save the new value
+                            if r[0][0] == "Default":
+                                actualSubConfig.pop(propertyName, None)
+                                saveJSON(actualConfig, actualConfigPath)
+                                saved = True
+                            else:
+                                actualSubConfig[propertyName] = (r[0][0] == "True")
+                                saveJSON(actualConfig, actualConfigPath)
+                                saved = True
+                        else: # all other types should use simple input box
+                            thiscomment = comment
+                            if len(validationMsg) > 0:
+                                thiscomment = thiscomment + f"\n{validationMsg}"
+                            if allowedChoices is None:
+                                r = w.inputbox(msg=thiscomment, default=currentValue, password=(dataType=="password"))
+                                # cancelled or escape
+                                if r[1] != 0:
+                                    break
+                                # get the new value
+                                currentValue = r[0]
+                            else:
+                                items = []
+                                for allowedChoice in allowedChoices:
+                                    propertyStatus = "on" if (currentValue == allowedChoice) else "off"
+                                    items.append((allowedChoice, "", propertyStatus))
+                                r = w.radiolist(msg=thiscomment, items=items)
+                                if r[1] != 0:
+                                    break
+                                # get the new value
+                                currentValue = r[0][0]
+                            # Validation checks
+                            valid = False
+                            validationMsg = ""
+                            if dataType in ["password","string"]:
+                                actualSubConfig[propertyName] = currentValue
+                                saveJSON(actualConfig, actualConfigPath)
+                                saved = True
+                            elif ((dataType.startswith("override")) and len(currentValue) == 0):
+                                actualSubConfig.pop(propertyName, None)
+                                saveJSON(actualConfig, actualConfigPath)
+                                saved = True
+                            elif dataType in ["color","overridecolor"]:
+                                colorregexp = re.compile(r"^\#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6})$")
+                                if (colorregexp.match(currentValue) is not None):
+                                    actualSubConfig[propertyName] = currentValue
+                                    saveJSON(actualConfig, actualConfigPath)
+                                    saved = True
+                                else:
+                                    validationMsg = "A color must be specified with a # followed by 6 or 8 hexadecimal characters\nOnly the letters a-f and numbers 0-9 are valid"
+                            elif dataType in ["integer","overrideinteger"]:
+                                if re.match(r'^-?\d+$', currentValue) is not None:
+                                    actualSubConfig[propertyName] = int(currentValue)
+                                    saveJSON(actualConfig, actualConfigPath)
+                                    saved = True
+                                else:
+                                    validationMsg = "Only whole numbers are allowed for this property."
+                            elif dataType in ["float","overridefloat"]:
+                                if re.match(r'^-?\d+(?:\.\d+)?$', currentValue) is not None:
+                                    actualSubConfig[propertyName] = float(currentValue)
+                                    saveJSON(actualConfig, actualConfigPath)
+                                    saved = True
+                                else:
+                                    validationMsg = "Only numbers are allowed for this property."
+                            else:
+                                raise Exception("Unhandled data type {dataType} for property {propertyName}")
+                        # if dataType == "boolean"
+                    # while not saved
+                # r[0] value
+            else:
+                # type not handled
+                raise Exception(f"Unable to show menu for unsupported type of actualSubConfig {type(actualSubConfig)} from context {configPath}")
+            # if type(actualSubConfig) is list
+    except Exception as e:
+        msgError(e)
+
+def toggleServiceEnabled(serviceName: str = None, currentlyEnabled: bool = False):
+    if os.geteuid() != 0:
+        return currentlyEnabled
+    if currentlyEnabled:
+        cmd = f"systemctl disable {serviceName}"
+    else:
+        cmd = f"systemctl enable {serviceName}"
+    r = getCommandResult(cmd)
+    if len(r) > 0:
+        return isServiceEnabled(serviceName)
+    return not currentlyEnabled
+
+def toggleServiceActive(serviceName: str = None, currentlyActive: bool = False):
+    if os.geteuid() != 0:
+        return currentlyActive
+    if currentlyActive:
+        cmd = f"systemctl stop {serviceName}"
+    else:
+        cmd = f"systemctl start {serviceName}"
+    r = getCommandResult(cmd)
+    if len(r) > 0:
+        return isServiceActive(serviceName)
+    return not currentlyActive
+
+def hasConfigFile(serviceID: str = None):
+    sampleConfigPath = f"/home/nodeyez/nodeyez/sample-config/{serviceID}.json"
+    return os.path.exists(sampleConfigPath)
+
+def showServiceMenu(serviceID: str = None):
+    global nodeyezServiceList
+    svc = nodeyezServiceList[serviceID]
+    serviceName = svc["serviceName"]
+    while True:
+        if "isenabled" not in svc:
+            svc["isenabled"] = isServiceEnabled(serviceName)
+            nodeyezServiceList[serviceID] = svc
+        if "isactive" not in svc:
+            svc["isactive"] = isServiceActive(serviceName)
+            nodeyezServiceList[serviceID] = svc
+        w = Whiptail(title=f"Nodeyez Configuration for {serviceID}")
+        msg = "Choose an option for this service"
+        items = []
+        if hasConfigFile(serviceID):
+            items.append(("Configure", "Customize configuration settings"))
+        if os.geteuid() == 0:
+            items.append(("Run on Bootup", "Currently enabled" if svc["isenabled"] else "Currently disabled"))
+            items.append(("Run Service", "Currently active" if svc["isactive"] else "Currently not running"))
+        items.append(("Recent Logs", "View journalctl output for service"))
+        if svc["isenabled"]:
+            items.append(("Status", "View systemctl status of the service"))
+        r = w.menu(msg, items)
+        if r[1] != 0:
+            # cancel, escape
+            break
+        if r[0] == "Configure":
+            # showConfigureOLD(serviceID)
+            showConfigureMenu(serviceID)
+        if r[0] == "Recent Logs":
+            showServiceLogs(serviceName)
+        if r[0] == "Status":
+            showServiceStatus(serviceName)
+        if r[0] == "Run on Bootup":
+            svc["isenabled"] = toggleServiceEnabled(serviceName, svc["isenabled"])
+            nodeyezServiceList[serviceID] = svc
+        if r[0] == "Run Service":
+            svc["isactive"] = toggleServiceActive(serviceName, svc["isactive"])
+            nodeyezServiceList[serviceID] = svc
+    # while True
+
+def showServiceList():
+    if len(nodeyezServiceList.keys()) == 0:
+        populateNodeyezServiceList()
+    w = Whiptail(title=f"Nodeyez Config as {getEffectiveUsername()}")
+    msg = "Choose a Nodeyez service to configure"
+    runningIndicator = "on:"
+    while True:
+        runningservices = getRunningNodeyezServices()
+        items = []
+        if len(runningservices) > 0:
+            # show running services at the top
+            for s in sorted(nodeyezServiceList):
+                k = nodeyezServiceList[s]["serviceID"]
+                if k in runningservices:
+                    d = runningIndicator + nodeyezServiceList[s]["serviceDescription"]
+                    d = d[:maxDescriptionLength]
+                    items.append((k, d))
+        # now show remaining available services
+        for s in sorted(nodeyezServiceList):
+            k = nodeyezServiceList[s]["serviceID"]
+            if k not in runningservices:
+                d = nodeyezServiceList[s]["serviceDescription"]
+                if len(runningservices) > 0:
+                    d = (" " * len(runningIndicator)) + d
+                d = d[:maxDescriptionLength]
+                items.append((k, d))
+        r = w.menu(msg, items)
+        if r[1] != 0:
+            # cancel, escape
+            break
+        serviceID = r[0]
+        showServiceMenu(serviceID)
+
+if __name__ == '__main__':
+    showServiceList()
+    exit()

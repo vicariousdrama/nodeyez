@@ -6,6 +6,9 @@ layout: default
 
 # Running Services at Startup
 
+If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then this step is already done for you and you can skip ahead to using the 
+[Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool to toggle and view services.
+
 You can run the scripts you so choose automatically at startup so that you don't
 have to login and manually start them after a power outage or system reboot.  To do this, copy 
 the service scripts to the appropriate systemd folder
@@ -22,12 +25,10 @@ automatically at startup.
 
 ```shell
 sudo systemctl enable nodeyez-arthash.service
-sudo systemctl enable nodeyez-arthashdungeon.service
+sudo systemctl enable nodeyez-blockhashdungeon.service
 sudo systemctl enable nodeyez-blockheight.service
 sudo systemctl enable nodeyez-blockstats.service
 sudo systemctl enable nodeyez-braiinspool.service
-sudo systemctl enable nodeyez-channelbalance.service
-sudo systemctl enable nodeyez-channelfees.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-f2pool.service
@@ -36,6 +37,8 @@ sudo systemctl enable nodeyez-fiatprice.service
 sudo systemctl enable nodeyez-halving.service
 sudo systemctl enable nodeyez-inscriptionmempool.service
 sudo systemctl enable nodeyez-ipaddress.service
+sudo systemctl enable nodeyez-lndchannelbalance.service
+sudo systemctl enable nodeyez-lndchannelfees.service
 sudo systemctl enable nodeyez-lndhub.service
 sudo systemctl enable nodeyez-mempoolblocks.service
 sudo systemctl enable nodeyez-minerbraiins.service
@@ -58,12 +61,10 @@ Only issue the systemctl start command for those services you want to run.
 
 ```shell
 sudo systemctl start nodeyez-arthash.service
-sudo systemctl start nodeyez-arthashdungeon.service
+sudo systemctl start nodeyez-blockhashdungeon.service
 sudo systemctl start nodeyez-blockheight.service
 sudo systemctl start nodeyez-blockstats.service
 sudo systemctl start nodeyez-braiinspool.service
-sudo systemctl start nodeyez-channelbalance.service
-sudo systemctl start nodeyez-channelfees.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-f2pool.service
@@ -72,6 +73,8 @@ sudo systemctl start nodeyez-fiatprice.service
 sudo systemctl start nodeyez-halving.service
 sudo systemctl start nodeyez-inscriptionmempool.service
 sudo systemctl start nodeyez-ipaddress.service
+sudo systemctl start nodeyez-lndchannelbalance.service
+sudo systemctl start nodeyez-lndchannelfees.service
 sudo systemctl start nodeyez-lndhub.service
 sudo systemctl start nodeyez-mempoolblocks.service
 sudo systemctl start nodeyez-minerbraiins.service
@@ -107,7 +110,7 @@ sudo systemctl list-units --type=service | grep nodeyez
 Sample output
 
 ```c
-  nodeyez-channelbalance.service         loaded active running Image(s) for Lightning Channel Balances
+  nodeyez-lndchannelbalance.service      loaded active running Image(s) for Lightning Channel Balances
   nodeyez-daily-data-retrieval.service   loaded active running Retrieve background data for Nodeyez
   nodeyez-difficultyepoch.service        loaded active running Image for Difficulty Epoch
 ● nodeyez-f2pool.service                 loaded failed failed  Image for F2 Pool Mining Summary
@@ -151,4 +154,4 @@ sudo systemctl disable nodeyez-ordinals.service
 
 ---
 
-[Home](../) | [Back to Website Dashboard]({% link _install_steps/7websitedashboard.md %}) | 
+[Home](../) | [Back to Website Dashboard]({% link _install_steps/7websitedashboard.md %}) | [Continue to Nodeyez-Config Tool]({% link _install_steps/9nodeyezconfig.md %})

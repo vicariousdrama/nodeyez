@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-blockstats.service
 
 [Unit]
-Description=Nodeyez image generator for Block Stats, Fee Rates, Segwit Prevalence
+Description=Key block stats, fee rates and segwit prevalence
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service

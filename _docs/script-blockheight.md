@@ -21,7 +21,13 @@ The script is installed at
 
 ## Configuration
 
-To configure this script, edit the `~/nodeyez/config/blockheight.json` file
+To manage and configure this script, use the nodeyez-config tool
+
+```sh
+sudo nodeyez-config
+```
+
+To manually configure this script, edit the `~/nodeyez/config/blockheight.json` file
 
 Fields are defined below
 

@@ -4,7 +4,9 @@ title: NODEYEZ Common Tools
 layout: default
 ---
 
-# Setting up Python and Dependencies
+# Setting up Common Tools
+
+If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then this step is already done for you and you can skip ahead to setting up the [Slideshow]({% link _install_steps/6slideshow.md %}) or using the [Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool.
 
 You will need to be logged into your system with a privileged user that can perform super user operations.
 

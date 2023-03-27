@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-blockheight.service
 
 [Unit]
-Description=Nodeyez image generator for Block Height
+Description=The current Bitcoin block height
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service

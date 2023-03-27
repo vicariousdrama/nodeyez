@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-gasprice.service
 
 [Unit]
-Description=Nodeyez image generator for Gas Price
+Description=(Deprecated)Average gas prices for USA and Canadian cities and regions
 StartLimitIntervalSec=600
 StartLimitBurst=2
 
