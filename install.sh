@@ -46,6 +46,9 @@ else
   CREATED_USER=1
 fi
 
+# Set permissions on nodeyez home folder so others can read
+sudo chmod 755 /home/nodeyez
+
 # Add user to tor group
 sudo adduser nodeyez debian-tor
 
@@ -119,12 +122,17 @@ sudo -u nodeyez -s source /home/nodeyez/.pyenv/nodeyez/bin/activate && /home/nod
 # Website dashboard
 if [ $(which nginx | wc -l) -gt 0 ]; then
   # nginx is already installed
+  echo "NGINX already installed"
   if [ -d "/mnt/hdd/mynode" ]; then
     # we are installing on a mynode environment
-    echo "Configuring Nodeyez Dashboard in NGINX"
+    echo "Configuring Nodeyez Dashboard in NGINX for MyNode"
     # enable xslt module
-    sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
-    sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+    if [ $(sudo cat /etc/nginx/modules-enabled/* | grep xslt | wc -l) -gt 0 ]; then
+      echo "XSLT module is loaded for NGINX"
+    else
+      sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+      sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+    fi
     # copy xslt templates
     sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
     sudo chown root:root /etc/nginx/nodeyez*.xslt
@@ -135,12 +143,13 @@ if [ $(which nginx | wc -l) -gt 0 ]; then
     CREATED_WEBSITE=1
   else
     # Generic NGINX
+    echo "Configuring Nodeyez Dashboard in NGINX for Generic"
     # get some ssl cert info
     line_ssl_certificate=$(sudo nginx -T 2>&1 | grep "ssl_certificate " | sed -n 1p)
-    line_ssl_certificate_private=$(sudo nginx -T 2>&1 | grep "ssl_certificate_private " | sed -n 1p)
+    line_ssl_certificate_key=$(sudo nginx -T 2>&1 | grep "ssl_certificate_key " | sed -n 1p)
     # drop in our base config
     # determine if xslt module is loaded
-    if [ $(nginx -V 2>&1 | tr ' ' '\n' | egrep -i 'xslt' | wc -l) -gt 0 ]; then
+    if [ $(sudo cat /etc/nginx/modules-enabled/* | grep xslt | wc -l) -gt 0 ]; then
       echo "XSLT module is loaded for NGINX"
     else
       echo "Configuring NGINX to load XSLT module"
@@ -155,32 +164,45 @@ if [ $(which nginx | wc -l) -gt 0 ]; then
     sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
     # ssl config
     sudo mkdir -p /etc/nginx/nodeyez
-    sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
     # assign back first cert and key if detected from earlier
     if [ ${#line_ssl_certificate} -gt 0 ]; then
       sudo rm /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
       sudo echo $line_ssl_certificate >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
-      sudo echo $line_ssl_certificate_private >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
+      sudo echo $line_ssl_certificate_key >> /etc/nginx/nodeyez/nodeyez_ssl_cert_key.conf
     else
       sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+    fi
+    # create diffie-hellman if we dont have any yet
+    if [ ! -f "/etc/ssl/certs/dhparam.pem" ]; then
+      sudo openssl dhparam -dsaparam -out /etc/ssl/certs/dhparam.pem 4096
     fi
     sudo chown root:root -R /etc/nginx/nodeyez
     CREATED_WEBSITE=1 
   fi
 else
   # nginx is not yet installed
-  sudo apt install -y nginx
+  echo "Installing NGINX"
+  sudo apt install -y nginx nginx-common
   # make a self signed cert
   sudo openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/ssl/private/nodeyez-nginx-selfsigned.key -out /etc/ssl/certs/nodeyez-nginx-selfsigned.crt -subj "/CN=localhost" -days 3650
+  if [ ! -f "/etc/ssl/certs/dhparam.pem" ]; then
+    sudo openssl dhparam -dsaparam -out /etc/ssl/certs/dhparam.pem 4096
+  fi
   # enable xslt module
-  sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
-  sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+  if [ $(sudo cat /etc/nginx/modules-enabled/* | grep xslt | wc -l) -gt 0 ]; then
+    echo "XSLT module is loaded for NGINX"
+  else
+    echo "Configuring NGINX to load XSLT module"
+    sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
+    sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
+  fi
   # templates
   sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
   sudo chown root:root /etc/nginx/nodeyez*.xslt
   # nodeyez config referencing our freshly minted self signed certs
   sudo mkdir -p /etc/nginx/nodeyez
-  sudo cp /home/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
+  sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_ssl*.conf /etc/nginx/nodeyez
   # site config
   sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
   sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
@@ -202,6 +224,7 @@ sudo cp /home/nodeyez/nodeyez/scripts/systemd/nodeyez.conf /etc/nodeyez.conf
 
 # Initial services to enable and start
 # - fearandgreed, fiatprice, ipaddress, satsperusd, sysinfo, utcclock
+if [ 1 -eq 1 ]; then
 sudo systemctl enable nodeyez-fearandgreed.service
 sudo systemctl start nodeyez-fearandgreed.service
 sudo systemctl enable nodeyez-fiatprice.service
@@ -216,6 +239,7 @@ sudo systemctl enable nodeyez-utcclock.service
 sudo systemctl start nodeyez-utcclock.service
 sudo systemctl enable nodeyez-daily-data-retrieval.service
 sudo systemctl start nodeyez-daily-data-retrieval.service
+fi
 # - bitcoin: arthash, arthashdungeon, blockheight, blockstats, difficultyepoch, halving, mempoolblocks
 if [ $GRANTED_BITCOIN -ge 1 ]; then
   sudo systemctl enable nodeyez-arthash.service
@@ -277,3 +301,7 @@ sudo systemctl list-units --type=service --state=active | grep nodeyez | awk '{p
 sudo systemctl list-units --type=service --state=failed | grep nodeyez | awk '{print "(failed) " $2}'
 
 
+# usermod -a -G www-data nodeyez
+#  chgrp www-data /home/nodeyez/nodeyez/imageoutput
+# chmod g+rwxs /home/nodeyez/nodeyez/imageoutput
+# chmod 755 /home/nodeyez
