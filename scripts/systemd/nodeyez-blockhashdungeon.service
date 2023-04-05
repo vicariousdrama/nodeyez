@@ -2,10 +2,10 @@
 # A generative visual maze created with bitcoin themed logos
 # and tileable art derived from the Bitcoin Blockhash of the
 # referened block (Dungeon Level) deterministically
-# /etc/systemd/system/nodeyez-arthashdungeon.service
+# /etc/systemd/system/nodeyez-blockhashdungeon.service
 
 [Unit]
-Description=Nodeyez image generator for Blockhash Dungeon
+Description=Retro style dungeon maze based on block hash
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service
@@ -16,7 +16,7 @@ EnvironmentFile=/etc/nodeyez.conf
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
 ExecStartPre=/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
 ExecStartPre=/bin/chown nodeyez:nodeyez /home/nodeyez/.bitcoin/.cookie
-ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/arthashdungeon.py
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/blockhashdungeon.py
 User=nodeyez
 Restart=on-failure
 RestartSec=30

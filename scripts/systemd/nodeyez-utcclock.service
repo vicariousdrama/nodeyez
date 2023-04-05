@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-utcclock.service
 
 [Unit]
-Description=Nodeyez image generator for UTC Clock
+Description=UTC Clock Date and Time
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

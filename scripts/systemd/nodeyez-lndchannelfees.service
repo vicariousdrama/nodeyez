@@ -1,0 +1,20 @@
+# Nodeyez: systemd unit for LND Channel Usage, Fees and Earnings
+# /etc/systemd/system/nodeyez-lndchannelfees.service
+
+[Unit]
+Description=LND Channel Usage, Fees and Earnings
+StartLimitIntervalSec=600
+StartLimitBurst=2
+Wants=lnd.service
+After=lnd.service
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/lndchannelfees.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

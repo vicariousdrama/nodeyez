@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-satsperusd.service
 
 [Unit]
-Description=Nodeyez image generator for Sats per USD
+Description=Sats per USD grid, based on Bisq data
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

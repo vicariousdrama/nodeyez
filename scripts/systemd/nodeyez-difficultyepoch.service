@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-difficultyepoch.service
 
 [Unit]
-Description=Nodeyez image generator for Difficulty Epoch
+Description=Blocks mined showing ahead/behind schedule and projected change
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service

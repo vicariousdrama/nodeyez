@@ -2,8 +2,18 @@
 
 # the framebuffer image viewer (fbi) needs root so run this script with sudo
 # install fbi via  `sudo apt-get -y install fbi`
+
+# normally we rotate through all images that are produced in the folder
 globtodisplay="../imageoutput/*.png"
 timeperimage=3
+
+# if nodeyezdual is active, only show that image
+if [ $(systemctl show nodeyez-nodeyezdual | grep ActiveState=active | wc -l) -gt 0 ]; then
+  globtodisplay="../imageoutput/nodeyezdual.png"
+  timeperimage=30
+fi
+
+# start the loop
 while true
 do
     imagecount=`ls ${globtodisplay} | wc -l`

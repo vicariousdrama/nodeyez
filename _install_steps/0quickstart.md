@@ -5,9 +5,12 @@ layout: default
 
 # Quick Start
 
-If you're on a Debian based Linux system, you can run the following command
-to download and run an installation script if you're feeling #reckless
+If you're on a Debian based Linux system, you can get started quickly by
+running an installation script if you're feeling #reckless.
 
+## Install
+
+To insall via the script, download and pipe to bash with sudo
 ```shell
 wget -qO- https://nodeyez.com/install.sh | sudo bash
 ```
@@ -16,13 +19,13 @@ wget -qO- https://nodeyez.com/install.sh | sudo bash
 
 You should be aware of the following limitations
 
-Requires a 64 Bit operating system to be installed
-- 32 bit may be missing key tools, like imagemagick and tor
-- 32 bit may not have a packaged version of nginx-commons
+It requires a 64 Bit operating system to be installed and has only been
+tested on MyNodeBTC and Raspibolt environments.
 
-At present, this script does not support the following
-- Auto configuring display screen
-- Enabling Slideshow
+At present, this script does not support auto configuring an attached
+display screen, or enabling the slideshow.
+
+Only a subset of available Nodeyez panel scripts will be enabled.
 
 ## What it Does
 
@@ -38,6 +41,25 @@ will be opened for accessing the dashboard.
 - Services: Panels for ip address, utc clock, and system info will be enabled and started. If Bitcoin user exists, then Bitcoin related panels will also be enabled and started. If LND exists, then those panels will also be enabled and started.
 
 Running the script multiple times is intended to always bring to the same state. 
+
+A configuration tool is also deployed to review Nodeyez services, toggle their status,
+and make configuration changes for each panel.  You may access this from the terminal
+by running `sudo nodeyez-config`
+
+If you are attaching a screen, check out steps that cover
+[Display Screen]({% link _install_steps/2displayscreen.md %}) and 
+[Slideshow]({% link _install_steps/6slideshow.md %})]
+
+Otherwise, you can jump ahead to using the [Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool
+
+## Uninstall
+
+Uninstalling is similar, simply run the following
+```shell
+wget -qO- https://nodeyez.com/uninstall.sh | sudo bash
+```
+
+An existing NGINX instance will be left running after Nodeyez is removed.
 
 ---
 

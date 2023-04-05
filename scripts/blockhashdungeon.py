@@ -247,10 +247,10 @@ def createimage(blocknumber=1, width=480, height=320):
 
 if __name__ == '__main__':
     # Defaults
-    configFile="../config/arthashdungeon.json"
-    bitcoinLogosFile="../images/arthash-dungeon-bitcoin-logos.png"
-    bitcoinTilesFile="../images/arthash-dungeon-bitcoin-tiles.png"
-    outputFile="../imageoutput/arthashdungeon.png"
+    configFile="../config/blockhashdungeon.json"
+    bitcoinLogosFile="../images/blockhash-dungeon-bitcoin-logos.png"
+    bitcoinTilesFile="../images/blockhash-dungeon-bitcoin-tiles.png"
+    outputFile="../imageoutput/blockhashdungeon.png"
     colorTextFG=ImageColor.getrgb("#ffffff")
     colorBackground=ImageColor.getrgb("#000000")
     width=480
@@ -262,8 +262,8 @@ if __name__ == '__main__':
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
-        if "arthashdungeon" in config:
-            config = config["arthashdungeon"]
+        if "blockhashdungeon" in config:
+            config = config["blockhashdungeon"]
         if "bitcoinLogosFile" in config:
             bitcoinLogosFile = config["bitcoinLogosFile"]
         if "bitcoinTilesFile" in config:

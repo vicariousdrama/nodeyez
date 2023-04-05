@@ -1,35 +1,41 @@
 ---
 panelgroup: Lightning Panels
-name: Channel Balance
+name: LND Channel Balance
 title: Channel Balance script
 layout: default
 description: Summary report of LND channel balances with graphical bars showing relative percentage of channel balance on local or remote
-imageurl: ../images/channelbalance.png
+imageurl: ../images/lndchannelbalance.png
 ---
 
-## Channel Balance
+## LND Channel Balance
 
 This script prepares an image depicting your node's lightning channel balances.
 Bar graphs show relative percentage of the channel balance on your end or the
 remote. Multiple images may be created depending on the number of open channels.
 It depends on a lighting node.
 
-![sample image of channel balance](../images/channelbalance.png)
+![sample image of channel balance](../images/lndchannelbalance.png)
 
 ## Script Location
 
 The script is installed at 
-[~/nodeyez/scripts/channelbalance.py](../scripts/channelbalance.py).
+[~/nodeyez/scripts/lndchannelbalance.py](../scripts/lndchannelbalance.py).
 
 ## Configuration
 
-To configure this script, edit the `~/nodeyez/config/channelbalance.json` file
+To manage and configure this script, use the nodeyez-config tool
+
+```sh
+sudo nodeyez-config
+```
+
+To manually configure this script, edit the `~/nodeyez/config/lndchannelbalance.json` file
 
 Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/channelbalance.png` |
+| outputFile | The path to save the generated image. Default `../imageoutput/lndchannelbalance.png` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorNodeOffline | The color of the text for an offline node expressed as a Hexadecimal color specifier. Default `#ffa500` |
 | colorNodeDead | The color of the text for a node that has been offline for 1008 blocks expressed as a Hexadecimal color specifier. Default `#ff0000` |
@@ -49,7 +55,7 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| enabled | Inidicates whether this node definition is enabled for reporting. If set to false, it will be skipped. |
+| enabled | Indicates whether this node definition is enabled for reporting. If set to false, it will be skipped. |
 | address | The address or hostname for this node. It must be reachable from the server running the script. |
 | port | The port for which the target node is listening for REST based calls. This is the port referenced in the restlisten setting in bitcoin.conf. |
 | useTor | Indicates whether calls to the target node should be made over tor. For internal addresses, this should be set to false. |
@@ -83,7 +89,7 @@ cd ~/nodeyez/scripts
 
 Run it
 ```shell
-python channelbalance.py
+python lndchannelbalance.py
 ```
 
 Press CTRL+C to stop the process
@@ -93,9 +99,9 @@ Press CTRL+C to stop the process
 To enable the script to run at startup, as the privileged user run the following
 
 ```shell
-sudo systemctl enable nodeyez-channelbalance.service
+sudo systemctl enable nodeyez-lndchannelbalance.service
 
-sudo systemctl start nodeyez-channelbalance.service
+sudo systemctl start nodeyez-lndchannelbalance.service
 ```
 
 ---

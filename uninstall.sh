@@ -14,11 +14,7 @@ DELETED_WEBSITE=0
 DELETED_UFWRULES=0
 DELETED_SELFCERT=0
 DELETED_USER=0
-
-ISMYNODE=0
-if [ -d "/mnt/hdd/mynode" ]; then
-  ISMYNODE=1
-fi
+DELETED_CONFIGTOOL=0
 
 # Remove Nodeyez services
 for f in $(systemctl list-unit-files --type=service | grep nodeyez | awk '{print $1}'); do systemctl stop $f; systemctl disable $f; done
@@ -57,11 +53,26 @@ if [ $(which nginx | wc -l) -gt 0 ]; then
   if [ -d "/etc/nginx/nodeyez" ]; then
     rm -rf /etc/nginx/nodeyez
   fi
-  # check if using sites-enabled
+  # check if using sites-enabled (generic, mynode, raspiblitz)
   if [ -f "/etc/nginx/sites-enabled/https_nodeyez.conf" ]; then
     rm /etc/nginx/sites-enabled/https_nodeyez.conf
-    systemctl restart nginx
     DELETED_WEBSITE=1
+  fi
+  # check if using streams-enabled
+  if [ -f "/etc/nginx/streams-enabled/https_nodeyez_raspibolt.conf" ]; then
+    rm /etc/nginx/streams-enabled/https_nodeyez_raspibolt.conf
+    DELETED_WEBSITE=1
+  fi
+  # check for http for raspibolt in  modules-enabled
+  if [ -f "/etc/nginx/modules-enabled/http_nodeyez_raspibolt.conf" ]; then
+    unlink /etc/nginx/modules-enabled/http_nodeyez_raspibolt.conf
+    DELETED_WEBSITE=1
+  fi
+  # remove any lines from nginx.conf that reference http_nodeyez_raspibolt.conf
+  sed -i '/http_nodeyez_raspibolt/d' /etc/nginx/nginx.conf
+  # reload nginx
+  if [ $DELETED_WEBSITE -gt 0 ]; then
+    systemctl reload nginx
   fi
 fi
 
@@ -91,11 +102,16 @@ if id nodeyez &>/dev/null; then
   if [ -z ${EXT_DRIVE_MOUNT+x} ]; then
     deluser --remove-home nodeyez
   else
-    NODEYEZ_HOME=${EXT_DRIVE_MOUNT}/nodeyez
-    rm ${NODEYEZ_HOME}
     deluser --remove-home nodeyez
+    unlink /home/nodeyez
   fi
   DELETED_USER=1
+fi
+
+# Remove Nodeyez configuration tool
+if [ -f "/usr/local/bin/nodeyez-config" ]; then
+  rm /usr/local/bin/nodeyez-config
+  DELETED_CONFIGTOOL=1
 fi
 
 # show summary
@@ -114,10 +130,15 @@ if [ $DELETED_ENV -ge 1 ]; then
 fi
 if [ $DELETED_WEBSITE -ge 1 ]; then
   echo "Nodeyez website deleted"
-  if [ $ISMYNODE -eq 0 ]; then
-    echo "NGINX is still installed. If you have no other websites you can remove via"
-    echo "sudo apt-get -y purge nginx nginx-common"
+  echo "NGINX is still installed"
+  if [ $(nginx -T 2>/dev/null | grep "listen" | grep -v "#" | xargs | wc -l) -gt 0 ]; then
+    echo "Listening ports of remaining sites"
+    nginx -T 2>/dev/null | grep "listen" | grep -v "#" | xargs
+  else
+    echo "No 'listen' directives found in nginx configuration"
   fi
+  echo "If you have no other websites you can remove via"
+  echo "     sudo apt-get -y purge nginx nginx-common"
 fi
 if [ $DELETED_UFWRULES -ge 1 ]; then
   echo "Nodeyez uncomplicated firewall rules for port 907 removed"
@@ -127,5 +148,8 @@ if [ $DELETED_SELFCERT -ge 1 ]; then
 fi
 if [ $DELETED_USER -ge 1 ]; then
   echo "Nodeyez user deleted"
+fi
+if [ $DELETED_CONFIGTOOL -ge 1 ]; then
+  echo "Nodeyez configuration tool deleted"
 fi
 echo "Uninstallation complete"

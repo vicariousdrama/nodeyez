@@ -26,7 +26,7 @@ def gettorproxies():
 
 
 # do a GET call on specified url, save response body contents as file, return 0 if success, 1 if error
-def getandsavefile(useTor=True, url="https://raw.githubusercontent.com/vicariousdrama/nodeyez/main/images/logo.png", savetofile="../data/logo.png", headers={}):
+def getandsavefile(useTor=True, url="https://nodeyez.com/images/logo.png", savetofile="../data/logo.png", headers={}):
     try:
         proxies = gettorproxies() if useTor else {}
         timeout = gettimeouts()

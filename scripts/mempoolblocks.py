@@ -326,6 +326,8 @@ if __name__ == '__main__':
     if exists(configFile):
         with open(configFile) as f:
             config = json.load(f)
+        if "mempoolblocks" in config:
+            config = config["mempoolblocks"]
         if "outputFile" in config:
             outputFile = config["outputFile"]
         if "urlmempool" in config:

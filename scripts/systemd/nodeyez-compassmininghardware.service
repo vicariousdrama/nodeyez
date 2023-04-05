@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-compassmininghardware.service
 
 [Unit]
-Description=Nodeyez image generator for Compass Mining Hardware
+Description=(Deprecated)Compass Mining miners for sale quad (low price, high hash, cheap hash, efficient hash)
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

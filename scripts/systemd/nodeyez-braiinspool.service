@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-braiinspool.service
 
 [Unit]
-Description=Nodeyez image generator for Braiins Pool Mining Pool
+Description=Braiins Pool Mining Summary
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

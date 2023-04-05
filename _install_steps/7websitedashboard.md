@@ -6,6 +6,9 @@ layout: default
 
 # Website Dashboard
 
+If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then this step is already done for you and you can skip ahead to using the 
+[Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool.
+
 Whether you are using a display screen or not, you can also make the images 
 viewable via website dashboard.  The dashboard included in nodeyez looks like
 this
@@ -66,7 +69,6 @@ line_ssl_certificate_key=$(sudo nginx -T 2>&1 | grep "ssl_certificate_key " | se
 Drop in the Nodeyez XSLT Templates used for building directory listings
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
-sudo chown root:root /etc/nginx/nodeyez*.xslt
 ```
 
 ## Copy Nodeyez SSL Config
@@ -102,16 +104,26 @@ sudo cat /etc/nginx/modules-enabled/* | grep xslt
 If there are no values returned, copy in the configuration to enable it
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/a_xslt.conf /etc/nginx/modules-enabled/a_xslt.conf
-sudo chown root:root /etc/nginx/modules-enabled/a_xslt.conf
 ```
 
 ## Copy Nodeyez Site
 
 Now we deploy the site definition for the dashboard itself
 
-If you are deploying on a MyNodeBTC instance, use the following
+__MyNodeBTC Only__ : If you are deploying on a __MyNodeBTC__ instance, use the following
 ```shell
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez_mynode.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+```
+
+__Raspibolt Only__ : If you are deploying on a __Raspibolt__ instance, use the following
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/http_nodeyez_raspibolt.conf /etc/nginx/nodeyez/http_nodeyez_raspibolt.conf
+
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez_raspibolt.conf /etc/nginx/streams-enabled/https_nodeyez_raspibolt.conf
+
+if [ ! -f "/etc/nginx/modules-enabled/http_nodeyez_raspibolt.conf" ]; then
+  sudo ln -s /etc/nginx/nodeyez/http_nodeyez_raspibolt.conf /etc/nginx/modules-enabled/http_nodeyez_raspibolt.conf
+fi
 ```
 
 For other instances, use the following
@@ -121,7 +133,7 @@ sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-
 
 Once complete, set the ownership
 ```shell
-sudo chown root:root /etc/nginx/sites-enabled/https_nodeyez.conf
+sudo chown root:root -R /etc/nginx/
 ```
 
 ## Configure Firewall rules

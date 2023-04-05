@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-lndhub.service
 
 [Unit]
-Description=Nodeyez image generator for LND Hub Account Balances
+Description=LND Hub Account Balances
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

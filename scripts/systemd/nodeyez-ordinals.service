@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-ordinals.service
 
 [Unit]
-Description=Nodeyez image generator for Ordinal Inscriptions
+Description=Extract and render ordinal inscriptions
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service

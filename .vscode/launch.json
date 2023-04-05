@@ -11,7 +11,10 @@
             "program": "${file}",
             "cwd": "${fileDirname}",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "env": {
+                "NEWT_COLORS": "root=yellow,black window=,yellow border=white,yellow textbox=white,yellow button=black,white"
+            }
         }
     ]
 }

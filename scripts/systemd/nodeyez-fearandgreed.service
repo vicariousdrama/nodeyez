@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-fearandgreed.service
 
 [Unit]
-Description=Nodeyez image generator for Fear and Greed Index
+Description=Fear and Greed Index
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

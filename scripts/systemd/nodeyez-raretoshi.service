@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-raretoshi.service
 
 [Unit]
-Description=Nodeyez image generator for Raretoshi
+Description=Retrieve Bitcoin themed imagery from Raretoshi
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

@@ -163,6 +163,13 @@ if __name__ == '__main__':
     while True:
         # iterate the rings
         for ring in config["rings"]:
+            # check if ring enabled
+            enabled = True
+            if "enabled" in ring:
+                enabled = ring["enabled"]
+            if not enabled:
+                continue
+            # process it
             outputFile = ring["imagefilename"]
             ringname = ring["name"]
             print(f"Creating ring of fire image for ring {ringname} at {outputFile}")

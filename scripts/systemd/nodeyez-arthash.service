@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-arthash.service
 
 [Unit]
-Description=Nodeyez image generator for Artwork from Blockhash
+Description=Geometric output and coloring based on block hash
 StartLimitIntervalSec=600
 StartLimitBurst=2
 Wants=bitcoind.service
