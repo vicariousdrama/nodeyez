@@ -39,7 +39,36 @@
   "enableLogDetails.type": "boolean",
   "enableLogDetails": false,
   "aliases": "Use key value pairs to provide aliases to user accounts in the database",
-  "f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0": "Samantha",
-  "c6ff9cc674231858af03a24a75353aa7c0f9095b00b85802": "Cousin Eddie",
-  "b00b85802c6ff9cc674231858af03a24a75353aa7c0f9095": "Ahmed - Taxi Driver"
+  "userAccounts.comment": "Definitions user info associated with account id",
+  "userAccounts.type": "array",
+  "userAccounts": [
+    {
+      "_config_summary.comment": "A brief description of this item for nodeyez-config app",
+      "_config_summary.type": "string",
+      "_config_summary": "{name} (id:{accountid})",
+      "accountid.comment": "The account id assigned in the database",
+      "accountid.type": "string",
+      "accountid": "f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0",
+      "name.comment": "The alias given to the account",
+      "name.type": "string",
+      "name": "Samantha",
+      "email.comment": "An email for the user (optional)",
+      "email.type": "string",
+      "email": "",
+      "phone.comment": "A phone for the user (optional)",
+      "phone.type": "string",
+      "phone": "",
+      "notes.comment": "Additional notes for this user (optional)",
+      "notes.type": "string",
+      "notes": ""
+    },
+    {
+      "name": "Cousin Eddie",
+      "accountid": "c6ff9cc674231858af03a24a75353aa7c0f9095b00b85802"
+    },
+    {
+      "name": "Ahmed - Taxi Driver",
+      "accountid": "b00b85802c6ff9cc674231858af03a24a75353aa7c0f9095"
+    }
+  ]
 }

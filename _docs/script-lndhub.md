@@ -68,15 +68,14 @@ Fields are defined below
 | redisDb | The redis database number to load. Default `0` |
 | enableUserDetails | Indicates whether user details should be output to the image (create date, hub fees, txs). Default `true` |
 | enableLogDetails | Indicates whether the debug info should be printed out. Default `true` |
+| userAccounts | An array of user account definitions associating names to the account id |
 
-Any additional field names and values can be used to associate an alias to an internal user id within redis.
+__userAccounts__
 
-For example, for a user account identified as f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0, you can add a json
-snippet in the config file as follows
-
-```json
-"f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0": "Samantha"
-```
+| field name | description |
+| --- | --- |
+| name | The alias given to the account |
+| accountid | The account identifier. (e.g. 'f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0') |
 
 ## Run Directly
 

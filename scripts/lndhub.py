@@ -36,23 +36,31 @@ def getlndhubusertx(k):
 
 def getuseralias(k):
     l = k
+    a = None
     if exists(configFile):
-        if l in config:
+        # new, userAccounts based approach
+        if "userAccounts" in config:
+            for ua in config["userAccounts"]:
+                if all(key in ua for key in ["name","accountid"]):
+                    if ua["accountid"].lower() == l:
+                        a = ua["name"]
+        # deprecated field based approach
+        elif l in config:
             a = config[l]
-            if enableLogDetails:
-                print(f"configured alias: {a}")
-            return a
-    m = l[0:8] + ".." + l[40:48]
+    if a is not None:
+        if enableLogDetails:
+            print(f"configured alias: {a}")
+        return a
+    f8l8 = l[:8]+".."+l[-8:]
     if enableLogDetails:
-        print(f"calculated alias: {m}")
+        print(f"calculated alias: {f8l8}")
         print("---")
         print(f"There was no configured alias found for '{l}'")
-        print("You may configure an alias for this account by adding the following field to the")
-        print(f"config file: {configFile}")
-        print()
-        print(f"\"{l}\": \"your alias, e.g. Vic\"")
+        print(f"You may use the nodeyez-config tool to set a name for this account by")
+        print(f"adding a userAccount in the lndhub configuration and setting the")
+        print(f"accountid property to {l}")
         print("---")
-    return m
+    return f8l8
 
 def getusermetadata(u):
     return r.get("metadata_for_" + u)

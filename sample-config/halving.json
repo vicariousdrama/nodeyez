@@ -19,7 +19,12 @@
   "gridImageEnabled": true,
   "gridImageUnminedMode.comment": "When gridImageEnabled is True, this controls how unmined blocks should appear.",
   "gridImageUnminedMode.type": "string",
-  "gridImageUnminedMode.choices": ["fullcolor", "grayscale", "dither", "dither2"],
+  "gridImageUnminedMode.choices": {
+    "fullcolor": "Shows unmined blocks as full color",
+    "grayscale": "Shows unmined blocks in standard grayscale (default)",
+    "dither": "Shows unmined blocks in 1-bit pixels as black and white", 
+    "dither2":"Shows unmined blocks in 8-bit pixels as shades of gray"
+  },
   "gridImageUnmined": "grayscale",
   "ipfsDirectory.comment": "A directory to find image files. This is intended to leverage images downloaded as part of the raretoshi script.",
   "ipfsDirectory.type": "string",

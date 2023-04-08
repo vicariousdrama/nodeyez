@@ -13,6 +13,7 @@ title: NODEYEZ Change Log
 - Improved support for pruned bitcoin nodes
 - Miner Braiins, Miner MicroBT, LND Channel Balance, LND Channel Fees and Ring of Fire now support nested configs that are selectively not enabled
 - New nodeyez-config tool!
+- LNDHub config now has improved structuring for account aliases
 
 **General**
 

@@ -13,7 +13,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "NEWT_COLORS": "root=yellow,black window=,yellow border=white,yellow textbox=white,yellow button=black,white"
+                "NEWT_COLORS": "root=yellow,black;border=black,yellow;window=black,yellow;title=black,yellow;label=black,yellow;button=black,lightblue;actbutton=black,blue;compactbutton=black,lightblue;actcompactbutton=black,blue;"
             }
         }
     ]

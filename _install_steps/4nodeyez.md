@@ -1,6 +1,6 @@
 ---
-name: Nodeyez User Setup
-title: NODEYEZ Setup
+name: Creating the Nodeyez User and Environment
+title: NODEYEZ User Setup
 layout: default
 ---
 

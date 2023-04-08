@@ -74,15 +74,18 @@ The scripts are still available, but may not properly function as the data provi
 
 # Installation Procedures
 
-0. [Quick Start](./_install_steps/0quickstart.md)
-1. [Your Node](./_install_steps/1yournode.md)
-2. [Display Screen](./_install_steps/2displayscreen.md)
-3. [Tools](./_install_steps/3tools.md)
-4. [Nodeyez User Setup](./_install_steps/4nodeyez.md)
-5. [Panel Selection](./_install_steps/5panels.md)
-6. [Slideshow Config](./_install_steps/6slideshow.md)
-7. [Website Dashboard](./_install_steps/7websitedashboard.md)
-8. [Running at Startup](./_install_steps/8runatstartup.md)
+1. [Quick Start Installation](./_install_steps/0quickstart.md) -- Quick fast setup using install script!
+
+2. [General Node Guidance](./_install_steps/1yournode.md)
+3. [Display Screen](./_install_steps/2displayscreen.md) -- (optional)
+4. [Installing Common Tools](./_install_steps/3tools.md)
+5. [Nodeyez User Setup](./_install_steps/4nodeyez.md)
+6. [Panel Index](./_install_steps/5panels.md)
+7. [Running the Slideshow](./_install_steps/6slideshow.md) -- (optional)
+8. [Website Dashboard](./_install_steps/7websitedashboard.md)
+9. [Running Nodeyez Services at Startup](./_install_steps/8runatstartup.md)
+
+10. [Nodeyez-Config Tool](./_install_steps/9nodeyezconfig.md) -- NEW! Easy configuration!
 
 # Development Environment
 

@@ -1,5 +1,6 @@
 ---
-name: Quick Start
+name: Quick Start Installation
+title: NODEYEZ Quick Start
 layout: default
 ---
 

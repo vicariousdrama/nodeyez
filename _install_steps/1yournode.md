@@ -1,5 +1,6 @@
 ---
 name: Your Node
+title: NODEYEZ General Node Guidance
 layout: default
 ---
 

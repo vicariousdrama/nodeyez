@@ -9,7 +9,6 @@ import subprocess
 
 # Globals
 nodeyezServiceList = {}
-maxDescriptionLength = 58
 
 def msgError(e):
     w = Whiptail(title=f"Error")
@@ -23,9 +22,19 @@ def getCommandResult(cmd:str=None):
         # swallow errors here and just return stdout
         return e.stdout
 
-def getEffectiveUsername():
-    uid = os.geteuid()
-    return pwd.getpwuid(uid).pw_name
+userandpermission = None
+def getUserAndPermission():
+    global userandpermission
+    if userandpermission is None:
+        uid = os.geteuid()
+        username = pwd.getpwuid(uid).pw_name
+        accessmode = "read only"
+        if username == "nodeyez":
+            accessmode = "config only"
+        elif username == "root":
+            accessmode = "full access"
+        userandpermission = f" as {username} ({accessmode})"
+    return userandpermission
 
 def isServiceActive(serviceName:str=None):
     cmd = f"systemctl is-active {serviceName}"
@@ -84,6 +93,82 @@ def saveJSON(obj: dict = None, f: str = None):
     with open(f, "w") as f:
         json.dump(obj, f, indent=2)
 
+def whipsizeitems(items):
+    # check for none
+    if items == None:
+        return items
+    # determine available
+    screenwidth = os.get_terminal_size()[0]
+    sidewidth = 9 + 14
+    delimitwidth = 3   # e.g.   ' - '
+    choicewidth = 4    # e.g.   '[x] ' for checklist  or '( ) ' for radio 
+    availwidth = screenwidth - sidewidth
+    l = len(items)
+    # check for no items
+    if l == 0:
+        return items
+    # get item tuple size
+    c = len(items[0])
+    # get max width of column 1 and optionally column 2
+    maxw1 = 0
+    maxw2 = 0
+    for i in range(l):
+        item = items[i]
+        maxw1 = len(item[0]) if len(item[0]) > maxw1 else maxw1
+        if c > 1:
+            maxw2 = len(item[1]) if len(item[1]) > maxw2 else maxw2
+    # check if will naturally fit
+    if c == 1 and maxw1 < availwidth:
+        return items
+    if c == 2 and maxw1 + maxw2 + delimitwidth < availwidth:
+        return items
+    if c == 3 and maxw1 + maxw2 + delimitwidth + choicewidth < availwidth:
+        return items
+    # if got here then we need to truncate to fit
+    for i in range(l):
+        if c == 1:
+            # truncate the first (and only column)
+            newitem = (items[i][0][:availwidth])
+            items[i] = newitem
+        elif c == 2:
+            if maxw1 + delimitwidth < availwidth:
+                # truncate second column
+                newitem = (items[i][0], items[i][1][:(availwidth - maxw1 - delimitwidth)])
+                items[i] = newitem
+            else:
+                # no room at all for second column!!
+                newitem = (items[i][0][:availwidth - delimitwidth], "")
+                items[i] = newitem
+        elif c == 3:
+            if maxw1 + delimitwidth + choicewidth < availwidth:
+                # truncate second column, retain status in 3rd column
+                newitem = (items[i][0], items[i][1][:(availwidth - maxw1 - delimitwidth - choicewidth)], items[i][2])
+                items[i] = newitem
+            else:
+                # no room at all for second column!! but retain status
+                newitem = (items[i][0][:availwidth - delimitwidth - choicewidth], "", items[i][2])
+                items[i] = newitem
+    return items
+
+# groupsort sorts items in the list by first column until hitting any divider
+def groupsort(items):
+    c1items = []
+    p = -1
+    for i in items:
+        p += 1
+        if i[0].startswith("-"):
+            break
+        c1items.append(i[0])
+    nitems = []
+    for n in sorted(c1items):
+        for i in items:
+            if i[0] == n:
+                nitems.append(i)
+    if p > 0 and p < len(items) - 1:
+        nitems.extend(items[p:])
+    return nitems
+
+
 def showConfigureMenu(serviceID: str = None, configPath: list = None):
     if not hasConfigFile(serviceID):
         return
@@ -139,10 +224,10 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
             if type(actualSubConfig) is not type(sampleSubConfig):
                 raise Exception(f"actualSubConfig type {type(actualSubConfig)} is not same as sampleSubConfig type {type(sampleSubConfig)} from context {configPath}")
 
-            dialogTitle = f"Manage config for {serviceID}"
+            dialogTitle = f"Manage property configuration for {serviceID}"
             if len(jsonPath) > 0:
                 dialogTitle = f"{dialogTitle} - {jsonPath}"
-            w = Whiptail(title=dialogTitle)
+            w = Whiptail(title=f"{dialogTitle}", backtitle=f"{getUserAndPermission()}")
 
             # now show menu based on this level
             if type(actualSubConfig) is list:
@@ -169,19 +254,21 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                     continue
                                 v = str(s[k])
                                 d = d.replace("{" + k + "}", v)
-                            items.append((f"Edit {idx}", d[:maxDescriptionLength]))
+                            items.append((f"Edit {idx}", d))
                         else:
                             # first element as descriptor
                             for k in s.keys():
                                 if "." in k:
                                     continue
                                 v = str(s[k])
-                                items.append((f"Edit {idx}", f"{k}={v}"[:maxDescriptionLength]))
+                                items.append((f"Edit {idx}", f"{k}={v}"))
                                 break
                     # add option
                     items.append(("Add", f"Add new {subTypeName}"))
                     # Show menu
                     msg = f"Select a {subTypeName} to modify or delete."
+                    items = whipsizeitems(items)
+                    items = groupsort(items)
                     r = w.menu(msg, items, prefix=" ")
                     if r[1] != 0:
                         # cancel, scape
@@ -209,6 +296,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     items.append(("Clear", "Clear all values from the list"))
                     # Show menu
                     msg = f"Select a value to modify or delete."
+                    items = whipsizeitems(items)
+                    items = groupsort(items)
                     r = w.menu(msg, items, prefix=" ")
                     if r[1] != 0:
                         # cancel, escape
@@ -289,6 +378,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                         items.append(("-----", "-----"))
                         items.append((f"Delete entry", f"Delete this {subTypeName} from {serviceID}"))
                 msg = "Select a property to modify"
+                items = whipsizeitems(items)
+                items = groupsort(items)
                 r = w.menu(msg, items, prefix="= ")
                 if r[1] != 0:
                     # cancel, escape
@@ -358,18 +449,19 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                 (currentValue == "True") and \
                                 ((dataType == "boolean") or (not usingDefault)) \
                                 else "off"
-                            items.append(("True", "", propertyStatus))
+                            items.append(("True", "Toggles this option On, or Yes, to the Affirmative!", propertyStatus))
                             # False
                             propertyStatus = "on" if \
                                 (currentValue == "False") and \
                                 ((dataType == "boolean") or (not usingDefault)) \
                                 else "off"
-                            items.append(("False", "", propertyStatus))
+                            items.append(("False", "Toggles this option Off, or No, to the Negative!", propertyStatus))
                             # Default
                             if dataType == "overrideboolean":
                                 propertyStatus = "on" if usingDefault else "off"
                                 items.append(("Default", f"({defaultValue})", propertyStatus))
                             msg = comment
+                            items = whipsizeitems(items)
                             r = w.radiolist(msg, items)
                             if r[1] != 0:
                                 break
@@ -395,9 +487,17 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                 currentValue = r[0]
                             else:
                                 items = []
-                                for allowedChoice in allowedChoices:
-                                    propertyStatus = "on" if (currentValue == allowedChoice) else "off"
-                                    items.append((allowedChoice, "", propertyStatus))
+                                if type(allowedChoices) is dict:
+                                    for allowedChoice in allowedChoices.keys():
+                                        choiceDescription = allowedChoices[allowedChoice]
+                                        propertyStatus = "on" if (currentValue == allowedChoice) else "off"
+                                        items.append((allowedChoice, choiceDescription, propertyStatus))
+                                else:
+                                    for allowedChoice in allowedChoices:
+                                        propertyStatus = "on" if (currentValue == allowedChoice) else "off"
+                                        items.append((allowedChoice, "", propertyStatus))
+                                items = whipsizeitems(items)
+                                items = groupsort(items)
                                 r = w.radiolist(msg=thiscomment, items=items)
                                 if r[1] != 0:
                                     break
@@ -480,6 +580,9 @@ def showServiceMenu(serviceID: str = None):
     global nodeyezServiceList
     svc = nodeyezServiceList[serviceID]
     serviceName = svc["serviceName"]
+    serviceDescription = svc["serviceDescription"]
+    isdeprecated = "(Deprecated)" in serviceDescription
+    serviceDescription = serviceDescription.replace("(Deprecated)", "")
     while True:
         if "isenabled" not in svc:
             svc["isenabled"] = isServiceEnabled(serviceName)
@@ -487,8 +590,11 @@ def showServiceMenu(serviceID: str = None):
         if "isactive" not in svc:
             svc["isactive"] = isServiceActive(serviceName)
             nodeyezServiceList[serviceID] = svc
-        w = Whiptail(title=f"Nodeyez Configuration for {serviceID}")
-        msg = "Choose an option for this service"
+        w = Whiptail(title=f"Nodeyez Configuration for {serviceID}", backtitle=f"{getUserAndPermission()}")
+        msg = serviceDescription + "\n"
+        if isdeprecated:
+            msg = msg + "This service is deprecated. "
+        msg = msg + "Choose an option for this service."
         items = []
         if hasConfigFile(serviceID):
             items.append(("Configure", "Customize configuration settings"))
@@ -498,6 +604,7 @@ def showServiceMenu(serviceID: str = None):
         items.append(("Recent Logs", "View journalctl output for service"))
         if svc["isenabled"]:
             items.append(("Status", "View systemctl status of the service"))
+        items = whipsizeitems(items)
         r = w.menu(msg, items)
         if r[1] != 0:
             # cancel, escape
@@ -520,7 +627,7 @@ def showServiceMenu(serviceID: str = None):
 def showServiceList():
     if len(nodeyezServiceList.keys()) == 0:
         populateNodeyezServiceList()
-    w = Whiptail(title=f"Nodeyez Config as {getEffectiveUsername()}")
+    w = Whiptail(title=f"Nodeyez Config{getUserAndPermission()}")
     msg = "Choose a Nodeyez service to configure"
     runningIndicator = "on:"
     while True:
@@ -532,7 +639,6 @@ def showServiceList():
                 k = nodeyezServiceList[s]["serviceID"]
                 if k in runningservices:
                     d = runningIndicator + nodeyezServiceList[s]["serviceDescription"]
-                    d = d[:maxDescriptionLength]
                     items.append((k, d))
         # now show remaining available services
         for s in sorted(nodeyezServiceList):
@@ -541,8 +647,8 @@ def showServiceList():
                 d = nodeyezServiceList[s]["serviceDescription"]
                 if len(runningservices) > 0:
                     d = (" " * len(runningIndicator)) + d
-                d = d[:maxDescriptionLength]
                 items.append((k, d))
+        items = whipsizeitems(items)
         r = w.menu(msg, items)
         if r[1] != 0:
             # cancel, escape

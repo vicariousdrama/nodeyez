@@ -1,6 +1,6 @@
 ---
 name: Running the Slideshow (Optional)
-title: Running the Slideshow
+title: NODEYEZ Slideshow Setup
 layout: default
 ---
 

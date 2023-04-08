@@ -121,9 +121,10 @@ apt-get -y install \
     inkscape \
     jq \
     libjpeg-dev \
+    netcat \
     python3 \
     python3-venv \
-    zlib1g-dev
+    zlib1g-dev 
 
 # Create Nodeyez user
 CREATED_USER=0
@@ -205,15 +206,17 @@ GITPULLRESULT=""
 if [ ! -d "/home/nodeyez/nodeyez" ]; then
   echo "Cloning Nodeyez"
   sudo -u nodeyez git clone --single-branch --branch $GITCLONEBRANCH $GITCLONEREPO /home/nodeyez/nodeyez
-  sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/{config,data,imageoutput,temp}
-  sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/imageoutput/ordinals
-  sudo -u nodeyez cp /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
   chown -R nodeyez:nodeyez /home/nodeyez/nodeyez
   CLONED_REPO=1
 else
   echo "Folder for nodeyez repository already exists at /home/nodeyez/nodeyez"
   GITPULLRESULT=$(sudo -u nodeyez bash -c "cd /home/nodeyez/nodeyez && git pull")
 fi
+# create folders that dont yet exist
+sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/{config,data,imageoutput,temp}
+sudo -u nodeyez mkdir -p /home/nodeyez/nodeyez/imageoutput/ordinals
+# copy sample configs that aren't yet in user config
+sudo -u nodeyez cp -n /home/nodeyez/nodeyez/sample-config/*.json /home/nodeyez/nodeyez/config
 
 # Create python virtual environment in nodeyez user space
 CREATED_PYENV=0

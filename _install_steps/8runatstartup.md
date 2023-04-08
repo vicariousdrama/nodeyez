@@ -1,5 +1,5 @@
 ---
-name: Running at Startup
+name: Running Nodeyez Services at Startup
 title: NODEYEZ Running at Startup
 layout: default
 ---

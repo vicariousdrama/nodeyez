@@ -10,7 +10,10 @@
   "useTor": true,
   "satshape.comment": "The shape that each individual sat should be drawn.",
   "satshape.type": "string",
-  "satshape.choices": ["square","circle"],
+  "satshape.choices": {
+    "square": "Renders each sat as a square (default)",
+    "circle": "Renders each sat as a circle"
+  },
   "satshape": "square",
   "width.comment": "The width, in pixels to generate the image.",
   "width.type": "integer",

@@ -1,5 +1,6 @@
 ---
 name: Install Steps
+title: NODEYEZ Install Steps
 layout: default
 ---
 

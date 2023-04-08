@@ -1,11 +1,15 @@
 ---
 title: NODEYEZ - Display panels to get the most from your node
 ---
-# About Nodeyez
+# About Nodeyez <img align="right" width="240" src="./images/cryptocloaks-triton-case-with-dsi-screen.png" title="A Cryptocloaks Triton case with a 5 inch DSI screen mounted to the front to render Nodeyez display panels">
 
-Nodeyez is a project that contains a variety of python [scripts](./scripts) to produce images based on your Bitcoin Node
+Nodeyez produces images based on your Bitcoin Node and resources!
 
-Scripts can be run on their own, or configured as a background service on system startup.
+View on an attached screen or remotely via Website Dashboard!
+
+To setup Nodeyez, follow the [Quick Start Installation]({% link _install_steps/0quickstart.md %})!
+
+There are a variety of panel types that you can selectively enable and configure using the [Nodeyez-Config tool]({% link _install_steps/9nodeyezconfig.md %})
 
 ## Sample Panels Created by Nodeyez
 
@@ -43,17 +47,15 @@ Scripts can be run on their own, or configured as a background service on system
   <button class="btn btn-prev">&lt;</button>
 </div>
 
-## Install and Configure
+## Additional Info
 
-To setup Nodeyez, follow the [Install Steps]({% link _install_steps/index.md %}).
+Full [Install Steps]({% link _install_steps/index.md %}) are broken down and explained for each command run.
 
-Choose which panels you want to run from the [Panel Index]({% link _install_steps/5panels.md %}).
-
-View generated images via website dashboard. 
+You can choose which panels you want to run from the [Panel Index]({% link _install_steps/5panels.md %}).
 
 Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
 
-For guidance on setting up a development environment, start with the [Python and IDE Setup]({% link _developer/1basicsetup.md %}).
+Want to contribute and make changes? For guidance on setting up a development environment, start with the [Python and IDE Setup]({% link _developer/1basicsetup.md %}).
 
 [Change Log]({% link CHANGELOG.md %})
 

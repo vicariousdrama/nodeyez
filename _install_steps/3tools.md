@@ -1,6 +1,6 @@
 ---
-name: Tools
-title: NODEYEZ Common Tools
+name: Installing Common Tools
+title: NODEYEZ Tools Setup
 layout: default
 ---
 
@@ -66,6 +66,13 @@ sudo apt-get install imagemagick inkscape
 This provides for JSON processing
 ```shell
 sudo apt-get insall jq
+```
+
+## Install Netcat
+
+Provides for network connection calls used by Miner tools
+```shell
+sudo apt-get install netcat
 ```
 
 ---

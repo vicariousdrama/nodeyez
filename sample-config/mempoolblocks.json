@@ -97,7 +97,10 @@
   "height": 320,
   "renderStyle.comment": "The style to render the image.",
   "renderStyle.type": "string",
-  "renderStyle.choices": ["righttoleft","lefttoright"],
+  "renderStyle.choices": {
+    "righttoleft": "Next block starts from the right side of the image (default)",
+    "lefttoright": "Next block starts from the left side of the image"
+  },
   "renderStyle": "righttoleft",
   "sleepInterval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
   "sleepInterval.type": "integer",

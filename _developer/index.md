@@ -1,5 +1,6 @@
 ---
 name: Developer Setup
+title: NODEYEZ Developer Setup
 layout: default
 ---
 
