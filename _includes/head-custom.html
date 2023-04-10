@@ -46,7 +46,11 @@
         });
       });
     }
+    function autoslide() {
+      document.querySelector(".btn-next").click();
+    }
     window.addEventListener('load', setupSliders);
+    window.setInterval(autoslide, 3000);
     </script>
 
     <!-- header image colorize to #FFCC00 using codepen https://codepen.io/sosuke/pen/Pjoqqp -->

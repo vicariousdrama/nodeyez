@@ -38,7 +38,7 @@ There are a variety of panel types that you can selectively enable and configure
   <div class="slide"><img src="./images/ordinals.png" width=196 /></div>
   <div class="slide"><img src="./images/rof-sample.png" width=196 /></div>
   <div class="slide"><img src="./images/satsperusd.png" width=196 /></div>
-  <div class="slide"><img src="./images/slushpool.png" width=196 /></div>
+  <div class="slide"><img src="./images/brainspool.png" width=196 /></div>
   <div class="slide"><img src="./images/sysinfo.png" width=196 /></div>
   <div class="slide"><img src="./images/utcclock.png" width=196 /></div>
   <div class="slide"><img src="./images/whirlpoolclimix.png" width=196 /></div>
