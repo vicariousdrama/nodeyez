@@ -95,7 +95,7 @@ Tagged Commit: [290fb01c39cef84ab77155eea437439825a304ca](https://github.com/vic
 - New panel: Gas Price
 - Renamed panel: Miner - Braiins (replaces Miner Status panel)
 - Enhanced Compass Mining Status - now supports minor status level
-- Enhanced Miner Brains - support multiple miners, new look and feel
+- Enhanced Miner Braiins - support multiple miners, new look and feel
 - Enhanced Raretoshi - Set download timeout to 5 seconds
 - Enhanced Daily Data Retrieval - support for slushpool data 
 - Enhanced Raretoshi panel to allow for traversing user randomly
