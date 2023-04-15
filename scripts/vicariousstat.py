@@ -1,23 +1,36 @@
 # import packages
-from os.path import exists
-import binascii
-import json
-import math
-import requests
+import psutil
 import subprocess
-import vicariousnetwork
 
 # gets hottest temperature (cpu) in degrees C, * 1000
 def getcputemp():
     cmd = "grep . /sys/class/hwmon/*/* /sys/class/thermal/*/* 2>/dev/null | grep \"temp\" | grep \"input\" | awk '{split($0,a,\":\"); print a[2]}' | sort -r | head -n 1"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
-        return int(cmdoutput)
+        return (float(cmdoutput)/1000.0)
     except subprocess.CalledProcessError as e:
         print(e)
         return 0
 
-# gets avialable memory, in MB
+def getcputempwarnlevel():
+    h = 60 # based on raspberry pi, which doesnt report high or critical
+    s = psutil.sensors_temperatures()
+    for k in s.keys():
+        v = s[k][0]
+        if v.high is not None:
+            if v.high > h: h = v.high
+    return h
+
+def getcputempdangerlevel():
+    h = 75 # based on raspberry pi, which doesnt report high or critical
+    s = psutil.sensors_temperatures()
+    for k in s.keys():
+        v = s[k][0]
+        if v.critical is not None:
+            if v.critical > h: h = v.critical
+    return h
+
+# gets available memory, in MB
 def getmemoryavailable():
     cmd = "free --mebi | grep Mem | awk '{ print $7 }'"
     try:
@@ -26,6 +39,20 @@ def getmemoryavailable():
     except subprocess.CalledProcessError as e:
         print(e)
         return 0
+
+def getmemoryinfo(memtype="Mem"):
+    cmd = f"free --mebi | grep {memtype}"
+    info = {"label":memtype,"total":0,"used":0,"percentused":100}
+    try:
+        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+        parts = cmdoutput.split()
+        info["label"] = memtype
+        info["total"] = parts[1]
+        info["used"] = parts[2]
+        info["percentused"] = int((float(info["used"])/float(info["total"]))*100)
+    except subprocess.CalledProcessError as e:
+        print(e)
+    return info
 
 # gets network transmitted
 def getnetworktx():
@@ -78,7 +105,7 @@ def getcpucount():
         return 1
 
 # get drive free
-def getdrivefree(path="/$"):
+def getdrivefreespace(path="/$"):
     cmd = "printf \"%s\" \"$(df -h|grep '" + path + "'|sed -n 1p|awk '{print $4}')\" 2>/dev/null"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
@@ -88,8 +115,9 @@ def getdrivefree(path="/$"):
         return "?"
 
 # get drive free percent
-def getdriveratio(path="/$"):
-    cmd = "printf \"%.0f\" \"$(df | grep '" + path + "'|sed -n 1p|awk '{print $4/$2*100 }')\" 2>/dev/null"
+def getdrivefreepercent(path="/$"):
+    #cmd = "printf \"%.0f\" \"$(df | grep '" + path + "'|sed -n 1p|awk '{print $4/$2*100 }')\" 2>/dev/null"
+    cmd = "printf \"%.0f\" \"$(df | grep '" + path + "'|sed -n 1p|awk '{print $4/($3+$4)*100 }')\" 2>/dev/null"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         return cmdoutput
@@ -99,13 +127,13 @@ def getdriveratio(path="/$"):
 
 # get drive2 path
 def getdrive2path():
-    cmd = "df -t ext4 | grep / | awk '{print $6}' | sort | wc -l"
+    cmd = "df -t ext4 | grep / | awk '{print $6}' | grep -v /boot | sort | wc -l"
     try:
         cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         if len(cmdoutput) > 0:
             drivecount = int(cmdoutput)
             if drivecount > 1:
-                cmd = "df -t ext4 | grep / | awk '{print $6}' | sort | sed -n 2p"
+                cmd = "df -t ext4 | grep / | awk '{print $6}' | grep -v /boot | sort | sed -n 2p"
                 drive2path = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
                 return drive2path
     except subprocess.CalledProcessError as e:
@@ -116,9 +144,9 @@ def getdrive2path():
 # get drive1 info
 def getdrive1info():
     drive1path = "/"
-    drivefree = getdrivefree()
-    driveratio = getdriveratio()
-    return drive1path, drivefree, driveratio
+    drivefreespace = getdrivefreespace()
+    drivefreepercent = getdrivefreepercent()
+    return drive1path, drivefreespace, drivefreepercent
 
 # get drive2 info
 def getdrive2info():
@@ -126,6 +154,6 @@ def getdrive2info():
     if drive2path is None or drive2path == "?":
         return "None", 0, 0
     else:
-        drivefree = getdrivefree(drive2path)
-        driveratio = getdriveratio(drive2path)
-        return drive2path, drivefree, driveratio
+        drivefreespace = getdrivefreespace(drive2path)
+        drivefreepercent = getdrivefreepercent(drive2path)
+        return drive2path, drivefreespace, drivefreepercent

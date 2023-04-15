@@ -9,20 +9,15 @@ layout: default
 If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then this step is already done for you and you can skip ahead to using the 
 [Nodeyez-Config]({% link _install_steps/9nodeyezconfig.md %}) tool.
 
-Whether you are using a display screen or not, you can also make the images 
-viewable via website dashboard.  The dashboard included in nodeyez looks like
-this
+Whether you are using a display screen or not, you can also make the images  viewable via website dashboard.  The dashboard included in nodeyez looks like this
 
 ![sample image of dashboard](../images/websitedashboard.png)
 
-The dashboard view will automatically cycle through the same images at 10 second
-intervals, showing smaller versions at the top of the screen.  
+The dashboard view will automatically cycle through the same images at 10 second intervals, showing smaller versions at the top of the screen.  
 
-Clicking on an image will automatically advance the view to the full size 
-version of that one.
+Clicking on an image will automatically advance the view to the full size  version of that one.
 
-There are multiple options for setting up the dashboard.  Choose the most
-appropriate based on your raspberry pi node
+There are multiple options for setting up the dashboard.  Choose the most appropriate based on your raspberry pi node
 
 If you are currently logged in as user nodeyez, `exit` back to the privileged user.
 
@@ -54,10 +49,7 @@ fi
 
 ## Capture SSL Certificate Info
 
-Capture the existing SSL Certificate and Key.  This is primarily for previously
-existing NGINX instances.  In the case of installing on a MyNodeBTC instance, the
-intent is to be able to use the same SSL certificate that is used for other
-subsites in that instance
+Capture the existing SSL Certificate and Key.  This is primarily for previously existing NGINX instances.  In the case of installing on a MyNodeBTC instance, the intent is to be able to use the same SSL certificate that is used for other subsites in that instance
 
 ```shell
 line_ssl_certificate=$(sudo nginx -T 2>&1 | grep "ssl_certificate " | sed -n 1p)
@@ -73,8 +65,7 @@ sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
 
 ## Copy Nodeyez SSL Config
 
-The prebuilt SSL configuration files include references to the cert and key,
-common parameters, and proxy definitions.
+The prebuilt SSL configuration files include references to the cert and key, common parameters, and proxy definitions.
 
 ```shell
 sudo mkdir -p /etc/nginx/nodeyez

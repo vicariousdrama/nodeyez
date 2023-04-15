@@ -34,20 +34,20 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/whirlpoolclimix.png` |
-| width | The width, in pixels, to generate the image. Default `480` |
-| height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
-| useTor | Indicates whether remote calls should use tor for privacy. This should not be used for internal/local addresses such as access to whirlpool cli on same system. Experimental. Default `false` |
-| whirlpoolurl | The base url to use for retrieving whirlpool information.  You should use your local whirlpool cli, not the whirlpool coordinator. Default `https://127.0.0.1:8899` |
 | apiKey | You must specify the apiKey for communicating with your local whirlpool instance. |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| colorHeader | The color of the text expressed as a Hexadecial color specifier. Default `#ffffff` |
-| colorDataLabel | The color of the text for field labels expressed as a Hexadecimal color specifier. Default `#aa2222` |
-| colorDataValue | The color of the text for field values expressed as a Hexadecimal color specifier. Default `#bbbbbb` |
-| colorDataOn | The color of the indicator when something is on/true. Default `#40ff40` |
-| colorDataOff | The color of the indicator when something is off/false. Default `#ff4040` |
-| colorTextFG | The color of all other text labels and values expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| attributionColor | The text color for the source attribution line expressed as a Hexadecimal color specifier. Default `#aa2222` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| headerColor | The color of the text expressed as a Hexadecial color specifier. Default `#ffffff` |
+| height | The height, in pixels, to generate the image. Default `320` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
+| labelColor | The color of the text for field labels expressed as a Hexadecimal color specifier. Default `#aa2222` |
+| offColor | The color of the indicator when something is off/false. Default `#ff4040` |
+| onColor | The color of the indicator when something is on/true. Default `#40ff40` |
+| textColor | The color of all other text labels and values expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| useTor | Indicates whether remote calls should use tor for privacy. This should not be used for internal/local addresses such as access to whirlpool cli on same system. Default `false` |
+| valueColor | The color of the text for field values expressed as a Hexadecimal color specifier. Default `#bbbbbb` |
+| whirlpoolUrl | The base url to use for retrieving whirlpool information.  You should use your local whirlpool cli, not the whirlpool coordinator. Default `https://127.0.0.1:8899` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 
@@ -62,7 +62,7 @@ cd ~/nodeyez/scripts
 ```
 
 Run it
-```
+```shell
 python whirlpoolclimix.py
 ```
 

@@ -1,0 +1,32 @@
+{
+    "activeProfile.comment": "Indicate the name of the profile to use by default",
+    "activeProfile.type": "list:bitcoin-rest:profiles[].name",
+    "activeProfile": "none",
+    "profiles.comment": "Profile definitions for Bitcoin Nodes",
+    "profiles.type": "array",
+    "profiles": [
+        {
+            "_config_summary.comment": "A brief description of this item for nodeyez-config app",
+            "_config_summary.type": "string",
+            "_config_summary": "{name} - {address}:{port}",
+            "name.comment": "The name of the profile. This should be unique across all profiles",
+            "name.type": "string",
+            "name": "default",
+            "rpcuser.comment": "The username for accessing the Bitcoin node",
+            "rpcuser.type": "string",
+            "rpcuser": "rpcuser",
+            "rpcpassword.comment": "The password for accessing the Bitcoin node",
+            "rpcpassword.type": "password",
+            "rpcpassword": "rpcpassword",
+            "address.comment": "The ip address or fully qualified domain name to access the Bitcoin node",
+            "address.type": "string",
+            "address": "127.0.0.1",
+            "port.comment": "The port to connect to the Bitcoin node on",
+            "port.type": "string",
+            "port": "8332",
+            "useTor.comment": "Indicates whether remote calls should use tor socks proxy for privacy.",
+            "useTor.type": "boolean",
+            "useTor": false
+        }
+    ]
+}

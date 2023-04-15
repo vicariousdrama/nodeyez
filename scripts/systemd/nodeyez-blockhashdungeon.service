@@ -14,8 +14,8 @@ After=bitcoind.service
 [Service]
 EnvironmentFile=/etc/nodeyez.conf
 WorkingDirectory=/home/nodeyez/nodeyez/scripts
-ExecStartPre=/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/.cookie
-ExecStartPre=/bin/chown nodeyez:nodeyez /home/nodeyez/.bitcoin/.cookie
+ExecStartPre=/bin/sh -c '/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/ 2>/dev/null || exit 0'
+ExecStartPre=/bin/sh -c '/bin/chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin 2>/dev/null || exit 0'
 ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/blockhashdungeon.py
 User=nodeyez
 Restart=on-failure

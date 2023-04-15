@@ -1,0 +1,51 @@
+{
+    "summary": [
+        {
+            "SUMMARY": [
+                {
+                    "Chip Temp Max": 86,
+                    "Env Temp": 48,
+                    "Fan Speed In": 2600,
+                    "Fan Speed Out": 2900,
+                    "MHS 1m": 364002873,
+                    "Power": 4750,
+                    "Power Limit": 4800,
+                    "Power Mode": "Low",
+                    "Temperature": 47
+                }
+            ]
+        }
+    ],
+    "devs": [
+        {
+            "DEVS": [
+                {
+                    "ID": "SM0",
+                    "Temperature": 43,
+                    "Chip Temp Max": 84
+                },
+                {
+                    "ID": "SM1",
+                    "Temperature": 46,
+                    "Chip Temp Max": 85
+                },
+                {
+                    "ID": "SM2",
+                    "Temperature": 47,
+                    "Chip Temp Max": 86
+                }
+            ]
+        }
+    ],
+    "pools": [
+        {
+            "POOLS": [
+                {
+                    "URL": "stratum+tcp://us-east.stratum.braiins.com:3333",
+                    "User": "BobbiesHashingEmporium.Worker1",
+                    "Status": "Alive"
+                }
+            ]
+        }
+    ]
+}

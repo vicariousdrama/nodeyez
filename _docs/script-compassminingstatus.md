@@ -33,24 +33,24 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/compassminingstatus.png` |
-| statusurl | The url that provides current compass mining facility status. Default `https://status.compassmining.io/` |
-| colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| colorGoodText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as good. Default `#40ff40` |
-| colorMaintenance | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as maintenance. Default `#2020ff` |
-| colorMaintenanceText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as maintenance. Default `#ffffff` | 
-| colorCritical | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as critical. Default `#ff7a00` | 
-| colorCriticalText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as critical. Default `#ffffff` | 
-| colorMajor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ff2020` |
-| colorMajorText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ffffff` |  
-| colorNone | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#333333` | 
-| colorNoneText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#ffffff` |
-| colorMinor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#2020ff` |
-| colorMinorText | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#ffffff` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| criticalBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as critical. Default `#ff7a00` | 
+| criticalTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as critical. Default `#ffffff` | 
+| goodBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as good. Default `#000000` | 
+| goodTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as good. Default `#40ff40` |
+| maintenanceBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as maintenance. Default `#2020ff` |
+| maintenanceTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as maintenance. Default `#ffffff` | 
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
+| majorBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ff2020` |
+| ajorTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ffffff` |  
+| minorBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#2020ff` |
+| minorTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#ffffff` |
+| noneBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#333333` | 
+| noneTextcolor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#ffffff` |
+| statusURL | The url that provides current compass mining facility status. Default `https://status.compassmining.io/` |
+| textColor | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

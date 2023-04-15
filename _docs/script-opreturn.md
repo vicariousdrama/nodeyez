@@ -34,14 +34,14 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/opreturn.png` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| dataRowEvenTextColor | The primary color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#ff7f00` |
+| dataRowOddTextColor | The alternate color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#dddd00` |
+| excludedPatterns | List of regular expression patterns to exclude from rendered output |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
-| colorTextFG | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
-| colorTextFG1 | The primary color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#ff7f00` |
-| colorTextFG2 | The alternate color to use for OP_RETURN text expressed as a hexadecimal color specifier. Default `#dddd00` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
+| textColor | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

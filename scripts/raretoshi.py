@@ -1,340 +1,376 @@
 #! /usr/bin/env python3
-from PIL import Image, ImageDraw, ImageColor, ImageFile
+from PIL import Image, ImageColor, ImageDraw, ImageFile
 from os.path import exists
+from vicariouspanel import NodeyezPanel
 import json
 import os
 import qrcode
 import random
-import subprocess
+import re
 import sys
 import time
-import vicarioustext
+import vicariousbitcoin
 import vicariousnetwork
+import vicarioustext
 
-def pickRaretoshiUser(raretoshiInfo):
-    global randomUserLast
-    global raretoshiUser
-    if randomUserInterval + randomUserLast < int(time.time()):
-        # pick new user
-        randomUserLast=int(time.time())
-        userlist=[]
-        # look at holdings and favorites
-        if "subject" in raretoshiInfo:
-            if "holdings" in raretoshiInfo["subject"]:
-                for holding in raretoshiInfo["subject"]["holdings"]:
-                    owner = holding["owner"]["username"]
-                    if not owner in userlist:
-                        userlist.append(owner)
-                    artist = holding["artist"]["username"]
-                    if not artist in userlist:
-                        userlist.append(artist)
-            if "favorites" in raretoshiInfo["subject"]:
-                for favorite in raretoshiInfo["subject"]["favorites"]:
-                    if "artwork" in favorite:
-                        owner = favorite["artwork"]["owner"]["username"]
-                        if not owner in userlist:
-                            userlist.append(owner)
-                        artist = favorite["artwork"]["artist"]["username"]
-                        if not artist in userlist:
-                            userlist.append(artist)
-        # pick random index
-        usercount = len(userlist)
-        userindex = int(random.random() * usercount)
-        raretoshiUser = userlist[userindex]
+class RaretoshiPanel(NodeyezPanel):
 
+    def __init__(self):
+        """Instantiates a new Raretoshi panel"""
 
-def getIPFSLocalFilename(ipfshash):
-    return ipfsDataDirectory + ipfshash
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorTextFG": "textColor",
+            "qrCodeSize": "qrCodePizelSize",
+            "overlayTextEnabled": "overlayEnabled",
+            "overlayTextColorBG": "overlayBackgroundColor",
+            "overlayTextColorFG": "overlayTextColor",
+            "sleepInterval": "interval",
+            # panel specific key names
+            "overlayBackgroundColor": "overlayBackgroundColor",
+            "overlayEnabled": "overlayEnabled",
+            "overlayTextColor": "overlayTextColor",
+            "qrCodeEnabled": "qrCodeEnabled",
+            "qrCodePixelSize": "qrCodePixelSize",
+            "randomUserEnabled": "randomUserEnabled",
+            "randomUserInterval": "randomUserInterval",
+            "stretchEdgeEnabled": "stretchEdgeEnabled",
+            "stretchEdgeSpacing": "stretchEdgeSpacing",
+            "raretoshiUser": "raretoshiUser",
+            "useTor": "useTor",
+            "userInfoInterval": "userInfoInterval",
+        }
 
-def downloadIPFSfile(ipfshash):
-    downloadFromRaretoshi = False
-    if ipfshash.endswith(".png") or ipfshash.endswith(".jpeg"):
-        # seems that avatar_url for artist and owner may not be in ipfs.io.
-        # these urls also contain the file extension, which needs to be removed
-        downloadFromRaretoshi = True
-        ipfshash = ipfshash.replace(".png", "")
-        ipfshash = ipfshash.replace(".jpeg", "")
-    saveto = getIPFSLocalFilename(ipfshash)
-    if exists(saveto):
-        print(f"Skipping IPFS download. File already exists at {saveto}")
-        return
-    if downloadFromRaretoshi:
-        url = "https://raretoshi.com/api/ipfs/" + ipfshash
-    else:
-        url = "https://ipfs.io/ipfs/" + ipfshash
-    print(f"Downloading from {url}")
-    rc = vicariousnetwork.getandsavefile(useTor, url, saveto, "")
-    if rc == 0:
-        print(f"IPFS Downloaded to {saveto}")
-    else:
-        # If we were originally hitting IPFS, we can try fallback to raretoshi
-        if url.startswith("https://ipfs.io/"):
-            url = url.replace("https://ipfs.io/", "https://raretoshi.com/api/")
-            print(f"Retrying with {url}")
-            rc = vicariousnetwork.getandsavefile(useTor, url, saveto, "")
-            if rc == 0:
-                print(f"IPFS Downloaded to {saveto}")
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("footerEnabled", False)
+        self._defaultattr("headerText", "Raretoshi Image")
+        self._defaultattr("interval", 120)
+        self._defaultattr("overlayBackgroundColor", "#00000080")
+        self._defaultattr("overlayEnabled", True)
+        self._defaultattr("overlayTextColor", "#ffffff")
+        self._defaultattr("qrCodeEnabled", True)
+        self._defaultattr("qrCodePixelSize", 2)
+        self._defaultattr("randomUserEnabled", True)
+        self._defaultattr("randomUserInterval", 300)
+        self._defaultattr("raretoshiUser", "valeriyageorg")
+        self._defaultattr("stretchEdgeEnabled", True)
+        self._defaultattr("stretchEdgeSpacing", 30)
+        self._defaultattr("useTor", True)
+        self._defaultattr("userInfoInterval", 3600)
+        self._defaultattr("watermarkEnabled", False)
+
+        # Initialize
+        super().__init__(name="raretoshi")
+
+        # Make directories as needed
+        d = f"{self.dataDirectory}ipfs/"
+        if not exists(d): os.makedirs(d)
+        self.ipfsDataDirectory = d
+        d = f"{self.dataDirectory}raretoshi/"
+        if not exists(d): os.makedirs(d)
+        self.raretoshiDataDirectory = d
+
+        # Set starting state
+        self.collectionIndex=-1
+        self.userInfoLast=0
+        self.userInfo={"subject":{"holdings":[]}}
+        self.randomUserLast=0
+        self.loadUsernames()
+
+        # Support truncated images
+        ImageFile.LOAD_TRUNCATED_IMAGES=True
+
+    def getValuesForKeyname(self, o, keyName="username"):
+        values = []
+        for key, value in o.items():
+            if key == keyName:
+                if type(value) is str and value not in values: values.append(value)
             else:
-                print(f"Unable to download file from {url}")
+                if type(value) is list:
+                    for listItem in value:
+                        if type(listItem) is str and listItem not in values: values.append(listItem)
+                        if type(listItem) is dict:
+                            dictValues = self.getValuesForKeyname(listItem, keyName)
+                            for dictValue in dictValues:
+                                if dictValue not in values: values.append(dictValue)
+                if type(value) is dict:
+                    dictValues = self.getValuesForKeyname(value, keyName)
+                    for dictValue in dictValues:
+                        if dictValue not in values: values.append(dictValue)
+        return values
 
-def createimage(width=480, height=320):
-    # Setup alpha layer
-    alpha_img = Image.new(mode="RGBA", size=(width, height), color=(255,255,255,0))
-    draw = ImageDraw.Draw(alpha_img)
-    print(f"Getting Raretoshi information for user {raretoshiUser}")
-    global userInfo
-    global userInfoLast
-    global userInfoInterval
-    userInfo, userInfoLast = vicariousnetwork.getraretoshiuserinfo(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
-    holdingscount = len(userInfo["subject"]["holdings"])
-    # quick bail if no holdings
-    if holdingscount == 0:
-        print("User has no holdings on raretoshi")
-        return
-    # pick a random one
-    allowedfiletypes = ['image/png','image/jpeg']
-    filetype = ""
-    holdingchecks = 0
-    while (filetype not in allowedfiletypes) and (holdingchecks < holdingscount):
-        holdingchecks += 1
-        holdingindex = int(random.random() * holdingscount)
-        if len(sys.argv) > 2:
-            holdingindex = int(sys.argv[2])
-        holding = userInfo["subject"]["holdings"][holdingindex]
-        filetype = holding["filetype"]
-        if filetype not in allowedfiletypes:
-            print(f"Holding {holdingindex} is {filetype} which is unsupported.")
-            print(f"Picking another at random. Check count {holdingchecks}.")
-    if holdingchecks > holdingscount:
-        print(f"User has no holdings on raretoshi that match allowed types {allowedfiletypes}")
-        return
-    title = holding["title"]
-    ipfshash = holding["filename"]
-    print(f"Picked holding {holdingindex} titled {title} with ipfshash {ipfshash} ")
-    downloadIPFSfile(ipfshash)
-    artist = holding["artist"]["username"]
-    print(f"Downloading avatar for artist: {artist}")
-    downloadIPFSfile(holding["artist"]["avatar_url"])
-    owner = holding["owner"]["username"]
-    print(f"Downloading avatar for owner: {owner}")
-    downloadIPFSfile(holding["owner"]["avatar_url"])
-    sourceFile = getIPFSLocalFilename(ipfshash)
-    if not exists(sourceFile):
-        print(f"The source image file was not found at {sourceFile}")
-        print(f"There may be a problem with the IPFS servers")
-        slug = holding["slug"]
-        print(f"This is for https://raretoshi.com/a/{slug}")
-        return
-    # temp
-    #sourceFile = "../data/ipfs/Qme9Wp6V2G38ADrunUrZLun7MgRiUdvEqn72XR5ykek81o"
-    sourceImage=Image.open(sourceFile)
-    sourceImage=sourceImage.convert("RGBA")
-    sourceWidth=int(sourceImage.getbbox()[2])
-    sourceHeight=int(sourceImage.getbbox()[3])
-    sourceRatio=float(sourceWidth)/float(sourceHeight)
-    imageRatio=float(width)/float(height)
-    if sourceRatio > imageRatio:
-        print("Need to extend top and bottom")
-        newSourceHeight=int(sourceWidth/imageRatio)
-        print(f"Original width x height is {sourceWidth} x {sourceHeight}.  New ratio height {newSourceHeight}")
-        offset = int((newSourceHeight-sourceHeight)/2)
-        imTaller = Image.new(mode="RGBA", size=(sourceWidth, newSourceHeight), color=colorBackground)
-        imTaller.paste(sourceImage, (0, offset))
-        if stretchEdgeEnabled:
-            # top side
-            imLine = sourceImage.crop((0,0,sourceWidth,1))
-            for y in range(offset-stretchEdgeSpacing):
-                imTaller.paste(imLine, (0, y))
-            # bottom side
-            imLine = sourceImage.crop((0,sourceHeight-stretchEdgeSpacing,sourceWidth,sourceHeight))
-            for y in range(offset-stretchEdgeSpacing):
-                imTaller.paste(imLine, (0, y+offset+sourceHeight+stretchEdgeSpacing))
-        print(f"Resizing to {width} x {height}")
-        im = imTaller.resize(size=(width,height))
-        imTaller.close()
-    if imageRatio > sourceRatio:
-        print("Need to extend sides")
-        newSourceWidth=int(sourceHeight * imageRatio)
-        print(f"Original width x height is {sourceWidth} x {sourceHeight}.  New ratio width {newSourceWidth}")
-        offset = int((newSourceWidth-sourceWidth)/2)
-        imWider = Image.new(mode="RGBA", size=(newSourceWidth, sourceHeight), color=colorBackground)
-        imWider.paste(sourceImage, (offset, 0))
-        if stretchEdgeEnabled:
-            # left side
-            imLine = sourceImage.crop((0,0,1,sourceHeight))
-            for x in range(offset-stretchEdgeSpacing):
-                imWider.paste(imLine, (x, 0))
-            # right side
-            imLine = sourceImage.crop((sourceWidth-1,0,sourceWidth,sourceHeight))
-            for x in range(offset-stretchEdgeSpacing):
-                imWider.paste(imLine, (x+offset+sourceWidth+stretchEdgeSpacing, 0))
-        print(f"Resizing to {width} x {height}")
-        im = imWider.resize(size=(width,height))
-        imWider.close()
-    if imageRatio == sourceRatio:
-        print("Same ratio")
-        im = sourceImage.resize(size=(width,height))
-    sourceImage.close()
-    # Labeling
-    overlayTextBottomHeight=0
-    if overlayTextEnabled:
-        print("Writing overlay text")
-        bgoffset=1
-        overlayTextTopHeight=24
-        titleWidth = width + 2
-        titleFontSize=int(overlayTextTopHeight * 2/3)
-        while (titleWidth > width) and titleFontSize > 6:
-            titleWidth,titleHeight,titleFont=vicarioustext.gettextdimensions(draw, title, titleFontSize, True)
-            if titleWidth > width:
-                titleFontSize -= 1
-        overlayTextTopHeight = int(titleFontSize * 1.5)
-        draw.rectangle(xy=((0,0),(width,overlayTextTopHeight)),fill=overlayTextColorBG)
-        if titleFontSize > 6:
-            vicarioustext.drawcenteredtext(draw, title, titleFontSize, int(width/2), int(overlayTextTopHeight/2), overlayTextColorFG, True)
+    def loadUsernames(self):
+        self.usernames=vicariousbitcoin.loadJSONData(f"{self.raretoshiDataDirectory}/raretoshi-usernames.json", [self.raretoshiUser])
+
+    def saveUsernames(self):
+        with open(f"{self.raretoshiDataDirectory}/raretoshi-usernames.json", "w") as f:
+            json.dump(self.usernames, f)
+
+    def setupRaretoshiUser(self):
+        now = int(time.time())
+        if self.randomUserInterval + self.randomUserLast > now: return
+        self.randomUserLast = now
+        usernames = self.getValuesForKeyname(self.userInfo, "username")
+        self.usernames = list(set(self.usernames + usernames))
+        if len(self.usernames) > 0: self.raretoshiUser = random.choice(self.usernames)
+        self.saveUsernames()
+
+    def setupHoldingInfo(self):
+        self.holding = None
+        allowedFileTypes = ['image/png','image/jpeg']
+        holdingsCount = len(self.userInfo["subject"]["holdings"])
+        holdingIndex = self.collectionIndex
+        fileType = ""
+        # quick bail if no holdings
+        if holdingsCount == 0:
+            self.log(f"User {self.raretoshiUser} has no holdings on raretoshi")
+            return
+        # check if requested index exists and suitable
+        if holdingIndex > -1 and holdingIndex < holdingsCount:
+            holding = self.userInfo["subject"]["holdings"][holdingIndex]
+            if self.isValidHoldingFormat(holding):
+                fileType = holding["filetype"]
+                if fileType not in allowedFileTypes:
+                    self.log(f"Holding #{holdingIndex} is '{fileType}' which is unsupported.")
+            else:
+                self.log(f"Holding #{holdingIndex} is not valid format.")
+        # Pick randomly if not yet suitable
+        holdingChecked = [holdingIndex]
+        holdingChecks = 8
+        while (fileType not in allowedFileTypes) and (holdingChecks > 0):
+            holdingChecks -= 1
+            while holdingIndex in holdingChecked and len(holdingChecked) < holdingsCount:
+                holdingIndex = int(random.random() * holdingsCount)
+            holdingChecked.append(holdingIndex)
+            holding = self.userInfo["subject"]["holdings"][holdingIndex]
+            if self.isValidHoldingFormat(holding):
+                fileType = holding["filetype"] if "filetype" in holding else ""
+                if fileType not in allowedFileTypes:
+                    self.log(f"Holding #{holdingIndex} is '{fileType}' which is unsupported.")
+            else:
+                self.log(f"Holding #{holdingIndex} is not valid format.")
+        if fileType not in allowedFileTypes:
+            self.log(f"User {self.raretoshiUser} has no suitable holdings on raretoshi matching allowed types {allowedFileTypes}")
+            return
+        if self.isValidHoldingFormat(holding): self.holding = holding
+
+    def downloadIPFSfile(self, ipfshash):
+        downloadFromRaretoshi = False
+        if ipfshash.endswith(".png") or ipfshash.endswith(".jpeg"):
+            # seems that avatar_url for artist and owner may not be in ipfs.io.
+            # these urls also contain the file extension, which needs to be removed
+            downloadFromRaretoshi = True
+            ipfshash = ipfshash.replace(".png", "")
+            ipfshash = ipfshash.replace(".jpeg", "")
+        saveto = self.ipfsDataDirectory + ipfshash
+        if exists(saveto):
+            self.log(f"Skipping IPFS download. File already exists at {saveto}")
+            return 0
+        if downloadFromRaretoshi:
+            url = "https://raretoshi.com/api/ipfs/" + ipfshash
         else:
-            vicarioustext.drawlefttext(draw, title, titleFontSize, 0, int(overlayTextTopHeight/2), overlayTextColorFG, True)
-        overlayTextBottomHeight=28
-        metaFontSize=12
-        draw.rectangle(xy=((0,height-overlayTextBottomHeight),(width,height)),fill=overlayTextColorBG)
-        vicarioustext.drawbottomlefttext(draw, "Artist:" + artist, metaFontSize, 0, height-12, overlayTextColorFG)
-        editionText = "Edition:" + str(holding["edition"]) + "/" + str(holding["editions"])
-        if holding["editions"] == 1:
-            editionText = "Edition: One of a Kind"
-        vicarioustext.drawbottomlefttext(draw, editionText, metaFontSize, 0, height, overlayTextColorFG)
-        vicarioustext.drawbottomrighttext(draw, "Owner:" + owner, metaFontSize, width, height, overlayTextColorFG)
-    # Show QR code?
-    if qrCodeEnabled:
-        print("Creating QR code")
-        slug=holding["slug"]
-        raretoshiurl="https://raretoshi.com/a/" + slug
-        qr = qrcode.QRCode(box_size=qrCodeSize)
+            url = "https://ipfs.io/ipfs/" + ipfshash
+        self.log(f"Downloading from {url}")
+        rc = vicariousnetwork.getandsavefile(self.useTor, url, saveto, "")
+        if rc == 0:
+            self.log(f"IPFS Downloaded to {saveto}")
+        else:
+            # If we were originally hitting IPFS, we can try fallback to raretoshi
+            if url.startswith("https://ipfs.io/"):
+                url = url.replace("https://ipfs.io/", "https://raretoshi.com/api/")
+                self.log(f"Retrying with {url}")
+                rc = vicariousnetwork.getandsavefile(self.useTor, url, saveto, "")
+                if rc == 0:
+                    self.log(f"IPFS Downloaded to {saveto}")
+                else:
+                    self.log(f"Unable to download file from {url}")
+        return rc
+
+    def isValidUserFormat(self, user):
+        return user.keys() & {'username', 'avatar_url'}
+
+    def isValidHoldingFormat(self, holding):
+        if not holding.keys() & {'artist','edition','editions','filename','filetype','owner','slug','title'}: return False
+        if not self.isValidUserFormat(holding["artist"]): return False
+        if not self.isValidUserFormat(holding["owner"]): return False
+        return True
+
+    def downloadFiles(self):
+        ipfshash = self.holding["filename"]
+        rc1 = self.downloadIPFSfile(ipfshash)
+        artist = self.holding["artist"]["username"]
+        print(f"Downloading avatar for artist: {artist}")
+        rc2 = self.downloadIPFSfile(self.holding["artist"]["avatar_url"])
+        owner = self.holding["owner"]["username"]
+        print(f"Downloading avatar for owner: {owner}")
+        rc3 = self.downloadIPFSfile(self.holding["owner"]["avatar_url"])
+        return rc1 # + rc2 + rc3
+
+    def loadAndPasteImage(self):
+        ipfshash = self.holding["filename"]
+        sourceFile = self.ipfsDataDirectory + ipfshash
+        sourceImage=Image.open(sourceFile)
+        sourceImage=sourceImage.convert("RGBA")
+        sourceImage = self.resizeImageToInset(sourceImage)
+        sourceWidth=int(sourceImage.getbbox()[2])
+        sourceHeight=int(sourceImage.getbbox()[3])
+        sourceLeft = (self.getInsetWidth() - sourceWidth) // 2
+        sourceTop = self.getInsetTop() + ((self.getInsetHeight() - sourceHeight) // 2)
+        self.canvas.paste(sourceImage, (sourceLeft,sourceTop))
+        if self.stretchEdgeEnabled:
+            # left
+            if sourceLeft - self.stretchEdgeSpacing > 0:
+                imLine = sourceImage.crop((0,0,1,sourceHeight))
+                for x in range(0,sourceLeft-self.stretchEdgeSpacing):
+                    self.canvas.paste(imLine, (x, sourceTop))
+            # right
+            if sourceLeft + sourceWidth + self.stretchEdgeSpacing < self.width:
+                imLine = sourceImage.crop((sourceWidth-1,0,sourceWidth,sourceHeight))
+                for x in range(sourceLeft+sourceWidth+self.stretchEdgeSpacing,self.getInsetWidth()):
+                    self.canvas.paste(imLine, (x, sourceTop))
+            # top
+            if sourceTop - self.stretchEdgeSpacing > self.getInsetTop():
+                imLine = sourceImage.crop((0,0,sourceWidth,1))
+                for y in range(self.getInsetTop(),sourceTop-self.stretchEdgeSpacing):
+                    self.canvas.paste(imLine, (sourceLeft, y))
+            # bottom
+            if sourceTop + sourceHeight + self.stretchEdgeSpacing < self.getInsetTop() + self.getInsetHeight():
+                imLine = sourceImage.crop((0,sourceHeight-1,sourceWidth,sourceHeight))
+                for y in range(sourceTop+sourceHeight+self.stretchEdgeSpacing, self.getInsetTop() + self.getInsetHeight()):
+                    self.canvas.paste(imLine, (sourceLeft, y))
+        sourceImage.close()
+
+    def renderAnnotation(self):
+        if not self.overlayEnabled: return
+        overlay = Image.new(mode="RGBA", size=(self.width, self.height), color=(255,255,255,0))
+        overlaydraw = ImageDraw.Draw(overlay)
+        fontsize = int(self.height * 12 / 320)
+        overlayBG = ImageColor.getrgb(self.overlayBackgroundColor)
+        overlayFG = ImageColor.getrgb(self.overlayTextColor)
+        artist = self.holding["artist"]["username"]
+        owner = self.holding["owner"]["username"]
+        edition = self.holding["edition"]
+        editions = self.holding["editions"]
+        editionText = f"Edition: {edition}/{editions}"
+        if int(editions) == 1: editionText = f"Edition: One of a Kind"
+        listprice = self.holding["list_price"] if "list_price" in self.holding else None
+        x = 0
+        y = self.getInsetTop() + self.getInsetHeight()
+        t = "Asset from Raretoshi.com"
+        if self.qrCodeEnabled: t = f"{t} - scan QR code ->"
+        fontsize2 = int(self.height * 16 / 320)
+        w,h,_ = vicarioustext.gettextdimensions(overlaydraw, t, fontsize2, False)
+        h = (fontsize2 * 1.4) // 1
+        overlaydraw.rectangle(xy=((x,y),(w,y-h)),fill=overlayBG)
+        vicarioustext.drawbottomlefttext(overlaydraw, t, fontsize2, x, y, overlayFG, False)
+        y -= h
+        if listprice is not None and int(listprice) > 0:
+            t = f"List Price: {listprice}"
+            w,h,_ = vicarioustext.gettextdimensions(overlaydraw, t, fontsize, False)
+            h = (fontsize * 1.4) // 1
+            overlaydraw.rectangle(xy=((x,y),(w,y-h)),fill=overlayBG)
+            vicarioustext.drawbottomlefttext(overlaydraw, t, fontsize, x, y, overlayFG, False)
+            y -= h
+        t = editionText
+        w,h,_ = vicarioustext.gettextdimensions(overlaydraw, t, fontsize, False)
+        h = (fontsize * 1.4) // 1
+        overlaydraw.rectangle(xy=((x,y),(w,y-h)),fill=overlayBG)
+        vicarioustext.drawbottomlefttext(overlaydraw, t, fontsize, x, y, overlayFG, False)
+        y -= h
+        t = f"Owner: {owner}"
+        w,h,_ = vicarioustext.gettextdimensions(overlaydraw, t, fontsize, False)
+        h = (fontsize * 1.4) // 1
+        overlaydraw.rectangle(xy=((x,y),(w,y-h)),fill=overlayBG)
+        vicarioustext.drawbottomlefttext(overlaydraw, t, fontsize, x, y, overlayFG, False)
+        y -= h
+        t = f"Artist: {artist}"
+        w,h,_ = vicarioustext.gettextdimensions(overlaydraw, t, fontsize, False)
+        h = (fontsize * 1.4) // 1
+        overlaydraw.rectangle(xy=((x,y),(w,y-h)),fill=overlayBG)
+        vicarioustext.drawbottomlefttext(overlaydraw, t, fontsize, x, y, overlayFG, False)
+        y -= h
+        self.canvas.alpha_composite(overlay)
+        overlay.close()
+
+    def renderQRCode(self):
+        if not self.qrCodeEnabled: return
+        slug=self.holding["slug"]
+        raretoshiurl=f"https://raretoshi.com/a/{slug}"
+        qr = qrcode.QRCode(box_size=self.qrCodePixelSize)
         qr.add_data(raretoshiurl)
         qr.make()
-        img_qr = qr.make_image()
-        # determine position for bottom left, but not over the artist info
-        qrx = 0
-        qry = height - img_qr.size[1]
-        if overlayTextEnabled:
-            qry = qry - overlayTextBottomHeight #bottom overlay
-        qrpos = (qrx, qry)
-        im.paste(img_qr, qrpos)
-        img_qr.close()
-    # Combine and save
-    composite = Image.alpha_composite(im, alpha_img)
-    print(f"Done. Saving image to {outputFile}")
-    composite.save(outputFile)
-    alpha_img.close()
-    im.close()
-    composite.close()
-    # Set new raretoshiuser?
-    if randomUserEnabled:
-        pickRaretoshiUser(userInfo)
+        img = qr.make_image()
+        s = img.size[1]
+        pos = (self.getInsetWidth()-s,self.getInsetTop()+self.getInsetHeight()-s)
+        self.canvas.paste(img, pos)
+        img.close()
+
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        userInfo, userInfoLast = vicariousnetwork.getraretoshiuserinfo(
+            self.useTor, 
+            self.raretoshiDataDirectory, 
+            self.raretoshiUser, 
+            self.userInfo, 
+            self.userInfoLast, 
+            self.userInfoInterval)
+        self.userInfo = userInfo
+        self.userInfoLast = userInfoLast
+
+        self.setupHoldingInfo()
+
+        if self.holding is not None: 
+            rc = self.downloadFiles()
+            if rc > 0: self.holding = None
+
+        if self.randomUserEnabled: self.setupRaretoshiUser()
+
+    def run(self):
+
+        if self.holding is None:
+            self.log("Holding not available. Skipping image creation")
+            self._markAsRan()
+            return
+
+        super().startImage()
+        self.headerText = self.holding["title"]
+        self.loadAndPasteImage()
+        self.renderAnnotation()
+        self.renderQRCode()
+        super().finishImage()
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # Defaults
-    configFile="../config/raretoshi.json"
-    raretoshiUser="BTCTKVR"
-    outputFile="../imageoutput/raretoshi.png"
-    dataDirectory="../data/"
-    useTor=True
-    downloadConnectTimeout=5
-    downloadMaxTimeout=20
-    overlayTextEnabled=True
-    overlayTextColorBG=ImageColor.getrgb("#00000080")
-    overlayTextColorFG=ImageColor.getrgb("#ffffff")
-    colorBackground=ImageColor.getrgb("#000000")
-    stretchEdgeEnabled=True
-    stretchEdgeSpacing=30
-    randomUserEnabled=True
-    randomUserInterval=300
-    width=480
-    height=320
-    sleepInterval=30
-    qrCodeEnabled=True
-    qrCodeSize=2
-    userInfoInterval=3600
-    # Inits
-    userInfoLast=0
-    userInfo=json.loads('{"subject":{"holdings":[]}}')
-    randomUserLast=0
-    # https://itecnote.com/tecnote/python-pil-ioerror-image-file-truncated-with-big-images/
-    ImageFile.LOAD_TRUNCATED_IMAGES = True
-    # Override config
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "raretoshi" in config:
-            config = config["raretoshi"]
-        if "raretoshiUser" in config:
-            raretoshiUser = config["raretoshiUser"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "dataDirectory" in config:
-            dataDirectory = config["dataDirectory"]
-        if "useTor" in config:
-            useTor = config["useTor"]
-        if "downloadConnectTimeout" in config:
-            downloadConnectTimeout = config["downloadConnectTimeout"]
-        if "downloadMaxTimeout" in config:
-            downloadMaxTimeout = config["downloadMaxTimeout"]
-        if "overlayTextEnabled" in config:
-            overlayTextEnabled = config["overlayTextEnabled"]
-        if "overlayTextColorBG" in config:
-            overlayTextColorBG = ImageColor.getrgb(config["overlayTextColorBG"])
-        if "overlayTextColorFG" in config:
-            overlayTextColorFG = ImageColor.getrgb(config["overlayTextColorFG"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
-        if "stretchEdgeEnabled" in config:
-            stretchEdgeEnabled = config["stretchEdgeEnabled"]
-        if "stretchEdgeSpacing" in config:
-            stretchEdgeSpacing = int(config["stretchEdgeSpacing"])
-        if "randomUserEnabled" in config:
-            randomUserEnabled = config["randomUserEnabled"]
-        if "randomUserInterval" in config:
-            randomUserInterval = int(config["randomUserInterval"])
-            randomUserInterval = 30 if randomUserInterval < 30 else randomUserInterval # minimum 30 seconds, remote access
-        if "qrCodeEnabled" in config:
-            qrCodeEnabled = config["qrCodeEnabled"]
-        if "qrCodeSize" in config:
-            qrCodeSize = config["qrCodeSize"]
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, mostly local
-        if "userInfoInterval" in config:
-            userInfoInterval = int(config["userInfoInterval"])
-            userInfoInterval = 300 if userInfoInterval < 300 else userInfoInterval # minimum 5 minutes, remote access
-    # Data directories
-    if not os.path.exists(dataDirectory):
-        os.makedirs(dataDirectory)
-    ipfsDataDirectory = dataDirectory + "ipfs/"
-    if not os.path.exists(ipfsDataDirectory):
-        os.makedirs(ipfsDataDirectory)
-    raretoshiDataDirectory = dataDirectory + "raretoshi/"
-    if not os.path.exists(raretoshiDataDirectory):
-        os.makedirs(raretoshiDataDirectory)
-    # Check for single run
+
+    p = RaretoshiPanel()
+
+    # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
-        if sys.argv[1] in ['-h','--help']:
-            print(f"Retrieves an image from raretoshi collection for a user, scales and annotates")
+        arg1 = sys.argv[1]
+        if arg1 in ['-h','--help']:
+            arg0 = sys.argv[0]
+            print(f"Prepares an image from the raretoshi colletion for a user, scales and annotates")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass the desired raretoshi user (case sensitive) as an argument as follows")
-            arg0 = sys.argv[0]
-            print(f"   {arg0} BTCTKVR")
+            print(f"   {arg0} valeriyageorg")
             print(f"3) Pass the desired raretoshi user and an index number")
             print(f"   {arg0} valeriyageorg 3")
-            print(f"You may specify a custom configuration file at {configFile}")
         else:
-            raretoshiUser = sys.argv[1]
-            createimage(width,height)
+            if len(sys.argv) > 2:
+                arg2 = sys.argv[2]
+                if re.match(r'^-?\d+$', arg2) is not None:
+                    if int(arg2) >= 0: p.collectionIndex = arg2
+            p.raretoshiUser = arg1
+            p.fetchData()
+            p.run()
         exit(0)
-    # Loop
-    while True:
-        createimage(width,height)
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+
+    # Continuous run
+    p.runContinuous()

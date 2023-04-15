@@ -1,0 +1,29 @@
+{
+    "activeProfile.comment": "Indicate the name of the profile to use by default",
+    "activeProfile.type": "list:lnd-rest:profiles[].name",
+    "activeProfile": "none",
+    "profiles.comment": "Profile definitions for LND Nodes",
+    "profiles.type": "array",
+    "profiles": [
+        {
+            "_config_summary.comment": "A brief description of this item for nodeyez-config app",
+            "_config_summary.type": "string",
+            "_config_summary": "{name} - {address}:{port}",
+            "name.comment": "The name of the profile. This should be unique across all profiles",
+            "name.type": "string",
+            "name": "default",
+            "address.comment": "The ip address or fully qualified domain name to access the LND node",
+            "address.type": "string",
+            "address": "127.0.0.1",
+            "macaroon.comment": "The macaroon for the LND node, converted to hex.  You can get this value by running this command on the macaroon file to be used: xxd -ps -u -c 1000 nodeyez.macaroon",
+            "macaroon.type": "string",
+            "macaroon": "23972973293A876dCF236D2...",
+            "port.comment": "The port to connect to the LND node on",
+            "port.type": "string",
+            "port": "10080",
+            "useTor.comment": "Indicates whether remote calls should use tor socks proxy for privacy.",
+            "useTor.type": "boolean",
+            "useTor": false
+        }
+    ]
+}

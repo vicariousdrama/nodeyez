@@ -1,285 +1,278 @@
 #! /usr/bin/env python3
-from datetime import datetime, timedelta
-from PIL import Image, ImageDraw, ImageColor
-from os.path import exists
-import glob
-import json
+from PIL import ImageColor
+from datetime import datetime
+from vicariouspanel import NodeyezPanel
 import math
-import os
 import sys
-import time
 import vicariousbitcoin
 import vicarioustext
 
-def clearOldImages(pages):
-    # find all images matching
-    imageMask = outputFile.replace(".png", "-*.png")
-    files=glob.glob(imageMask)
-    for filename in files:
-        fileisgood = False
-        for checkfilenumber in range(pages):
-            checkfilename = outputFile.replace(".png","-" + str(checkfilenumber+1) + ".png")
-            if checkfilename == filename:
-                #print(f"file {filename} is ok to keep")
-                fileisgood = True
-        if not fileisgood:
-            print(f"file {filename} is no longer needed and will be deleted")
-            os.remove(filename)
+class LNDChannelFeesPanel(NodeyezPanel):
 
-def sumchannelearnings(fwdinghistory, chan_id):
-    match_event_count = 0
-    match_total_fees = 0
-    events = fwdinghistory["forwarding_events"]
-    for event in events:
-        chan_id_out = event["chan_id_out"]
-        if str(chan_id_out) == str(chan_id):
-            match_event_count = match_event_count + 1
-            event_fee = int(event["fee"])
-            match_total_fees = match_total_fees + event_fee
-    return match_event_count, match_total_fees
+    def __init__(self):
+        """Instantiates a new LND Channel Fees panel"""
 
-def sumchannelpayments(paymenthistory, chan_id):
-    paycount = 0
-    payfees = 0
-    payments = paymenthistory["payments"]
-    for payment in payments:
-        if "status" in payment:
-            if payment["status"] == "SUCCEEDED":
-                if "htlcs" in payment:
-                    htlcs = payment["htlcs"]
-                    for htlc in htlcs:
-                        if "route" in htlc:
-                            route = htlc["route"]
-                            if "hops" in route:
-                                hops = route["hops"]
-                                if len(hops) > 0:
-                                    firsthop = hops[0]
-                                    if "chan_id" in firsthop:
-                                        hopchan_id = firsthop["chan_id"]
-                                        if str(chan_id) == str(hopchan_id):
-                                            paycount += 1
-                                            fee = 0
-                                            if "fee" in payment:
-                                               fee = payment["fee"]
-                                            payfees += int(fee)
-#    print(f"For chan_id: {chan_id}, total payments: {paycount}, fees paid: {payfees}")
-    return paycount, payfees
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorNodeDead": "nodeDeadColor",
+            "colorNodeOffline": "nodeOfflineColor",
+            "colorRowBG1": "dataRowEvenBackgroundColor",
+            "colorRowBG2": "dataRowOddBackgroundColor",
+            "colorRowFG1": "dataRowEvenTextColor",
+            "colorRowFG2": "dataRowOddTextColor",
+            "colorTextFG": "textColor",
+            "sleepInterval": "interval",
+            # panel specific key names
+            "dataRowEvenBackgroundColor": "dataRowEvenBackgroundColor",
+            "dataRowEvenTextColor": "dataRowEvenTextColor",
+            "dataRowHeaderBackgroundColor": "dataRowHeaderBackgroundColor",
+            "dataRowHeaderTextColor": "dataRowHeaderTextColor",
+            "dataRowOddBackgroundColor": "dataRowOddBackgroundColor",
+            "dataRowOddTextColor": "dataRowOddTextColor",
+            "nodeDeadColor": "nodeDeadColor",
+            "nodeOfflineColor": "nodeOfflineColor",
+            "nodes": "nodes",
+            "pageSize": "pageSize",
+        }
 
-def createimage(node, channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width=480, height=320):
-    utcnow = datetime.utcnow()
-    padding=4
-    outlinewidth=2
-    padtop = 40
-    padbottom = 40
-    aliaswidth = width/3
-    dataheight = int(math.floor((height - (padtop+padbottom)) / (pageSize + 1)))
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
-    draw = ImageDraw.Draw(im)
-    pageoutputFile = outputFile.replace(".png","-" + str(pagenum) + ".png")
-    # Headers
-    vicarioustext.drawcenteredtext(draw, headerText, 24, int(width/2), int(padbottom/2), colorTextFG, True)
-    thfontsize = int(dataheight / 3 * 2) - 2
-    thfontsize -= (thfontsize %2)
-    headery = padtop + int(thfontsize/2)
-    headerx = 0
-    vicarioustext.drawlefttext(draw, "Peer Alias", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .44)
-    vicarioustext.drawcenteredtext(draw, "Ratio", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .66)
-    vicarioustext.drawcenteredtext(draw, "Sends", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .88)
-    vicarioustext.drawcenteredtext(draw, "Forwards", thfontsize, headerx, headery, colorTextFG, True)
-    headery += thfontsize
-    thfontsize -= 1
-    headerx = int(width * .385)
-    vicarioustext.drawcenteredtext(draw, "Receive", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .495)
-    vicarioustext.drawcenteredtext(draw, "Sent", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .605)
-    vicarioustext.drawcenteredtext(draw, "#", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .715)
-    vicarioustext.drawcenteredtext(draw, "Fees", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .825)
-    vicarioustext.drawcenteredtext(draw, "#", thfontsize, headerx, headery, colorTextFG, True)
-    headerx = int(width * .935)
-    vicarioustext.drawcenteredtext(draw, "Earned", thfontsize, headerx, headery, colorTextFG, True)
-    # Channel info
-    nodefontsize = thfontsize - 1
-    linesdrawn = 0
-    for channelidx in range(firstidx, (lastidx+1)):
-        linesdrawn = linesdrawn + 1
-        currentchannel = channels[channelidx]
-        chan_id = currentchannel["chan_id"]
-        remote_pubkey = currentchannel["remote_pubkey"]
-        capacity = int(currentchannel["capacity"])
-        total_satoshis_sent = int(currentchannel["total_satoshis_sent"])
-        total_satoshis_received = int(currentchannel["total_satoshis_received"])
-        sent_ratio = str(int((float(total_satoshis_sent) / float(capacity)) * 100)) + "%"
-        receive_ratio = str(int((float(total_satoshis_received) / float(capacity)) * 100)) + "%"
-        earncount, earnfees = sumchannelearnings(fwdinghistory, chan_id)
-        paycount, payfees = sumchannelpayments(paymenthistory, chan_id)
-        datarowtop = padtop + (linesdrawn * dataheight) + 2
-        datarowbottom = datarowtop + dataheight
-        colorRowBG = colorRowBG1 if (linesdrawn % 2 == 0) else colorRowBG2
-        colorRowFG = colorRowFG1 if (linesdrawn % 2 == 0) else colorRowFG2
-        isactive = currentchannel["active"]
-        if isactive:
-            remotealias = vicariousbitcoin.getnodealiasfrompubkeyrest(remote_pubkey, node)
-            nodecolor = colorRowFG
-        else:
-            remoteinfo = vicariousbitcoin.getnodeinforest(remote_pubkey, node)
-            nodecolor = colorNodeOffline
-            remotealias = remoteinfo["node"]["alias"]
-            remoteupdated = remoteinfo["node"]["last_update"]
-            remoteupdateddate = datetime.fromtimestamp(remoteupdated)
-            csvdelay = int(currentchannel["csv_delay"])
-            daysold = utcnow - remoteupdateddate
-            csvrisk = (daysold.days * 144) > csvdelay
-            csvrisks = "-risk" if csvrisk else ""
-            remotealias = "(" + str(daysold.days) + "d" + csvrisks + ")" + remotealias
-            if daysold.days >= 5 or csvrisk:
-                nodecolor = colorNodeDead
-        # write it out
-        # - node alias
-        draw.rectangle(xy=(0,datarowtop,width,datarowbottom),fill=colorRowBG)
-        centery = datarowtop + int(dataheight/2)
-        vicarioustext.drawlefttext(draw, remotealias, nodefontsize, 0, centery, nodecolor)
-        draw.rectangle(xy=(aliaswidth,datarowtop,width,datarowbottom),fill=colorRowBG) # blanks out excess to the right
-        # - ratio receive
-        centerx = int(width * .40)
-        vicarioustext.drawrighttext(draw, receive_ratio, nodefontsize, centerx, centery, colorRowFG)
-        # - ratio sent
-        centerx = int(width * .50)
-        vicarioustext.drawrighttext(draw, sent_ratio, nodefontsize, centerx, centery, colorRowFG)
-        # - send events
-        if paycount > 0:
-            centerx = int(width * .605)
-            vicarioustext.drawcenteredtext(draw, str(paycount), nodefontsize, centerx, centery, colorRowFG)
-        # - send fees
-        if payfees > 0:
-            centerx = int(width * .74)
-            vicarioustext.drawrighttext(draw, str(payfees), nodefontsize, centerx, centery, colorRowFG)
-        # - forward events
-        if earncount > 0:
-            centerx = int(width * .825)
-            vicarioustext.drawcenteredtext(draw, str(earncount), nodefontsize, centerx, centery, colorRowFG)
-        # - forward earned
-        if earnfees > 0:
-            centerx = int(width * .98)
-            vicarioustext.drawrighttext(draw, str(earnfees), nodefontsize, centerx, centery, colorRowFG)
-    # Page Info
-    channelcount = len(channels)
-    pages = int(math.ceil(float(channelcount) / float(pageSize)))
-    paging = str(pagenum) + "/" + str(pages)
-    vicarioustext.drawbottomlefttext(draw, paging, 16, 0, height, colorTextFG)
-    # Date and Time
-    dt = "as of " + vicarioustext.getdateandtime()
-    vicarioustext.drawbottomrighttext(draw, dt, 12, width, height, colorTextFG)
-    # Save to file
-    print(f"saving image for page {pagenum} of {headerText}")
-    im.save(pageoutputFile)
-    im.close()
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("dataRowEvenBackgroundColor", "#101010")
+        self._defaultattr("dataRowEvenTextColor", "#ffffff")
+        self._defaultattr("dataRowHeaderBackgroundColor", "#101020")
+        self._defaultattr("dataRowHeaderTextColor", "#ffffff")
+        self._defaultattr("dataRowOddBackgroundColor", "#202020")
+        self._defaultattr("dataRowOddTextColor", "#ffffff")
+        self._defaultattr("headerText", "Channel Usage, Fees and Earnings")
+        self._defaultattr("interval", 1800)
+        self._defaultattr("nodeDeadColor", "#ff0000")
+        self._defaultattr("nodeOfflineColor", "#ffa500")
+        self._defaultattr("nodes", [{}])
+        self._defaultattr("pageSize", 8)
+        self._defaultattr("watermarkAnchor", "bottom")
+    
+        # Initialize
+        super().__init__(name="lndchannelfees")
+        
+        # Populate node config from rest definitions
+        self.updateNodeConfigFromProfiles()
 
-def setDefaults():
-    global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorRowBG1, colorRowBG2
-    global colorRowFG1, colorRowFG2, width, height, sleepInterval, pageSize, headerText
-    outputFile = "../imageoutput/lndchannelfees.png"
-    colorTextFG=ImageColor.getrgb("#ffffff")
-    colorNodeOffline=ImageColor.getrgb("#ffa500")
-    colorNodeDead=ImageColor.getrgb("#ff0000")
-    colorBackground=ImageColor.getrgb("#000000")
-    colorRowBG1=ImageColor.getrgb("#404040")
-    colorRowBG2=ImageColor.getrgb("#202020")
-    colorRowFG1=ImageColor.getrgb("#ffffff")
-    colorRowFG2=ImageColor.getrgb("#ffffff")
-    width=480
-    height=320
-    sleepInterval=1800
-    pageSize=8
-    headerText="Channel Usage, Fees and Earnings"
+    def updateNodeConfigFromProfiles(self):
+        lndRESTProfiles=vicariousbitcoin.loadJSONData("../config/lnd-rest.json")
+        if "profiles" not in lndRESTProfiles: return
+        if "profiles" in lndRESTProfiles: lndRESTProfiles = lndRESTProfiles["profiles"]
+        nodenumber = 0
+        for node in self.nodes:
+            nodenumber += 1
+            if "enabled" not in node: continue
+            if not node["enabled"]: continue
+            if "profileName" not in node: 
+                self.log(f"Node #{nodenumber} has no profile configured, disabling")
+                node["enabled"] = False
+                continue
+            pn = node["profileName"]
+            found = False
+            for profile in lndRESTProfiles:
+                if "name" in profile and profile["name"] == pn:
+                    found = True
+                    if "address" in profile: node["address"] = profile["address"]
+                    if "macaroon" in profile: node["macaroon"] = profile["macaroon"]
+                    if "port" in profile: node["port"] = profile["port"]
+                    if "useTor" in profile: node["useTor"] = profile["useTor"]
+                    break
+            if not found:
+                self.log(f"Node #{nodenumber} has profile that is not found in lnd-rest.json, disabling")
+                node["enabled"] = False
+                continue
 
-def overrideFromConfig(d):
-    global outputFile, colorTextFG, colorNodeOffline, colorNodeDead, colorBackground, colorRowBG1, colorRowBG2
-    global colorRowFG1, colorRowFG2, width, height, sleepInterval, pageSize, headerText
-    if "outputFile" in d:
-        outputFile = d["outputFile"]
-    if "colorTextFG" in d:
-        colorTextFG = ImageColor.getrgb(d["colorTextFG"])
-    if "colorNodeOffline" in d:
-        colorNodeOffline = ImageColor.getrgb(d["colorNodeOffline"])
-    if "colorNodeDead" in d:
-        colorNodeDead = ImageColor.getrgb(d["colorNodeDead"])
-    if "colorBackground" in d:
-        colorBackground = ImageColor.getrgb(d["colorBackground"])
-    if "colorRowBG1" in d:
-        colorRowBG1 = ImageColor.getrgb(d["colorRowBG1"])
-    if "colorRowBG2" in d:
-        colorRowBG2 = ImageColor.getrgb(d["colorRowBG2"])
-    if "colorRowFG1" in d:
-        colorRowFG1 = ImageColor.getrgb(d["colorRowFG1"])
-    if "colorRowFG2" in d:
-        colorRowFG2 = ImageColor.getrgb(d["colorRowFG2"])
-    if "width" in d:
-        width = int(d["width"])
-    if "height" in d:
-        height = int(d["height"])
-    if "sleepInterval" in d:
-        sleepInterval = int(d["sleepInterval"])
-        sleepInterval = 300 if sleepInterval < 300 else sleepInterval # minimum 5 minutes, access others
-    if "pageSize" in d:
-        pageSize = int(d["pageSize"])
-    if "headerText" in d:
-        headerText = d["headerText"]
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        for node in self.nodes:
+            if "enabled" not in node: continue
+            if not node["enabled"]: continue
+            k = "channels"
+            node[k] = vicariousbitcoin.lndGetNodeChannels(node)
+            if k in node[k]: node[k] = node[k][k]
+            for channel in node["channels"]:
+                if "remote_pubkey" not in channel: continue
+                remote_pubkey = channel["remote_pubkey"]
+                isactive = channel["active"] if "active" in channel else False
+                if isactive:
+                    channel["remote_alias"] = vicariousbitcoin.lndGetNodeAliasFromPubkey(remote_pubkey, node)
+                else:
+                    remoteinfo = vicariousbitcoin.lndGetNodeInfo(remote_pubkey, node)
+                    remote_alias = vicariousbitcoin.lndGetNodeAliasFromNodeInfo(remoteinfo)
+                    vicariousbitcoin.pubkey_alias[remote_pubkey] = remote_alias
+                    channel["remote_alias"] = remote_alias
+                    channel["remote_updated"] = remoteinfo["node"]["last_update"]
+            k = "forwarding_events"
+            node[k] = vicariousbitcoin.lndGetNodeForwardingHistory(node=node)
+            if k in node[k]: node[k] = node[k][k]
+            k = "payments"
+            node[k] = vicariousbitcoin.lndGetNodePayments(node)
+            if k in node[k]: node[k] = node[k][k]
+
+    def _getSumOfChannelEarnings(self, node, channelID):
+        eventCount, eventSum = 0, 0
+        for event in node["forwarding_events"]:
+            if str(event["chan_id_out"]) == str(channelID):
+                eventCount += 1
+                eventSum += int(event["fee"])
+        return eventCount, eventSum
+
+    def _getSumOfChannelPayments(self, node, channelID):
+        eventCount, eventSum = 0, 0
+        for event in node["payments"]:
+            if "status" not in event: continue
+            if event["status"] != "SUCCEEDED": continue
+            if "htlcs" not in event: continue
+            for htlc in event["htlcs"]:
+                if "route" not in htlc: continue
+                route = htlc["route"]
+                if "hops" not in route: continue
+                hops = route["hops"]
+                if len(hops) == 0: continue
+                firsthop = hops[0]
+                if "chan_id" not in firsthop: continue
+                if str(firsthop["chan_id"]) == str(channelID):
+                    eventCount += 1
+                    if "fee" in event: eventSum += int(event["fee"])
+        return eventCount, eventSum
+
+    def run(self):
+
+        aliasWidth = self.width // 3
+        utcnow = datetime.utcnow()
+        dataRowPadding = 4
+        for node in self.nodes:
+            if "enabled" not in node: continue
+            if not node["enabled"]: continue
+            if "channels" not in node: continue
+            defaultHeaderText = self.headerText
+            if "headerText" in node: self.headerText = node["headerText"]
+            channelCount = len(node["channels"])
+            self.pageSuffix = node["address"]
+            self.pageCount = int(math.ceil(float(channelCount) / float(self.pageSize)))
+            self.removeOldImages()
+            # pages of channels for this node
+            for self.pageNumber in range(1, self.pageCount+1):
+                super().startImage()
+                dataRowHeight = self.getInsetHeight() // (self.pageSize + 1)
+                # draw headers
+                self.draw.rectangle(xy=(0,self.getInsetTop(),self.width,self.getInsetTop() + dataRowHeight),fill=ImageColor.getrgb(self.dataRowHeaderBackgroundColor))
+                subHeaderFontSize = int(self.height * 12/320)
+                subHeaderFontSize -= subHeaderFontSize % 2
+                headery = self.getInsetTop() + subHeaderFontSize//2
+                headerx = 0
+                vicarioustext.drawlefttext(self.draw, "Peer Alias", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .44)
+                vicarioustext.drawcenteredtext(self.draw, "Ratio", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .66)
+                vicarioustext.drawcenteredtext(self.draw, "Sends", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .88)
+                vicarioustext.drawcenteredtext(self.draw, "Forwards", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headery += subHeaderFontSize
+                subHeaderFontSize -= 2
+                headerx = int(self.width * .385)
+                vicarioustext.drawcenteredtext(self.draw, "Receive", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .495)
+                vicarioustext.drawcenteredtext(self.draw, "Sent", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .605)
+                vicarioustext.drawcenteredtext(self.draw, "#", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .715)
+                vicarioustext.drawcenteredtext(self.draw, "Fees", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .825)
+                vicarioustext.drawcenteredtext(self.draw, "#", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                headerx = int(self.width * .935)
+                vicarioustext.drawcenteredtext(self.draw, "Earned", subHeaderFontSize, headerx, headery, ImageColor.getrgb(self.dataRowHeaderTextColor), True)
+                # draw node channels
+                nodeFontSize = subHeaderFontSize + 2
+                firstIndex = ((self.pageNumber - 1) * self.pageSize)
+                lastIndex = (firstIndex + self.pageSize) - 1
+                if lastIndex > channelCount - 1: lastIndex = channelCount - 1
+                channelsRendered = 0
+                for channelIndex in range(firstIndex, (lastIndex+1)):
+                    channelsRendered += 1
+                    channel = node["channels"][channelIndex]
+                    chan_id = channel["chan_id"]
+                    capacity = int(channel["capacity"])
+                    total_satoshis_sent = int(channel["total_satoshis_sent"])
+                    total_satoshis_received = int(channel["total_satoshis_received"])
+                    sent_ratio = str(int((float(total_satoshis_sent) / float(capacity)) * 100)) + "%"
+                    receive_ratio = str(int((float(total_satoshis_received) / float(capacity)) * 100)) + "%"
+                    earncount, earnfees = self._getSumOfChannelEarnings(node, chan_id)
+                    paycount, payfees = self._getSumOfChannelPayments(node, chan_id)
+                    remote_alias = channel["remote_alias"]
+                    dataRowTop = self.getInsetTop() + (channelsRendered * dataRowHeight)
+                    dataRowBottom = dataRowTop + dataRowHeight
+                    dataRowBackgroundColor = self.dataRowEvenBackgroundColor if channelsRendered % 2 == 0 else self.dataRowOddBackgroundColor
+                    dataRowTextColor = self.dataRowEvenTextColor if channelsRendered % 2 == 0 else self.dataRowOddTextColor
+                    nodecolor = dataRowTextColor if channel["active"] else self.nodeOfflineColor
+                    if not channel["active"]:
+                        remote_updated = channel["remote_updated"]
+                        remote_updateddate = datetime.fromtimestamp(remote_updated)
+                        csvdelay = int(channel["csv_delay"])
+                        daysold = utcnow - remote_updateddate
+                        csvrisk = (daysold.days * 144) > csvdelay
+                        csvrisks = "-risk" if csvrisk else ""
+                        remote_alias = "(" + str(daysold.days) + "d" + csvrisks + ")" + remote_alias
+                        if daysold.days >= 5 or csvrisk: nodecolor = self.nodeDeadColor 
+                    # background
+                    self.draw.rectangle(xy=(0,dataRowTop,self.width,dataRowBottom),fill=ImageColor.getrgb(dataRowBackgroundColor))
+                    # -- values
+                    centery = dataRowTop + (dataRowHeight//2)
+                    # alias
+                    vicarioustext.drawlefttext(self.draw, remote_alias, nodeFontSize, 0, centery, ImageColor.getrgb(nodecolor))
+                    self.draw.rectangle(xy=(aliasWidth-dataRowPadding,dataRowTop,self.width,dataRowBottom),fill=ImageColor.getrgb(dataRowBackgroundColor))
+                    # ratio receive
+                    centerx = int(self.width * .40)
+                    vicarioustext.drawrighttext(self.draw, receive_ratio, nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                    # ratio sent
+                    centerx = int(self.width * .50)
+                    vicarioustext.drawrighttext(self.draw, sent_ratio, nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                    # send events
+                    if paycount > 0:
+                        centerx = int(self.width * .605)
+                        vicarioustext.drawcenteredtext(self.draw, str(paycount), nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                    # send fees
+                    if payfees > 0:
+                        centerx = int(self.width * .74)
+                        vicarioustext.drawrighttext(self.draw, str(payfees), nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                    # forward events
+                    if earncount > 0:
+                        centerx = int(self.width * .825)
+                        vicarioustext.drawcenteredtext(self.draw, str(earncount), nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                    # forward earned
+                    if earnfees > 0:
+                        centerx = int(self.width * .98)
+                        vicarioustext.drawrighttext(self.draw, str(earnfees), nodeFontSize, centerx, centery, ImageColor.getrgb(dataRowTextColor))
+                # done this page of channels for this node
+                super().finishImage()
+            # restore header text to default
+            self.headerText = defaultHeaderText               
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # Defaults
-    setDefaults()
-    # Override config
-    configFile = "../config/lndchannelfees.json"
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "lndchannelfees" in config:
-            config = config["lndchannelfees"]
-        overrideFromConfig(config)
-    else:
-        config = {}
-    # Check for single run
+
+    p = LNDChannelFeesPanel()
+
+    # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
-        print(f"Generates one or more images based on the total number of lightning channels this node has.")
-        print(f"A series of images depicting the ratio of value received and sent compared to channel capacity, number of forwarding events and fees collected.")
-        print(f"Usage:")
-        print(f"1) Call without arguments to run continuously using the configuration or defaults")
-        print(f"You may specify a custom configuration file at {configFile}")
-    # Loop
-    while True:
-        if "nodes" not in config:
-            config["nodes"] = [{}] # empty node definition falls back to lncli
-        nodes = config["nodes"]
-        for node in nodes:
-            if "enabled" in node:
-                if not node["enabled"]:
-                    continue
-            setDefaults()              # reassign defaults
-            overrideFromConfig(config) # overlay configurable defaults
-            overrideFromConfig(node)   # overlay node specific
-            fwdinghistory = vicariousbitcoin.getfwdinghistoryrest(node)
-            paymenthistory = vicariousbitcoin.getnodepaymentsrest(node)
-            channels = vicariousbitcoin.getnodechannelsrest(node)
-            if "channels" in channels:
-                channels = channels["channels"]
-                channelcount = len(channels)
-                pages = int(math.ceil(float(channelcount) / float(pageSize)))
-                clearOldImages(pages)
-                for pagenum in range(1, (pages+1)):
-                    firstidx = ((pagenum-1)*pageSize)
-                    lastidx = (pagenum*pageSize)-1
-                    if lastidx > channelcount-1:
-                        lastidx = channelcount-1
-                    createimage(node, channels, firstidx, lastidx, pagenum, pageSize, fwdinghistory, paymenthistory, width, height)
-            else:
-                print(f"SKIPPING image creation for this node. Received unexpected response\n\nresponse: {channels}\n\nnode: {node}")
-        if len(sys.argv) > 1:
-            exit(0)
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+        if sys.argv[1] in ['-h','--help']:
+            print(f"Generates one or more images based on the total number of lightning channels the configured nodes have.")
+            print(f"A series of images depicting the ratio of value received and sent compared to channel capacity, number of forwarding events and fees collected.")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configuration or defaults")
+            print(f"2) Call with an argument other then -h or --help to run once and exit")
+        else:
+            p.fetchData()
+            p.run()
+        exit(0)
+
+    # Continuous run
+    p.runContinuous()

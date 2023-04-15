@@ -1,0 +1,18 @@
+# Nodeyez: systemd unit for Luxor Pool Mining Summary panel generation
+# /etc/systemd/system/nodeyez-miningpool-luxor.service
+
+[Unit]
+Description=Luxor Pool Mining Summary
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/miningpool-luxorpool.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

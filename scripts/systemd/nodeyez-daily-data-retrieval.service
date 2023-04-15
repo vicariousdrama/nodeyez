@@ -2,7 +2,7 @@
 # /etc/systemd/system/nodeyez-daily-data-retrieval.service
 
 [Unit]
-Description=Nodeyez Background data retrieval for services
+Description=Background data retrieval
 StartLimitIntervalSec=600
 StartLimitBurst=2
 

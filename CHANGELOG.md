@@ -3,7 +3,87 @@ title: NODEYEZ Change Log
 ---
 # CHANGELOG
 
-## Main Branch
+## main | baseclass
+
+TODO
+- update image samples
+
+**New Panels and Ehancements**
+
+- Blockstats panel now supports sub-panels for input and output script types
+- Compass Hardware moved to deprecated-scripts and service file deleted
+- Halving panel scaled better and informs number of blocks to go, estimated times
+- Inscription Mempool now derives more file extensions and displays up to 24 images
+- LNDHub panel now supports pagination and will show up to 6 accounts per page by default
+- Renamed rofstatus to lndringoffire
+- Renamed luxor-mining-hashrate to luxorpool
+- Renamed mempoolblocks to mempoolspace
+- Renamed ordinals to inscriptionparser
+- Renamed satsperusd to satsperfiatunit
+- Renamed ipaddress to ipaddresses to prevent a common package import problem
+- Reorganized luxor dependencies
+- Merged MinerBraiins and MinerMicroBT panels into new generalized Miner panel
+- OP Return panel can be configured to exclude common phrases to improve signal to noise ratio
+- Calls to get price info now saved locally and only update once an hour.
+- Sats per USD can be rendered as triangle or s symbol in addition to square or circle
+- Whirlpool Liquidity panel should indicate number of inputs required (default 5)
+
+**General**
+
+- New NodeyezPanel class can be used for bootstrapping new panels
+- Refactored the following panels to use the new class format
+  - arthash
+  - blockhashdungeon
+  - blockheight
+  - blockstats
+  - compassminingstatus
+  - difficultyepoch
+  - fearandgreed
+  - fiatprice
+  - gasprice
+  - halving
+  - inscriptionmempool
+  - inscriptionparser (fka ordinals)
+  - ipaddresses (fka ipaddress)
+  - lndchannelbalance
+  - lndchannelfees
+  - lndhub
+  - lndringoffire (fka rofstatus)
+  - mempoolspace (fka mempoolblocks, mempool.json config)
+  - miner (from minerbraiins and minermicrobt)
+  - miningpool-braiinspool (fka braiinspool, slushpool)
+  - miningpool-f2pool (fka f2pool)
+  - miningpool-luxorpool (fka luxor-mining-hashrate w/o service and luxor.json config)
+  - nodeyezdual
+  - opreturn
+  - raretoshi
+  - satsperfiatunit (fka satsperusd)
+  - sysinfo
+  - utcclock
+  - whirlpoolclimix
+  - whirlpoolliquidity
+- Improved support for nested fields in charting via dot notation
+- Bitcoin related services no longer fail startup if there is no Bitcoin
+- Bitcoin panels can now get data from remote bitcoin servers via REST (JSON-RPC)
+- System Info icons have been encapsulated in VicariousIcons class
+- Sample config files updated with changed and new property names with references to former names
+
+**Bugfixes**
+
+- Blockhash Dungeon will no longer show duplicate logos in the maze
+- Blockstats label for Segwit Prevalence corrected
+- Braiinspool fix divide by zero bug
+- Fiat Price fix to render with price down color if price has declined since last check
+- Ordinals fix logging for active blocklist when request block higher than vetted
+- Halving fix off by 1 calculation of new halving period
+- Inscription Mempool fix to support multiple inscriptions in one transaction
+- LNDHub fix crashing when checking payment by user
+
+## 23.04
+
+Released: 2023-04-13
+
+Tagged Commit: [3b6208a46084c1b1cf2f21b5e01febf33fed2bd7](https://github.com/vicariousdrama/nodeyez/commit/3b6208a46084c1b1cf2f21b5e01febf33fed2bd7)
 
 **New Panels and Enhancements**
 

@@ -29,17 +29,17 @@ retrieved, at varying intervals.
 
 | Data Set | Interval | Config File | Configuration Documentation |
 | --- | --- | --- | --- |
-| Bisq | 1 hour | [../config/satsperusd.json](../sample-config/satsperusd.json) | [doc](./script-satsperusd.md) |
+| Bisq | 1 hour | [../config/satsperfiatunit.json](../sample-config/satsperusd.json) | [doc](./script-satsperfiatunit.md) |
 | CollectAPI | 24 hours | [../config/collectapi.json](../sample-config/collectapi.json) | [doc](./config-collectapi.md) |
 | Compass Hardware | 1 hour | [../config/compassmininghardware.json](../sample-config/compassmininghardware.json) | [doc](./script-compassmininghardware.md) |
 | Compass Status | 23 hours | [../config/compassminingstatus.json](../sample-config/compassminingstatus.json) | [doc](./script-compassminingstatus.md) |
-| F2 Pool | 23 hours | [../config/f2pool.json](../sample-config/f2pool.json) | [doc](./script-f2pool.md) |
+| F2 Pool | 23 hours | [../config/f2pool.json](../sample-config/miningpool-f2pool.json) | [doc](./script-miningpool-f2pool.md) |
 | Fear and Greed | 12 hours | [../config/fearandgreed.json](../sample/config/fearandgreed.json) | [doc](./script-fearandgreed.md) |
-| Luxor | 23 hours | [../config/luxor.json](../sample-config/luxor.json) | [doc](./script-luxor-mining-hashrate.md) |
-| Slushpool | 23 hours | [../config/slushpool.json](../sample-config/slushpool.json) | [doc](./script-slushpool.md) |
+| Luxor | 23 hours | [../config/miningpool-luxorpool.json](../sample-config/miningpool-luxorpool.json) | [doc](./script-miningpool-luxorpool.md) |
+| Braiinspool | 23 hours | [../config/miningpool-braiinspool.json](../sample-config/miningpool-braiinspool.json) | [doc](./script-miningpool-braiinspool.md) |
 
 Until this file is externalized, you are strongly encouraged to only make
-changes to whether a data set is enabled or not.  Any future updates may
+changes to whether a data set is enabled or not.  Any future updates will
 overwrite your customizations to the script.
 
 ## Run Directly

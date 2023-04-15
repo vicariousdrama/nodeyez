@@ -32,14 +32,13 @@ sudo apt-get install python3 python3-venv
 
 In future steps you'll use Git to clone this repo.
 
-
 ```shell
 sudo apt install git
 ```
 
-## Install Torify
+## Install Tor
 
-Torify is optionally used by some scripts that retrieve data from external sources in a privacy preserving way.
+Tor is optionally used by some scripts that retrieve data from external sources in a privacy preserving way.
 
 ```shell
 sudo apt-get install apt-transport-tor

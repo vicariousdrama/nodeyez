@@ -9,9 +9,9 @@ imageurl: ../images/inscriptionmempool.png
 
 # Unmined Inscriptions in Mempool
 
-This script calls your local bitcoin node and will analyze your view of the mempool to
-identify and extract inscriptions found in transactions.  A summary image of the most
-recent inscriptions will be generated as the output file.
+This script analyzes the mempool of a bitcoin node, finds transactions with inscriptions and extracts them.  A summary image of the most recent inscriptions will be generated as the output file.
+
+It depends on a bitcoin node.
 
 - For more information about Ordinals, checkout the [Ordinals Website](https://docs.ordinals.com/).
 - For more information about Inscriptions, checkout the [Inscriptions section](https://docs.ordinals.com/inscriptions.html).
@@ -38,13 +38,11 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/inscriptionmempool.png` |
-| dataDirectory | The path to store extracted files. A subfolder for ordinals will be created if it doesnt exist. Default `../data/` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `10` |
-| colorTextFG | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `10` |
+| textColor | The color to use for the header expressed as a hexadecimal color specifier. Default `#ffffff` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

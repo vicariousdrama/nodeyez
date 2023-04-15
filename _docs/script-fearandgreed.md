@@ -35,19 +35,18 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/fearandgreed.png` |
-| useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
-| url | The url that provides the fear and greed information. Default `https://api.alternative.me/fng/?limit=0&format=json&date_format=cn` |
-| dataDirectory | The path to store downloaded files. A subfolder for caching fearandgreed resources will be created if its doesn't exist. Default `../data/` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| attributionColor | The text color for the source attribution line expressed as a Hexadecimal color specifier. Default `#aa2222` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| dataValueColor | The color of the data values for each entry expressed as a Hexadecimal color specifier. Default `#ff7f00` |
+| graphLineDarkColor | The color to draw the top and right and background dashed lines of the graph outline expressed as a Hexadecimal color specifier. Default `#606060` |
+| graphLineLightColor | The color to draw the left and bottom of the graph outline expressed as a Hexadecimal color specifier. Default `#a0a0a0` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `43200` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| colorDataValue | The color of the data values for each entry expressed as a Hexadecimal color specifier. Default `#ff7f00` |
-| colorMovingAverage | The color to use for the moving average line expressed as a Hexadecimal color specifier. Default `#40ff40` |
-| colorGraphLineLight | The color to draw the left and bottom of the graph outline expressed as a Hexadecimal color specifier. Default `#a0a0a0` |
-| colorGraphLineDark | The color to draw the top and right and background dashed lines of the graph outline expressed as a Hexadecimal color specifier. Default `#606060` |
-| colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `43200` |
+| movingAverageColor | The color to use for the moving average line expressed as a Hexadecimal color specifier. Default `#40ff40` |
+| textColor | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| url | The url that provides the fear and greed information. Default `https://api.alternative.me/fng/?limit=0&format=json&date_format=cn` |
+| useTor | Indicates whether remote calls should use tor socks proxy for privacy. Default `true` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

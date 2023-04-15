@@ -23,7 +23,7 @@ python3 -m venv ~/.pyenv/nodeyez
 
 source ~/.pyenv/nodeyez/bin/activate
 
-python3 -m pip install --upgrade Pillow beautifulsoup4 pandas qrcode Wand exifread urllib3 requests redis pysocks
+python3 -m pip install --upgrade beautifulsoup4 exifread pandas psutil pysocks qrcode redis requests urllib3 whiptail-dialogs Pillow Wand
 ```
 
 # Clone the Project
@@ -91,4 +91,4 @@ From the options that appear, choose the one that corresponds to `~/.pyenv/nodey
 
 ---
 
-[Home](../) | [Continue to Running and Changing Scripts]({% link _developer/2runandchange.md %})
+[Home](../) | [Back to Nodeyez Architecture]({% link _developer/0architecture.md %}) | [Continue to Running and Changing Scripts]({% link _developer/2runandchange.md %})

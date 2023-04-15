@@ -1,4 +1,5 @@
 ---
+panelgroup: Deprecated
 name: Compass Mining Hardware
 title: NODEYEZ Compass Mining Hardware script
 layout: default
@@ -35,7 +36,7 @@ Fields are defined below
 | --- | --- |
 | outputFile | The path to save the generated image. Default `../imageoutput/compassmininghardware.png` |
 | hardwareurl | The url that provides current compass mining hardware prices for featured, reseller, and at home ASICs. Default `https://us-central1-hashr8-compass.cloudfunctions.net/app/hardware/group?isWeb=true&sortByCost=asc` |
-| useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
+| useTor | Indicates whether remote calls should use tor socks proxy for privacy. Default `true` |
 | colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | colorTextWarn | The color of the text if there are warnings or errors accessing the hardwareurl. Default `#ff0000` |
 | colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
@@ -57,9 +58,9 @@ Ensure the virtual environment is activated
 source ~/.pyenv/nodeyez/bin/activate
 ```
 
-Change to the scripts folder
+Change to the deprecated-scripts folder
 ```shell
-cd ~/nodeyez/scripts
+cd ~/nodeyez/deprecated-scripts
 ```
 
 Run it
@@ -69,15 +70,6 @@ python compassmininghardware.py
 
 Press CTRL+C to stop the process
 
-## Run at Startup
-
-To enable the script to run at startup, as the privileged user run the following
-
-```shell
-sudo systemctl enable nodeyez-compassmininghardware.service
-
-sudo systemctl start nodeyez-compassmininghardware.service
-```
 
 ---
 

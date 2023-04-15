@@ -1,0 +1,18 @@
+# Nodeyez: systemd unit for Braiins pool Mining Pool panel generation
+# /etc/systemd/system/nodeyez-miningpool-braiinspool.service
+
+[Unit]
+Description=Braiins Pool Mining Summary
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/miningpool-braiinspool.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

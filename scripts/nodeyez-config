@@ -1,5 +1,4 @@
 #! /home/nodeyez/.pyenv/nodeyez/bin/python3
-# this package
 from whiptail import Whiptail
 import json
 import os
@@ -47,8 +46,7 @@ def isServiceEnabled(serviceName:str=None):
 def getServiceProperty(serviceName:str=None, propertyName:str=None):
     cmd = f"systemctl show {serviceName} --property={propertyName}"
     result = getCommandResult(cmd)
-    if "=" in result:
-        return result.split("=")[1]
+    if "=" in result: return result.split("=")[1]
     return result
 
 def getRunningNodeyezServices():
@@ -86,17 +84,14 @@ def showServiceStatus(serviceName: str = None):
     w.msgbox(result)
 
 def saveJSON(obj: dict = None, f: str = None):
-    if dict is None:
-        return
-    if f is None:
-        return
+    if dict is None: return
+    if f is None: return
     with open(f, "w") as f:
         json.dump(obj, f, indent=2)
 
 def whipsizeitems(items):
     # check for none
-    if items == None:
-        return items
+    if items == None: return items
     # determine available
     screenwidth = os.get_terminal_size()[0]
     sidewidth = 9 + 14
@@ -105,8 +100,7 @@ def whipsizeitems(items):
     availwidth = screenwidth - sidewidth
     l = len(items)
     # check for no items
-    if l == 0:
-        return items
+    if l == 0: return items
     # get item tuple size
     c = len(items[0])
     # get max width of column 1 and optionally column 2
@@ -118,12 +112,9 @@ def whipsizeitems(items):
         if c > 1:
             maxw2 = len(item[1]) if len(item[1]) > maxw2 else maxw2
     # check if will naturally fit
-    if c == 1 and maxw1 < availwidth:
-        return items
-    if c == 2 and maxw1 + maxw2 + delimitwidth < availwidth:
-        return items
-    if c == 3 and maxw1 + maxw2 + delimitwidth + choicewidth < availwidth:
-        return items
+    if c == 1 and maxw1 < availwidth: return items
+    if c == 2 and maxw1 + maxw2 + delimitwidth < availwidth: return items
+    if c == 3 and maxw1 + maxw2 + delimitwidth + choicewidth < availwidth: return items
     # if got here then we need to truncate to fit
     for i in range(l):
         if c == 1:
@@ -156,8 +147,7 @@ def groupsort(items):
     p = -1
     for i in items:
         p += 1
-        if i[0].startswith("-"):
-            break
+        if i[0].startswith("-"): break
         c1items.append(i[0])
     nitems = []
     for n in sorted(c1items):
@@ -168,10 +158,25 @@ def groupsort(items):
         nitems.extend(items[p:])
     return nitems
 
+def buildChoicesFromList(listDescriptor: str = None):
+    # listDescriptor format should be
+    #   list:serviceID:jsonPath
+    listparts = listDescriptor.split(":")
+    if len(listparts) != 3: return []
+    serviceID = listparts[1]
+    actualConfigPath = f"/home/nodeyez/nodeyez/config/{serviceID}.json"
+    if not os.path.exists(actualConfigPath): return []
+    jsonPath = listparts[2]
+    cmd = f"cat {actualConfigPath} | jq -r '.{jsonPath}'"
+    output = getCommandResult(cmd)
+    result = []
+    profiles = output.split("\n")
+    for profile in profiles:
+        if profile not in result: result.append(profile)
+    return result
 
 def showConfigureMenu(serviceID: str = None, configPath: list = None):
-    if not hasConfigFile(serviceID):
-        return
+    if not hasConfigFile(serviceID): return
     try:
         sampleConfigPath = f"/home/nodeyez/nodeyez/sample-config/{serviceID}.json"
         actualConfigPath = f"/home/nodeyez/nodeyez/config/{serviceID}.json"
@@ -184,7 +189,6 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     actualConfig =json.load(f)
             else:
                 actualConfig = sampleConfig
-            
             # find part that we are working on
             # start with the whole config
             sampleSubConfig = sampleConfig
@@ -236,33 +240,46 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     raise Exception(f"sampleSubConfig has no elements from context {configPath}")
                 idx = -1
                 # show entries
-                sampleSubConfig0type = type(sampleSubConfig[0])
+                sampleSubConfig0 = sampleSubConfig[0]
+                sampleSubConfig0type = type(sampleSubConfig0)
                 if sampleSubConfig0type is dict:
                     items = []
                     # look for _config_summary field
                     t = None
-                    if "_config_summary" in sampleSubConfig[0]:
-                        t = sampleSubConfig[0]["_config_summary"]
+                    if "_config_summary" in sampleSubConfig0:
+                        t = sampleSubConfig0["_config_summary"]
                     # edit options from dict
                     for s in actualSubConfig:
                         idx += 1
                         if t is not None:
                             # build descriptor with _config_summary value as template
                             d = t
+                            # first look at actual config keys
                             for k in s.keys():
-                                if "." in k:
-                                    continue
+                                if "." in k: continue
                                 v = str(s[k])
+                                kt = f"{k}.type"
+                                if kt in s and s[kt] == "boolean":
+                                    bvt = "on:" if v == "True" else "   "
+                                    d = d.replace("{?" + k + "}", bvt)
+                                d = d.replace("{" + k + "}", v)
+                            # and then fill in any missing with sampleSubConfig0
+                            for k in sampleSubConfig0.keys():
+                                if "." in k: continue
+                                v = str(sampleSubConfig0[k])
+                                kt = f"{k}.type"
+                                if kt in sampleSubConfig0 and sampleSubConfig0[kt] == "boolean":
+                                    bvt = "on:" if v == "True" else "   "
+                                    d = d.replace("{?" + k + "}", bvt)
                                 d = d.replace("{" + k + "}", v)
                             items.append((f"Edit {idx}", d))
                         else:
                             # first element as descriptor
                             for k in s.keys():
-                                if "." in k:
-                                    continue
+                                if "." in k: continue
                                 v = str(s[k])
                                 items.append((f"Edit {idx}", f"{k}={v}"))
-                                break
+                                break                       
                     # add option
                     items.append(("Add", f"Add new {subTypeName}"))
                     # Show menu
@@ -270,9 +287,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     items = whipsizeitems(items)
                     items = groupsort(items)
                     r = w.menu(msg, items, prefix=" ")
-                    if r[1] != 0:
-                        # cancel, scape
-                        break
+                    # cancel, escape
+                    if r[1] != 0: break
                     if r[0] == "Add":
                         actualSubConfig.append(sampleSubConfig[0])
                         saveJSON(actualConfig, actualConfigPath)
@@ -299,9 +315,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     items = whipsizeitems(items)
                     items = groupsort(items)
                     r = w.menu(msg, items, prefix=" ")
-                    if r[1] != 0:
-                        # cancel, escape
-                        break
+                    # cancel, escape
+                    if r[1] != 0: break
                     if r[0] == "Add":
                         msg = f"Provide a new value to be added to the list"
                         r2 = w.inputbox(msg)
@@ -334,9 +349,16 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                 for k in sampleSubConfig:
                     if k.endswith(".type"):
                         propertyName = k.replace(".type","")
-                        if propertyName == "_config_summary":
-                            # dont show config summary definition as an editable property
-                            continue
+                        # dont show config summary definition as an editable property
+                        if propertyName == "_config_summary": continue
+                        # get formally known as key info
+                        fkaPropertyKey = f"{propertyName}.fka"
+                        fkaPropertyName = propertyName
+                        if fkaPropertyKey in sampleSubConfig:
+                            fkaPropertyName = sampleSubConfig[fkaPropertyKey]
+                        # get default value
+                        defaultValue = str(sampleSubConfig[propertyName])
+                        usingDefault = True
                         if propertyName in sampleSubConfig:
                             if sampleSubConfig[k] == "array":
                                 arrayProperties.append(propertyName)
@@ -345,11 +367,15 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                             else:                       
                                 if propertyName in actualSubConfig:
                                     cv = str(actualSubConfig[propertyName])
-                                    # star it out if its a password field
-                                    if sampleSubConfig[k] == "password":
-                                        cv = "*" * len(cv)
+                                    usingDefault = False
+                                elif fkaPropertyName in actualSubConfig:
+                                    cv = str(actualSubConfig[fkaPropertyName])
+                                    usingDefault = False
                                 else:
-                                    cv = str(sampleSubConfig[propertyName])
+                                    cv = defaultValue
+                                # star it out if its a password field
+                                if not usingDefault and sampleSubConfig[k] == "password":
+                                    cv = "*" * len(cv)
                                 items.append((propertyName, cv))
                             # if sampleSubConfig[k]
                         # if propertyName in sampleSubConfig
@@ -381,9 +407,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                 items = whipsizeitems(items)
                 items = groupsort(items)
                 r = w.menu(msg, items, prefix="= ")
-                if r[1] != 0:
-                    # cancel, escape
-                    break
+                # cancel, escape
+                if r[1] != 0: break
                 if r[0].startswith("Manage "):
                     partToManage = r[0].rpartition(" ")[2]
                     if configPath is None:
@@ -406,18 +431,25 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                 else:
                     # setup prompt for new value for this property
                     propertyName = r[0]
+                    fkaPropertyKey = f"{propertyName}.fka"
+                    fkaPropertyName = propertyName
+                    if fkaPropertyKey in sampleSubConfig:
+                        fkaPropertyName = sampleSubConfig[fkaPropertyKey]
                     # comment for the prompt
                     commentfield = f"{propertyName}.comment"
                     comment = sampleSubConfig[commentfield] if commentfield in sampleSubConfig else f"Specify a new value for the {propertyName} property"
                     # get default value
-                    defaultValue = ""
-                    defaultValue = sampleSubConfig[f"{propertyName}"]
-                    defaultValue = str(defaultValue)
+                    defaultValue = str(sampleSubConfig[propertyName])
                     usingDefault = True
+                    hadFKA = False
                     # get current value
-                    if f"{propertyName}" in actualSubConfig:
-                        currentValue = actualSubConfig[f"{propertyName}"]
+                    if propertyName in actualSubConfig:
+                        currentValue = actualSubConfig[propertyName]
                         usingDefault = False
+                    elif fkaPropertyName in actualSubConfig:
+                        currentValue = actualSubConfig[fkaPropertyName]
+                        usingDefault = False
+                        hadFKA = True
                     else:
                         currentValue = defaultValue
                     currentValue = str(currentValue)
@@ -439,6 +471,10 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                     choicesfield = f"{propertyName}.choices"
                     if choicesfield in sampleSubConfig:
                         allowedChoices = sampleSubConfig[choicesfield]
+                    # check for list to populate choices
+                    elif dataType.startswith("list:"):
+                        allowedChoices = buildChoicesFromList(dataType)
+                        dataType = "string"
                     validationMsg = ""
                     saved = False
                     while not saved:
@@ -463,8 +499,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                             msg = comment
                             items = whipsizeitems(items)
                             r = w.radiolist(msg, items)
-                            if r[1] != 0:
-                                break
+                            # cancel, escape
+                            if r[1] != 0: break
                             # get and save the new value
                             if r[0][0] == "Default":
                                 actualSubConfig.pop(propertyName, None)
@@ -480,9 +516,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                 thiscomment = thiscomment + f"\n{validationMsg}"
                             if allowedChoices is None:
                                 r = w.inputbox(msg=thiscomment, default=currentValue, password=(dataType=="password"))
-                                # cancelled or escape
-                                if r[1] != 0:
-                                    break
+                                # cancel, escape
+                                if r[1] != 0: break
                                 # get the new value
                                 currentValue = r[0]
                             else:
@@ -499,8 +534,8 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                 items = whipsizeitems(items)
                                 items = groupsort(items)
                                 r = w.radiolist(msg=thiscomment, items=items)
-                                if r[1] != 0:
-                                    break
+                                # cancel, escape
+                                if r[1] != 0: break
                                 # get the new value
                                 currentValue = r[0][0]
                             # Validation checks
@@ -540,6 +575,15 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
                                 raise Exception("Unhandled data type {dataType} for property {propertyName}")
                         # if dataType == "boolean"
                     # while not saved
+                    # remove fka field from actual if updated using new property name
+                    if saved and hadFKA:
+                        subattr=["choices","comment","type"]
+                        for sa in subattr:
+                            if f"{fkaPropertyName}.{sa}" in actualSubConfig:
+                                del actualSubConfig[f"{fkaPropertyName}.{sa}"]
+                        if fkaPropertyName in actualSubConfig:
+                            del actualSubConfig[fkaPropertyName]
+                            saveJSON(actualConfig, actualConfigPath)
                 # r[0] value
             else:
                 # type not handled
@@ -549,27 +593,19 @@ def showConfigureMenu(serviceID: str = None, configPath: list = None):
         msgError(e)
 
 def toggleServiceEnabled(serviceName: str = None, currentlyEnabled: bool = False):
-    if os.geteuid() != 0:
-        return currentlyEnabled
-    if currentlyEnabled:
-        cmd = f"systemctl disable {serviceName}"
-    else:
-        cmd = f"systemctl enable {serviceName}"
+    if os.geteuid() != 0: return currentlyEnabled
+    cmd = f"systemctl enable {serviceName}"
+    if currentlyEnabled: cmd = f"systemctl disable {serviceName}"
     r = getCommandResult(cmd)
-    if len(r) > 0:
-        return isServiceEnabled(serviceName)
+    if len(r) > 0: return isServiceEnabled(serviceName)
     return not currentlyEnabled
 
 def toggleServiceActive(serviceName: str = None, currentlyActive: bool = False):
-    if os.geteuid() != 0:
-        return currentlyActive
-    if currentlyActive:
-        cmd = f"systemctl stop {serviceName}"
-    else:
-        cmd = f"systemctl start {serviceName}"
+    if os.geteuid() != 0: return currentlyActive
+    cmd = f"systemctl start {serviceName}"
+    if currentlyActive: cmd = f"systemctl stop {serviceName}"       
     r = getCommandResult(cmd)
-    if len(r) > 0:
-        return isServiceActive(serviceName)
+    if len(r) > 0: return isServiceActive(serviceName)
     return not currentlyActive
 
 def hasConfigFile(serviceID: str = None):
@@ -592,8 +628,7 @@ def showServiceMenu(serviceID: str = None):
             nodeyezServiceList[serviceID] = svc
         w = Whiptail(title=f"Nodeyez Configuration for {serviceID}", backtitle=f"{getUserAndPermission()}")
         msg = serviceDescription + "\n"
-        if isdeprecated:
-            msg = msg + "This service is deprecated. "
+        if isdeprecated: msg = msg + "This service is deprecated. "
         msg = msg + "Choose an option for this service."
         items = []
         if hasConfigFile(serviceID):
@@ -606,11 +641,9 @@ def showServiceMenu(serviceID: str = None):
             items.append(("Status", "View systemctl status of the service"))
         items = whipsizeitems(items)
         r = w.menu(msg, items)
-        if r[1] != 0:
-            # cancel, escape
-            break
+        # cancel, escape
+        if r[1] != 0: break
         if r[0] == "Configure":
-            # showConfigureOLD(serviceID)
             showConfigureMenu(serviceID)
         if r[0] == "Recent Logs":
             showServiceLogs(serviceName)
@@ -623,6 +656,28 @@ def showServiceMenu(serviceID: str = None):
             svc["isactive"] = toggleServiceActive(serviceName, svc["isactive"])
             nodeyezServiceList[serviceID] = svc
     # while True
+
+def showMainMenu():
+    items = []
+    items.append(("Bitcoin Settings", "Configure available profiles to call Bitcoin nodes"))
+    items.append(("LND Settings", "Configure available profiles to call LND nodes"))
+    items.append(("Nodeyez Services", "Manage services to generate display panel images"))
+    while True:
+        w = Whiptail(title=f"Nodeyez Config - Main Menu", backtitle=f"{getUserAndPermission()}")
+        msg = "Choose an option from the choices below"
+        items = whipsizeitems(items)
+        r = w.menu(msg, items)
+        # cancel, escape
+        if r[1] != 0: break
+        if r[0] == "Bitcoin Settings": showBitcoinProfilesMenu()
+        if r[0] == "LND Settings": showLNDProfilesMenu()
+        if r[0] == "Nodeyez Services": showServiceList()
+
+def showBitcoinProfilesMenu():
+    showConfigureMenu("bitcoin-rest")
+
+def showLNDProfilesMenu():
+    showConfigureMenu("lnd-rest")
 
 def showServiceList():
     if len(nodeyezServiceList.keys()) == 0:
@@ -650,12 +705,11 @@ def showServiceList():
                 items.append((k, d))
         items = whipsizeitems(items)
         r = w.menu(msg, items)
-        if r[1] != 0:
-            # cancel, escape
-            break
+        # cancel, escape
+        if r[1] != 0: break
         serviceID = r[0]
         showServiceMenu(serviceID)
 
 if __name__ == '__main__':
-    showServiceList()
+    showMainMenu()
     exit()
