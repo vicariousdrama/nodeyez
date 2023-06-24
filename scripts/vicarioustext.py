@@ -15,14 +15,25 @@ def getfont(size, isbold=False):
     else:
         return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",size)
 
-def getmaxfontsize(draw, s, maxwidth=480, maxheight=320, isbold=False, maxfontsize=128, minfontsize=5):
+def getmaxfontsize(draw, s, maxwidth=480, maxheight=320, isbold=False, maxfontsize=128, minfontsize=8):
     sw = maxwidth
     sh = maxheight
     fontsize = maxfontsize + 1
-    while (sw >= maxwidth or sh >= maxheight) and fontsize > minfontsize:
+    while (sw >= maxwidth or sh >= maxheight) and fontsize >= minfontsize:
         fontsize = fontsize - 1
         sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    return fontsize
+    return fontsize,sw,sh
+
+def getmaxtextforwidth(draw, words, width, fontsize, isbold=False):
+    wlen = len(words)
+    if wlen == 0:
+        return "", []
+    for x in range(wlen, 1, -1):
+        s = " ".join(words[0:x])
+        sw,sh,f = gettextdimensions(draw, s, fontsize, isbold)
+        if sw <= width:
+            return s, words[x:]
+    return " ".join(words[0:1]), []
 
 def gettextdimensions(draw, s, fontsize, isbold=False):
     thefont = getfont(fontsize, isbold)
@@ -49,6 +60,42 @@ def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=F
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=textcolor)
+
+def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0, backgroundColor="#000000", textColor="#ffffff", borderColor="#888888"):
+    sw,sh,f = gettextdimensions(draw, s, fontsize, False)
+    padding = 1
+    border = 1
+    nx = anchorx
+    ny = anchory
+    if anchorposition == "tl":
+        # no change to nx, ny
+        pass
+    elif anchorposition == "tr":
+        nx = anchorx - sw
+        pass
+    elif anchorposition == "t":
+        nx = anchorx - (sw/2)
+        pass
+    elif anchorposition == "bl":
+        ny = anchory - sh
+        pass
+    elif anchorposition == "br":
+        nx = anchorx - sw
+        ny = anchory - sh
+        pass
+    elif anchorposition == "b":
+        nx = anchorx - (sw/2)
+        ny = anchory - sh
+        pass
+    elif anchorposition == "l":
+        ny = anchory - (sh/2)
+        pass
+    elif anchorposition == "r":
+        nx = anchorx - sw
+        ny = anchory - (sh/2)
+        pass
+    draw.rectangle(xy=[(nx-padding-border,ny-padding-border),(nx+sw+padding+border,ny+sh+padding+border)],fill=ImageColor.getrgb(backgroundColor),outline=ImageColor.getrgb(borderColor),width=1)
+    draw.text(xy=(nx,ny), text=s, font=f, fill=ImageColor.getrgb(textColor))
 
 def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)

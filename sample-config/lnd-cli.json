@@ -1,0 +1,9 @@
+{
+    "activeProfile": "default",
+    "profiles": {
+        "default": {
+            "macaroonOpt": "--macaroonpath=${HOME}/.lnd/nodeyez.macaroon",
+            "timeoutOpt": "--timeout 5s"
+        }
+    }
+}

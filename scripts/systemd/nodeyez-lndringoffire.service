@@ -1,0 +1,20 @@
+# Nodeyez: systemd unit for Ring of Fire Status panel generation
+# /etc/systemd/system/nodeyez-lndringoffire.service
+
+[Unit]
+Description=Lightning Ring of Fire Status
+StartLimitIntervalSec=600
+StartLimitBurst=2
+Wants=lnd.service
+After=lnd.service
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/lndringoffire.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

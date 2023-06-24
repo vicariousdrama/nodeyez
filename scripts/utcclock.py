@@ -1,83 +1,83 @@
 #! /usr/bin/env python3
+from PIL import ImageColor
 from datetime import datetime
-from os.path import exists
-from PIL import Image, ImageDraw, ImageColor
-import json
-import math
-import subprocess
+from vicariouspanel import NodeyezPanel
 import sys
-import time
 import vicarioustext
 
-def getdayofweek():
-    now = datetime.utcnow()
-    return now.strftime("%A")
+class UTCClockPanel(NodeyezPanel):
 
-def getdate():
-    now = datetime.utcnow()
-    return now.strftime("%d %b %Y")
+    def __init__(self):
+        """Instantiates a new UTC Clock panel"""
 
-def gettime():
-    now = datetime.utcnow()
-    return now.strftime("%H:%M:%S")
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorTextDate": "dateTextColor",
+            "colorTextDayOfWeek": "dayOfWeekTextColor",
+            "colorTextTime": "timeTextColor",
+            "sleepInterval": "interval",
+            # panel specific key names
+            "dateTextColor": "dateTextColor",
+            "dayOfWeekTextColor": "dayOfWeekTextColor",
+            "timeTextColor": "timeTextColor",
+        }
 
-def createimage(width=480, height=320):
-    im = Image.new(mode="RGB", size=(width, height), color=colorBackground)
-    draw = ImageDraw.Draw(im)
-    vicarioustext.drawcenteredtext(draw, getdayofweek(), 72, int(width/2), int(height/2)-120, colorTextDayOfWeek)
-    vicarioustext.drawcenteredtext(draw, getdate(), 72, int(width/2), int(height/2), colorTextDate)
-    vicarioustext.drawcenteredtext(draw, gettime(), 96, int(width/2), int(height/2)+120, colorTextTime)
-    im.save(outputFile)
-    im.close()
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("dateTextColor", "#f1c232")
+        self._defaultattr("dayOfWeekTextColor", "#e69138")
+        self._defaultattr("footerEnabled", False)
+        self._defaultattr("headerEnabled", False)
+        self._defaultattr("interval", 30)
+        self._defaultattr("timeTextColor", "#6aa84f")
+        self._defaultattr("watermarkEnabled", False)
 
+        # Initialize
+        super().__init__(name="utcclock")
+
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        self.now = datetime.utcnow()
+
+    def run(self):
+
+        super().startImage()
+
+        dayofweek = self.now.strftime("%A")
+        fs,_,_ = vicarioustext.getmaxfontsize(self.draw, dayofweek, self.width, self.height//3, True)
+        vicarioustext.drawcenteredtext(self.draw, dayofweek, fs, self.width//2, self.height*1//6, ImageColor.getrgb(self.dayOfWeekTextColor))
+
+        date = self.now.strftime("%d %b %Y")
+        fs,_,_ = vicarioustext.getmaxfontsize(self.draw, date, self.width, self.height//3, True)
+        vicarioustext.drawcenteredtext(self.draw, date, fs, self.width//2, self.height*3//6, ImageColor.getrgb(self.dateTextColor))
+
+        time = self.now.strftime("%H:%M:%S")
+        fs,_,_ = vicarioustext.getmaxfontsize(self.draw, time, self.width, self.height//3, True)
+        vicarioustext.drawcenteredtext(self.draw, time, fs, self.width//2, self.height*5//6, ImageColor.getrgb(self.timeTextColor))
+
+        super().finishImage()
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # Defaults
-    configFile="../config/utcclock.json"
-    outputFile="../imageoutput/utcclock.png"
-    width=480
-    height=320
-    sleepInterval=30
-    colorTextDayOfWeek=ImageColor.getrgb("#e69138")
-    colorTextDate=ImageColor.getrgb("#f1c232")
-    colorTextTime=ImageColor.getrgb("#6aa84f")
-    colorBackground=ImageColor.getrgb("#602060")
-    # Override defaults
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "utcclock" in config:
-            config = config["utcclock"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 10 if sleepInterval < 10 else sleepInterval # minimum 10 seconds, local only
-        if "colorTextDayOfWeek" in config:
-            colorTextDayOfWeek = ImageColor.getrgb(config["colorTextDayOfWeek"])
-        if "colorTextDate" in config:
-            colorTextDate = ImageColor.getrgb(config["colorTextDate"])
-        if "colorTextTime" in config:
-            colorTextTime = ImageColor.getrgb(config["colorTextTime"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
-    # Check for single run
+
+    p = UTCClockPanel()
+
+    # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
             print(f"Generates a simple output of the date and time in UTC and weekday")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass an argument other than -h or --help to run once and exit")
-            print(f"You may specify a custom configuration file at {configFile}")
         else:
-            createimage(width,height)
+            p.fetchData()
+            p.run()
         exit(0)
-    # Loop
-    while True:
-        createimage(width,height)
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+
+    # Continuous run
+    p.runContinuous()

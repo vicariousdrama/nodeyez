@@ -1,0 +1,61 @@
+{
+    "summary": [
+        {
+            "SUMMARY": [
+                {
+                    "MHS 1m": 12400273
+                }
+            ]
+        }
+    ],
+    "tunerstatus": [
+        {
+            "TUNERSTATUS": [
+                {
+                    "PowerLimit": 905,
+                    "ApproximateChainPowerConsumption": 830,
+                    "ApproximateMinerPowerConsumption": 75
+                }
+            ]
+        }
+    ],
+    "temps": [
+        {
+            "TEMPS": [
+                {
+                    "Board": 60,
+                    "Chip": 80
+                },
+                {
+                    "Board": 62,
+                    "Chip": 83
+                },
+                {
+                    "Board": 64,
+                    "Chip": 85
+                }
+            ]
+        }
+    ],
+    "fans": [
+        {
+            "FANS": [
+                {"RPM": 2625},
+                {"RPM": 2750},
+                {"RPM": 0},
+                {"RPM": 0}
+            ]
+        }
+    ],
+    "pools": [
+        {
+            "POOLS": [
+                {
+                    "URL": "stratum+tcp://us-east.stratum.braiins.com:3333",
+                    "User": "BobbiesHashingEmporium.Worker2",
+                    "Status": "Alive"
+                }
+            ]
+        }
+    ]
+}

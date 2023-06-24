@@ -6,8 +6,7 @@ layout: default
 
 # Running the Slideshow
 
-If you have a screen attached to your raspberry pi, you can display the
-generated images to the screen using the slideshow script 
+If you have a screen attached to your raspberry pi, you can display the generated images to the screen using the slideshow script 
 
 ## Script Location
 
@@ -44,7 +43,7 @@ Comment the part at the end that redirects to stdout and stderr to /dev/null.
 
 You can do this by placing a `#` right before this at the end of the line `> /dev/null 2>&1`.
 
-Save (Press CTRL+O) and exit (Press CTRL+X)
+Save (CTRL+O) and Exit (CTRL+X).
 
 Terminate any existing background process before restarting the slideshow script
 

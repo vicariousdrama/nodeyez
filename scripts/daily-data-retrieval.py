@@ -1,12 +1,13 @@
 #! /usr/bin/env python3
 from datetime import datetime
-from luxor import API
+from LuxorLabs.luxor import API
 from os.path import exists
+from satsperfiatunit import SatsPerFiatUnitPanel
 import json
 import os
-import subprocess
 import sys
 import time
+
 import vicariousnetwork
 
 def getdatefile():
@@ -38,10 +39,8 @@ def getAndSaveBisqInfo():
         return
     datefile = getdatefile()
     print(f"Retrieving and saving Bisq Market Price info to {datefile}")
-    with open(configFileBisq) as f:
-        config = json.load(f)
-    filename = bisqDataDirectory + datefile
-    getAndSaveFile(config["priceurl"], filename)
+    p = SatsPerFiatUnitPanel()   
+    vicariousnetwork.getpriceinfo(useTor=p.useTor, url=p.priceUrl)
 
 def getAndSaveCollectAPIInfo():
     print("---")
@@ -331,14 +330,14 @@ if __name__ == '__main__':
     enableBraiinspool = False
     dataDirectory="../data/"
     configFolder="../config/"
-    configFileBisq=configFolder + "satsperusd.json"
+    configFileBisq=configFolder + "satsperfiatunit.json"
     configFileCollectAPI=configFolder + "collectapi.json"
     configFileCompassHardware=configFolder + "compassmininghardware.json"
     configFileCompassStatus=configFolder + "compassminingstatus.json"
-    configFileF2Pool=configFolder + "f2pool.json"
+    configFileF2Pool=configFolder + "miningpool-f2pool.json"
     configFileFearAndGreed=configFolder + "fearandgreed.json"
-    configFileLuxor=configFolder + "luxor.json"
-    configFileBraiinspool=configFolder + "braiinspool.json"
+    configFileLuxor=configFolder + "miningpool-luxorpool.json"
+    configFileBraiinspool=configFolder + "miningpool-braiinspool.json"
     sleepInterval=300 # This is for the main loop controller
     # Time Intervals for remote data pulls
     sleepIntervalBisq=3600

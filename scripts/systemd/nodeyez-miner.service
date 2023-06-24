@@ -1,0 +1,18 @@
+# Nodeyez: systemd unit for Miner panel generation
+# /etc/systemd/system/nodeyez-miner.service
+
+[Unit]
+Description=Miner Status for miners
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/miner.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

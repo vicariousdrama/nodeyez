@@ -12,8 +12,7 @@ imageurl: ../images/blockhashdungeon.png
 This script produces a maze reminiscent of legacy videogame systems based on the
 Bitcoin Blockhash.  The maze is rendered semi deterministically and features
 custom tilesets for the maze floor and walls, and logos of popular entities in
-the Bitcoin ecosystem. It depends on a bitcoin node running locally and fully
-synched.
+the Bitcoin ecosystem. It depends on a bitcoin node.
 
 ![sample image depicting a sample generated maze](../images/blockhashdungeon.png)
 
@@ -36,14 +35,13 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/blockhashdungeon.png` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | bitcoinLogosFile | The path to a file containing tiles of logos to overlay on the maze with dimensions 32x32 pixels, 16 icons wide. Default `../images/blockhash-dungeon-bitcoin-logos.png` |
 | bitcoinTilesFile | The path to a file containing tiles with dimensions 32x32 arranged in sets of 8 tiles per theme, two themes wide, and 11 themes high. Default `../images/blockhash-dungeon-bitcoin-tiles.png` |
-| colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| width | The width, in pixels, to generate the image. Default `480` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
+| textColor | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

@@ -55,27 +55,31 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/lndhub.png` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| attributionColor | The text color for the source attribution line expressed as a Hexadecimal color specifier. Default `#80cef2` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
+| headerText | The text to use in the header area. Default `LNDHub Account Balances` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| colorTextDark | The color of the account detail text expressed as a Hexadecimal color specifier. Default `#808080` |
-| colorLine | The color of the line dividing the subheader from user records expressed as a Hexadecimal color specifier. Default `#4040ff` |
-| redisServer | The hostname of the redis server. Default `localhost` |
-| redisPort | The port of the redis server. Default `6379` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `600` |
+| lineColor | The color of the line dividing the subheader from user records expressed as a Hexadecimal color specifier. Default `#4040ff` |
+| logDetailsEnabled | Indicates whether the debug info should be printed out. Default `true` |
 | redisDb | The redis database number to load. Default `0` |
-| enableUserDetails | Indicates whether user details should be output to the image (create date, hub fees, txs). Default `true` |
-| enableLogDetails | Indicates whether the debug info should be printed out. Default `true` |
+| redisPort | The port of the redis server. Default `6379` |
+| redisServer | The hostname of the redis server. Default `localhost` |
+| textColor | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| userDetailsEnabled | Indicates whether user details should be output to the image (create date, hub fees, txs). Default `true` |
+| userDetailsTextColor | The color of the account detail text expressed as a Hexadecimal color specifier. Default `#808080` |
 | userAccounts | An array of user account definitions associating names to the account id |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 __userAccounts__
 
 | field name | description |
 | --- | --- |
-| name | The alias given to the account |
 | accountid | The account identifier. (e.g. 'f9095b00b85802c6ff9cc674231858af03a24a75353aa7c0') |
+| email | Optional email associated to account |
+| name | The alias given to the account |
+| notes | Additional notes about the account |
+| phone | Optional phone associated to the account |
 
 ## Run Directly
 

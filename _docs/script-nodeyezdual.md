@@ -36,17 +36,17 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/nodeyezdual.png` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| width | The width, in pixels, to generate the image. Default `480` |
-| height | The height, in pixels, to generate the image. Default `800` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
-| useTor | Indicates whether remote calls should use torify for privacy. Experimental. Default `true` |
-| headerSVG | URL to a scalable vector graphic to use as the header. Defaults to the Nodeyez logo |
-| topImages | list of URLs to randomly pick from for the top image |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | bottomImages | list of URLs to randomly pick from for the bottom image |
-| dividerHeight | The height of an optional divider bar between images. Use 0 for no divider bar. Default 10 |
-| dividerBuffer | The height of optiona buffer between images and the divider bar. Use 0 for no buffer. Default 5 |
+| dividerBuffer | The height of optiona buffer between images and the divider bar. Use 0 for no buffer. Default `5` |
+| dividerHeight | The height of an optional divider bar between images. Use 0 for no divider bar. Default `10` |
+| headerIconStyle | The style to render the system info icons in the header area. Suppored values are: colorful, monochromatic. Default `colorful` |
+| headerSVG | URL to a scalable vector graphic to use as the header. Defaults to the Nodeyez logo |
+| height | The height, in pixels, to generate the image. Default `800` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
+| topImages | list of URLs to randomly pick from for the top image |
+| useTor | Indicates whether remote calls should use tor socks proxy for privacy. Default `true` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

@@ -1,714 +1,764 @@
 # import packages
 from os.path import exists
 from urllib3.exceptions import InsecureRequestWarning
-import binascii
 import json
-import math
+import random
 import re
 import requests
 import subprocess
+import time
 import vicariousnetwork
 
-useMockData=False
+def loadJSONData(dataFile=None, default={}):
+    if dataFile is None:
+        return default
+    j = None
+    if exists(dataFile):
+        with open(dataFile) as f:
+            j = json.load(f)
+    if j is None:
+        j = default
+    return j
+
+def binaryExists(binName):
+    cmd = f"which {binName} | wc -l"
+    cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    return int(cmdoutput) > 0
 
 # ------ Bitcoin Core Related ------------------------------------------------------
+
+# config opts
+bitcoinMode="MOCK"  # available modes are MOCK, CLI, and REST
+                    # to force a mode, assign it below
+# support for profile options in config, generally only need default
+# additional profiles can be configured for development testing
+bitcoinCLIOptions=loadJSONData("../config/bitcoin-cli.json")
+if "activeProfile" in bitcoinCLIOptions and "profiles" in bitcoinCLIOptions:
+    if bitcoinCLIOptions["activeProfile"] in bitcoinCLIOptions["profiles"]:
+        bitcoinCLIOptions = bitcoinCLIOptions["profiles"][bitcoinCLIOptions["activeProfile"]]
+        bitcoinMode="CLI"
+bitcoinRESTOptions=loadJSONData("../config/bitcoin-rest.json")
+if "activeProfile" in bitcoinRESTOptions and "profiles" in bitcoinRESTOptions:
+    bitcoinRESTProfileName = bitcoinRESTOptions["activeProfile"]
+    for bitcoinRESTProfile in bitcoinRESTOptions["profiles"]:
+        if "name" in bitcoinRESTProfile and bitcoinRESTProfile["name"] == bitcoinRESTProfileName:
+            bitcoinRESTOptions = bitcoinRESTProfile
+            bitcoinMode="REST"
+            break
+# if you want to force mode for bitcoin, set it here
+#bitcoinMode="CLI"
 
 # Pruned Block Height for tracking lowest block we can return data for
 prunedBlockHeight = None
 prunedBlockDiff = None
 prunedMode = True
-def setPrunedBlockHeight():
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockchaininfo"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        if "pruned" in j:
-            if "pruneheight" in j:
-                prunedBlockHeight = int(j["pruneheight"])
-        else:
-            prunedBlockHeight = 0
-            prunedMode = False
-        prunedBlockDiff = int(j["blocks"]) - prunedBlockHeight
-    except subprocess.CalledProcessError as e:
-        if prunedBlockHeight is None:
-            prunedBlockHeight = 9999999
-        print(e)
 
-# support for profile options in config, mainly for development
-bitcoinCLIOptions=""
-if exists("../config/bitcoin-cli.json"):
-    with open("../config/bitcoin-cli.json") as f:
-        bitcoinCLIConfig = json.load(f)
-        if "activeProfile" in bitcoinCLIConfig and "profiles" in bitcoinCLIConfig:
-            if bitcoinCLIConfig["activeProfile"] in bitcoinCLIConfig["profiles"]:
-                bitcoinCLIOptions=bitcoinCLIConfig["profiles"][bitcoinCLIConfig["activeProfile"]]
+# ------
+
+def isBitcoinAvailable():
+    return binaryExists("bitcoin-cli")
+
+def isBitcoinRESTOK():
+    if type(bitcoinRESTOptions) is dict and "name" in bitcoinRESTOptions: return True
+    if type(bitcoinRESTOptions) is list and len(bitcoinRESTOptions) > 0: return True
+    return False
 
 def countblockopreturns(blocknum):
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to countblockopreturns for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+    j = getblock(blocknum, 2)
+    if j is None:
         return 0
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep asm|grep OP_RETURN|wc -l"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return int(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        print(e)
+    if "tx" not in j:
         return 0
+    c = 0
+    for tx in j["tx"]:
+        if "vout" not in tx:
+            continue
+        for vout in tx["vout"]:
+            if "scriptPubKey" not in vout:
+                continue
+            scriptPubKey = vout["scriptPubKey"]
+            if "asm" in scriptPubKey:
+                asm = scriptPubKey["asm"]
+                if "OP_RETURN" in asm:
+                    c = c + 1
+    return c
 
 def countblockordinals(blocknum):
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to countblockordinals for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+    j = getblock(blocknum, 2)
+    if j is None:
         return 0
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 2|grep hex|grep 0063036f72640101|wc -l"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return int(cmdoutput)
-    except subprocess.CalledProcessError as e:
-        print(e)
+    thepattern = re.compile("(.*)0063036f72640101(.*)68$")
+    if "tx" not in j:
         return 0
+    c = 0
+    for tx in j["tx"]:
+        if "vin" not in tx:
+            continue
+        for vin in tx["vin"]:
+            if "txinwitness" not in vin:
+                continue
+            for txinwitness in vin["txinwitness"]:
+                match = re.match(thepattern, txinwitness)
+                if match is not None:
+                    c = c + 1
+    return c
 
 def getblock(blocknum, verbosity=1):
-    if useMockData:
-        if exists("../mock-data/getblock.json"):
-            with open("../mock-data/getblock.json") as f:
-                return json.load(f)
-    fakejson = "{\"confirmations\": 1, \"time\": 0}"
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
-        return json.loads(fakejson)
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` " + str(verbosity)
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return json.loads(fakejson)
+    fakeresult = {"confirmations": 1, "time": 0}
+    j = fakeresult
+    if bitcoinMode == "MOCK":
+        match verbosity:
+            case 0: # hex encoded data
+                j = loadJSONData("../mock-data/getblock-verbose0.json", fakeresult)
+            case 2: # json with only tx id
+                j = loadJSONData("../mock-data/getblock-verbose2.json", fakeresult)
+            case 3: # json with transaction data and prevout for inputs
+                j = loadJSONData("../mock-data/getblock-verbose3.json", fakeresult)
+            case _: # json with transaction data (verbosity=1 and all others), the default
+                j = loadJSONData("../mock-data/getblock.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    blockhash = getblockhash(blocknum)
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        if prunedBlockHeight is None:
+            setPrunedBlockHeight()
+        if prunedBlockHeight > blocknum:
+            print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        else:
+            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblock {blockhash} {verbosity}"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                j = json.loads(cmdoutput)
+            except subprocess.CalledProcessError as e:
+                print(e)
+                j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        blockhash = getblockhash(blocknum)
+        data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getblock", "params": ["{blockhash}", {verbosity}]}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="{}", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+        if j is None:
+            j = fakeresult
+        elif len(j.keys()) == 0:
+            j = fakeresult
+    if j is None: 
+        j = fakeresult
+    return j
+
+def getblockchaininfo():
+    fakeresult = {"chain":"main","blocks":785671,"headers":785671,"bestblockhash":"000000000000000000044b9ca9835afb2925cb5b681d060ccf0cdb4fbafd68d1","difficulty":47887764338536.25,"time":1681659952,"mediantime":1681658374,"verificationprogress":0.9999960223040104,"initialblockdownload":False,"chainwork":"000000000000000000000000000000000000000045c08760c1aff423a74e7fe0","size_on_disk":537705569832,"pruned":False,"warnings":""}
+    j = None
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getblockchaininfo.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockchaininfo"
+        try:
+            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            j = json.loads(cmdoutput)
+        except subprocess.CalledProcessError as e:
+            print(e)
+            j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        data = '{"jsonrpc": "1.0", "id": "nodeyez", "method": "getblockchaininfo", "params": []}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="{}", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j
 
 def getblockhash(blocknum=1):
-    if useMockData:
-        if exists("../mock-data/getblockhash.json"):
-            with open("../mock-data/getblockhash.json") as f:
-                return f.readline()
     fakeresult = "0000000000000000000000000000000000000000000000000000000000000000"
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblockhash for blocknum {blocknum} below pruned height {prunedBlockHeight}")
-        return fakeresult
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum)
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return fakeresult
+    j = fakeresult
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getblockhash.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        if prunedBlockHeight is None:
+            setPrunedBlockHeight()
+        if prunedBlockHeight > blocknum:
+            print(f"Call to getblockhash for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        else:
+            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockhash {blocknum}"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                j = cmdoutput
+            except subprocess.CalledProcessError as e:
+                print(e)
+                j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getblockhash", "params": [{blocknum}]}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="{}", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j
 
 def getblockopreturns(blocknum):
-    if useMockData:
-        return ["This is an example OP_RETURN", "Another OP_RETURN found in the block", "Only utf-8 or ascii decodable OP_RETURNs are rendered","Support for\nmulti-line OP_RETURN values\nexists as well","Some spammy OP_RETURN values are excluded","There must be at least one space","Lengthy OP_RETURN values without new lines may end up running off the side of the image","It depends on the fontsize set, which is based on number of OP_RETURN\nentries in the block","NODEYEZ","Nodeyez - Display panels to get the most from your node","NODEYEZ","NODEYEZ"]
     opreturns = []
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblockopreturns for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+    encodinglist = ["utf-8","ascii"]
+    j = getblock(blocknum, 2)
+    if "tx" not in j:
         return opreturns
-    if countblockopreturns(blocknum) == 0:
-        return opreturns
-    b = getblock(blocknum, 2)
-    if "tx" in b:
-        txidx = 0
-        for tx in b["tx"]:
-            txidx += 1
-            voutidx = 0
-            if "vout" in tx:
-                for vout in tx["vout"]:
-                    voutidx += 1
-                    if "scriptPubKey" in vout:
-                        scriptPubKey = vout["scriptPubKey"]
-                        if "asm" in scriptPubKey:
-                            asm = scriptPubKey["asm"]
-                            if "OP_RETURN" in asm:
-                                ophex = asm.replace("OP_RETURN ", "")
-                                # require even number of characters
-                                if len(ophex) % 2 == 1:
-                                    continue
-                                # require more than one word
-#                                if "20" not in ophex:
-#                                    continue
-                                #encodinglist = ["utf-8","gb18030","euc-kr","cp1253","utf-32","utf-16","euc-kr","cp1253","cp1252","iso8859-16","ascii","latin-1","iso8859-1"]
-                                encodinglist = ["utf-8","ascii"]
-                                hasError = True
-                                try:
-                                    opbytes = bytes.fromhex(ophex)
-                                except Exception as e:
-                                    print(f"error handling ophex '{ophex}'")
-                                    print(f"error is {e}")
-                                for encoding in encodinglist:
-                                    if hasError == False:
-                                        break
-                                    try:
-                                        optext = opbytes.decode(encoding)
-#                                        print(f"successfully converted with encoding {encoding}: {optext}")
-                                        hasError = False
-                                        opreturns.append(optext)
-                                    except Exception as e:
-#                                        print(f"error converting hex to text with encoding {encoding} for tx[{txidx}].vout[{voutidx}]: {e}")
-                                        pass
-#                                if hasError:
-#                                    opreturns.append(ophex)
+    txidx = 0
+    for tx in j["tx"]:
+        txidx += 1
+        voutidx = 0
+        if "vout" not in tx:
+            continue
+        for vout in tx["vout"]:
+            voutidx += 1
+            if "scriptPubKey" not in vout:
+                continue
+            scriptPubKey = vout["scriptPubKey"]
+            if "asm" not in scriptPubKey:
+                continue
+            asm = scriptPubKey["asm"]
+            if "OP_RETURN" not in asm:
+                continue
+            ophex = asm.replace("OP_RETURN ", "")
+            if len(ophex) % 2 == 1:  # hex is 2 char per byte
+                continue
+            try:
+                opbytes = bytes.fromhex(ophex)
+            except Exception as e:
+                print(f"error handling ophex '{ophex}'")
+                print(f"error is {e}")
+            hasError = True
+            for encoding in encodinglist:
+                if hasError == False:
+                    break
+                try:
+                    optext = opbytes.decode(encoding)
+                    hasError = False
+                    opreturns.append(optext)
+                except Exception as e:
+                    #print(f"error converting hex to text with encoding {encoding} for tx[{txidx}].vout[{voutidx}]: {e}")
+                    pass
     return opreturns
 
 def getblockordinals(blocknum, blockIndexesToSkip=[]):
-    ordinals = []
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblockordinals for blocknum {blocknum} below pruned height {prunedBlockHeight}")
-        return ordinals
-    if countblockordinals(blocknum) == 0:
-        return ordinals
-    b = getblock(blocknum, 2)
-    thepattern = re.compile("(.*)0063036f72640101(.*)68$")
-    if "tx" in b:
-        txidx = 0
-        for tx in b["tx"]:
-            txidx += 1
-            if txidx in blockIndexesToSkip:
-                continue
-            txid = tx["txid"]
-            txsize = tx["size"]
-            vinidx = 0
-            if "vin" in tx:
-                for vin in tx["vin"]:
-                    vinidx += 1
-                    if "txinwitness" in vin:
-                        for txinwitness in vin["txinwitness"]:
-                            match = re.match(thepattern, txinwitness)
-                            if match is not None:
-                                # This is an ordinal inscription.
-                                # Get parent info
-                                parenttxid = ""
-                                parentsize = 0
-                                if "txid" in vin:
-                                    parenttxid = vin["txid"]
-                                    parentsize = gettransaction(parenttxid)["size"]
-                                #print(f"found ordinal in tx idx:{txidx} of block {blocknum}")
-                                g2 = match.group(2)
-                                pos = 0
-                                contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
-                                pos += 2
-                                contenttype = bytes.fromhex(g2[pos:pos+(contenttypelength*2)]).decode()
-                                pos += (contenttypelength*2)
-                                opcode = g2[pos:pos+2]
-                                pos += 2
-                                if opcode != '00':
-                                    print(f"warning. expected 0x00 divider between content type and data, but got 0x{opcode}")
-                                #print(f"- content type: {contenttype}")
-                                datalengthtype = g2[pos:pos+2]
-                                pos +=2
-                                datalen = 0
-                                totaldatalen = 0
-                                rawbytes = bytearray()
-                                while datalengthtype in ['4c','4d','4e']:
-                                    #print(f"- hex code for data length: {datalengthtype}")
-                                    # size was reporting 2050, which is 802 in hex. flip the endian, 208 = 520, the max bytes that can be pushed
-                                    if datalengthtype == "4c":
-                                        # next 1 byte for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
-                                        pos += 2
-                                    if datalengthtype == "4d":
-                                        # next 2 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little")
-                                        pos += 4
-                                    if datalengthtype == "43":
-                                        # next 4 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little")
-                                        pos += 8
-                                    totaldatalen += datalen
-                                    morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
-                                    rawbytes.extend(morebytes)
-                                    pos += (datalen*2)
-                                    # see if more op codes to continue data
-                                    datalengthtype = g2[pos:pos+2]
-                                    pos += 2
-                                # Check for extra bytes trailing into end. For now, we'll append these to existing, but this may be incorrect
-                                remaininghex = g2[pos:]
-                                remaininghexlength = len(remaininghex)
-                                #print(f"pos: {pos}, totaldatalen: {totaldatalen}, remaining: {remaininghex}, remaininghexlength: {remaininghexlength}")
-                                if remaininghexlength > 0:
-                                    morebytes = bytes.fromhex(g2[pos:])
-                                    rawbytes.extend(morebytes)
-                                    totaldatalen += (remaininghexlength/2)
-                                #print(f"- total data length: {totaldatalen}")
-                                # append an object
-                                ordinal = {"block":blocknum,"txid":txid,"txsize":txsize,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"parenttxid":parenttxid,"parentsize":parentsize,"data":rawbytes}
-                                ordinals.append(ordinal)
-    return ordinals
+    print(f"Call to vicariousbitcoin.getblockordinals instead of vicariousbitcoin.getblockinscriptions")
+    return getblockordinals(blocknum, blockIndexesToSkip)
 
-def getblockstats(blocknum, verbosity=1):
-    if useMockData:
-        if exists("../mock-data/getblockstats.json"):
-            with open("../mock-data/getblockstats.json") as f:
-                return json.load(f)
-    fakejson = '{"avgfee": 0, "avgfeerate": 0, "avgtxsize": 0, "blockhash": "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048", "feerate_percentiles": [0, 0, 0, 0, 0], "height": 1, "ins": 0, "maxfee": 0, "maxfeerate": 0,"maxtxsize": 0, "medianfee": 0, "mediantime": 1231469665, "mediantxsize": 0, "minfee": 0, "minfeerate": 0, "mintxsize": 0, "outs": 1, "subsidy": 5000000000, "swtotal_size": 0, "swtotal_weight": 0, "swtxs": 0, "time": 1231469665, "total_out": 0, "total_size": 0, "total_weight": 0, "totalfee": 0, "txs": 1, "utxo_increase": 1, "utxo_size_inc": 117}'
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblockstats for blocknum {blocknum} below pruned height {prunedBlockHeight}")
-        return json.loads(fakejson)
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockstats " + str(blocknum)
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return json.loads(fakejson)
+def getblockinscriptions(blocknum, blockIndexesToSkip=[]):
+    inscriptions = []
+    j = getblock(blocknum, 2)
+    thepattern = re.compile("(.*)0063036f72640101(.*)68$")
+    if "tx" not in j:
+        return inscriptions
+    txidx = 0
+    for tx in j["tx"]:
+        txidx += 1
+        if txidx in blockIndexesToSkip:
+            continue
+        txid = tx["txid"]
+        txsize = tx["size"]
+        vinidx = 0
+        if "vin" not in tx:
+            continue
+        for vin in tx["vin"]:
+            vinidx += 1
+            if "txinwitness" not in vin:
+                continue
+            for txinwitness in vin["txinwitness"]:
+                match = re.match(thepattern, txinwitness)
+                if match is not None:
+                    # This is an ordinal inscription.
+                    # Get parent info
+                    parenttxid = ""
+                    parentsize = 0
+                    if "txid" in vin:
+                        parenttxid = vin["txid"]
+                        parentsize = gettransaction(parenttxid)["size"]
+                    #print(f"found inscription in tx idx:{txidx} of block {blocknum}")
+                    g2 = match.group(2)
+                    pos = 0
+                    contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
+                    pos += 2
+                    contenttype = bytes.fromhex(g2[pos:pos+(contenttypelength*2)]).decode()
+                    pos += (contenttypelength*2)
+                    opcode = g2[pos:pos+2]
+                    pos += 2
+                    if opcode != '00':
+                        print(f"warning. expected 0x00 divider between content type and data, but got 0x{opcode}")
+                    #print(f"- content type: {contenttype}")
+                    datalengthtype = g2[pos:pos+2]
+                    pos +=2
+                    datalen = 0
+                    totaldatalen = 0
+                    rawbytes = bytearray()
+                    while datalengthtype in ['4c','4d','4e']:
+                        #print(f"- hex code for data length: {datalengthtype}")
+                        # size was reporting 2050, which is 802 in hex. flip the endian, 208 = 520, the max bytes that can be pushed
+                        if datalengthtype == "4c":
+                            # next 1 byte for size
+                            datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
+                            pos += 2
+                        if datalengthtype == "4d":
+                            # next 2 bytes for size
+                            datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little")
+                            pos += 4
+                        if datalengthtype == "43":
+                            # next 4 bytes for size
+                            datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little")
+                            pos += 8
+                        totaldatalen += datalen
+                        morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
+                        rawbytes.extend(morebytes)
+                        pos += (datalen*2)
+                        # see if more op codes to continue data
+                        datalengthtype = g2[pos:pos+2]
+                        pos += 2
+                    # Check for extra bytes trailing into end. For now, we'll append these to existing, but this may be incorrect
+                    remaininghex = g2[pos:]
+                    remaininghexlength = len(remaininghex)
+                    #print(f"pos: {pos}, totaldatalen: {totaldatalen}, remaining: {remaininghex}, remaininghexlength: {remaininghexlength}")
+                    if remaininghexlength > 0:
+                        morebytes = bytes.fromhex(g2[pos:])
+                        rawbytes.extend(morebytes)
+                        totaldatalen += (remaininghexlength/2)
+                    #print(f"- total data length: {totaldatalen}")
+                    # append an object
+                    inscription = {"block":blocknum,"txid":txid,"txsize":txsize,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"parenttxid":parenttxid,"parentsize":parentsize,"data":rawbytes}
+                    inscriptions.append(inscription)
+    return inscriptions
+
+def getblockstats(blocknum):
+    fakeresult = {"avgfee":4815,"avgfeerate":8,"avgtxsize":1246,"blockhash":"000000000000000000044b9ca9835afb2925cb5b681d060ccf0cdb4fbafd68d1","feerate_percentiles":[1,1,1,9,24],"height":785671,"ins":6259,"maxfee":160000,"maxfeerate":224,"maxtxsize":243764,"medianfee":2973,"mediantime":1681658374,"mediantxsize":246,"minfee":120,"minfeerate":1,"mintxsize":150,"outs":4191,"subsidy":625000000,"swtotal_size":1886545,"swtotal_weight":3261196,"swtxs":1457,"time":1681659952,"total_out":447889278607,"total_size":2069233,"total_weight":3991948,"totalfee":7994356,"txs":1661,"utxo_increase":-2068,"utxo_size_inc":-149003}
+    j = None
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getblockstats.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        if prunedBlockHeight is None:
+            setPrunedBlockHeight()
+        if prunedBlockHeight > blocknum:
+            print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+        else:
+            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockstats {blocknum}"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                j = json.loads(cmdoutput)
+            except subprocess.CalledProcessError as e:
+                print(e)
+                j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getblockstats", "params": [{blocknum}]}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="{}", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j
 
 def getblockscriptpubkeytypes(blocknum):
-    r = {}
-    if prunedBlockHeight is None:
-        setPrunedBlockHeight()
-    if prunedBlockHeight > blocknum:
-        print(f"Call to getblockstats for blocknum {blocknum} below pruned height {prunedBlockHeight}")
+    t0 = time.time()
+    j = getblock(blocknum, 3)
+    t1 = time.time()
+    t = {"multisig":0,
+         "nonstandard":0,
+         "nulldata":0,
+         "pubkey":0,
+         "pubkeyhash":0,
+         "scripthash":0,
+         "witness_v0_scripthash":0,
+         "witness_v0_keyhash":0,
+         "witness_v1_taproot":0,
+         "witness_unknown":0
+        }
+    r = {"vin": dict(t), "vout": dict(t)}
+    if "tx" not in j:
         return r
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vin[].prevout.scriptPubKey.type"
-    try:
-        t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        lines = cmdoutput.splitlines()
-        for line in lines:
-            t[line] = 1 if line not in t else t[line] + 1
-        r["vin"] = t
-    except subprocess.CalledProcessError as e:
-        print(e)
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblock `bitcoin-cli " + bitcoinCLIOptions + " getblockhash " + str(blocknum) + "` 3 | jq -r .tx[].vout[].prevout.scriptPubKey.type"
-    try:
-        t = {"nonstandard":0,"pubkey":0,"pubkeyhash":0,"scripthash":0,"multisig":0,"nulldata":0,"witness_v0_scripthash":0,"witness_v0_keyhash":0,"witness_v1_taproot":0,"witness_unknown":0}
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        lines = cmdoutput.splitlines()
-        for line in lines:
-            t[line] = 1 if line not in t else t[line] + 1
-        r["vout"] = t
-    except subprocess.CalledProcessError as e:
-        print(e)
+    for tx in j["tx"]:
+        if "vin" in tx:
+            for vin in tx["vin"]:
+                if "prevout" not in vin:
+                    continue
+                intype = vin["prevout"]["scriptPubKey"]["type"]
+                if intype not in r["vin"]:
+                    r["vin"][intype] = 1
+                else:
+                    r["vin"][intype] = r["vin"][intype] + 1
+        if "vout" in tx:
+            for vout in tx["vout"]:
+                if "scriptPubKey" not in vout:
+                    continue
+                outtype = vout["scriptPubKey"]["type"]
+                if outtype not in r["vout"]:
+                    r["vout"][outtype] = 1
+                else:
+                    r["vout"][outtype] = r["vout"][outtype] + 1
+    t2 = time.time()
+    # t0 = start   t1-t0 is total network transfer time   t2-t1 is local logic time
+    #print(f"blocknum: {blocknum}, t0: {t0}, t1-t0: {t1-t0}, t2-t1: {t2-t1}")
     return r
 
 def getcurrentblock():
-    if useMockData:
-        return 726462
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getblockchaininfo"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        blockcurrent = int(j["blocks"])
-        return blockcurrent
-    except subprocess.CalledProcessError as e:
-        print(e)
+    j = getblockchaininfo()
+    if "blocks" in j:
+        return int(j["blocks"])
+    else:
         return 1
 
 def getepochnum(blocknum):
-    return int(math.floor(blocknum / 2016))
+    return blocknum // 2016
 
 def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
     return min(blocknum, (int(epochnum * 2016) + 1))
 
+def gethalvingnum(blocknum):
+    return blocknum // 210000
+
+def getfirstblockforhalving(blocknum):
+    halvingnum = gethalvingnum(blocknum)
+    return min(blocknum, (int(halvingnum * 210000) + 1))
+
+def gethashratestring(hashrate=0, hashdesc="h/s"):
+    units=["h/s","Kh/s","Mh/s","Gh/s","Th/s","Ph/s","Eh/s","Zh/s"]
+    while (hashrate > 1000.0) and (hashdesc != units[-2]):
+        hashrate = hashrate/1000.0
+        hashdesc = units[units.index(hashdesc) + 1]
+    hashfmt = f"{hashrate:.2f} {hashdesc}"
+    return hashfmt
+
 def getmempool():
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawmempool"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        print(e)
-        fakejson = "[]"
-        return json.loads(fakejson)
+    fakeresult = []
+    j = None
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getrawmempool.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawmempool"
+        try:
+            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            j = json.loads(cmdoutput)
+        except subprocess.CalledProcessError as e:
+            print(e)
+            j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getrawmempool", "params": []}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="[]", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j
 
 def gettransaction(txid, blockhash=""):
-    cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawtransaction " + txid + " true 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        j = json.loads(cmdoutput)
-        return j
-    except subprocess.CalledProcessError as e:
-        print(e)
-        fakejson = '{"txid":"' + txid + '","hash":"?","size":0,"weight":0,"version":1,"vsize":0,"locktime":0,"vin":[],"vout":[]}'
-        return json.loads(fakejson)
+    # getrawtransaction     txid    true(verbose)   blockhash
+    # getmempoolentry       txid
+    fakeresult ={"txid":"' + txid + '","hash":"?","size":0,"weight":0,"version":1,"vsize":0,"locktime":0,"vin":[],"vout":[]}
+    j = None
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getrawtransaction.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        cmd = f"bitcoin-cli {bitcoinCLIOptions} getrawtransaction {txid} true {blockhash} 2>&1"
+        try:
+            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            j = json.loads(cmdoutput)
+            return j
+        except subprocess.CalledProcessError as e:
+            print(e)    
+            j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        if len(blockhash) > 0:
+            data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getrawtransaction", "params": ["{txid}", true, "{blockhash}"]}}'
+        else:
+            data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "getrawtransaction", "params": ["{txid}", true]}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="[]", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j
+
+def pickBitcoinRESTSettingsFromPool():
+    o = bitcoinRESTOptions
+    if type(o) is list:
+        l = len(o)
+        i = int(random.random() * l)
+        o = o[i]
+    address = o["address"] if "address" in o else ""
+    port = o["port"] if "port" in o else ""
+    rpcuser = o["rpcuser"] if "rpcuser" in o else ""
+    rpcpassword = o["rpcpassword"] if "rpcpassword" in o else ""
+    useTor = o["useTor"] if "useTor" in o else True
+    return f"http://{address}:{port}/", rpcuser, rpcpassword, useTor
+
+def setPrunedBlockHeight():
+    global prunedBlockHeight
+    global prunedBlockDiff
+    global prunedMode
+    j = getblockchaininfo()
+    prunedBlockHeight = 0
+    prunedMode = False
+    if "pruned" in j: prunedMode = j["pruned"]
+    if "pruneheight" in j: prunedBlockHeight = int(j["pruneheight"])
+    prunedBlockDiff = int(j["blocks"]) - prunedBlockHeight
+
 
 # ------ Lightning LND Related ------------------------------------------------------
 
-pubkey_alias = {'pubkey':'alias'}
+# config opts
+lndMode="MOCK"  # available modes are MOCK, CLI, and REST
+                # to force a mode, assign it below
+# support for profile options in config, generally only need default
+# additional profiles can be configured for development testing
+lndCLIOptions=loadJSONData("../config/lnd-cli.json")
+if "activeProfile" in lndCLIOptions and "profiles" in lndCLIOptions:
+    if lndCLIOptions["activeProfile"] in lndCLIOptions["profiles"]:
+        lndCLIOptions = lndCLIOptions["profiles"][lndCLIOptions["activeProfile"]]
+        lndMacaroonOpts = "--macaroonpath=${HOME}/.lnd/nodeyez.macaroon" if "macaroonOpt" not in lndCLIOptions else lndCLIOptions["macaroonOpt"]
+        lndTimeoutOpts = "--timeout 5s" if "timeoutOpt" not in lndCLIOptions else lndCLIOptions["timeoutOpt"]
+        lndMode="CLI"
+lndRESTOptions=loadJSONData("../config/lnd-rest.json")
+if "activeProfile" in lndRESTOptions and "profiles" in lndRESTOptions:
+    lndRESTProfileName = lndRESTOptions["activeProfile"]
+    for lndRESTProfile in lndRESTOptions["profiles"]:
+        if "name" in lndRESTProfile and lndRESTProfile["name"] == lndRESTProfileName:
+            lndRESTOptions = lndRESTProfile
+            lndMode="REST"
+            break
 
-def attemptconnect(nodeinfo):
-    nodestatus = 0
-    pubkey = nodeinfo["node"]["pub_key"]
-    addr = getnodeaddress(nodeinfo)
-    if addr == "0.0.0.0:65535":
-        return 0
-    cmd = "lncli" + getlndglobaloptions() + " connect " + pubkey + "@" + addr + " --timeout 5s 2>&1"
+# if you want to force mode for lnd, set it here
+#lndMode="MOCK"
+
+# ------
+
+lndPubKeyAliases = {'pubkey':'alias'}
+
+def lndCreateMockAliasForPubkey(pubkey):
+    mfn = "../mock-data/bip39words.txt"
+    if exists(mfn):
+        wordnum = int(pubkey[0:8], base=16) % 2048
+        with open(mfn) as f:
+            for i, line in enumerate(f):
+                if i == wordnum:
+                    return line.replace("\n","") + "-" + str(i)
+    return "mockup node"
+
+def lndDoNodeRestCommand(node=None, method="GET", suffix="/", defaultResponse="{}", postData="{}"):
+    if node is None or not lndIsNodeConfigValid(node):
+        print(f"rest command for node could not be processed. node value is not valid: {node}")
+        print(f"using default")
+        return json.loads(defaultResponse)
+    url, headers, timeout, proxies = lndGetNodeRestVars(node, suffix)    
+    cmdoutput = ""
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        if "error" in cmdoutput:
-            nodestatus = 0
-        else:
-            cmd = "lncli" + getlndglobaloptions() + " disconnect " + pubkey + " 2>&1"
-            try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-                if "error" in cmdoutput:
-                    nodestatus = 0
-                else:
-                    nodestatus = 1
-            except subprocess.CalledProcessError as e2:
-                print(f"error calling disconnect in attempconnect: {e}")
-                nodestatus = 0
-    except subprocess.CalledProcessError as e:
-        print(f"error in attemptconnect: {e}")
-        nodestatus = 0
-    return nodestatus
-
-def attemptconnectrest(nodeinfo, node):
-    if not nodeconfigvalid(node):
-        return attemptconnect(nodeinfo)
-    nodestatus = 0
-    pubkey = nodeinfo["node"]["pub_key"]
-    addr = getnodeaddress(nodeinfo, node)
-    if addr == "0.0.0.0:65535":
-        return nodestatus # 0
-    errorResponse = '{"error":"failed command"}'
-    connectData = '{"addr":"' + pubkey + '@' + addr + '","timeout":"5"}'
-    connectResponse = noderestcommandpost(node, "/v1/peers", connectData, errorResponse)
-    if "error" not in connectResponse:
-        disconnectResponse = noderestcommanddelete(node, "/v1/peers/" + pubkey, errorResponse)
-        if "error" not in disconnectResponse:
-            nodestatus = 1
-    return nodestatus
-
-def getdefaultaliasfrompubkey(pubkey):
-    return pubkey[0:10] + "..."
-
-def getfwdinghistory():
-    if useMockData:
-        if exists("../mock-data/getfwdinghistory.json"):
-            with open("../mock-data/getfwdinghistory.json") as f:
-                return json.load(f)
-    cmd = "lncli" + getlndglobaloptions() + " fwdinghistory --start_time -5y --max_events 50000 2>&1"
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        match method:
+            case "GET":
+                cmdoutput = requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+            case "DELETE":
+                cmdoutput = requests.delete(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+            case "POST":
+                cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+    except Exception as e:
+        print(f"error calling lndNodeRest({method}) for suffix: {suffix}. {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
     try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getfwdinghistory: {e}")
-        cmdoutput = '{\"forwarding_events\": []}'
-    j = json.loads(cmdoutput)
+        j = json.loads(cmdoutput)
+    except Exception as e:
+        print(f"error loading response from lndNodeRest({method}) as json: {e}")
+        print(f"using default")
+        j = json.loads(defaultResponse)
     return j
 
-def getfwdinghistoryrest(node):
-    if useMockData or not nodeconfigvalid(node):
-        return getfwdinghistory()
-    postData = '{"start_time":0,"num_max_events":50000}'
-    defaultResponse = '{"forwarding_events":[]}'
-    return noderestcommandpost(node, "/v1/switch", postData, defaultResponse)
-
-def getlndglobaloptions():
-    return " --macaroonpath=${HOME}/.lnd/nodeyez.macaroon"
-
-def getnodeaddress(nodeinfo):
-    bestresult = ""
-    for addr in nodeinfo["node"]["addresses"]:
+def lndGetNodeAddressFromNodeInfo(nodeinfo):
+    if "node" in nodeinfo:
+        return lndGetNodeAddressFromNodeInfo(nodeinfo["node"])
+    best = ""
+    if "addresses" not in nodeinfo:
+        return best
+    for addr in nodeinfo["addresses"]:
         nodehostandport = addr["addr"]
-        if bestresult == "":
-            bestresult = nodehostandport
-        elif "onion" in nodehostandport:
-            if "onion" not in bestresult:
-                bestresult = nodehostandport
-            elif len(nodehostandport) > 56:
-                bestresult = nodehostandport
-    return bestresult
+        best = nodehostandport if len(best) == 0 else best
+        best = nodehostandport if "onion" in nodehostandport else best  # favor onion
+        best = nodehostandport if "onion" in nodehostandport and len(nodehostandport) > 56 else best
+    return best
 
-def getnodealias(nodeinfo):
+def lndGetNodeAliasFromNodeInfo(nodeinfo):
     if "alias" in nodeinfo:
         return nodeinfo["alias"]
     if "node" in nodeinfo:
-        return getnodealias(nodeinfo["node"])
-    return "UNKNOWN ALIAS"
+        return lndGetNodeAliasFromNodeInfo(nodeinfo["node"])
+    return ""
 
-def getnodealiasandstatus(pubkey, nextnodepubkey):
-    nodeinfo = getnodeinfo(pubkey)
-    nodealias = getnodealias(nodeinfo)
-    nodeonline = 0
-    if isnodeconnected(pubkey):
-        nodeonline = 1
-    else:
-        nodeonline = attemptconnect(nodeinfo)
-    # look if there is a channel
-    haschannel = 0
-    if "channels" in nodeinfo:
-        for channel in nodeinfo["channels"]:
-            node1_pub = channel["node1_pub"]
-            node2_pub = channel["node2_pub"]
-            if pubkey == node1_pub and nextnodepubkey == node2_pub:
-                haschannel = 1
-                break
-            if pubkey == node2_pub and nextnodepubkey == node1_pub:
-                haschannel = 1
-                break
-    return (nodealias, nodeonline, haschannel, nodeinfo)
-
-def getnodealiasandstatusrest(pubkey, nextnodepubkey, node):
-    if not nodeconfigvalid(node):
-        return getnodealiasandstatus(pubkey, nextnodepubkey)
-    nodeinfo = getnodeinforest(pubkey, node)
-    nodealias = getnodealias(nodeinfo)
-    nodeonline = 0
-    if isnodeconnectedrest(pubkey, node):
-        nodeonline = 1
-    else:
-        nodeonline = attemptconnectrest(nodeinfo, node)
-    # look if there is a channel
-    haschannel = 0
-    if "channels" in nodeinfo:
-        for channel in nodeinfo["channels"]:
-            node1_pub = channel["node1_pub"]
-            node2_pub = channel["node2_pub"]
-            if pubkey == node1_pub and nextnodepubkey == node2_pub:
-                haschannel = 1
-                break
-            if pubkey == node2_pub and nextnodepubkey == node1_pub:
-                haschannel = 1
-                break
-    return (nodealias, nodeonline, haschannel, nodeinfo)
-
-def getnodealiasfrompubkey(pubkey):
-    return getnodealiasfrompubkeyrest(pubkey, {})
-
-def getnodealiasfrompubkeyrest(pubkey, node):
-    alias = getdefaultaliasfrompubkey(pubkey)
-    if pubkey in pubkey_alias.keys():
-        alias = pubkey_alias[pubkey]
-        if len(alias) < 1:
-            alias = getdefaultaliasfrompubkey(pubkey)
-    else:
-        if nodeconfigvalid(node):
-            nodeinfo = getnodeinforest(pubkey, node)
+def lndGetNodeAliasFromPubkey(pubkey, node=None):
+    if pubkey not in lndPubKeyAliases:
+        if lndMode == "MOCK":
+            lndPubKeyAliases[pubkey] = lndCreateMockAliasForPubkey(pubkey)
         else:
-            nodeinfo = getnodeinfo(pubkey)
-        alias = getnodealias(nodeinfo)
-        pubkey_alias[pubkey] = alias
-    return alias
+            lndPubKeyAliases[pubkey] = lndGetNodeAliasFromNodeInfo(lndGetNodeInfo(pubkey,node))
+    return lndPubKeyAliases[pubkey]
 
-def getnodechannels():
-    if useMockData:
-        if exists("../mock-data/getnodechannels.json"):
-            with open("../mock-data/getnodechannels.json") as f:
-                r = json.load(f)
-                return r
-    cmd = "lncli" + getlndglobaloptions() + " listchannels 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodechannels: {e}")
-        cmdoutput = '{"channels": []}'
-    j = json.loads(cmdoutput)
+def lndGetNodeChannels(node=None):
+    fakeresult = '{"channels":[]}'
+    j = None
+    if lndMode == "MOCK":
+        j = loadJSONData("../mock-data/getnodechannels.json")
+        if j is not None and "result" in j: j = j["result"]
+    if lndMode == "CLI":    
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} listchannels {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetNodeChannels: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = f"/v1/channels"
+        defaultResponse = fakeresult
+        j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
+    if j is None:
+        j = json.loads(fakeresult)
     return j
 
-def getnodechannelsrest(node):
-    if useMockData or not nodeconfigvalid(node):
-        return getnodechannels()
-    defaultResponse = '{"channels":[]}'
-    return noderestcommandget(node, "/v1/channels", defaultResponse)
-
-def getnodeinfo(pubkey):
-    if useMockData:
-        if exists("../mock-data/getnodeinfo.json"):
-            with open("../mock-data/getnodeinfo.json") as f:
-                r = json.load(f)
-                r["node"]["alias"] = mockaliasforpubkey(pubkey)
-                return r
-    cmd = "lncli" + getlndglobaloptions() + " getnodeinfo --pub_key " + pubkey + " --include_channels 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodeinfo: {e}")
-        cmdoutput = '{"node":{"alias":"' + pubkey + '","pub_key":"' + pubkey + '","last_update":0,"addresses":[{"network":"tcp","addr":"0.0.0.0:65535"}]}}'
-    j = json.loads(cmdoutput)
+def lndGetNodeForwardingHistory(startTime:str="-5y", maxEvents:int=50000, node=None):
+    fakeresult = '{"forwarding_events":[]}'
+    j = None
+    if lndMode == "MOCK":
+        j = loadJSONData("../mock-data/getfwdinghistory.json")
+        if j is not None and "result" in j: j = j["result"]
+    if lndMode == "CLI":
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} fwdinghistory --start_time {startTime} --max_events {maxEvents} {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetForwardingHistory: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = "/v1/switch"
+        defaultResponse = fakeresult
+        postData = '{"start_time":0,"num_max_events":50000}'       
+        j = lndDoNodeRestCommand(node, "POST", suffix, defaultResponse, postData)
+    if j is None:
+        j = json.loads(fakeresult)
     return j
 
-def getnodeinforest(pubkey, node):
-    if not nodeconfigvalid(node):
-        return getnodeinfo(pubkey)
-    defaultResponse = '{"node":{"alias":"' + pubkey + '","pub_key":"' + pubkey + '","last_update":0,"addresses":[{"network":"tcp","addr":"0.0.0.0:65535"}]}}'
-    return noderestcommandget(node, "/v1/graph/node/" + pubkey + "?include_channels=true", defaultResponse)
-
-def getnodepayments():
-    if useMockData:
-        if exists("../mock-data/getnodepayments.json"):
-            with open("../mock-data/getnodepayments.json") as f:
-                return json.load(f)
-    cmd = "lncli" + getlndglobaloptions() + " listpayments 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodepayments: {e}")
-        cmdoutput = '{"payments": []}'
-    j = json.loads(cmdoutput)
+def lndGetNodeInfo(pubkey, node=None):
+    fakeresult = f'{{"node":{{"alias":"{pubkey}","pub_key":"{pubkey}","last_update":0,"addresses":[{{"network":"tcp","addr":"0.0.0.0:65535"}}]}}}}'
+    j = None
+    if lndMode == "MOCK":
+        j = loadJSONData("../mock-data/getnodeinfo.json")
+        if j is not None and "result" in j: j = j["result"]
+        if "node" in j and "alias" in j["node"]:
+            j["node"]["alias"] = lndCreateMockAliasForPubkey(pubkey)
+    if lndMode == "CLI":
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} getnodeinfo --pub_key {pubkey} --include_channels {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetNodeInfo: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = f"/v1/graph/node/{pubkey}?include_channels=true"
+        defaultResponse = fakeresult
+        j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
+    if j is None:
+        j = json.loads(fakeresult)
     return j
 
-def getnodepaymentsrest(node):
-    if useMockData or not nodeconfigvalid(node):
-        return getnodepayments()
-    defaultResponse = '{"payments":[]}'
-    return noderestcommandget(node, "/v1/payments", defaultResponse)
+def lndGetNodePayments(node=None):
+    fakeresult = '{"payments": []}'
+    j = None
+    if lndMode == "MOCK":
+        j = loadJSONData("../mock-data/getnodepayments.json")
+        if j is not None and "result" in j: j = j["result"]
+    if lndMode == "CLI":
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} listpayments {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetNodePayments: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = "/v1/payments"
+        defaultResponse = fakeresult
+        j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
+    if j is None:
+        j = json.loads(fakeresult)
+    return j
 
-def getnodepeers():
-    cmd = "lncli" + getlndglobaloptions() + " listpeers 2>&1"
-    try:
-        cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-        return cmdoutput
-    except subprocess.CalledProcessError as e:
-        print(f"error in getnodepeers: {e}")
-        return '{"peers": []}'
+def lndGetNodePeers(node=None):
+    fakeresult = '{"peers":[]}'
+    j = None
+    if lndMode == "MOCK":
+        pass
+    if lndMode == "CLI":
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} listpeers {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetNodePeers: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = "/v1/peers"
+        defaultResponse = fakeresult
+        j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
+    if j is None:
+        j = json.loads(fakeresult)
+    return j
 
-def getnodepeersrest(node):
-    if not nodeconfigvalid(node):
-        return getnodepeers()
-    defaultResponse = '{"peers":[]}'
-    return noderestcommandget(node, "/v1/peers", defaultResponse)
+def lndGetNodeRestVars(node, suffix):
+    nodeaddress = node["address"]
+    nodeport = node["port"]
+    nodemacaroon = node["macaroon"]
+    useTor = False
+    if "useTor" in node: useTor = node["useTor"]
+    url = f"https://{nodeaddress}:{nodeport}{suffix}"
+    headers = {"Grpc-Metadata-macaroon": nodemacaroon}
+    timeout = vicariousnetwork.gettimeouts()
+    proxies = {} if not useTor else vicariousnetwork.gettorproxies()
+    return url, headers, timeout, proxies
 
-def isnodeconnected(pubkey):
-    nodepeers = getnodepeers()
-    j = json.loads(nodepeers)
-    for peer in j["peers"]:
+def lndIsAvailable():
+    return binaryExists("lncli")
+
+def lndIsNodeConfigValid(node):
+    if type(node) is not dict: return False
+    return node.keys() & {'address','macaroon','port'}
+
+def lndIsNodeConnectedToPubkey(pubkey, node=None):
+    nodepeers = lndGetNodePeers(node)
+    if "peers" not in nodepeers:
+        return False
+    for peer in nodepeers["peers"]:
+        if "pub_key" not in peer:
+            continue
         if pubkey == peer["pub_key"]:
             return True
     return False
-
-def isnodeconnectedrest(pubkey, node):
-    if not nodeconfigvalid(node):
-        return isnodeconnected(pubkey)
-    nodepeers = getnodepeersrest(node)
-    if "peers" in nodepeers:
-        for peer in nodepeers["peers"]:
-            if pubkey == peer["pub_key"]:
-                return True
-    return False
-
-def mockaliasforpubkey(pubkey):
-    alias = "mockup node"
-    mfn = "../mock-data/bip39words.txt"
-    if exists(mfn):
-        with open(mfn) as f:
-            wordnum = int(pubkey[0:4], base=16)
-            wordnum %= 2048
-            for i, line in enumerate(f):
-                if i == wordnum:
-                    alias = line.replace("\n","") + "-" + str(i)
-                    break
-        pass
-    return alias
-
-def nodeconfigvalid(node):
-    if "address" not in node:
-        return False
-    if "macaroon" not in node:
-        return False
-    if "port" not in node:
-        return False
-    return True
-
-def noderestcommandget(node, suffix, defaultResponse="{}"):
-    cmdoutput = ""
-    try:
-        nodeaddress = node["address"]
-        nodeport = node["port"]
-        nodemacaroon = node["macaroon"]
-        useTor = False
-        if "useTor" in node:
-            useTor = node["useTor"]
-        url = "https://" + nodeaddress + ":" + nodeport + suffix
-        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
-        if useTor:
-            proxies = vicariousnetwork.gettorproxies()
-        else:
-            proxies = {}
-        timeout = vicariousnetwork.gettimeouts()
-        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-        cmdoutput = requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
-        #print(f"{suffix} response \n\n{cmdoutput}")
-    except Exception as e:
-        print(f"error calling noderestcommandget for {suffix}: {e}")
-        print(f"using default")
-        cmdoutput = defaultResponse
-    try:
-        j = json.loads(cmdoutput)
-    except Exception as e:
-        print(f"error loading response as json: {e}")
-        print(f"using default")
-        j = json.loads(defaultResponse)
-    return j
-
-def noderestcommanddelete(node, suffix, defaultResponse="{}"):
-    cmdoutput = ""
-    try:
-        nodeaddress = node["address"]
-        nodeport = node["port"]
-        nodemacaroon = node["macaroon"]
-        useTor = False
-        if "useTor" in node:
-            useTor = node["useTor"]
-        url = "https://" + nodeaddress + ":" + nodeport + suffix
-        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
-        if useTor:
-            proxies = vicariousnetwork.gettorproxies()
-        else:
-            proxies = {}
-        timeout = vicariousnetwork.gettimeouts()
-        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-        cmdoutput = requests.delete(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
-    except Exception as e:
-        print(f"error calling noderestcommanddelete for {suffix}: {e}")
-        print(f"using default")
-        cmdoutput = defaultResponse
-    try:
-        j = json.loads(cmdoutput)
-    except Exception as e:
-        print(f"error loading response as json: {e}")
-        print(f"using default")
-        j = json.loads(defaultResponse)
-    return j
-
-def noderestcommandpost(node, suffix, postData="{}", defaultResponse="{}"):
-    cmdoutput = ""
-    try:
-        nodeaddress = node["address"]
-        nodeport = node["port"]
-        nodemacaroon = node["macaroon"]
-        useTor = False
-        if "useTor" in node:
-            useTor = node["useTor"]
-        url = "https://" + nodeaddress + ":" + nodeport + suffix
-        headers = {"Grpc-Metadata-macaroon": nodemacaroon}
-        if useTor:
-            proxies = vicariousnetwork.gettorproxies()
-        else:
-            proxies = {}
-        timeout = vicariousnetwork.gettimeouts()
-        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-        cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
-        #print(f"{suffix} response \n\n{cmdoutput}")
-    except Exception as e:
-        print(f"error calling noderestcommandpost for {suffix}: {e}")
-        print(f"using default")
-        cmdoutput = defaultResponse
-    try:
-        j = json.loads(cmdoutput)
-    except Exception as e:
-        print(f"error loading response as json: {e}")
-        print(f"using default")
-        j = json.loads(defaultResponse)
-    return j

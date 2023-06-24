@@ -1,418 +1,351 @@
 #! /usr/bin/env python3
-from datetime import datetime
-from os.path import exists
-from PIL import Image, ImageDraw, ImageColor, ImageFile
+from PIL import Image, ImageFile
 from io import BytesIO
-from wand.api import library
+from mimetypes import guess_extension, guess_type
+from vicariouspanel import NodeyezPanel
 import glob
-import exifread
 import json
-import locale
-import logging
-import math
 import os
-import numpy
-import random
 import re
-import subprocess
 import sys
 import time
 import vicariousbitcoin
 import vicariousnetwork
 import vicarioustext
-import vicariouswatermark
-import wand.color
-import wand.image
 
+class InscriptionMempoolPanel(NodeyezPanel):
 
-def getmostrecent(max):
-    files = list(filter(os.path.isfile, glob.glob(ordinalsDirectory + "inscription*")))
-    files.sort(key=os.path.getctime)
-    limitedlist = files[max*-1:]
-    reversedlist = limitedlist[::-1]
-    return reversedlist
+    def __init__(self):
+        """Instantiates a new Inscription Mempool panel"""
 
-def createimage(width=480,height=320):
-    canvas = Image.new(mode="RGBA", size=(width,height), color=colorBackground)
-    draw = ImageDraw.Draw(canvas)
-    padtop = 20
-    footersize = 12
-    availheight = height - (padtop+footersize)
-    col = 0
-    row = 0
-    imagewidth = 96
-    colmax = int(width/imagewidth)          # 8
-    rowmax = int(availheight/imagewidth)    # 6
-    w = imagewidth #  int(width/colmax)
-    h = imagewidth #int(height/colmax)
-    padleft = int((width - (colmax*imagewidth)) / 2)
-    filelist = getmostrecent(colmax * rowmax)
-    for filename in filelist:
-        if row >= rowmax:
-            break
-        x = int(padleft + (col*w))
-        y = int(padtop + (row*h))
-        fileext = filename.rpartition('.')[2]
-        if fileext in ['bmp','gif','jpg','png','svg','tiff','webp']:
-            try:
-                img = vicariousnetwork.getimagefromfile("file://" + filename)
-                img.thumbnail((w,h))
-                x += int((w - img.width)/2)
-                y += int((h - img.height)/2)
-                canvas.paste(img, box=(x,y))
-                img.close()
-            except Exception as e:
-                print(f"error processing image: {e}")
-                vicarioustext.drawcenteredtext(draw, fileext.upper(), 14, x + int(w//2), y + int(h//2), colorTextFG, True)
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorTextFG": "textColor",
+            "sleepInterval": "interval",
+            # panel specific key names
+        }
+
+        # Directives
+        ImageFile.LOAD_TRUNCATED_IMAGES=True
+
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("extensionsToExtract", ["bmp","gif","jpg","png","svg"])
+        self._defaultattr("headerEnabled", True)
+        self._defaultattr("headerText", "Recent Unmined Image Inscriptions In Mempool")
+        self._defaultattr("interval", 60)
+
+        # Initialize
+        super().__init__(name="inscriptionmempool")
+
+        # Create additional folders expected for this panel
+        inscriptionMempoolDir = f"{self.dataDirectory}inscription-mempool/"
+        if not os.path.exists(inscriptionMempoolDir):
+            os.makedirs(inscriptionMempoolDir)
+
+        # Load any previous known data between runs
+        self.inscriptionMempoolDir = inscriptionMempoolDir
+        self.notInscriptions = vicariousbitcoin.loadJSONData(f"{inscriptionMempoolDir}/data-notinscriptions.json", [])
+        self.inscriptions = vicariousbitcoin.loadJSONData(f"{inscriptionMempoolDir}/data-inscriptions.json", [])
+
+        # Build content types for extensions to extract
+        self.contentTypesToExtract = self._getContentTypesFromExtensions()
+
+    def _getContentTypesFromExtensions(self):
+        contentTypes = []
+        for e in self.extensionsToExtract:
+            if e == "svg":
+                contentTypes.append("image/svg")
+                contentTypes.append("image/svg+xml")
+            elif e == "webp":
+                contentTypes.append("image/webp")
+            else:
+                atype, _ = guess_type(f"somefile.{e}")
+                if atype is not None:
+                    contentTypes.append(atype)
+        return contentTypes
+
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        # get mempool
+        self.log(f"checking mempool at {vicarioustext.getdateandtime()}")
+        self.mempool = vicariousbitcoin.getmempool()
+
+    def _getFileExtensionFromContentType(self, ct):
+        r = "bin"        
+        mt = ct.split(";")[0]
+        femap = {
+            "application/x-javascript": "js",
+            "application/x-msaccess": "mdb",
+            "audio/midi": "midi",
+            "image/svg": "svg",
+            "image/webp": "webp",
+            "image/x-icon": "ico",
+            "text/htm": "htm",
+            "video/quicktime": "qt",
+            "x-word/x-vrml": "vrml",
+        }
+        if mt in femap:
+            r = femap[mt]
         else:
-            vicarioustext.drawcenteredtext(draw, fileext.upper(), 14, x + int(w//2), y + int(h//2), colorTextFG, True)
-        # next tile position
-        col = col + 1 if col < colmax-1 else 0
-        row = row + 1 if col == 0 else row
-    # header
-    vicarioustext.drawcenteredtext(draw, "Recent Unmined Inscriptions In Mempool", 20, int(width/2), int(padtop/2), colorTextFG, True)
-    # footer
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
-    # watermark
-    vicariouswatermark.do(canvas,width=99,box=(0,height-12))
-    # save it
-    canvas.save(outputFile)
-    canvas.close()
+            r = guess_extension(mt)
+            r = "bin" if r is None else r.rpartition(".")[2]
+        return r
 
+    def _getBaseFilenameForTXID(self, txid):
+        return f"{self.inscriptionMempoolDir}inscription-{txid}"
 
-def getordinalfortx(txid):
-    ordinals = []
-    tx = vicariousbitcoin.gettransaction(txid)
-    thepattern = re.compile("(.*)0063036f72640101(.*)68$")  # OP_FALSE OP_IF push-3-bytes 'ord' push-1-byte 1
-    txidx = -1
-    if True:
-        if True:
-            txsize = tx["size"]
-            vinidx = 0
-            if "vin" in tx:
-                for vin in tx["vin"]:
-                    vinidx += 1
-                    if "txinwitness" in vin:
-                        for txinwitness in vin["txinwitness"]:
-                            match = re.match(thepattern, txinwitness)
-                            if match is not None:
-                                # This is an ordinal inscription.
-                                # Get parent info
-                                parenttxid = ""
-                                parentsize = 0
-                                if "txid" in vin:
-                                    parenttxid = vin["txid"]
-                                    parentsize = vicariousbitcoin.gettransaction(parenttxid)["size"]
-                                #print(f"found ordinal in tx idx:{txidx} of block {blocknum}")
-                                g2 = match.group(2)
-                                pos = 0
-                                contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
-                                pos += 2
-                                contenttype = bytes.fromhex(g2[pos:pos+(contenttypelength*2)]).decode()
-                                pos += (contenttypelength*2)
-                                opcode = g2[pos:pos+2]
-                                pos += 2
-                                if opcode != '00':
-                                    print(f"warning. expected 0x00 divider between content type and data, but got 0x{opcode}")
-                                #print(f"- content type: {contenttype}")
-                                datalengthtype = g2[pos:pos+2]
-                                pos +=2
-                                datalen = 0
-                                totaldatalen = 0
-                                rawbytes = bytearray()
-                                while datalengthtype in ['4c','4d','4e']:
-                                    #print(f"- hex code for data length: {datalengthtype}")
-                                    # size was reporting 2050, which is 802 in hex. flip the endian, 208 = 520, the max bytes that can be pushed
-                                    if datalengthtype == "4c":
-                                        # next 1 byte for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
-                                        pos += 2
-                                    if datalengthtype == "4d":
-                                        # next 2 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little")
-                                        pos += 4
-                                    if datalengthtype == "43":
-                                        # next 4 bytes for size
-                                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little")
-                                        pos += 8
-                                    totaldatalen += datalen
-                                    morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
-                                    rawbytes.extend(morebytes)
-                                    pos += (datalen*2)
-                                    # see if more op codes to continue data
-                                    datalengthtype = g2[pos:pos+2]
-                                    pos += 2
-                                # Check for extra bytes trailing into end. For now, we'll append these to existing, but this may be incorrect
-                                remaininghex = g2[pos:]
-                                remaininghexlength = len(remaininghex)
-                                #print(f"pos: {pos}, totaldatalen: {totaldatalen}, remaining: {remaininghex}, remaininghexlength: {remaininghexlength}")
-                                if remaininghexlength > 0:
-                                    morebytes = bytes.fromhex(g2[pos:])
-                                    rawbytes.extend(morebytes)
-                                    totaldatalen += (remaininghexlength/2)
-                                #print(f"- total data length: {totaldatalen}")
-                                # append an object
-                                ordinal = {"block":-1,"txid":txid,"txsize":txsize,"txidx":txidx,"contenttype":contenttype,"size":totaldatalen,"parenttxid":parenttxid,"parentsize":parentsize,"data":rawbytes}
-                                ordinals.append(ordinal)
-    return ordinals
+    def _getInscriptionsForTX(self, txid):
+        inscriptions = []
+        tx = vicariousbitcoin.gettransaction(txid)
+        thepattern = re.compile("(.*)0063036f72640101(.*)68$")  # OP_FALSE OP_IF push-3-bytes 'ord' push-1-byte 1
+        txidx = -1
+        if "vin" not in tx: return inscriptions
+        for vin in tx["vin"]:
+            if "txinwitness" not in vin: continue
+            for txinwitness in vin["txinwitness"]:
+                match = re.match(thepattern, txinwitness)
+                if match is None: continue
+                # This is an ordinal inscription.
+                txidx += 1
+                g2 = match.group(2)
+                pos = 0
+                contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
+                pos += 2
+                contenttype = bytes.fromhex(g2[pos:pos+(contenttypelength*2)]).decode()
+                # only proceed for those content types matching types we want to extract
+                if contenttype not in self.contentTypesToExtract: continue
+                pos += (contenttypelength*2)
+                opcode = g2[pos:pos+2]
+                pos += 2
+                if opcode != '00':
+                    self.log(f"warning. expected 0x00 divider between content type and data, but got 0x{opcode}")
+                datalengthtype = g2[pos:pos+2]
+                pos +=2
+                datalen = 0
+                totaldatalen = 0
+                rawbytes = bytearray()
+                while datalengthtype in ['4c','4d','4e']:
+                    #self.log(f"- hex code for data length: {datalengthtype}")
+                    if datalengthtype == "4c": # next 1 byte = size of data
+                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
+                        pos += 2
+                    if datalengthtype == "4d": # next 2 bytes = size of data
+                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+4]),"little")
+                        pos += 4
+                    if datalengthtype == "43": # next 4 bytes = size of data
+                        datalen = int.from_bytes(bytes.fromhex(g2[pos:pos+8]),"little")
+                        pos += 8
+                    totaldatalen += datalen
+                    morebytes = bytes.fromhex(g2[pos:pos+(datalen*2)])
+                    rawbytes.extend(morebytes)
+                    pos += (datalen*2)
+                    # see if more op codes to continue data
+                    datalengthtype = g2[pos:pos+2]
+                    pos += 2
+                # Check for extra bytes trailing into end. For now, we'll append these to existing, but this may be incorrect
+                remaininghex = g2[pos:]
+                remaininghexlength = len(remaininghex)
+                if remaininghexlength > 0:
+                    morebytes = bytes.fromhex(g2[pos:])
+                    rawbytes.extend(morebytes)
+                    totaldatalen += (remaininghexlength/2)
+                # append an object
+                inscription = {"txid":txid,"txidx":txidx,"contenttype":contenttype,"data":rawbytes}
+                inscriptions.append(inscription)
+        return inscriptions
 
+    def _extractTX(self, txid="00"):
+        inscriptions = self._getInscriptionsForTX(txid)
+        inscriptionCount = len(inscriptions)
+        if inscriptionCount == 0:
+            self.notInscriptions.append(txid)
+            return inscriptionCount
 
-femap = {
-    "application/hta": "hta",
-    "application/msword": "doc",
-    "application/octet-stream": "bin",
-    "application/pdf": "pdf",
-    "application/pgp-signature": "sig",
-    "application/postscript": "ps",
-    "application/rtf": "rtf",
-    "application/vnd.ms-excel": "xls",
-    "application/vnd.ms-powerpoint": "ppt",
-    "application/vnd.ms-project": "mpp",
-    "application/x-javascript": "js",
-    "application/x-msaccess": "mdb",
-    "application/x-tar": "tar",
-    "application/zip": "zip",
-    "audio/flac": "flac",
-    "audio/midi": "midi",
-    "audio/mpeg": "mp3",
-    "audio/x-wav": "wav",
-    "image/avif": "avif",
-    "image/bmp": "bmp",
-    "image/gif": "gif",
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/svg": "svg",
-    "image/svg+xml": "svg",
-    "image/tiff": "tiff",
-    "image/webp": "webp",
-    "image/x-icon": "ico",
-    "image/x-xbitmap": "xbm",
-    "text/css": "css",
-    "text/htm": "htm",
-    "text/html": "html",
-    "text/plain": "txt",
-    "text/richtext": "rtx",
-    "video/mp4": "mp4",
-    "video/mpeg": "mpeg",
-    "video/webm": "webm",
-    "video/quicktime": "qt",
-    "x-word/x-vrml": "vrml",
-}
+        for inscription in inscriptions:
+            txidx = int(inscription["txidx"]) if "txidx" in inscription else -1
+            contentType = inscription["contenttype"] if "contenttype" in inscription else "undefined"
+            fileExtension = self._getFileExtensionFromContentType(contentType)
+            if fileExtension not in self.extensionsToExtract: continue
+            baseFileName = self._getBaseFilenameForTXID(txid)
+            exportFileName = f"{baseFileName}-{txidx}.{fileExtension}"
+            # self.log(f"exporting file to {exportFileName}")
+            try:
+                bytesioblob = BytesIO(inscription["data"])
+                with open(exportFileName, "wb") as f:
+                    f.write(bytesioblob.getbuffer())
+            except Exception as e:
+                self.log(f"error processing inscription: {e}")
+                self.log(f"txid: {txid}, txidx: {txidx}, content-type: {contentType}")
 
-def getfileextensionfromcontenttype(ct):
-    r = "bin"
-    mt = ct.split(";")[0]
-    if mt in femap:
-        r = femap[mt]
-    return r
+        self.inscriptions.append(txid)
+        return inscriptionCount
 
-def getbasefilenamefortxid(txid):
-    global ordinalsDirectory
-    filename = ordinalsDirectory + "inscription-"+txid
-    return filename
+    def _getMostRecentImagesOfType(self, extension):
+        globpath = f"{self.inscriptionMempoolDir}inscription-*.{extension}"
+        return list(filter(os.path.isfile, glob.glob(globpath)))
 
-def extracttx(txid="00"):
-    global notinscriptions
-    global inscriptions
-    global inscriptioncount
-    global newinscriptioncount
-    global inscriptiontxsize
-    ordinals = getordinalfortx(txid)
-    ordcount = len(ordinals)
-    if ordcount == 0:
-        notinscriptions.append(txid)
-        return
+    def _getMostRecentImages(self, max):
+        filelist = []
+        for e in self.extensionsToExtract:
+            filelist.extend(self._getMostRecentImagesOfType(e))    
+        filelist.sort(key=os.path.getctime)
+        limitedlist = filelist[max*-1:]
+        reversedlist = limitedlist[::-1]
+        return reversedlist
 
-    ordcount = 0
-    for ordinal in ordinals:
-        ordcount += 1
-        txidx =  int(ordinal["txidx"]) if "txidx" in ordinal else -1
-        handled = False
-        size = 0
-        contenttype = "undefined"
-        try:
-            size = int(ordinal["size"]) if "size" in ordinal else 0
-            txsize = ordinal["txsize"]
-            parentsize = ordinal["parentsize"]
-            totalsize = txsize + parentsize
-            contenttype = ordinal["contenttype"] if "contenttype" in ordinal else "undefined"
-            fileextension = getfileextensionfromcontenttype(contenttype)
-            exportFileName = getbasefilenamefortxid(txid) + "." + fileextension
-            exportFolder = exportFileName.rpartition('/')[0]
-            if not os.path.exists(exportFolder):
-                os.makedirs(exportFolder)
-            print(f"- exporting file to {exportFileName}")
-            bytesioblob = BytesIO(ordinal["data"])
-            with open(exportFileName, "wb") as f:
-                f.write(bytesioblob.getbuffer())
-        except Exception as e:
-            print(f"Error processing ordinal: {e}")
-            print(f"txid: {txid}, size: {size} for content-type: {contenttype}")
-    inscriptions.append(txid)
-    inscriptioncount += ordcount
-    newinscriptioncount += ordcount
-    inscriptiontxsize += totalsize
+    def run(self):
 
-def loadset(k):
-    fn = ordinalsDirectory + "data-" + k + ".json"
-    if os.path.exists(fn):
-        with open(fn, "r") as f:
-            return json.load(f)
-    return []
-
-def saveset(k, s):
-    fn = ordinalsDirectory + "data-" + k + ".json"
-    with open(fn, "w") as f:
-        json.dump(s, f)
-
-if __name__ == '__main__':
-    # Defaults
-    configFile="../config/inscriptionmempool.json"
-    outputFile="../imageoutput/inscriptionmempool.png"
-    dataDirectory="../data/"
-    width=480
-    height=320
-    sleepInterval = 10
-    colorTextFG=ImageColor.getrgb("#ffffff")
-    colorBackground=ImageColor.getrgb("#000000")
-    # Initializations
-    ImageFile.LOAD_TRUNCATED_IMAGES=True
-    outsetkey = "notinscriptions"
-    notinscriptions = []
-    insetkey = "inscriptions"
-    inscriptions = []
-    runonce=False
-    # Override config
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "inscriptionmempool" in config:
-            config = config["inscriptionmempool"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "dataDirectory" in config:
-            dataDirectory = config["dataDirectory"]
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 10 if sleepInterval < 10 else sleepInterval # all local, but no need to be overly aggressive
-        if "colorTextFG" in config:
-            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
-    # Data directories
-    if not os.path.exists(dataDirectory):
-        os.makedirs(dataDirectory)
-    ordinalsDirectory = dataDirectory + "inscription-mempool/"
-    if not os.path.exists(ordinalsDirectory):
-        os.makedirs(ordinalsDirectory)
-    # Check args
-    if len(sys.argv) > 1:
-        if sys.argv[1] in ['-h','--help'] or len(sys.argv) != 3:
-            print(f"Produces image with Unmined Inscriptions")
-            print(f"Usage:")
-            print(f"1) Pass the desired width and height as an argument as follows")
-            arg0 = sys.argv[0]
-            print(f"   {arg0} 1920 1080")
-            exit(0)
-        if len(sys.argv) > 2:
-            width = int(sys.argv[1])
-            height = int(sys.argv[2])
-            runonce = True
-
-    # load json files
-    notinscriptions = loadset(outsetkey)
-    inscriptions = loadset(insetkey)
-
-    # continuous
-    while True:
         # reset metric counters
         inscriptioncount = 0
         newinscriptioncount = 0
-        inscriptiontxsize = 0
+        removefilecount = 0
+        mempoolItem = 0
 
-        # get mempool
-        print(f"--- Checking mempool ---")
-        print(f"date and time: {vicarioustext.getdateandtime()}")
-        mempool = vicariousbitcoin.getmempool()
-        mc = 0
-        ml = len(mempool)
-        print(f"transaction count: {ml}")
+        # report mempool opening state
+        mempoolLength = len(self.mempool)
+        self.log(f"current mempool transaction count: {mempoolLength}")
 
         # get existing filenames
-        print(f"checking files vs mempool")
-        insnotinpool = list(set(inscriptions) - set(mempool))
+        self.log(f"checking files vs mempool")
+        insnotinpool = list(set(self.inscriptions) - set(self.mempool))
         if len(insnotinpool) > 0:
-            print(f"looking to remove {len(insnotinpool)} transactions")
+            self.log(f"looking to remove {len(insnotinpool)} transactions")
         # assuming listdir is faster then globbing each file because we dont know the file extension from txid
-        dirlist = os.listdir(ordinalsDirectory)
-        removefilecount = 0
+        dirlist = os.listdir(self.inscriptionMempoolDir)
         for fn in dirlist:
-            if fn.startswith("inscription-" + insetkey):
-                continue
-            if fn.startswith("inscription-" + outsetkey):
-                continue
-            fntx = fn.split("-")[1].split(".")[0]
-            if fntx not in mempool:
-                # print(f"removing file {fn} as txid no longer in mempool")
-                fp = ordinalsDirectory + fn
-                os.remove(fp)
-                if fntx in inscriptions:
-                    inscriptions.remove(fntx)
+            if not fn.startswith("inscription-"): continue
+            fntx = fn.split("-")[1]
+            if fntx.find(".") > -1: fntx = fntx.split(".")[0]
+            if fntx not in self.mempool:
+                os.remove(f"{self.inscriptionMempoolDir}{fn}")
+                if fntx in self.inscriptions:
+                    self.inscriptions.remove(fntx)
                 removefilecount += 1
-        if removefilecount > 0:
-            print(f"removed {removefilecount} files that are no longer in mempool") # ideally same as len(isnotinpool)
+        self.log(f"removed {removefilecount} files for inscriptions no longer in mempool")
 
         # not inscriptions setup
-        print(f"checking prior tx known not to be inscriptions vs mempool")
-        nlb = len(notinscriptions)
-        notinscriptions = list(set(mempool) & set(notinscriptions))
-        saveset(outsetkey, notinscriptions)
-        nl = len(notinscriptions)
-        print(f"The non-inscription length after purge: {nl}, was {nlb}")
-        mempool = list(set(mempool) - set(notinscriptions))
-        nml = len(mempool)
-        print(f"will check {nml} remaining tx in mempool for inscriptions")
+        nlb = len(self.notInscriptions)
+        self.log(f"checking {nlb} prior tx known not to be inscriptions vs mempool")
+        self.notInscriptions = list(set(self.mempool) & set(self.notInscriptions))
+        with open(f"{self.inscriptionMempoolDir}/data-notinscriptions.json", "w") as f:
+            json.dump(self.notInscriptions, f)
+        nl = len(self.notInscriptions)
+        self.log(f"after purge, the number of tx that are not inscriptions is {nl} (was {nlb})")
+        self.mempool = list(set(self.mempool) - set(self.notInscriptions))
 
         # check tx in mempool
-        for txid in mempool:
+        checkTimeAllowed = self.interval // 2
+        checkTimeStart = int(time.time())
+        nml = len(self.mempool)
+        self.log(f"checking {nml} remaining tx in mempool for inscriptions")
+        for txid in self.mempool:
             processtx = True
-            mc = mc + 1
-            # check if not an ordinal
-            if txid in notinscriptions:
+            mempoolItem += 1
+            # check if not an inscription
+            if txid in self.notInscriptions:
                 processtx = False
-            # check if file already extracted - seems inefficient. could use the inscriptions set
-            for fm in glob.glob(getbasefilenamefortxid(txid) + "*"):
+
+            # check if file already extracted - there can be multiple extracted per tx
+            # baseFileName = self._getBaseFilenameForTXID(txid)
+            # for fm in glob.glob(f"{baseFileName}*"):
+            #     processtx = False
+            #     inscriptioncount += 1
+            if txid in self.inscriptions:
                 processtx = False
                 inscriptioncount += 1
-                fsize = os.path.getsize(fm) # because of this we need actual file so had to glob
-                inscriptiontxsize += fsize
+            
             if processtx:
-                extracttx(txid)
-            # eye candy every 500 tx
-            if (mc % 500) == 0:
-                print(f"processed {mc}")
-            # save every 5000 tx
-            if (mc % 5000) == 0:
-                print(f"  of {ml}")
-                # save sets
-                saveset(outsetkey, notinscriptions)
-                saveset(insetkey, inscriptions)
+                inscriptionsExtractedFromTX = self._extractTX(txid)
+                inscriptioncount += inscriptionsExtractedFromTX
+                newinscriptioncount += inscriptionsExtractedFromTX
+            # eye candy every 500 tx, and intermediate save every 5000
+            if (mempoolItem % 500) == 0:
+                if (mempoolItem % 5000) != 0:
+                    self.log(f"processed {mempoolItem} transactions so far ({inscriptioncount} inscriptions found)")
+                else:
+                    self.log(f"processed {mempoolItem} of {mempoolLength} transactions so far")
+                    with open(f"{self.inscriptionMempoolDir}/data-notinscriptions.json", "w") as f:
+                        json.dump(self.notInscriptions, f)
+                    with open(f"{self.inscriptionMempoolDir}/data-inscriptions.json", "w") as f:
+                        json.dump(self.inscriptions, f)
+                checkTimeCurrent = int(time.time())
+                # bail if this is taking too long due to size of mempool
+                if checkTimeCurrent - checkTimeStart >= checkTimeAllowed:
+                    self.log(f"not checking any more transactions as time expired")
+                    break
 
-        print(f"Done this pass through mempool.")
-        print(f"Inscriptions found: {inscriptioncount} ({newinscriptioncount} new) from {ml} mempool tx. Inscriptions using {inscriptiontxsize} bytes in mempool")
-        # save sets
-        saveset(outsetkey, notinscriptions)
-        saveset(insetkey, inscriptions)
-        # list the newest files -- will create display panel of these
-        createimage(width, height)
+        # summary and save our known state
+        self.log(f"done this pass through mempool.")
+        self.log(f"inscriptions found: {inscriptioncount} ({newinscriptioncount} new) from {mempoolLength} mempool tx")
+        with open(f"{self.inscriptionMempoolDir}/data-notinscriptions.json", "w") as f:
+            json.dump(self.notInscriptions, f)
+        with open(f"{self.inscriptionMempoolDir}/data-inscriptions.json", "w") as f:
+            json.dump(self.inscriptions, f)
 
-        if runonce:
-            break
 
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+        # Generate image of recent files extracted
+        # Set relative area sizes so that we create a 3x5 layout of images
+        self.headerHeight = int(self.height * 20 / 320)
+        super().startImage()
+        availHeight = self.getInsetHeight()
+        col, row = 0, 0
+        filelist = self._getMostRecentImages(25)
+        tileSideAdj = 72
+        tileSideAdj = 96 if len(filelist) < 18 else tileSideAdj
+        tileSideAdj = 144 if len(filelist) < 10 else tileSideAdj
+        tileSide = int(self.height * tileSideAdj / 320)
+        colMax = int(self.width/tileSide)
+        rowMax = int(availHeight/tileSide)
+        padleft = (self.width - (colMax*tileSide)) // 2
+        for filename in filelist:
+            if row >= rowMax:
+                break
+            x = int(padleft + (col*tileSide))
+            y = int(self.getInsetTop() + (row*tileSide))
+            fileext = filename.rpartition('.')[2]
+            try:
+                img = vicariousnetwork.getimagefromfile("file://" + filename)
+                img.thumbnail((tileSide,tileSide))
+                img = img.resize((tileSide,tileSide),Image.Resampling.NEAREST) # scales up small images to fit
+                x += (tileSide - img.width)//2
+                y += (tileSide - img.height)//2
+                self.canvas.paste(img, box=(x,y))
+                img.close()
+                # next tile position
+                col = col + 1 if col < colMax-1 else 0
+                row = row + 1 if col == 0 else row
+            except Exception as e:
+                self.log(f"error processing image: {e}")
+        super().finishImage()
 
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    p = InscriptionMempoolPanel()
+
+    # If arguments were passed in, treat as a single run
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h','--help']:
+            arg0 = sys.argv[0]
+            print(f"Produces image with Unmined Inscriptions")
+            print(f"Usage:")
+            print(f"1) Call without arguments to run continuously using the configured defaults")
+            print(f"2) Pass the desired width and height as an argument as follows")
+            print(f"   {arg0} 1920 1080")
+        else:
+            if len(sys.argv) > 2:
+                p.width = int(sys.argv[1])
+                p.height = int(sys.argv[2])
+            p.fetchData()
+            p.run()
+        exit(0)
+
+    # Continuous run
+    p.runContinuous()

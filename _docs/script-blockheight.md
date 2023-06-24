@@ -10,7 +10,7 @@ imageurl: ../images/blockheight.png
 # Block Height
 
 This script prepares an image displaying the block height.  
-It depends on a bitcoin node running locally and fully synched.
+It depends on a bitcoin node.
 
 ![sample image depicting the blockheight reads 693131](../images/blockheight.png)
 
@@ -33,12 +33,13 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/blockheight.png` |
-| colorTextFG | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `120` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `120` |
+| textColor | The color of the text expressed as a Hexadecimal color specifier. Default `#ffffff` |
+| textShadowColor | The shadow color of text expressed as a hexadecimal color specifier. Alpha level should be depicted as weakest and will automatically be rendered in gradual stepping to opaque. Default `#f2a90020` |
+| textShadowPercent | The size of shadowing to apply to text expressed as a percentage of the font size. Default `10` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Running Directly
 

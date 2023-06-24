@@ -5,13 +5,10 @@
     {
       "_config_summary.comment": "A brief description of this item for nodeyez-config app",
       "_config_summary.type": "string",
-      "_config_summary": "{url}",
+      "_config_summary": "{?enabled}{url}",
       "enabled.comment": "Indicates whether this entry is enabled. If set to false, it will be skipped",
       "enabled.type": "boolean",
       "enabled": false,
-      "url.comment": "The url to be called",
-      "url.type": "string",
-      "url": "https://api.collectapi.com/gasPrice/allUsaPrice",
       "headers.comment": "Headers to be included in the request.",
       "headers.type": "array",
       "headers": [
@@ -20,15 +17,15 @@
       ],
       "saveToSubfolder.comment": "subfolder in the data directory under collectapi to store results",
       "saveToSubfolder.type": "string",
-      "saveToSubfolder": "gasprice/allusaprice"
+      "saveToSubfolder": "gasprice/allusaprice",
+      "url.comment": "The url to be called",
+      "url.type": "string",
+      "url": "https://api.collectapi.com/gasPrice/allUsaPrice"
     },
     {
       "enabled.comment": "Indicates whether this entry is enabled. If set to false, it will be skipped",
       "enabled.type": "boolean",
       "enabled": false,
-      "url.comment": "The url to be called",
-      "url.type": "string",
-      "url": "https://api.collectapi.com/gasPrice/canada",
       "headers.comment": "Headers to be included in the request.",
       "headers.type": "array",
       "headers": [
@@ -37,7 +34,10 @@
       ],
       "saveToSubfolder.comment": "subfolder in the data directory under collectapi to store results",
       "saveToSubfolder.type": "string",
-      "saveToSubfolder": "gasprice/canada"
+      "saveToSubfolder": "gasprice/canada",
+      "url.comment": "The url to be called",
+      "url.type": "string",
+      "url": "https://api.collectapi.com/gasPrice/canada"
     }
   ]
 }

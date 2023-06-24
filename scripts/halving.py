@@ -1,219 +1,309 @@
 #! /usr/bin/env python3
-from PIL import Image, ImageDraw, ImageColor, ImageOps
-from os.path import exists
+from PIL import Image, ImageColor, ImageDraw, ImageOps
+from datetime import datetime
+from vicariouspanel import NodeyezPanel
+import glob
 import json
-import math
 import os
 import random
-import subprocess
 import sys
 import time
 import vicariousbitcoin
+import vicariousnetwork
 import vicarioustext
-import vicariouswatermark
 
-def getGridImage(p):
-    if os.path.exists(ipfsDirectory):
-        random.seed(p * 11235813)
+class HalvingPanel(NodeyezPanel):
+
+    def __init__(self):
+        """Instantiates a new Fear and Greed panel"""
+
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorGrid": "gridColor",
+            "colorProgress": "progressColor",
+            "colorTextFG": "textColor",
+            "fillGridDividersEnabled": "gridDividerFillEnabled",
+            "gridImageUnmined": "gridImageUnminedMode",
+            "sleepInterval": "interval",
+            # panel specific key names
+            "gridColor": "gridColor",
+            "gridDividerFillEnabled": "gridDividerFillEnabled",
+            "gridImageEnabled": "gridImageEnabled",
+            "gridImageUnminedMode": "gridImageUnminedMode",
+            "progressColor": "progressColor",
+        }
+
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("backgroundColor", "#000000")
+        self._defaultattr("gridColor", "#404040")
+        self._defaultattr("gridDividerFillEnabled", True)
+        self._defaultattr("gridImageEnabled", True)
+        self._defaultattr("gridImageUnminedMode", "grayscale")
+        self._defaultattr("headerText", "|Next Halving|?")
+        self._defaultattr("interval", 540)
+        self._defaultattr("progressColor", "#ffaa00")
+        self._defaultattr("watermarkAnchor", "topleft")
+
+        # Initialize
+        super().__init__(name="halving")
+
+    def blockclockReport(self):
+        baseapi=f"http://{self.blockclockAddress}/api/"
+
+        # TODO: integrate bctext
+        #   BLOC K.... .789 000. ..IS.. .69. 420%
+        #    OF   THE   WAY  TO   NEXT  HALV ING
+        halvingInterval = 210000
+        halvings = self.blockheight // halvingInterval
+        halvingbegin = halvings * halvingInterval + 1
+        halvingPercent = float(self.blockheight - halvingbegin) / float(2100)
+        halvingPercentText = str(format(halvingPercent, ".3f")) + "%"
+        bh = str(self.blockheight)
+        sd = bh[-4:]
+        td = str("...." + bh[0:-4])[-4:]
+        dp = halvingPercentText[-3:]
+        ip = halvingPercentText[0:-3]
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/0/BLOC/OF", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/1/K..../THE", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/2/{td}/WAY", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/3/{sd}/TO", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/4/IS/NEXT", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/5/{ip}/HALV", self.blockclockPassword)
+        vicariousnetwork.getblockclockapicall(baseapi + f"ou_text/6/{dp}%/ING..", self.blockclockPassword)
+
+    def isDependenciesMet(self):
+        return True
+
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        self.blockheight = vicariousbitcoin.getcurrentblock()
+        j = vicariousbitcoin.getblock(vicariousbitcoin.getfirstblockforhalving(self.blockheight))
+        self.halvingBlocksMined = int(j["confirmations"]) + 1
+        self.halvingBeganTime = int(j["time"])
+
+    def _getGridImage(self, p):
+        ipfsDirectory = f"{self.dataDirectory}ipfs/"
         filegood = False
-        fileattempts = 5
-        while ((not filegood) and (fileattempts > 0)):
-            filename = random.choice(os.listdir(ipfsDirectory))
-            try:
-                filepath = ipfsDirectory + "/" + filename
-                filesize = os.path.getsize(filepath)
-                if filesize > 50000:
-                    print(f"loading image file {filepath}")
-                    rImage = Image.open(filepath).convert("RGBA")
-                    filegood = True
-            except BaseException as err:
-                # not sure what
-                print(f"meh error: {err}")
-                fileattempts = fileattempts -1
-        if filegood:
-            return rImage
-    # default
-    return Image.open("../images/logo.png").convert("RGBA")
+        if os.path.exists(ipfsDirectory):
+            random.seed(p * 11235813)   # consistently deterministic
+            filegood = False
+            fileattempts = 5
+            while ((not filegood) and (fileattempts > 0)):
+                filename = random.choice(os.listdir(ipfsDirectory))
+                try:
+                    filepath = f"{ipfsDirectory}{filename}"
+                    filesize = os.path.getsize(filepath)
+                    if filesize > 50000:
+                        self.log(f"loading image file {filepath}")
+                        rImage = Image.open(filepath).convert("RGBA")
+                        filegood = True
+                except BaseException as err:
+                    # not sure what
+                    self.log(f"error loading image: {err}")
+                    fileattempts = fileattempts -1
+        if not filegood:
+            rImage = Image.open("../images/logo.png").convert("RGBA")
+        return rImage
 
+    def run(self):
+        if not self.isDependenciesMet():
+            self._markAsRan()
+            return
 
-def createimage(width=480, height=320):
-    rows = 35
-    cols = 60
-    nHeight = vicariousbitcoin.getcurrentblock()
-    nSubsidyHalvingInterval = 210000
-    halvings = nHeight / nSubsidyHalvingInterval
-    halvingbegin = math.floor(halvings) * nSubsidyHalvingInterval
-    halvingend = halvingbegin + nSubsidyHalvingInterval - 1
-    halvingpct = float(nHeight - halvingbegin) / float(rows*cols)
-    gridblocks = nHeight % (rows*cols)
-    # start the image
-    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
-    draw = ImageDraw.Draw(im)
-    # grid for the current percent
-    blockw=int(math.floor((width-1)/cols))
-    padleft=int(math.floor((width-(cols*blockw))/2))
-    padtop=40
-    if gridImageEnabled:
-        gridw = blockw * cols
-        gridh = blockw * rows
-        gridratio=float(gridw)/float(gridh)
-        gridsource = getGridImage(int(halvingpct))
-        gridsourcew = int(gridsource.getbbox()[2])
-        gridsourceh = int(gridsource.getbbox()[3])
-        gridsourceratio = float(gridsourcew)/float(gridsourceh)
-        if gridsourceratio > gridratio:
-            newgridsourceheight=int(gridsourcew/gridratio)
-            gridsourceoffset = int((newgridsourceheight-gridsourceh)/2)
-            gridsourcetaller = Image.new(mode="RGBA", size=(gridsourcew, newgridsourceheight), color=colorProgress)
-            gridsourcetaller.paste(gridsource, (0,gridsourceoffset))
-            gridimage = gridsourcetaller.resize(size=(gridw,gridh))
-        else:
-            newgridsourcewidth=int(gridsourceh*gridratio)
-            gridsourceoffset = int((newgridsourcewidth-gridsourcew)/2)
-            gridsourcewider = Image.new(mode="RGBA", size=(newgridsourcewidth, gridsourceh), color=colorProgress)
-            gridsourcewider.paste(gridsource, (gridsourceoffset,0))
-            gridimage = gridsourcewider.resize(size=(gridw,gridh))
-        gridimageunmined = gridimage.copy()
-        if gridImageUnminedMode == 'grayscale':
-            gridimageunmined = ImageOps.grayscale(gridimageunmined)
-        if gridImageUnminedMode == 'dither':
-            gridimageunmined = gridimageunmined.convert('1')
-        if gridImageUnminedMode == 'dither2':
-            gridimageunmined = gridimageunmined.convert('L')
-    for dc in range(cols):
-        for dr in range(rows):
-            gridblocknum = ((dr*cols)+dc)+1
-            tlx = (padleft + (dc*blockw))
-            tly = (padtop + (dr*blockw))
-            brx = tlx+blockw-2
-            bry = tly+blockw-2
-            fillcolor = None
-            outlinecolor = colorGrid
-            if gridblocknum <= gridblocks:
-                fillcolor = colorProgress
-                outlinecolor = None
-            if gridImageEnabled:
-                # crop from gridimage
-                gtlx = (dc*blockw)
-                gtly = (dr*blockw)
-                gbrx = gtlx+blockw-1
-                gbry = gtly+blockw-1
-                if fillcolor != colorProgress:
-                    gblockimg = gridimageunmined.crop((gtlx,gtly,gbrx,gbry))
-                else:
-                    if fillGridDividersEnabled:
-                        gbrx += 1
-                        gbry += 1
-                    gblockimg = gridimage.crop((gtlx,gtly,gbrx,gbry))
-                # paste the part into the right spot
-                im.paste(gblockimg, (tlx, tly))
-                # cleanup resources
-                gblockimg.close()
-                # highlight current block in the grid with an outline
-                if gridblocknum == gridblocks:
-                    fillcolor = None
-                    outlinecolor = colorProgress
-                    draw.rectangle(xy=((tlx-1,tly-1),(brx+1,bry+1)),fill=fillcolor,outline=outlinecolor,width=2)
+        super().startImage()
+        centerX = self.width // 2
+        centerY = self.height // 2
+        halvingInterval = 210000
+        gridRows = 35 # x 60 = 2100.  2100 is blocks for 1% of the halvingInterval
+        gridCols = 60
+        halvings = self.blockheight // halvingInterval
+        halvingbegin = halvings * halvingInterval + 1
+        halvingend = (halvings + 1) * halvingInterval
+        halvingPercent = float(self.blockheight - halvingbegin) / float(gridRows * gridCols)
+        halvingPercentText = str(format(halvingPercent, ".3f")) + "%"
+        self.headerText = f"|Next Halving|{halvingPercentText}"
+        gridblocks = self.blockheight % (gridRows * gridCols)
+        # grid for the current percent
+        blockw = ((self.width-1)//gridCols)
+        gridLeft= (self.width-(gridCols*blockw)) // 2
+        gridTop = self.getInsetTop()
+        gridRight = self.width - gridLeft
+        gridBottom = gridTop + (gridRows * blockw)
+
+        if self.gridImageEnabled:
+            gridw = blockw * gridCols
+            gridh = blockw * gridRows
+            gridratio=float(gridw)/float(gridh)
+            gridImage = self._getGridImage(int(halvingPercent))
+            gridImageWidth = int(gridImage.getbbox()[2])
+            gridImageHeight = int(gridImage.getbbox()[3])
+            gridImageRatio = float(gridImageWidth)/float(gridImageHeight)
+            if gridImageRatio > gridratio:
+                newgridImageHeighteight=int(gridImageWidth/gridratio)
+                gridImageOffset = int((newgridImageHeighteight-gridImageHeight)/2)
+                gridImageTaller = Image.new(mode="RGBA", size=(gridImageWidth, newgridImageHeighteight), color=ImageColor.getrgb(self.progressColor))
+                gridImageTaller.paste(gridImage, (0,gridImageOffset))
+                gridImage.close()
+                gridImage = gridImageTaller.resize(size=(gridw,gridh))
+                gridImageTaller.close()
             else:
-                if fillGridDividersEnabled:
-                   brx += 1
-                   bry += 1
-                draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
-    # header and footer
-    padtop=36
-    vicarioustext.drawcenteredtext(draw, "Next Halving", 24, int(width/2), int(padtop/2), colorTextFG, True)
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height, colorTextFG)
-    # progress bar showing major percent
-    padleft=0
-    barheight=32
-    barwidth=(width//2)
-    padtop=height-barheight
-    vicarioustext.drawtoplefttext(draw, "grid represents 1 whole percent", 10, barwidth + 3, padtop, colorProgress)
-    draw.rounded_rectangle(xy=(padleft,padtop,padleft+barwidth,padtop+barheight),radius=3,fill=None,outline=colorGrid,width=1)
-    barwidth=int(float(barwidth)*halvingpct/100.00)
-    draw.rounded_rectangle(xy=(padleft+2,padtop+2,padleft+barwidth,padtop+barheight-2),radius=3,fill=colorProgress)
-    pcttxt = str(format(halvingpct, ".3f")) + "%"
-    if halvingpct < 25:
-        vicarioustext.drawlefttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth+4, padtop+(barheight/2), colorProgress, True)
-    elif halvingpct < 75:
-        vicarioustext.drawrighttext(draw, "Block\n" + str(nHeight), 14, padleft+barwidth-2, padtop+(barheight/2), colorBackground, True)
-        vicarioustext.drawlefttext(draw, pcttxt, 14, padleft+barwidth+2, padtop+(barheight/2), colorProgress, True)
-    else:
-        vicarioustext.drawrighttext(draw, str(nHeight) + " is " + pcttxt, 14, padleft+barwidth-4, padtop+(barheight/2), colorBackground, True)
-    # Watermark
-    vicariouswatermark.do(im,width=100)
-    # save
-    print("saving image")
-    im.save(outputFile)
-    # cleanup image resources
-    if gridImageEnabled:
-        gridsource.close()
-        gridimage.close()
-        gridimageunmined.close()
-        if gridsourceratio > gridratio:
-            gridsourcetaller.close()
+                newgridImageWidthidth=int(gridImageHeight*gridratio)
+                gridImageOffset = int((newgridImageWidthidth-gridImageWidth)/2)
+                gridImageWider = Image.new(mode="RGBA", size=(newgridImageWidthidth, gridImageHeight), color=ImageColor.getrgb(self.progressColor))
+                gridImageWider.paste(gridImage, (gridImageOffset,0))
+                gridImage.close()
+                gridImage = gridImageWider.resize(size=(gridw,gridh))
+                gridImageWider.close()
+            gridImageUnmined = gridImage.copy()
+            if self.gridImageUnminedMode == 'grayscale':
+                gridImageUnmined = ImageOps.grayscale(gridImageUnmined)
+            if self.gridImageUnminedMode == 'dither':
+                gridImageUnmined = gridImageUnmined.convert('1')
+            if self.gridImageUnminedMode == 'dither2':
+                gridImageUnmined = gridImageUnmined.convert('L')
+        for dc in range(gridCols):
+            for dr in range(gridRows):
+                gridblocknum = ((dr*gridCols)+dc)+1
+                tlx = (gridLeft + (dc*blockw))
+                tly = (gridTop + (dr*blockw))
+                brx = tlx+blockw-2
+                bry = tly+blockw-2
+                fillcolor = None
+                outlinecolor = self.gridColor
+                if gridblocknum <= gridblocks:
+                    fillcolor = self.progressColor
+                    outlinecolor = None
+                if self.gridImageEnabled:
+                    # crop from gridimage
+                    gtlx = (dc*blockw)
+                    gtly = (dr*blockw)
+                    gbrx = gtlx+blockw-1
+                    gbry = gtly+blockw-1
+                    if fillcolor != self.progressColor:
+                        gblockimg = gridImageUnmined.crop((gtlx,gtly,gbrx,gbry))
+                    else:
+                        if self.gridDividerFillEnabled:
+                            gbrx += 1
+                            gbry += 1
+                        gblockimg = gridImage.crop((gtlx,gtly,gbrx,gbry))
+                    # paste the part into the right spot
+                    self.canvas.paste(gblockimg, (tlx, tly))
+                    # cleanup resources
+                    gblockimg.close()
+                    # highlight current block in the grid with an outline
+                    if gridblocknum == gridblocks:
+                        fillcolor = None
+                        outlinecolor = self.progressColor
+                        self.draw.rectangle(xy=((tlx-1,tly-1),(brx+1,bry+1)),fill=fillcolor,outline=outlinecolor,width=2)
+                else:
+                    if self.gridDividerFillEnabled:
+                        brx += 1
+                        bry += 1
+                    self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=fillcolor,outline=outlinecolor)
+        # annotation of grid representation
+        afs = int(self.height * 10/320)
+        vicarioustext.drawtoprighttext(self.draw, "grid represents 1 whole percent", afs, gridRight, gridBottom + 2, ImageColor.getrgb(self.progressColor))
+
+        # progress bar showing visual block progression
+        barPad    = 2
+        barLeft   = barPad
+        barTop    = self.height - (self.getFooterHeight() * 2)
+        barTop    = gridBottom + afs + barPad if barTop <= gridBottom + afs + barPad else barTop
+        barRight  = self.width - self.getFooterWidth() - barPad
+        barBottom = self.height - barPad
+        # outline portion
+        self.draw.rounded_rectangle(xy=(barLeft,barTop,barRight,barBottom),radius=3,fill=None,outline=ImageColor.getrgb(self.gridColor),width=1)
+        # fill portion
+        barHeight = barBottom - barTop - (barPad*2)
+        barWidthAvailable = barRight - barLeft - (barPad*2)
+        barWidth  = (int(float(barWidthAvailable) * halvingPercent / 100.00))
+        barWidthX = barLeft+barPad+barWidth
+        barWidthX = barRight-barPad if barWidthX > barRight - barPad else barWidthX
+        self.draw.rounded_rectangle(xy=(barLeft+barPad,barTop+barPad,barWidthX,barBottom-barPad),radius=3,fill=ImageColor.getrgb(self.progressColor))
+        # annotation of block number
+        blocksToGo = halvingend + 1 - self.blockheight
+        currentTime = int(time.time())
+        secondsPassed = currentTime - self.halvingBeganTime
+        avgBlockTime = secondsPassed / self.halvingBlocksMined
+        secondsRemain = avgBlockTime * blocksToGo
+        match blocksToGo % 4:
+            case 0:
+                # block height
+                blockText = f"BLOCK {self.blockheight}"
+            case 1:
+                # blocks to go
+                blockText = f"{blocksToGo} BLOCKS TO GO"
+            case 2:
+                # approximate duration until halving
+                yearsUntilHalving = secondsRemain // (60 * 60 * 24 * 365)
+                monthsUntilHalving = int(secondsRemain // (60 * 60 * 24 * 30))
+                weeksUntilHalving = int(secondsRemain // (60 * 60 * 24 * 7))
+                daysUntilHalving = int(secondsRemain // (60 * 60 * 24))
+                hoursUntilHalving = int(secondsRemain // (60 * 60))
+                if yearsUntilHalving > 1:
+                    blockText = f"OVER {yearsUntilHalving} YEARS TO GO"
+                elif monthsUntilHalving == 18:
+                    blockText = f"~ A YEAR AND A HALF TO GO"
+                elif monthsUntilHalving == 12:
+                    blockText = f"~ 1 YEAR TO GO"
+                elif monthsUntilHalving == 6:
+                    blockText = f"~ HALF A YEAR TO GO"
+                elif monthsUntilHalving > 2:
+                    blockText = f"~ {monthsUntilHalving} MONTHS TO GO"
+                elif weeksUntilHalving > 2:
+                    blockText = f"~ {weeksUntilHalving} WEEKS TO GO"
+                elif daysUntilHalving > 2:
+                    blockText = f"~ {daysUntilHalving} DAYS TO GO"
+                elif hoursUntilHalving > 2:
+                    blockText = f"~ {hoursUntilHalving} HOURS TO GO"
+                else:
+                    blockText = f"{blocksToGo} BLOCKS TO GO"
+            case 3:
+                # approximate date of halving
+                if blocksToGo < 2016:
+                    blockText = f"{blocksToGo} BLOCKS TO GO"
+                else:
+                    projectedDate = datetime.fromtimestamp(currentTime + secondsRemain)
+                    projectedDateText = projectedDate.strftime("%Y-%m-%d")
+                    blockText = f"Halving ETA: {projectedDateText}"
+        blockFontSize = self.getFooterHeight()
+        blockFontSize, _, _ = vicarioustext.getmaxfontsize(draw=self.draw, s=blockText, maxwidth=(barWidthAvailable//2), maxheight=barHeight, isbold=True, maxfontsize=blockFontSize, minfontsize=8)
+        sw, sh, f = vicarioustext.gettextdimensions(draw=self.draw, s=blockText, fontsize=blockFontSize, isbold=True)
+        if sw < (barWidthX - barPad):
+            # on the progress
+            vicarioustext.drawrighttext(self.draw, blockText, blockFontSize, barWidthX - barPad, barTop + (barBottom-barTop)//2, ImageColor.getrgb(self.backgroundColor), True)
         else:
-            gridsourcewider.close()
-    im.close()
+            # to the right of bar
+            vicarioustext.drawlefttext(self.draw, blockText, blockFontSize, barWidthX + barPad, barTop + (barBottom-barTop)//2, ImageColor.getrgb(self.progressColor), True)
+
+        # cleanup image resources
+        if self.gridImageEnabled:
+            gridImage.close()
+            gridImageUnmined.close()
+        super().finishImage()
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # Defaults
-    configFile="../config/halving.json"
-    outputFile="../imageoutput/halving.png"
-    ipfsDirectory="../data/ipfs"
-    colorGrid=ImageColor.getrgb("#404040")
-    colorProgress=ImageColor.getrgb("#40FF40")
-    colorTextFG=ImageColor.getrgb("#ffffff")
-    colorBackground=ImageColor.getrgb("#000000")
-    gridImageEnabled=True
-    gridImageUnminedMode="grayscale"
-    fillGridDividersEnabled=True
-    width=480
-    height=320
-    sleepInterval=540
-    # Override config
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "halving" in config:
-            config = config["halving"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "colorGrid" in config:
-            colorGrid = ImageColor.getrgb(config["colorGrid"])
-        if "colorProgress" in config:
-            colorProgress = ImageColor.getrgb(config["colorProgress"])
-        if "colorTextFG" in config:
-            colorTextFG = ImageColor.getrgb(config["colorTextFG"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
-        if "gridImageEnabled" in config:
-            gridImageEnabled = config["gridImageEnabled"]
-        if "gridImageUnminedMode" in config:
-            gridImageUnminedMode = config["gridImageUnminedMode"]
-        if "fillGridDividersEnabled" in config:
-            fillGridDividersEnabled = config["fillGridDividersEnabled"]
-        if "ipfsDirectory" in config:
-            ipfsDirectory = config["ipfsDirectory"]
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 30 if sleepInterval < 30 else sleepInterval # minimum 30 seconds, local only
-    # Check for single run
+
+    p = HalvingPanel()
+
+    # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
             print(f"Renders a representation of progress through the current halving period")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
-            print(f"You may specify a custom configuration file at {configFile}")
+            print(f"2) Pass an argument other than -h or --help to run once and exit")
         else:
-            createimage(width, height)
+            p.fetchData()
+            p.run()
         exit(0)
-    # Loop
-    while True:
-        createimage(width, height)
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+
+    # Continuous run
+    p.runContinuous()    

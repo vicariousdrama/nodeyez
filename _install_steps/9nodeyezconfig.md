@@ -6,15 +6,11 @@ layout: default
 
 # Nodeyez-Config
 
-The Nodeyez-Config tool attempts to encompass most of the configuration needs
-you may have with Nodeyez.  It can show you a list of all the services available,
-and allow you to drill down into the detailed configuration options.
+The Nodeyez-Config tool encompasses most of the configuration needs you may have with Nodeyez.  It can show you a list of all the services available, and allow you to drill down into the detailed configuration options.
 
 ## Installing the tool
 
-If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}),
-then the tool was installed and may be run from the terminal.  If you are doing a
-manual install, then run this command to copy to the bin folder
+If you installed Nodeyez using the [Quick Start]({% link _install_steps/0quickstart.md %}), then the tool was installed and may be run from the terminal.  If you are doing a manual install, then run this command to copy to the bin folder
 
 ```sh
 sudo cp /home/nodeyez/nodeyez/scripts/nodeyez-config /usr/local/bin
@@ -28,24 +24,68 @@ To simply view settings, you should be able to run the tool as any user
 nodeyez-config
 ```
 
-But to make configuration changes, or start/stop services, you'll want to
-run it with sudo privileges
+But to make configuration changes, or start/stop services, you'll want to run it with sudo privileges
 
 ```sh
 sudo nodeyez-config
 ```
 
+## Main Menu
+
+When you run the tool, you'll initially be presented with a menu
+
+![sample image of nodeyez-config main menu](../images/nodeyez-config-main-menu.png)
+
+Use arrow or other navigation keys to move through this list and press &lt;ENTER&gt; to confirm a selection.  Pressing &lt;ESC&gt; will back out of menu choices.
+
+## Bitcoin Settings
+
+Entering this choice will show the currently active profile for bitcoin calls, and let you manage the settings of all profiles.  
+
+You will need to define settings for a profile to use Bitcoin panels.
+
+The information you need to configure in Nodeyez for each Bitcoin Profile is
+- address: The ip address or fully qualified domain name of the Bitcoin server accessible over rest for rpc calls. The default assumes running Nodeyez on the same machine as bitcoin. Note that if its a docker setup, you need to specify the IP address associated with that container.
+- name: You can name profiles to tell them apart
+- port: The port the server will listen for requests on. By default, this is port 8332, and is set as the `rpcport` line in bitcoin.conf
+- rpcpassword: The password for accessing the bitcoin node. This will either be the same as the clear text value of the deprecated `rpcpassword` in the bitcoin.conf, or the password specified or returned when preparing the `rpcauth` line from the rpcauth.py script.
+- rpcuser: This is the same value as the `rpcuser` in bitcoin.conf, or the user portion of the `rpcauth` line.
+- useTor: For remote nodes, you can optionally enable calls over Tor. For internal network nodes, leave it as False.
+
+While bitcoin.conf settings are outside of the scope of this project and there's many resources online, what you'll generally need to be familiar with is setting up the following
+
+- rpcauth
+- rpcallowip
+- rpcbind
+- rpcport
+
+## LND Settings
+
+Entering this choice will show the currently active profile for LND lightning calls, and let you manage the settings of all profiles.  
+
+You will need to define settings for a profile to use Lightning panels.
+
+The information you need to configure in Nodeyez for each Lightning Profile is
+- address: The ip address or fully qualified domain name of the LND server. The default assumes running Nodeyez on the same machine as LND. Note that if its a docker setup, you need to specify the IP address associated with that container.
+- macaroon: The hex representation of the macaroon granting authorization to the LND server.
+- name: You can name profiles to tell them apart
+- port: The port the server will listen for requests on. By default, this is port 10080 and coincides with the port specified in the `restlisten` line of lnd.conf
+- useTor: For remote nodes, you can optionally enable calls over Tor. For internal network nodes, leave it as False.
+
+While lnd.conf settings are outside of the scope of this project and there's many resources online, what you'll generally need to be familiar with is setting up the following
+
+- rpclisten
+- restlisten
+
 ## Service Listing
 
-When you run the tool, you'll be presented with a list of services that Nodeyez recognizes
+This option provides list of services that Nodeyez recognizes
 
 ![sample image of nodeyez-config services](../images/nodeyez-config-service-list.png)
 
 For convenience, activated services are presented at the top with an 'on' indicator in the description field.
 
 The title bar for the window provides an indication of what context you are running the configuration tool under. The tool should be run with effective root access to enable/disable services or start/stop them.  Similarly, either root or nodeyez group access if you want to make configuration changes.
-
-Use arrow or other navigation keys to move through this list and press &lt;ENTER&gt; to confirm a selection.  Pressing &lt;ESC&gt; will back out of menu choices.
 
 ## Service Options
 

@@ -1,16 +1,16 @@
 # import packages
 from PIL import Image, ImageColor
+from datetime import datetime
 from os.path import exists
+from requests.auth import HTTPBasicAuth
 from urllib3.exceptions import InsecureRequestWarning
 from wand.api import library
+import glob
 import io
 import json
 import math
 import os
 import requests
-import shutil
-import subprocess
-import sys
 import time
 import wand.color
 import wand.image
@@ -24,9 +24,10 @@ def gettorproxies():
     #     cat /etc/tor/torrc | grep SOCKSPort | grep -v "#" | awk '{print $2}'
     return {'http': 'socks5h://127.0.0.1:9050','https': 'socks5h://127.0.0.1:9050'}
 
-
 # do a GET call on specified url, save response body contents as file, return 0 if success, 1 if error
 def getandsavefile(useTor=True, url="https://nodeyez.com/images/logo.png", savetofile="../data/logo.png", headers={}):
+    if not exists(savetofile.rpartition("/")[0]):
+        os.makedirs(savetofile.rpartition("/")[0])
     try:
         proxies = gettorproxies() if useTor else {}
         timeout = gettimeouts()
@@ -36,12 +37,25 @@ def getandsavefile(useTor=True, url="https://nodeyez.com/images/logo.png", savet
             with open(savetofile, 'wb') as filetowriteto:
                 for chunk in response.iter_content(chunk_size=8192):
                     filetowriteto.write(chunk)
-        print(f"file saved to {savetofile}\n")
+        #print(f"file saved to {savetofile}\n")
         return 0
     except Exception as e:
-        print(f"error saving file {savetofile} from url {url}\n")
-        print(f"{e}")
+        print(f"error saving file {savetofile} from url {url}\n{e}")
         return 1
+
+# do a GET call on the specified url, and return the response body
+def getpage(useTor=True, url=None, defaultResponse="{}", headers={}):
+    cmdoutput = ""
+    try:
+        proxies = gettorproxies() if useTor else {}
+        timeout = gettimeouts()
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        cmdoutput = requests.get(url,timeout=timeout,proxies=proxies,headers=headers,verify=False).text
+    except Exception as e:
+        print(f"error calling geturl: {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
+    return cmdoutput
 
 # do a GET call on the specified url, and with response body, load and return as json
 def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
@@ -112,8 +126,6 @@ def getimagefromfile(filepath=None):
         print(f"{e}")
     return img
 
-
-
 def getblockclockapicall(url="http://21.21.21.21/api/show/text/NODEYEZ", blockclockPassword=""):
     if url == "http://21.21.21.21/api/show/text/NODEYEZ":
         print(f"ignoring command to display text to blockclock as url has not been set")
@@ -139,22 +151,56 @@ def getmempoolblocks(useTor=True, url="https://mempool.space/api/v1/fees/mempool
     return geturl(useTor, url, defaultResponse)
 
 def getmempoolrecommendedfees(useTor=True, url="https://mempool.space/api/v1/fees/recommended"):
-    defaultResponse = '{"fastestFee":1,"halfHourFee":1,"hourFee":1,"minimumFee":1}'
+    defaultResponse = '{"fastestFee":-1,"halfHourFee":-1,"hourFee":-1,"minimumFee":-1}'
     j = geturl(useTor, url, defaultResponse)
     return j["fastestFee"], j["halfHourFee"], j["hourFee"], j["minimumFee"]
 
 def getmempoolhistograminfo(useTor=True, url="https://mempool.space/api/mempool"):
-    defaultResponse = '{"count":0,"vsize":0,"total_fee":0,"fee_histogram":[]}'
+    defaultResponse = '{"count":-1,"vsize":0,"total_fee":0,"fee_histogram":[]}'
     return geturl(useTor, url, defaultResponse)
 
-def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker", price_last=-1, price_high=-1, price_low=-1):
-    defaultResponse = '{"error": "dont care"}'
-    j = geturl(useTor, url, defaultResponse)
-    if "error" not in j:
-        price_last = int(math.floor(float(j["btc_usd"]["last"])))
-        price_high = int(math.floor(float(j["btc_usd"]["high"])))
-        price_low = int(math.floor(float(j["btc_usd"]["low"])))
-    return (price_last,price_high,price_low)
+def getnewestfile(fileDirectory):
+    files = glob.glob(fileDirectory)
+    newestfile = ""
+    if len(files) > 0:
+        newestfile = max(files, key=os.path.getctime)
+    return newestfile
+
+def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker", price_last=-1, price_high=-1, price_low=-1, fiatUnit="USD"):
+
+    year = datetime.utcnow().strftime("%Y")
+    month = datetime.utcnow().strftime("%m")
+    path = f"../data/bisq/{year}/{month}/"
+    if not exists(path):
+        os.makedirs(path)
+    newestfile = getnewestfile(path + "*.json")
+    fileOK = True
+    if len(newestfile) > 0:
+        mtime = int(os.path.getmtime(newestfile))
+        currenttime = int(time.time())
+        diff = currenttime - mtime
+        if diff > 3600: fileOK = False
+    else:
+        fileOK = False
+    if not fileOK:
+        fn = datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
+        savetofile = f"{path}{fn}"
+        getandsavefile(useTor, url, savetofile)
+        newestfile = getnewestfile(path + "*.json")
+    if len(newestfile) > 0:
+        with open(newestfile) as f:
+            j = json.load(f)
+        #defaultResponse = '{"error": "dont care"}'
+        #j = geturl(useTor, url, defaultResponse)
+        if "error" not in j:
+            keyname = f"btc_{fiatUnit}".lower()
+            if keyname not in j: 
+                print(f"Price service does not have BTC to {fiatUnit} currency pair. Using btc_usd")
+                keyname = "btc_usd"
+            price_last = int(math.floor(float(j[keyname]["last"])))
+            price_high = int(math.floor(float(j[keyname]["high"])))
+            price_low = int(math.floor(float(j[keyname]["low"])))
+    return (price_last,price_high,price_low,keyname)
 
 def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     userFilename = raretoshiUser + ".json"
@@ -201,11 +247,11 @@ def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="../data/raretoshi
     if userInfoInterval + userInfoLast < int(time.time()):
         refreshUser = True
     if refreshUser == False:
-        print(f"Using cached data from {userInfoLast}")
+        #print(f"Using cached data from {userInfoLast}")
         return userInfo, userInfoLast
     # Do the work to get new user data
     url = "https://raretoshi.com/" + raretoshiUser
-    print(f"Retrieving user properties from {url}")
+    #print(f"Retrieving user properties from {url}")
     try:
         if useTor:
             proxies = gettorproxies()
@@ -272,8 +318,7 @@ def getbraiinspoolstats(useTor=True, authtoken="invalid"):
 
 def getwhirlpoolheaders(apiKey=""):
     headers = {}
-    if len(apiKey) > 0:
-        headers["apiKey"] = apiKey
+    if len(apiKey) > 0 and apiKey != "NOT_SET": headers["apiKey"] = apiKey
     return headers
 
 def getwhirlpoolliquidity(useTor=True, url="https://pool.whirl.mx:8080", apiKey=""):
@@ -320,4 +365,28 @@ def getwhirlpoolcliconfig(useTor=True, url=None, apiKey=""):
          "dojoUrl": "ERROR", "tor": false, "dojo": false, "version": "unknown"
         }'''
     return geturl(useTor, whirlpoolurl, defaultResponse, headers)
+
+# do a POST call on the specified url, with the specified data.
+# with response body, load and return as json
+def posturl(useTor=True, url=None, data=None, defaultResponse="{}", headers={}, username=None, password=None):
+    cmdoutput = ""
+    try:
+        proxies = gettorproxies() if useTor else {}
+        timeout = gettimeouts()
+        auth = None
+        if username is not None and password is not None:
+            auth = HTTPBasicAuth(username, password)
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+        cmdoutput = requests.post(url=url, data=data, headers=headers, auth=auth, timeout=timeout, proxies=proxies, verify=False).text
+    except Exception as e:
+        print(f"error calling posturl: {e}")
+        print(f"using default")
+        cmdoutput = defaultResponse
+    try:
+        j = json.loads(cmdoutput)
+    except Exception as e:
+        print(f"error loading response as json: {e}")
+        print(f"using default")
+        j = json.loads(defaultResponse)
+    return j
 

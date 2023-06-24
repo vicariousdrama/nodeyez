@@ -1,125 +1,120 @@
 #! /usr/bin/env python3
-from PIL import Image, ImageDraw, ImageColor
-from os.path import exists
-import json
-import math
-import subprocess
+from PIL import Image, ImageColor, ImageDraw
+from vicariouspanel import NodeyezPanel
 import sys
-import time
-import vicarioustext
 import vicariousnetwork
-import vicariouswatermark
+import vicarioustext
 
-def createimage(width=480, height=320):
-    global last
-    global high
-    global low
-    global priceofbitcoin
-    last,high,low = vicariousnetwork.getpriceinfo(useTor, priceurl, last, high, low)
-    priceofbitcoin=last
-    padtop=40
-    im = Image.new(mode="RGBA", size=(width, height), color=colorBackground)
-    draw = ImageDraw.Draw(im)
-    alpha_img = Image.new(mode="RGBA", size=(width, height), color=(0,0,0,0))
-    drawa = ImageDraw.Draw(alpha_img)
-    # header
-    vicarioustext.drawcenteredtext(draw, "Price of Bitcoin", 24, int(width/2), int(padtop/2), colorHeader, True)
-    # mid
-    bpt = "$" + str(priceofbitcoin)
-    if showBigText:
-        #fsize = 128 #vicarioustext.getmaxfontsize(draw, bpt, False, 128, 10)
-        fsize = vicarioustext.getmaxfontsize(draw, bpt, width, height)
-        x = int(width/2)
-        y = int(height/2)
-        colorPrice = colorPriceDown if last < priceofbitcoin else colorPriceUp
-        vicarioustext.drawcenteredtext((draw if showBigTextOnTop else drawa), bpt, fsize, x, y, colorPriceShadow)
-        vicarioustext.drawcenteredtext((draw if showBigTextOnTop else drawa), bpt, fsize, x-2, y-2, colorPrice)
-    # footer
-    if not showBigText:
-        vicarioustext.drawcenteredtext(draw, "Price: " + bpt, 20, int(width/8*4), height-padtop)
-    vicarioustext.drawbottomlefttext(draw, "Data from bisq", 16, 0, height, colorBisq)
-    vicarioustext.drawbottomrighttext(draw, "as of " + vicarioustext.getdateandtime(), 12, width, height)
-    # Combine
-    composite = Image.alpha_composite(im, alpha_img)
-    # Watermark
-    vicariouswatermark.do(composite,width=140,box=(int(width/2)-50,height-60))
-    # Save
-    print(f"Saving file to {outputFile}")
-    composite.save(outputFile)
-    im.close()
-    alpha_img.close()
-    composite.close()
+class FiatPricePanel(NodeyezPanel):
+
+    def __init__(self):
+        """Instantiates a new Fiat Price panel"""
+
+        # Define which additional attributes we have
+        self.configAttributes = {
+            # legacy key name mappings
+            "colorBackground": "backgroundColor",
+            "colorBisq": "attributionColor",
+            "colorHeader": "headerColor",
+            "colorPriceDown": "priceDownColor",
+            "colorPriceShadow": "priceShadowColor",
+            "colorPriceUp": "priceUpColor",
+            "colorTextFG": "textColor",
+            "priceurl": "priceUrl",
+            "sleepInterval": "interval",
+            "showBigText": "bigTextEnabled",
+            "showBigTextOnTop": "bigTextOnTopEnabled",
+            # panel specific key names
+            "attributionColor": "attributionColor",
+            "bigTextEnabled": "bigTextEnabled",
+            "bigTextOnTopEnabled": "bigTextOnTopEnabled",
+            "fiatUnit": "fiatUnit",
+            "headerColor": "headerColor",
+            "priceDownColor": "priceDownColor",
+            "priceShadowColor": "priceShadowColor",
+            "priceUpColor": "priceUpColor",
+            "priceUrl": "priceUrl",
+            "useTor": "useTor",
+        }
+
+        # Define our defaults (all panel specific key names should be listed)
+        self._defaultattr("attributionColor", "#40ff40")
+        self._defaultattr("bigTextEnabled", True)
+        self._defaultattr("bigTextOnTopEnabled", True)
+        self._defaultattr("fiatUnit", "USD")
+        self._defaultattr("headerColor", "#ffffff")
+        self._defaultattr("interval", 300)
+        self._defaultattr("priceColor", "#40ff40")
+        self._defaultattr("priceDownColor", "#ff4040")
+        self._defaultattr("priceHigh", 0)
+        self._defaultattr("priceLast", 0)
+        self._defaultattr("priceLow", 0)
+        self._defaultattr("priceShadowColor", "#ffffff7f")
+        self._defaultattr("priceUpColor", "#40ff40")
+        self._defaultattr("priceUrl", "https://bisq.markets/bisq/api/markets/ticker")
+        self._defaultattr("useTor", True)
+        self._defaultattr("watermarkAnchor", "bottom")
+
+        # Initialize
+        super().__init__(name="fiatprice")
+
+    def fetchData(self):
+        """Fetches all the data needed for this panel"""
+
+        priceBefore = self.priceLast
+        self.priceLast, self.priceHigh, self.priceLow, fiatkeyname = vicariousnetwork.getpriceinfo(self.useTor, self.priceUrl, self.priceLast, self.priceHigh, self.priceLow, self.fiatUnit)
+        self.priceChange = self.priceLast - priceBefore
+        if self.priceChange < 0:
+            self.priceColor = self.priceDownColor
+        if self.priceChange > 0:
+            self.priceColor = self.priceUpColor
+
+    def run(self):
+
+        self.headerText = f"{self.fiatUnit} Price of Bitcoin"
+        super().startImage()
+
+        alphaLayer = Image.new(mode="RGBA", size=(self.canvas.width, self.canvas.height), color=(0,0,0,0))
+        alphaDraw = ImageDraw.Draw(alphaLayer)
+
+        priceText = "$" + str(self.priceLast)
+        x = self.width//2
+        y = self.height//2
+        smallPriceSize = int(self.height * 20/320)
+        attributionSize = int(self.height * 14/320)
+        if self.bigTextEnabled:
+            fs, _, _ = vicarioustext.getmaxfontsize(self.draw, priceText, self.width, self.height)
+            vicarioustext.drawcenteredtext((self.draw if self.bigTextOnTopEnabled else alphaDraw), priceText, fs, x, y, ImageColor.getrgb(self.priceShadowColor))
+            vicarioustext.drawcenteredtext((self.draw if self.bigTextOnTopEnabled else alphaDraw), priceText, fs, x-2, y-2, ImageColor.getrgb(self.priceColor))
+        else:
+            vicarioustext.drawcenteredtext(self.draw, f"Price: {priceText}", smallPriceSize, x, y, ImageColor.getrgb(self.priceColor))
+        # attribution
+        vicarioustext.drawbottomlefttext(self.draw, "Data from bisq", attributionSize, 0, self.height, ImageColor.getrgb(self.attributionColor))
+
+        self.canvas.alpha_composite(alphaLayer)
+        alphaLayer.close()
+
+        super().finishImage()
+
+# --------------------------------------------------------------------------------------
+# Entry point if running this script directly
+# --------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # Defaults
-    configFile="../config/fiatprice.json"
-    outputFile="../imageoutput/fiatprice.png"
-    priceurl="https://bisq.markets/bisq/api/markets/ticker"
-    useTor=True
-    width=480
-    height=320
-    sleepInterval=300
-    showBigText=True
-    showBigTextOnTop=True
-    colorBisq=ImageColor.getrgb("#40FF40")
-    colorHeader=ImageColor.getrgb("#ffffff")
-    colorPriceUp=ImageColor.getrgb("#40FF40")
-    colorPriceDown=ImageColor.getrgb("#FF4040")
-    colorPriceShadow=ImageColor.getrgb("#ffffff7f")
-    colorBackground=ImageColor.getrgb("#000000")
-    # Inits
-    last=0
-    low=0
-    high=0
-    priceofbitcoin=0
-    colorPrice=colorPriceUp
-    # Override defaults
-    if exists(configFile):
-        with open(configFile) as f:
-            config = json.load(f)
-        if "fiatprice" in config:
-            config = config["fiatprice"]
-        if "outputFile" in config:
-            outputFile = config["outputFile"]
-        if "priceurl" in config:
-            priceurl = config["priceurl"]
-        if "useTor" in config:
-            useTor = config["useTor"]
-        if "width" in config:
-            width = int(config["width"])
-        if "height" in config:
-            height = int(config["height"])
-        if "sleepInterval" in config:
-            sleepInterval = int(config["sleepInterval"])
-            sleepInterval = 60 if sleepInterval < 600 else sleepInterval # minimum 1 minutes, access others
-        if "showBigText" in config:
-            showBigText = config["showBigText"]
-        if "showBigTextOnTop" in config:
-            showBigTextOnTop = config["showBigTextOnTop"]
-        if "colorBisq" in config:
-            colorBisq = ImageColor.getrgb(config["colorBisq"])
-        if "colorHeader" in config:
-            colorHeader = ImageColor.getrgb(config["colorHeader"])
-        if "colorPriceUp" in config:
-            colorPriceUp = ImageColor.getrgb(config["colorPriceUp"])
-        if "colorPriceDown" in config:
-            colorPriceDown = ImageColor.getrgb(config["colorPriceDown"])
-        if "colorPriceShadow" in config:
-            colorPriceShadow = ImageColor.getrgb(config["colorPriceShadow"])
-        if "colorBackground" in config:
-            colorBackground = ImageColor.getrgb(config["colorBackground"])
+
+    p = FiatPricePanel()
+
+    # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
             print(f"Retrieves the market rate of BTC from Bisq and renders the price in dollars")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Pass an argument other than -h or --help to run once and exit")
-            print(f"You may specify a custom configuration file at {configFile}")
         else:
-            createimage(width,height)
+            p.fetchData()
+            p.run()
         exit(0)
-    # Loop
-    while True:
-        createimage(width,height)
-        print(f"sleeping for {sleepInterval} seconds")
-        time.sleep(sleepInterval)
+
+    # Continuous run
+    p.runContinuous()    

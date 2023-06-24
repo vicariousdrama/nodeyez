@@ -31,14 +31,13 @@ Fields are defined below
 
 | field name | description |
 | --- | --- |
-| outputFile | The path to save the generated image. Default `../imageoutput/utcclock.png` |
-| colorBackground | The background color of the image expressed as a hexadecimal color specifier. Default `#602060` |
-| width | The width, in pixels, to generate the image. Default `480` |
+| backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#602060` |
+| dateTextColor | The color to render the current date expressed as a Hexadecimal color specifier. Default `#f1c232` |
+| dayOfWeekTextColor | The color to render the day of the week expressed as a Hexadecimal color specifier. Default `#e69138` |
 | height | The height, in pixels, to generate the image. Default `320` |
-| sleepInterval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
-| colorTextDayOfWeek | The color to render the day of the week expressed as a Hexadecimal color specifier. Default `#e69138` |
-| colorTextDate | The color to render the current date expressed as a Hexadecimal color specifier. Default `#f1c232` |
-| colorTextTime | The color to render the current time expressed as a Hexadecimal color specifier. Default `#6aa84f` |
+| interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `30` |
+| timeTextColor | The color to render the current time expressed as a Hexadecimal color specifier. Default `#6aa84f` |
+| width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
 

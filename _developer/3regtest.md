@@ -6,9 +6,7 @@ layout: default
 
 # Regtest
 
-It can be helpful to use a regtest bitcoin environment that is private for testing.
-While not going into detail about Regtest, this page will cover installing a new
-instance of Bitcoin or using existing for regtest with Nodeyez development.
+It can be helpful to use a regtest bitcoin environment that is private for testing. While not going into detail about Regtest, this page will cover installing a new instance of Bitcoin or using existing for regtest with Nodeyez development.
 
 # Check for Bitcoin
 

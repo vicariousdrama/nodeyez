@@ -14,31 +14,31 @@ There are a variety of panel types that you can selectively enable and configure
 ## Sample Panels Created by Nodeyez
 
 <div class="slider">
-  <div class="slide"><img src="./images/arthash-719360.png" width=196 /></div>
+  <div class="slide"><img src="./images/arthash.png" width=196 /></div>
   <div class="slide"><img src="./images/blockhashdungeon.png" width=196 /></div>
   <div class="slide"><img src="./images/blockheight.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats-feerates.png" width=196 /></div>
   <div class="slide"><img src="./images/blockstats-segwit.png" width=196 /></div>
-  <div class="slide"><img src="./images/lndchannelbalance.png" width=196 /></div>
-  <div class="slide"><img src="./images/lndchannelfees.png" width=196 /></div>
   <div class="slide"><img src="./images/compassminingstatus.png" width=196 /></div>
   <div class="slide"><img src="./images/difficultyepoch.png" width=196 /></div>
-  <div class="slide"><img src="./images/f2pool.png" width=196 /></div>
   <div class="slide"><img src="./images/fearandgreed.png" width=196 /></div>
   <div class="slide"><img src="./images/fiatprice.png" width=196 /></div>
   <div class="slide"><img src="./images/inscriptionmempool.png" width=196 /></div>
-  <div class="slide"><img src="./images/ipaddress.png" width=196 /></div>
+  <div class="slide"><img src="./images/inscriptionparser.png" width=196 /></div>
+  <div class="slide"><img src="./images/ipaddresses.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndchannelbalance.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndchannelfees.png" width=196 /></div>
   <div class="slide"><img src="./images/lndhub.png" width=196 /></div>
+  <div class="slide"><img src="./images/lndringoffire-1.png" width=196 /></div>
   <div class="slide"><img src="./images/logo.png" width=196 /></div>
-  <div class="slide"><img src="./images/luxor-mining-hashrate-2021-12.png" width=196 /></div>
-  <div class="slide"><img src="./images/mempoolblocks.png" width=196 /></div>
-  <div class="slide"><img src="./images/minerbraiins.png" width=196 /></div>
+  <div class="slide"><img src="./images/mempoolspace.png" width=196 /></div>
+  <div class="slide"><img src="./images/miner.png" width=196 /></div>
+  <div class="slide"><img src="./images/mininigpool-braiinspool.png" width=196 /></div>
+  <div class="slide"><img src="./images/miningpool-f2pool.png" width=196 /></div>
+  <div class="slide"><img src="./images/miningpool-luxorpool.png" width=196 /></div>
   <div class="slide"><img src="./images/opreturn.png" width=196 /></div>
-  <div class="slide"><img src="./images/ordinals.png" width=196 /></div>
-  <div class="slide"><img src="./images/rof-sample.png" width=196 /></div>
-  <div class="slide"><img src="./images/satsperusd.png" width=196 /></div>
-  <div class="slide"><img src="./images/braiinspool.png" width=196 /></div>
+  <div class="slide"><img src="./images/satsperfiatunit.png" width=196 /></div>
   <div class="slide"><img src="./images/sysinfo.png" width=196 /></div>
   <div class="slide"><img src="./images/utcclock.png" width=196 /></div>
   <div class="slide"><img src="./images/whirlpoolclimix.png" width=196 /></div>

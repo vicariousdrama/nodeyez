@@ -1,0 +1,85 @@
+{
+  "headerText.comment": "The text to use in the header area",
+  "headerText.type": "string",
+  "headerText": "Lightning Ring of Fire",
+  "height.comment": "The height, in pixels to generate the image. Default is 320",
+  "height.type": "integer",
+  "height": 320,
+  "interval.comment": "The amount of time, in seconds, the script should wait before data gathering and image creation again",
+  "interval.fka": "sleepInterval",
+  "interval.type": "integer",
+  "interval": 900,
+  "nodeOfflineBackgroundColor.comment": "The background color to depict an offline node",
+  "nodeOfflineBackgroundColor.type": "color",
+  "nodeOfflineBackgroundColor": "#ff1010",
+  "nodeOfflineTextColor.comment": "The text color to use for labeling an offline node",
+  "nodeOfflineTextColor.type": "color",
+  "nodeOfflineTextColor": "#ffffff",
+  "nodeOnlineBackgroundColor.comment": "The background color to depict an online node",
+  "nodeOnlineBackgroundColor.type": "color",
+  "nodeOnlineBackgroundColor": "#20ff20",
+  "nodeOnlineTextColor.comment": "The text color to use for labeling an online node",
+  "nodeOnlineTextColor.type": "color",
+  "nodeOnlineTextColor": "#000000",
+  "ringColor.comment": "The color to render the ring",
+  "ringColor.type": "color",
+  "ringColor": "#202020", 
+  "rings.comment": "The collection of defined rings to monitor",
+  "rings.type": "array",
+  "rings":[
+    {
+      "_config_summary.comment": "A brief description of this item for nodeyez-config app",
+      "_config_summary.type": "string",
+      "_config_summary": "{?enabled}{headerText}",
+      "enabled.comment": "Indicates whether this node definition is enabled for reporting. If set to false, it will be skipped",
+      "enabled.type": "boolean",      
+      "enabled": true,
+      "headerText.comment": "The text to use in the header area",
+      "headerText.type": "string",
+      "headerText": "Sample Ring",
+      "id.comment": "A unique identifier for the ring to be used in logging and constructing image files",
+      "id.type": "string",
+      "id": "sample",
+      "nodes.comment": "The list of nodes that are participants in this ring, in order",
+      "nodes.type": "array",
+      "nodes": [
+        {
+          "_config_summary.comment": "A brief description of this item for nodeyez-config app",
+          "_config_summary.type": "string",
+          "_config_summary": "{operator} ({pubkey})",
+          "pubkey.comment": "The public key to the node",
+          "pubkey.type": "string",
+          "pubkey": "024bfaf0cabe7f874fd33ebf7c6f4e5385971fc504ef3f492432e9e3ec77e1b5cf",
+          "operator.comment": "A short label to identify the node",
+          "operator.type": "string",
+          "operator": "DEEZY"
+        },
+        {
+          "pubkey": "03bb88ccc444534da7b5b64b4f7b15e1eccb18e102db0e400d4b9cfe93763aa26d",
+          "operator": "ln2me.com"
+        },
+        {
+          "pubkey": "03d2e20bc19d995098ba357157a9cfbfbfdff4b78fce5ec713128e988e0115d776",
+          "operator": "DARTHNODE-PLEBNET.org"
+        },
+        {
+          "pubkey": "03a6daac0ca23f681f86f7a3dba5674ae5eaa5c171571ab1ece5bf10c0ad7b4c4e",
+          "operator": "Island Bitcoin"
+        },
+        {
+          "pubkey": "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f",
+          "operator": "ACINQ"
+        },
+        {
+          "pubkey": "02f1a8c87607f415c8f22c00593002775941dea48869ce23096af27b0cfdcc0b69",
+          "operator": "Kraken"
+        }        
+      ]
+    }
+  ],
+  "width.comment": "The width, in pixels to generate the image. Default is 480",
+  "width.type": "integer",
+  "width": 480
+}
+  
+  
