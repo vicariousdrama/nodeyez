@@ -28,23 +28,26 @@ Example: `halving`
 
 ### Service definition
 
-A service definition file takes the name of "nodeyez-<serviceid>.service" and is a standard systemd type definition file that will be deployed to /etc/systemd/system folder.  Source code to these definitions are in the [~/nodeyez/scripts/systemd](../scripts/systemd) folder.
+A service definition file takes the name of "nodeyez-<serviceid>.service" and is a standard systemd type definition file that will be deployed to /etc/systemd/system folder.  Source code to these definitions are in the scripts/systemd folder.
 
 The general structure of service definition scripts is consistent and differences are generally for denoting dependencies such as bitcoin or lightning services.
 
 Example: 
-- [~/nodeyez/scripts/systemd/nodeyez-_halving_.service](../scripts/systemd/nodeyez-halving.service)
+
+<ul><li><a href="../scripts/systemd/nodeyez-halving.service">~/nodeyez/scripts/systemd/nodeyez-<i><u>halving</u></i>.service</a></li></ul>
+
 
 ### Panel generation script
 
-The bulk of panel logic is in the python script for the service.  These are available in the [~/nodeyez/scripts](../scripts) folder, and thats where new scripts should be created.
+The bulk of panel logic is in the python script for the service.  These are available in the scripts folder, and thats where any additional scripts should be created.
 
-Panel scripts inherit from the NodeyezPanel class defined in the [~/nodeyez/scripts/vicariouspanel.py](../scripts/vicariouspanel.py) source file. This includes common helper functions for preparing the image output.
+Panel scripts inherit from the NodeyezPanel class defined in the scripts/vicariouspanel.py source file. This includes common helper functions for preparing the image output.
 
 Example: 
-- [~/nodeyez/scripts/_halving_.py](../config/halving.py)
 
-And within the panel generation file, the service identifier is what is used to set the name of the panel when init is called.  For example, around line 50 of the aforementioned halving.py file you'll see this
+<ul><li><a href="../scripts/halving.py">~/nodeyez/scripts/<i><u>halving</u></i>.py</a></li></ul>
+
+Within the panel generation file, the service identifier is what is used to set the name of the panel when init is called.  For example, around line 50 of the aforementioned halving.py file you'll see this
 
 ```python
 # Initialize
@@ -53,20 +56,21 @@ super().__init__(name="halving")
 
 ### Configuration files
 
-On initialization, panels read from the configuration files. These scripts look for user defined configuration in the [~/nodeyez/config](../config) folder, and fall back to the [~/nodeyez/sample-config](../sample-config) folder when missing, or to fill in default attributes not set by the user config.
+On initialization, panels read from the configuration files. These scripts look for user defined configuration in the config folder, and fall back to the sample-config folder when missing, or to fill in default attributes not set by the user config.
 
 The [nodeyez-config](../scripts/nodeyez-config) tool is opinionated about the location of configuration files and relies on the sample-config for definitions of fields, data types, descriptions, allowed values and more. It also requires nodeyez to be installed as a user with the config files in /home/nodeyez/nodeyez/config.
 
 Example: 
-- [~/nodeyez/config/_halving_.json](../config/halving.json)
-- [~/nodeyez/sample-config/_halving_.json](../sample-config/halving.json)
+
+<ul><li><a href="../config/halving.json">~/nodeyez/config/<i><u>halving</u></i>.json</a></li><li><a href="../sample-config/halving.json">~/nodeyez/sample-config/<i><u>halving</u></i>.json</a></li></ul>
 
 ### Documentation
 
-A Nodeyez panel should have accompanying documentation.  Each Nodeyez panel thus far has been documented in the [~/nodeyez/_docs](../_docs/) folder in markdown format.
+A Nodeyez panel should have accompanying documentation.  Each Nodeyez panel thus far has been documented in the _docs folder in markdown format.
 
 Example:
-- [~/nodeyez/_docs/script-_halving_.md](../_docs/script-halving.md)
+
+<ul><li><a href="../_docs/script-halving.md">~/nodeyez/_docs/script-<i><u>halving</u></i>.md</a></li></ul>
 
 ## Accessing Resources
 

@@ -43,7 +43,7 @@ Fields are defined below
 | height | The height, in pixels, to generate the image. Default `320` |
 | interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `3600` |
 | majorBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ff2020` |
-| ajorTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ffffff` |  
+| majorTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as major. Default `#ffffff` |  
 | minorBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#2020ff` |
 | minorTextColor | The color of the text expressed as a Hexadecimal color specifier when a facility is listed as minor. Default `#ffffff` |
 | noneBackgroundColor | The color of the background expressed as a Hexadecimal color specifier when a facility is listed as none. Default `#333333` | 

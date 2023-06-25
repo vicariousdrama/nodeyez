@@ -101,7 +101,7 @@ The Recent Logs option will report the most recent 20 lines of log entries which
 
 ![sample service logs](../images/nodeyez-config-service-logs.png)
 
-In the above example, the mempoolblocks service could not start because a dependency in the service script failed.
+In the above example, the mempoolspace service had a connection error reaching a resource.  Where possible, services will continue working with the data they have, and update on the next attempt.
 
 If the service is running, then you'll also be presented with the option to view the Status of the service.
 
@@ -111,7 +111,7 @@ If the service is running, then you'll also be presented with the option to view
 
 When you choose to customize configuration settings for a service, you'll be presented with the properties that can be configured, and their current values.
 
-![sample configuration of mempoolblocks](../images/nodeyez-config-manage-config-mempoolblocks.png)
+![sample configuration of mempoolspace](../images/nodeyez-config-mempoolspace-options.png)
 
 Property values are truncated if they are overly long to try to fit within the dialog window space.
 
@@ -123,15 +123,15 @@ Some configuration settings have nested options. In the example above, at the bo
 
 If the nested item is an array of multiple values, you'll see the listing of current entries.  
 
-![sample view of nested entries for a property](../images/nodeyez-config-mempoolblocks-blocksatlevels.png)
+![sample view of nested entries for a property](../images/nodeyez-config-mempoolspace-blockSatRangeColors.png)
 
 You may navigate to an entry to view details and modify, or choose the Add option if you want to make another definition.
 
 When editing an item within a nested list, the configuration is similar to configuring properties.
 
-![sample view of editing a nested item](../images/nodeyez-config-mempoolblocks-blocksatlevels-item.png)
+![sample view of editing a nested item](../images/nodeyez-config-mempoolspace-blockSatRangeColors-item.png)
 
-Here, there is an option at the bottom of the list tha allows for deleting the item.
+Here, there is an option at the bottom of the list that allows for deleting the item.
 
 The title bar also provides for context of which item we are editing, and follows a JSONPath like descriptive format.
 
@@ -143,7 +143,7 @@ The screen depicted will vary based on the property type.
 
 Here is a common input for strings and numbers.  If the field is a sensitive field (passwords, authorization tokens and api keys), the value will be starred out.
 
-![sam](../images/nodeyez-config-mempoolblocks-blocksatlevels-item-change-value.png)
+![sam](../images/nodeyez-config-mempoolspace-blockSatRangeColors-item-edit.png)
 
 The value will be prepulated with the current value for the property.
 

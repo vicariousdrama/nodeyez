@@ -25,22 +25,22 @@ If you don't have Bitcoin installed already, then you can get setup by following
 ```shell
 cd /tmp
 
-wget https://bitcoincore.org/bin/bitcoin-core-24.0.1/bitcoin-24.0.1-x86_64-linux-gnu.tar.gz
+wget https://bitcoincore.org/bin/bitcoin-core-25.0/bitcoin-25.0-x86_64-linux-gnu.tar.gz
 
-tar -xvf bitcoin-24.0.1-x86_64-linux-gnu.tar.gz
+tar -xvf bitcoin-25.0-x86_64-linux-gnu.tar.gz
 
-sudo install -m 0755 -o root -g root -t /usr/local/bin bitcoin-24.0.1/bin/*
+sudo install -m 0755 -o root -g root -t /usr/local/bin bitcoin-25.0/bin/*
 ```
 
 ### For Raspberry Pi
 ```shell
 cd /tmp
 
-wget https://bitcoincore.org/bin/bitcoin-core-24.0.1/bitcoin-24.0.1-aarch64-linux-gnu.tar.gz
+wget https://bitcoincore.org/bin/bitcoin-core-25.0/bitcoin-25.0-aarch64-linux-gnu.tar.gz
 
-tar -xvf bitcoin-24.0.1-aarch64-linux-gnu.tar.gz
+tar -xvf bitcoin-25.0-aarch64-linux-gnu.tar.gz
 
-sudo install -m 0755 -o root -g root -t /usr/local/bin bitcoin-24.0.1/bin/*
+sudo install -m 0755 -o root -g root -t /usr/local/bin bitcoin-25.0/bin/*
 ```
 
 ### Verify that Bitcoin is installed
@@ -157,6 +157,15 @@ REGADDRESS=$(bitcoin-cli -conf=${HOME}/nodeyez/config/bitcoinregtest1.conf -regt
 
 To support Regtest, or alternate environments in general, edit the [~/nodeyez/config/bitcoin-cli.json](../config/bitcoin-cli.json) file, and set the activeProfile value to "regtest1".  The [vicariousbitcoin.py](../scripts/vicariousbitcoin.py) helper script
 will inject the value as command options when making calls to bitcoin-cli.
+
+To force the usage of the CLI, you'll also need to modify the [vicariousbitcoin.py](../scripts/vicariousbitcoin.py) script.  Locate the following around line 49, and uncomment it, overriding the mode to be CLI
+
+```sh
+48:   # if you want to force mode for bitcoin, set it here
+49:   #bitcoinMode="CLI"
+```
+
+Alternatively, you can allow the bitcoinMode to be detected and configure rpc rest access for the regtest instance. The initial sample configuration assumes a username and password of rpctestuser1 and rpctestpass1 respectively. If you changed these when running the script above, run the nodeyez-config tool, and update the regtest1 profile under Bitcoin settings with your new values.  Make sure that you specify the activeProfile as regtest1.
 
 # Test Nodeyez Bitcoin Scripts
 

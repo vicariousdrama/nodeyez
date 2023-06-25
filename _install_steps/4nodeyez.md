@@ -75,6 +75,8 @@ Proceed to [prepare LND access](#optional-prepare-lnd-access) or [switch to Node
 
 ### Setup Bitcoin-REST Access
 
+Note that if you are using a prepackaged node like an Umbrel, it may already have settings for rpcauth.  If you change an existing rpcauth line, it may break other applications on that node. You are strongly encouraged to make backups before changing anything so that you can revert to known good configurations if you break something.
+
 By default, newer installations of Bitcoin will use the cookie authorization if no `rpcuser` and `rpcpassword` is provided. The config values of `rpcuser` and  `rpcpassword` are deprecated, and in their place, you should use `rpcauth`. You can download the rpcauth.py script from the Bitcoin repository at
 
 https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py
@@ -86,7 +88,7 @@ python3 rpcauth.py mybitcoinrpcusername
 ```
 
 Sample output
-```ini
+```sh
 $ python3 rpcauth.py mybitcoinrpcusername
 String to be appended to bitcoin.conf:
 rpcauth=mybitcoinrpcusername:66736ea48233dba1492222baed2b7922$d467d157346b42185cf371df20dea11e82f45f7d142679b979efc4dc12d0521c

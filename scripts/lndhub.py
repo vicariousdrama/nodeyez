@@ -56,13 +56,21 @@ class LNDHubPanel(NodeyezPanel):
         self.redis = redis.Redis(host=self.redisServer, port=self.redisPort, db=self.redisDb)
 
     def _getlndhubusers(self):
-        return self.redis.keys("user_*")
+        try:
+            return self.redis.keys("user_*")
+        except Exception as e:
+            self.log(f"error retrieving users from lndhub: {e}")
+            return []
 
     def _getlndhubuser(self, k):
         return self.redis.get(k)
 
     def _getlndhubispaids(self):
-        return self.redis.keys("ispaid_*")
+        try:
+            return self.redis.keys("ispaid_*")
+        except Exception as e:
+            self.log(f"error retrieving ispaids from lndhub: {e}")
+            return []
 
     def _islndhubpaymentforuser(self, s, u):
         v = self.redis.get("payment_hash_" + s)

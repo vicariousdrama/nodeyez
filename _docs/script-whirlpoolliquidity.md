@@ -46,7 +46,7 @@ Fields are defined below
 | registeredColor | The color of the text label for registered inputs expressed as a Hexadecimal color specifier. Default `#aaaaaa` |
 | textColor | The color of all other text labels and values expressed as a Hexadecimal color specifier. Default `#ffffff` |
 | useTor | Indicates whether remote calls should use tor for privacy. This should not be used for internal/local addresses such as access to whirlpool cli on same system. Default `true` |
-| whirlpoolUrl | The url to use for retrieving pool information from whirlpool instance. If you have a local dojo with whirlpool-cli, you may use that server here.  For example, for MyNodeBTC, you can use `https://127.0.0.1:8899`.  Default: `http://udkmfc5j6zvv3ysavbrwzhwji4hpyfe3apqa6yst7c7l32mygf65g4ad.onion` |
+| whirlpoolUrl | The url to use for retrieving pool information from whirlpool instance. If you have a local dojo with whirlpool-cli, you may use that server here.  For example, for MyNodeBTC, you can use `https://127.0.0.1:8899`.  Default is the onion address to the Whirlpool Coordinator |
 | width | The width, in pixels, to generate the image. Default `480` |
 
 ## Run Directly
