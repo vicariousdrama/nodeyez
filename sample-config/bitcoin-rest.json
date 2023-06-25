@@ -27,6 +27,14 @@
             "useTor.comment": "Indicates whether remote calls should use tor socks proxy for privacy.",
             "useTor.type": "boolean",
             "useTor": false
+        },
+        {
+            "name": "regtest1",
+            "rpcuser": "regtestuser1",
+            "rpcpassword": "regtestpass1",
+            "address": "127.0.0.1",
+            "port": "18444",
+            "useTor": false
         }
     ]
 }

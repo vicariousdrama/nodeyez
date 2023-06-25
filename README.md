@@ -14,11 +14,11 @@ Scripts can be run on their own, or run continuously in the background as a serv
 
 A few sample images that you can produce on your node using Nodeyez are shown below
 
-<img src="./images/blockhashdungeon.png" width=196 /><img src="./images/lndchannelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolblocks.png" width=196 /><img src="./images/minerbraiins.png" width=196 /><img src="./images/satsperusd.png" width=196 /><img src="./images/braiinspool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
+<img src="./images/blockhashdungeon.png" width=196 /><img src="./images/lndchannelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolspace.png" width=196 /><img src="./images/miner.png" width=196 /><img src="./images/satsperfiatunit.png" width=196 /><img src="./images/miningpool-luxorpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
 ## Informational Panels
 
-* [IP Address](./_docs/script-ipaddress.md)
+* [IP Addresses](./_docs/script-ipaddresses.md)
 * [System Metrics](./_docs/script-sysinfo.md)
 * [UTC Clock](./_docs/script-utcclock.md)
 
@@ -33,9 +33,9 @@ All of these panels can work with a local Bitcoin node. At this time, informatio
 * [Difficulty Epoch](./_docs/script-difficultyepoch.md)
 * [Halving Countdown](./_docs/script-halving.md)
 * [Inscription Mempool](./_docs/script-inscriptionmempool.md)
-* [Mempool Blocks](./_docs/script-mempoolblocks.md)
+* [Inscription Parser](./_docs/script-inscriptionparser.md)
+* [Mempool Space](./_docs/script-mempoolspace.md)
 * [OP_RETURN](./_docs/script-opreturn.md)
-* [Ordinal Inscriptions](./_docs/script-ordinals.md)
 
 ## Lighting (LND) Panels
 
@@ -44,33 +44,25 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [LND Channel Balance](./_docs/script-lndchannelbalance.md)
 * [LND Channel Fees](./_docs/script-lndchannelfees.md)
 * [LND Hub Account Balances](./_docs/script-lndhub.md)
-* [Ring of Fire](./_docs/script-rofstatus.md)
+* [LND Ring of Fire](./_docs/script-lndringoffire.md)
 
 ## Mining Panels
 
-* [F2 Pool](./_docs/script-f2pool.md)
-* [Luxor Pool](./_docs/script-luxor-mining-hashrate.md)
-* [Miner - Braiins](./_docs/script-minerbraiins.md)
-* [Miner - MicroBT](./_docs/script-minermicrobt.md)
-* [Braiins Pool](./_docs/script-braiinspool.md)
+* [Miner Status](./_docs/script-miner.md)
+* [Braiins Pool](./_docs/script-miningpool-braiinspool.md)
+* [F2 Pool](./_docs/script-miningpool-f2pool.md)
+* [Luxor Pool](./_docs/script-miningpool-luxorpool.md)
 
 ## Other Fun Panels
 
+* [Compass Mining Status](./_docs/script-compassminingstatus.md)
 * [Dual Image Display](./_docs/script-nodeyezdual.md)
 * [Fear and Greed Index](./_docs/script-fearandgreed.md)
 * [Price of Bitcoin](./_docs/script-fiatprice.md)
-* [Sats per USD](./_docs/script-satsperusd.md)
+* [Raretoshi](./_docs/script-raretoshi.md)
+* [Sats per Fiat Unit](./_docs/script-satsperfiatunit.md)
 * [Whirlpool CLI Mix Status](./_docs/script-whirlpoolclimix.md)
 * [Whirlpool Liquidity](./_docs/script-whirlpoolliquidity.md)
-
-## No Longer Supported
-
-The scripts are still available, but may not properly function as the data providers have changed from open standards or charge exhorbitant fees.
-
-* [Compass Mining Hardware](./_docs/script-compassmininghardware.md)
-* [Compass Mining Status](./_docs/script-compassminingstatus.md)
-* [Gas Price](./_docs/script-gasprice.md)
-* [Raretoshi](./_docs/script-raretoshi.md)
 
 # Installation Procedures
 
@@ -89,7 +81,8 @@ The scripts are still available, but may not properly function as the data provi
 
 # Development Environment
 
-1. [Python and IDE](./_developer/1basicsetup.md)
-2. [Run and Change Code](./_developer/2runandchange.md)
-3. [Regtest](./_developer/3regtest.md)
+1. [Architecture](./_developer/0architecture.md)
+2. [Python and IDE](./_developer/1basicsetup.md)
+3. [Run and Change Code](./_developer/2runandchange.md)
+4. [Regtest](./_developer/3regtest.md)
 

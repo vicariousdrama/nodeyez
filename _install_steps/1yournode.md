@@ -12,7 +12,7 @@ Consider following the helpful guidance at [node.guide](https://node.guide)  on 
 
 An easy low cost option is a Raspberry Pi based node. Before the supply shortage of Raspberry Pi boards, this was a very common choice because of its small form factor, and low power demands (15 watt).  
 
-Another common option is to use an older desktop or laptop.  Anything made in the past few years is likely to be powerful enough.  From a hardware specification standpoint, consider the following to be a reasonable minimum
+Another common option is to use an older desktop or laptop.  Anything made in the past few years is likely to be powerful enough.  From a hardware specification standpoint, consider the following to be a reasonable minimum. More memory and storage is always better.
 - Multicore processor (4+ cores)
 - 4GB of RAM or more
 - 1TB SSD or larger
@@ -21,6 +21,8 @@ If you are brand new to Linux then I would recommend the following
 
 - If you want to learn more about the command line, and verify everything that you install and using a Raspberry Pi, then consider [Raspibolt](https://raspibolt.org)
 - If you prefer to primarily work from a graphical user interface, and want to toggle on apps from a web interface, then consider [MyNodeBTC](https://mynodebtc.org). It is well suited to running on a Raspberry Pi, an Intel/AMD64 based system, or even in a virtual machine
+
+Starting out, the following node packages are discouraged until you get familiar with how to setup configuration files for Bitcoin and LND: EmbassyOS, Umbrel, Ronin Dojo.  Each of these are great setups with a variety of features, but the use of docker will present additional challenges to accessing the underlying software that is out of scope for this project.  If you opt to use these packages, you'll need to do a manual installation, and you'll need to configure the REST settings for Bitcoin before Nodeyez will be able to use it.
 
 Many of the scripts can be run without a Bitcoin node though, so if you're just looking to setup the display of the current date, the sats per usd, or price of Bitcoin or the Mempool Blocks getting its data from an external resource, then you just need a basic computer already setup with the Linux operating system.
 

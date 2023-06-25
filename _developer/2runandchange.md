@@ -59,8 +59,21 @@ self.configAttributes = {
     "sleepInterval": "interval",
 }
 ```
+You will however need to specify any custom field names that the panel expects. These should be included in the configAttributes dictionary, and both the key and value should be the new field name.  For example, the arthash panel includes a field named shapeOutlineColor in addition to legacy key name mappings.  
 
-Defaults come after that.  These are values that can override the base panel fields.  For example, the IP Addresses panel sets the `headerText` to `IP Addresses`.  If this isn't done for a panel, the header text would be the same name as the panel, in this case `ipaddresses`.  The time between panel runs is overridden in the `interval` configuration field, setting it to `120` (seconds, so 2 minutes). By default, panels have an interval of 10 minutes.
+```python
+self.configAttributes = {
+    # legacy key name mappings
+    "colorBackground": "backgroundColor",
+    "colorShapeOutline": "shapeOutlineColor",
+    "colorTextFG": "textColor",
+    "sleepInterval": "interval",
+    # panel specific key names
+    "shapeOutlineColor": "shapeOutlineColor",
+}
+```
+
+Defaults are specified after that.  These are values that can override the base panel fields.  For example, the IP Addresses panel sets the `headerText` to `IP Addresses`.  If this isn't done for a panel, the header text would be the same name as the panel, in this case `ipaddresses`.  The time between panel runs is overridden in the `interval` configuration field, setting it to `120` (seconds, so 2 minutes). By default, panels have an interval of 10 minutes.
 
 ```python
 # Define our defaults (all panel specific key names should be listed)

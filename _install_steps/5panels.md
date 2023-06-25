@@ -25,7 +25,7 @@ Click the links for panels you want more guidance on for configuring and running
 {% unless page.name == item.name %}
 {% if item.panelgroup == groupname %}
 <tr>
-<td width="65%"><a href="{{ item.url }}">{{ item.name }}</a></td>
+<td width="65%"><a href="{{ item.url }}"><b>{{ item.name }}</b></a></td>
 <td rowspan="2">
 {% if item.imageurl %}
 <img src="{{ item.imageurl }}" />
