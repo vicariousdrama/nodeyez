@@ -105,13 +105,13 @@ fi
 # Some known node packages are not yet supported
 # If you're a developer that can add support for this, please feel free to open a PR
 # Or contact me directly if you'd like to sponsor my efforts to add support
-if [ $ISEMBASSYOS -eq 1 ]; then   # Radically different + licensing issues
+if [ $ISEMBASSYOS -eq 1 ]; then   # Radically different + licensing issues, needs dockerized
   INSOK=0
 fi
 if [ $ISNODL -eq 1 ]; then        # Need to setup environment for testing
   INSOK=0
 fi
-if [ $ISUMBREL -eq 1 ]; then      # Docker. Poor bitcoin-cli handling. Licensing issues
+if [ $ISUMBREL -eq 1 ]; then      # Docker. Poor bitcoin-cli handling. Licensing issues, needs dockerized
   INSOK=0
 fi
 if [ $INSOK -eq 0 ]; then
@@ -195,7 +195,7 @@ echo ""
 mkdir -p /home/nodeyez/.bitcoin
 mkdir -p /home/nodeyez/.lnd
 if id bitcoin &>/dev/null; then
-  echo"bitcoin user detected"
+  echo "bitcoin user detected"
   # Give bitcoin cookie and config
   echo "granting bitcoin cookie and config to nodeyez" 
   if [ -f "/home/bitcoin/.bitcoin/bitcoin.conf" ]; then
@@ -212,8 +212,11 @@ if id bitcoin &>/dev/null; then
   GRANTED_BITCOIN=1
 
   # Give LND cert and macaroon if LND exists
-  if [ -f "/usr/bin/lncli" ]; then
-    echo "lncli is present, assuming lnd..."
+  LNCLI_PATH=$(which lncli)
+  if [ -z "$LNCLI_PATH" ]; then
+    echo "- lncli not found. assuming LND not installed."
+  else
+    echo "- lncli found at ${LNCLI_PATH}"
     echo "- granting LND cert"
     LNDCERTFILE="/home/bitcoin/.lnd/tls.cert"
     if [ -f "$LNDCERTFILE" ]; then
@@ -222,14 +225,13 @@ if id bitcoin &>/dev/null; then
       echo "  warning: certificate not found"
     fi
     echo "- baking custom macaroon"
-    sudo -u bitcoin /usr/bin/lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to /tmp/nodeyez.macaroon
+    sudo -u bitcoin ${LNCLI_PATH} bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to /tmp/nodeyez.macaroon
     macaroonhex=$(xxd -ps -u -c 1000 /tmp/nodeyez.macaroon)
     if [ -f "/home/nodeyez/.lnd/nodeyez.macaroon" ]; then
       rm /home/nodeyez/.lnd/nodeyez.macaroon
     fi
     echo "- moving macaroon to nodeyez"
     mv /tmp/nodeyez.macaroon /home/nodeyez/.lnd/nodeyez.macaroon
-    rm /tmp/nodeyez.macaroon
     chown -R nodeyez:nodeyez /home/nodeyez/.lnd    
     GRANTED_LND=1
   else
@@ -302,9 +304,9 @@ if [ -f "/home/nodeyez/nodeyez/config/slushpool.json" ]; then
 fi
 # set macaroon into lnd-rest config if not defined
 if [ $GRANTED_LND -ge 1 ]; then
-  hasdefaultprofile=$(cat /home/nodeyez/nodeyez/config/lnd-rest.json | jq -r '.profiles[]|select(.name|contains("default")).name'|wc -l)
+  hasdefaultprofile=$(cat /home/nodeyez/nodeyez/config/lnd-rest.json | jq -r '.profiles[]|select(.name=="default").name'|wc -l)
   if [ $hasdefaultprofile -ge 1 ]; then
-    configmacaroon=$(cat /home/nodeyez/nodeyez/config/lnd-rest.json | jq -r '.profiles[]|select(.name|contains("default")).macaroon')
+    configmacaroon=$(cat /home/nodeyez/nodeyez/config/lnd-rest.json | jq -r '.profiles[]|select(.name=="default").macaroon')
     setmacaroon=0
     # if empty
     if [ -n $configmacaroon ]; then
@@ -315,7 +317,7 @@ if [ $GRANTED_LND -ge 1 ]; then
       setmacaroon=1
     fi
     if [ $setmacaroon -ge 1 ]; then
-      jq '.profiles[]|select(.name|contains("default")).macaroon = "'$macaroonhex'"' /home/nodeyez/nodeyez/config/lnd-rest.json
+      jq '.profiles[]|select(.name=="default").macaroon = "'$macaroonhex'"' /home/nodeyez/nodeyez/config/lnd-rest.json
     fi
   fi
 fi
