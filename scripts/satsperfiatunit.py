@@ -133,20 +133,19 @@ class SatsPerFiatUnitPanel(NodeyezPanel):
                     fontsize = 1 if fontsize < 1 else fontsize
                     middleh = left + ((right-left)//2)
                     middlev = top + ((bottom-top)//2)
-                    match self.satShape:
-                        case "circle":
-                            self.draw.ellipse(xy=((left,top),(right,bottom)),fill=fillColor)
-                        case "square":
-                            self.draw.rectangle(xy=((left,top),(right,bottom)),fill=fillColor)
-                        case "symbol-s":
-                            t = u'Ⓢ'
-                            t = u's'
-                            vicarioustext.drawcenteredtext(self.draw, t, fontsize, middleh, middlev, fillColor)
-                            self.draw.ellipse(xy=((left+1,top+1),(right-1,bottom-1)),outline=fillColor, width=2)
-                        case "triangle":                            
-                            self.draw.polygon(xy=((left,bottom),(middleh,top),(right,bottom)),fill=fillColor)
-                        case other: # square
-                            self.draw.rectangle(xy=((left,top),(right,bottom)),fill=fillColor)
+                    if self.satShape == "circle":
+                        self.draw.ellipse(xy=((left,top),(right,bottom)),fill=fillColor)
+                    elif self.satShape == "square":
+                        self.draw.rectangle(xy=((left,top),(right,bottom)),fill=fillColor)
+                    elif self.satShape == "symbol-s":
+                        t = u'Ⓢ'
+                        t = u's'
+                        vicarioustext.drawcenteredtext(self.draw, t, fontsize, middleh, middlev, fillColor)
+                        self.draw.ellipse(xy=((left+1,top+1),(right-1,bottom-1)),outline=fillColor, width=2)
+                    elif self.satShape == "triangle":                            
+                        self.draw.polygon(xy=((left,bottom),(middleh,top),(right,bottom)),fill=fillColor)
+                    else: # square
+                        self.draw.rectangle(xy=((left,top),(right,bottom)),fill=fillColor)
                     satsleft -= 1
                 else:
                     return

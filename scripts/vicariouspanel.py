@@ -395,32 +395,31 @@ class NodeyezPanel:
             raise Exception(f"{self.name}: Unable to render watermark. Canvas is not initialized")
         ratioWidthHeight = 8 # approximate, based on the svg file
         # determine top and left by anchor position
-        match anchor:
-            case "bottom":      # typically safe
-                left = (self.canvas.width//2)-(width//2)
-                top = self.canvas.height - (width//ratioWidthHeight)
-            case "bottomright": # will typically interfere with footer
-                left = self.canvas.width - width
-                top = self.canvas.height - (width//ratioWidthHeight)
-                top -= self.getFooterHeight()
-            case "right":       # will interfere with most images
-                left = self.canvas.width - width
-                top = self.canvas.height//2 - ((width//ratioWidthHeight)//2)
-            case "topright":    # may be free of header
-                left = self.canvas.width - width
-                top = 0
-            case "top":         # will typically interfere with header
-                left = (self.canvas.width//2)-(width//2)
-                top = 0
-            case "topleft":     # may be free of header
-                left = 0
-                top = 0
-            case "left":        # will interfere with most images
-                left = 0
-                top = self.canvas.height//2 - ((width//ratioWidthHeight)//2)
-            case _: # default bottomleft is generally best (recommended)
-                left = 0
-                top = self.canvas.height - (width//ratioWidthHeight)
+        if anchor == "bottom":      # typically safe
+            left = (self.canvas.width//2)-(width//2)
+            top = self.canvas.height - (width//ratioWidthHeight)
+        elif anchor == "bottomright": # will typically interfere with footer
+            left = self.canvas.width - width
+            top = self.canvas.height - (width//ratioWidthHeight)
+            top -= self.getFooterHeight()
+        elif anchor == "right":       # will interfere with most images
+            left = self.canvas.width - width
+            top = self.canvas.height//2 - ((width//ratioWidthHeight)//2)
+        elif anchor == "topright":    # may be free of header
+            left = self.canvas.width - width
+            top = 0
+        elif anchor == "top":         # will typically interfere with header
+            left = (self.canvas.width//2)-(width//2)
+            top = 0
+        elif anchor == "topleft":     # may be free of header
+            left = 0
+            top = 0
+        elif anchor == "left":        # will interfere with most images
+            left = 0
+            top = self.canvas.height//2 - ((width//ratioWidthHeight)//2)
+        else: # default bottomleft is generally best (recommended)
+            left = 0
+            top = self.canvas.height - (width//ratioWidthHeight)
         # apply it
         vicariouswatermark.do(canvas=self.canvas, width=width, box=(left,top))
         self.watermarkDrawn = True

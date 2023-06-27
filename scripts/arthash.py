@@ -84,43 +84,42 @@ class ArtHashPanel(NodeyezPanel):
             if j > 11:
                 j = j - 12
                 y = triclen*2
-            match j: # requires python 3.10, a convenient way to force this
-                # first three (0-2) are top triangles from left to right of the left hexagon
-                case 0: # red
-                    self.draw.polygon(((self.artLeft+triblen,y+self.artTop+triclen-trialen),(self.artLeft,y+self.artTop+triclen),(self.artLeft+triclen,y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
-                case 1: # green
-                    self.draw.polygon(((self.artLeft+triblen,y+self.artTop+triclen-trialen),(self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen+triclen,y+self.artTop+triclen-trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
-                case 2: # blue
-                    self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen+triclen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
-                    # draw the top half circle with the combined color
-                    self.draw.chord(((self.artLeft+triblen,y+self.artTop+triblen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+triblen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
-                # second three (3-5) are top triangles from left to right of the right hexagon
-                case 3: # red
-                    self.draw.polygon(((self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen),(self.artLeft+(triclen*3),y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
-                case 4: # green
-                    self.draw.polygon(((self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen-trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
-                case 5: # blue
-                    self.draw.polygon(((self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*4),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
-                    # draw the top half circle with the combined color
-                    self.draw.chord(((self.artLeft+triblen+(triclen*2),y+self.artTop+triblen),(self.artLeft+triclen+triblen+(triclen*2),y+self.artTop+triclen+triblen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
-                # third three (6-8) are bottom triangles from left to right of the left hexagon
-                case 6: # red
-                    self.draw.polygon(((self.artLeft,y+self.artTop+triclen),(self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
-                case 7: # green
-                    self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen,y+self.artTop+triclen+trialen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
-                case 8: # blue
-                    self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
-                    # draw bottom half circle with combined color
-                    self.draw.chord(((self.artLeft+triblen,y+self.artTop+triblen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
-                # fourth three (9-11) are bottom triangles from left to right of the right hexagon
-                case 9: # red
-                    self.draw.polygon(((self.artLeft+(triclen*2),y+self.artTop+triclen),(self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
-                case 10: # green
-                    self.draw.polygon(((self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
-                case 11: # blue
-                    self.draw.polygon(((self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*4),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
-                    # draw bottom half circle with combined color
-                    self.draw.chord(((self.artLeft+triblen+(triclen*2),y+self.artTop+triblen),(self.artLeft+triclen+triblen+(triclen*2),y+self.artTop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
+            # first three (0-2) are top triangles from left to right of the left hexagon
+            if j == 0: # red
+                self.draw.polygon(((self.artLeft+triblen,y+self.artTop+triclen-trialen),(self.artLeft,y+self.artTop+triclen),(self.artLeft+triclen,y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
+            elif j == 1: # green
+                self.draw.polygon(((self.artLeft+triblen,y+self.artTop+triclen-trialen),(self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen+triclen,y+self.artTop+triclen-trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
+            elif j == 2: # blue
+                self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen+triclen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
+                # draw the top half circle with the combined color
+                self.draw.chord(((self.artLeft+triblen,y+self.artTop+triblen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+triblen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
+            # second three (3-5) are top triangles from left to right of the right hexagon
+            elif j == 3: # red
+                self.draw.polygon(((self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen),(self.artLeft+(triclen*3),y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
+            elif j == 4: # green
+                self.draw.polygon(((self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen-trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
+            elif j == 5: # blue
+                self.draw.polygon(((self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen-trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*4),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
+                # draw the top half circle with the combined color
+                self.draw.chord(((self.artLeft+triblen+(triclen*2),y+self.artTop+triblen),(self.artLeft+triclen+triblen+(triclen*2),y+self.artTop+triclen+triblen)),start=180,end=360,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
+            # third three (6-8) are bottom triangles from left to right of the left hexagon
+            elif j == 6: # red
+                self.draw.polygon(((self.artLeft,y+self.artTop+triclen),(self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
+            elif j == 7: # green
+                self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triblen,y+self.artTop+triclen+trialen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
+            elif j == 8: # blue
+                self.draw.polygon(((self.artLeft+triclen,y+self.artTop+triclen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*2),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
+                # draw bottom half circle with combined color
+                self.draw.chord(((self.artLeft+triblen,y+self.artTop+triblen),(self.artLeft+triclen+triblen,y+self.artTop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
+            # fourth three (9-11) are bottom triangles from left to right of the right hexagon
+            elif j == 9: # red
+                self.draw.polygon(((self.artLeft+(triclen*2),y+self.artTop+triclen),(self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*3),y+self.artTop+triclen)),fill=ImageColor.getrgb("#" + c + "0000"),outline=outlinecolor,width=pwidth)
+            elif j == 10: # green
+                self.draw.polygon(((self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*2)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen+trialen)),fill=ImageColor.getrgb("#00" + c + "00"),outline=outlinecolor,width=pwidth)
+            elif j == 11: # blue
+                self.draw.polygon(((self.artLeft+(triclen*3),y+self.artTop+triclen),(self.artLeft+(triclen*3)+triblen,y+self.artTop+triclen+trialen),(self.artLeft+(triclen*4),y+self.artTop+triclen)),fill=ImageColor.getrgb("#0000" + c),outline=outlinecolor,width=pwidth)
+                # draw bottom half circle with combined color
+                self.draw.chord(((self.artLeft+triblen+(triclen*2),y+self.artTop+triblen),(self.artLeft+triclen+triblen+(triclen*2),y+self.artTop+triclen+triblen)),start=0,end=180,fill=ImageColor.getrgb("#"+r+g+b),outline=outlinecolor,width=cwidth)
         super().finishImage()
 
 

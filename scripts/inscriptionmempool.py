@@ -106,11 +106,11 @@ class InscriptionMempoolPanel(NodeyezPanel):
         for vin in tx["vin"]:
             if "txinwitness" not in vin: continue
             for txinwitness in vin["txinwitness"]:
-                match = re.match(thepattern, txinwitness)
-                if match is None: continue
+                regexmatch = re.match(thepattern, txinwitness)
+                if regexmatch is None: continue
                 # This is an ordinal inscription.
                 txidx += 1
-                g2 = match.group(2)
+                g2 = regexmatch.group(2)
                 pos = 0
                 contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
                 pos += 2

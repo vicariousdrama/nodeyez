@@ -354,24 +354,23 @@ class MinerPanel(NodeyezPanel):
                 pool["User"] = "NOT_SET"
                 pool["Status"] = "Offline"
         minerType = miner["type"]
-        match minerType:
-            case "antminer-s19":
-                # S19 only handles one command at a time, erroring on multiple, 
-                # so we build up a composite from multiple calls
-                minerStats = self._getMinerInfo(miner, "stats")
-                minerPools = self._getMinerInfo(miner, "pools")
-                minerData = {}
-                if "STATS" in minerStats: minerData["STATS"] = minerStats["STATS"]
-                if "POOLS" in minerPools: minerData["POOLS"] = minerPools["POOLS"]
-                self._updateMinerDataFromAntminerS19(miner, minerData)
-            case "braiins":
-                minerData = self._getMinerInfo(miner, "fans+pools+summary+tempctrl+temps+tunerstatus")
-                self._updateMinerDataFromBraiins(miner, minerData)
-            case "microbt":
-                minerData = self._getMinerInfo(miner, "devs+pools+summary")
-                self._updateMinerDataFromMicroBT(miner, minerData)
-            case _:
-                self.log(f"unable to update miner data for type {minerType}")
+        if minerType == "antminer-s19":
+            # S19 only handles one command at a time, erroring on multiple, 
+            # so we build up a composite from multiple calls
+            minerStats = self._getMinerInfo(miner, "stats")
+            minerPools = self._getMinerInfo(miner, "pools")
+            minerData = {}
+            if "STATS" in minerStats: minerData["STATS"] = minerStats["STATS"]
+            if "POOLS" in minerPools: minerData["POOLS"] = minerPools["POOLS"]
+            self._updateMinerDataFromAntminerS19(miner, minerData)
+        elif minerType == "braiins":
+            minerData = self._getMinerInfo(miner, "fans+pools+summary+tempctrl+temps+tunerstatus")
+            self._updateMinerDataFromBraiins(miner, minerData)
+        elif minerType ==  "microbt":
+            minerData = self._getMinerInfo(miner, "devs+pools+summary")
+            self._updateMinerDataFromMicroBT(miner, minerData)
+        else:
+            self.log(f"unable to update miner data for type {minerType}")
 
     def _isMinerPowerValid(self, miner, power):
         if "expectations" not in miner: return True
