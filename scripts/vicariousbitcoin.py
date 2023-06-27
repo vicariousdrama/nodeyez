@@ -98,8 +98,8 @@ def countblockordinals(blocknum):
             if "txinwitness" not in vin:
                 continue
             for txinwitness in vin["txinwitness"]:
-                match = re.match(thepattern, txinwitness)
-                if match is not None:
+                regexmatch = re.match(thepattern, txinwitness)
+                if regexmatch is not None:
                     c = c + 1
     return c
 
@@ -107,15 +107,14 @@ def getblock(blocknum, verbosity=1):
     fakeresult = {"confirmations": 1, "time": 0}
     j = fakeresult
     if bitcoinMode == "MOCK":
-        match verbosity:
-            case 0: # hex encoded data
-                j = loadJSONData("../mock-data/getblock-verbose0.json", fakeresult)
-            case 2: # json with only tx id
-                j = loadJSONData("../mock-data/getblock-verbose2.json", fakeresult)
-            case 3: # json with transaction data and prevout for inputs
-                j = loadJSONData("../mock-data/getblock-verbose3.json", fakeresult)
-            case _: # json with transaction data (verbosity=1 and all others), the default
-                j = loadJSONData("../mock-data/getblock.json", fakeresult)
+        if verbosity == 0: # hex encoded data
+            j = loadJSONData("../mock-data/getblock-verbose0.json", fakeresult)
+        elif verbosity == 2: # json with only tx id
+            j = loadJSONData("../mock-data/getblock-verbose2.json", fakeresult)
+        elif verbosity == 3: # json with transaction data and prevout for inputs
+            j = loadJSONData("../mock-data/getblock-verbose3.json", fakeresult)
+        else: # json with transaction data (verbosity=1 and all others), the default
+            j = loadJSONData("../mock-data/getblock.json", fakeresult)
         if j is not None and "result" in j:
             j = j["result"]
     blockhash = getblockhash(blocknum)
@@ -273,8 +272,8 @@ def getblockinscriptions(blocknum, blockIndexesToSkip=[]):
             if "txinwitness" not in vin:
                 continue
             for txinwitness in vin["txinwitness"]:
-                match = re.match(thepattern, txinwitness)
-                if match is not None:
+                regexmatch = re.match(thepattern, txinwitness)
+                if regexmatch is not None:
                     # This is an ordinal inscription.
                     # Get parent info
                     parenttxid = ""
@@ -283,7 +282,7 @@ def getblockinscriptions(blocknum, blockIndexesToSkip=[]):
                         parenttxid = vin["txid"]
                         parentsize = gettransaction(parenttxid)["size"]
                     #print(f"found inscription in tx idx:{txidx} of block {blocknum}")
-                    g2 = match.group(2)
+                    g2 = regexmatch.group(2)
                     pos = 0
                     contenttypelength = int.from_bytes(bytes.fromhex(g2[pos:pos+2]),"little")
                     pos += 2
@@ -569,13 +568,12 @@ def lndDoNodeRestCommand(node=None, method="GET", suffix="/", defaultResponse="{
     cmdoutput = ""
     try:
         requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-        match method:
-            case "GET":
-                cmdoutput = requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
-            case "DELETE":
-                cmdoutput = requests.delete(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
-            case "POST":
-                cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+        if method == "GET":
+            cmdoutput = requests.get(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+        elif method == "DELETE":
+            cmdoutput = requests.delete(url,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
+        elif method == "POST":
+            cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
     except Exception as e:
         print(f"error calling lndNodeRest({method}) for suffix: {suffix}. {e}")
         print(f"using default")

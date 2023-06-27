@@ -229,46 +229,45 @@ class HalvingPanel(NodeyezPanel):
         secondsPassed = currentTime - self.halvingBeganTime
         avgBlockTime = secondsPassed / self.halvingBlocksMined
         secondsRemain = avgBlockTime * blocksToGo
-        match blocksToGo % 4:
-            case 0:
-                # block height
-                blockText = f"BLOCK {self.blockheight}"
-            case 1:
-                # blocks to go
+        if blocksToGo % 4 == 0:
+            # block height
+            blockText = f"BLOCK {self.blockheight}"
+        elif blocksToGo % 4 == 1:
+            # blocks to go
+            blockText = f"{blocksToGo} BLOCKS TO GO"
+        elif blocksToGo % 4 == 2:
+            # approximate duration until halving
+            yearsUntilHalving = secondsRemain // (60 * 60 * 24 * 365)
+            monthsUntilHalving = int(secondsRemain // (60 * 60 * 24 * 30))
+            weeksUntilHalving = int(secondsRemain // (60 * 60 * 24 * 7))
+            daysUntilHalving = int(secondsRemain // (60 * 60 * 24))
+            hoursUntilHalving = int(secondsRemain // (60 * 60))
+            if yearsUntilHalving > 1:
+                blockText = f"OVER {yearsUntilHalving} YEARS TO GO"
+            elif monthsUntilHalving == 18:
+                blockText = f"~ A YEAR AND A HALF TO GO"
+            elif monthsUntilHalving == 12:
+                blockText = f"~ 1 YEAR TO GO"
+            elif monthsUntilHalving == 6:
+                blockText = f"~ HALF A YEAR TO GO"
+            elif monthsUntilHalving > 2:
+                blockText = f"~ {monthsUntilHalving} MONTHS TO GO"
+            elif weeksUntilHalving > 2:
+                blockText = f"~ {weeksUntilHalving} WEEKS TO GO"
+            elif daysUntilHalving > 2:
+                blockText = f"~ {daysUntilHalving} DAYS TO GO"
+            elif hoursUntilHalving > 2:
+                blockText = f"~ {hoursUntilHalving} HOURS TO GO"
+            else:
                 blockText = f"{blocksToGo} BLOCKS TO GO"
-            case 2:
-                # approximate duration until halving
-                yearsUntilHalving = secondsRemain // (60 * 60 * 24 * 365)
-                monthsUntilHalving = int(secondsRemain // (60 * 60 * 24 * 30))
-                weeksUntilHalving = int(secondsRemain // (60 * 60 * 24 * 7))
-                daysUntilHalving = int(secondsRemain // (60 * 60 * 24))
-                hoursUntilHalving = int(secondsRemain // (60 * 60))
-                if yearsUntilHalving > 1:
-                    blockText = f"OVER {yearsUntilHalving} YEARS TO GO"
-                elif monthsUntilHalving == 18:
-                    blockText = f"~ A YEAR AND A HALF TO GO"
-                elif monthsUntilHalving == 12:
-                    blockText = f"~ 1 YEAR TO GO"
-                elif monthsUntilHalving == 6:
-                    blockText = f"~ HALF A YEAR TO GO"
-                elif monthsUntilHalving > 2:
-                    blockText = f"~ {monthsUntilHalving} MONTHS TO GO"
-                elif weeksUntilHalving > 2:
-                    blockText = f"~ {weeksUntilHalving} WEEKS TO GO"
-                elif daysUntilHalving > 2:
-                    blockText = f"~ {daysUntilHalving} DAYS TO GO"
-                elif hoursUntilHalving > 2:
-                    blockText = f"~ {hoursUntilHalving} HOURS TO GO"
-                else:
-                    blockText = f"{blocksToGo} BLOCKS TO GO"
-            case 3:
-                # approximate date of halving
-                if blocksToGo < 2016:
-                    blockText = f"{blocksToGo} BLOCKS TO GO"
-                else:
-                    projectedDate = datetime.fromtimestamp(currentTime + secondsRemain)
-                    projectedDateText = projectedDate.strftime("%Y-%m-%d")
-                    blockText = f"Halving ETA: {projectedDateText}"
+        elif blocksToGo % 4 == 3:
+            # approximate date of halving
+            if blocksToGo < 2016:
+                blockText = f"{blocksToGo} BLOCKS TO GO"
+            else:
+                projectedDate = datetime.fromtimestamp(currentTime + secondsRemain)
+                projectedDateText = projectedDate.strftime("%Y-%m-%d")
+                blockText = f"Halving ETA: {projectedDateText}"
         blockFontSize = self.getFooterHeight()
         blockFontSize, _, _ = vicarioustext.getmaxfontsize(draw=self.draw, s=blockText, maxwidth=(barWidthAvailable//2), maxheight=barHeight, isbold=True, maxfontsize=blockFontSize, minfontsize=8)
         sw, sh, f = vicarioustext.gettextdimensions(draw=self.draw, s=blockText, fontsize=blockFontSize, isbold=True)

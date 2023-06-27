@@ -231,26 +231,25 @@ def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0
     border = 1
     nx = anchorx
     ny = anchory
-    match anchorposition:
-        case "tl":
-            pass
-        case "tr":
-            nx = anchorx - sw
-        case "t":
-            nx = anchorx - (sw//2)
-        case "bl":
-            ny = anchory - sh
-        case "br":
-            nx = anchorx - sw
-            ny = anchory - sh
-        case "b":
-            nx = anchorx - (sw//2)
-            ny = anchory - sh
-        case "l":
-            ny = anchory - (sh//2)
-        case "r":
-            nx = anchorx - sw
-            ny = anchory - (sh//2)
+    if anchorposition == "tl":
+        pass
+    elif anchorposition == "tr":
+        nx = anchorx - sw
+    elif anchorposition == "t":
+        nx = anchorx - (sw//2)
+    elif anchorposition == "bl":
+        ny = anchory - sh
+    elif anchorposition == "br":
+        nx = anchorx - sw
+        ny = anchory - sh
+    elif anchorposition == "b":
+        nx = anchorx - (sw//2)
+        ny = anchory - sh
+    elif anchorposition == "l":
+        ny = anchory - (sh//2)
+    elif anchorposition == "r":
+        nx = anchorx - sw
+        ny = anchory - (sh//2)
     draw.rectangle(xy=[(nx-padding-border,ny-padding-border),(nx+sw+padding+border,ny+sh+padding+border)],fill=ImageColor.getrgb(backgroundColor),outline=ImageColor.getrgb(borderColor),width=1)
     draw.text(xy=(nx,ny), text=s, font=f, fill=ImageColor.getrgb(textColor))
 
