@@ -234,8 +234,6 @@ if id bitcoin &>/dev/null; then
     mv /tmp/nodeyez.macaroon /home/nodeyez/.lnd/nodeyez.macaroon
     chown -R nodeyez:nodeyez /home/nodeyez/.lnd    
     GRANTED_LND=1
-  else
-    echo "lnd not installed"
   fi
 else
   echo "bitcoin user not present"
