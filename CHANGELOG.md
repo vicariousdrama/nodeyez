@@ -3,10 +3,7 @@ title: NODEYEZ Change Log
 ---
 # CHANGELOG
 
-## main | baseclass
-
-TODO
-- update image samples
+## main
 
 **New Panels and Ehancements**
 

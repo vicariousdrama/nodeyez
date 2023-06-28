@@ -227,7 +227,7 @@ class HalvingPanel(NodeyezPanel):
         blocksToGo = halvingend + 1 - self.blockheight
         currentTime = int(time.time())
         secondsPassed = currentTime - self.halvingBeganTime
-        avgBlockTime = secondsPassed / self.halvingBlocksMined
+        avgBlockTime = 600 if self.halvingBeganTime == 0 else secondsPassed / self.halvingBlocksMined
         secondsRemain = avgBlockTime * blocksToGo
         if blocksToGo % 4 == 0:
             # block height
