@@ -202,7 +202,7 @@ def getblockhash(blocknum=1):
             j = j["result"]
     if j is None: 
         j = fakeresult
-    return j
+    return j.strip()
 
 def getblockopreturns(blocknum):
     opreturns = []
