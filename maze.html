@@ -2,11 +2,15 @@
 <html>
 <head>
 <title>Customized Maze Maker, using Nodeyez!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
     font-family: Arial, Helvetica, Ubuntu;
     background-color: #000000;
     color: #ffffff;
+}
+h1 {
+    font-size: 1.2rem;
 }
 a {
     color: #88f;
@@ -101,6 +105,90 @@ th {
     background-color: rgba(192,24,24,.80);
     color: rgba(255,255,255,1);
 }
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
 <script language="JavaScript"><!--
 apiBaseUrl           = "https://3fqvgnelae.execute-api.us-east-1.amazonaws.com/"
@@ -180,6 +268,7 @@ function buyIt() {
     // Update the payinvoice placeholder
     document.getElementById('payinvoice').style.display = 'initial';
     makeToast('payinvoice', '<p>Requesting invoice...</p>', 'toastok');
+    document.getElementById('payinvoice').scrollIntoView();
 
     // Now send our request
     var xhttp = new XMLHttpRequest();
@@ -261,6 +350,7 @@ function buyIt() {
                 referencetext.style.marginLeft = 'auto';
                 referencetext.style.marginRight = 'auto';
                 referencetext.style.width = '18rem';
+                referencetext.style.backgroundColor = '#212121';
                 orderidp = document.createElement('p');
                 orderidp.style.textAlign = 'center';
                 orderidp.appendChild(document.createTextNode('Order ID:'));
@@ -269,15 +359,18 @@ function buyIt() {
                 orderidpv.appendChild(document.createTextNode(orderId));
                 referencetext.appendChild(orderidp);
                 referencetext.appendChild(orderidpv);
-                storeinvoiceidp = document.createElement('p');
-                storeinvoiceidp.style.textAlign = 'center';
-                storeinvoiceidp.appendChild(document.createTextNode('StoreInvoice ID: '));
-                storeinvoiceidpv = document.createElement('p');
-                storeinvoiceidpv.style.textAlign = 'center';
-                storeinvoiceidpv.appendChild(document.createTextNode(storeInvoiceId));
-                referencetext.appendChild(storeinvoiceidp);
-                referencetext.appendChild(storeinvoiceidpv);
+                if(storeInvoiceId != 'not-applicable') {
+                    storeinvoiceidp = document.createElement('p');
+                    storeinvoiceidp.style.textAlign = 'center';
+                    storeinvoiceidp.appendChild(document.createTextNode('StoreInvoice ID: '));
+                    storeinvoiceidpv = document.createElement('p');
+                    storeinvoiceidpv.style.textAlign = 'center';
+                    storeinvoiceidpv.appendChild(document.createTextNode(storeInvoiceId));
+                    referencetext.appendChild(storeinvoiceidp);
+                    referencetext.appendChild(storeinvoiceidpv);
+                }
                 payinvoice.appendChild(referencetext);
+                payinvoice.scrollIntoView();
 
                 // Update countdown eye candy
                 window.setTimeout(checkInvoiceStatus, checkInvoiceInterval);
@@ -291,7 +384,10 @@ function checkInvoiceStatus() {
     currentTime = new Date().getTime() / 1000;
     if (currentTime >= invoiceTimeEnd) {
         // Invoice will have expired, or be expring shortly.
+        emptyElement('payinvoice');
         makeDiv('payinvoice', '<p>Invoice expired</p>','toastwarn');
+        document.getElementById('payinvoice').scrollIntoView();
+        window.setTimeout(resetPage, checkInvoiceInterval);
         return
     }
 
@@ -331,20 +427,21 @@ function checkInvoiceStatus() {
                     emptyElement('payinvoice');
                     if(orderStatus == "expired") {
                         makeDiv('payinvoice', '<p>Invoice expired</p>','toastwarn');
-                        // TODO: Re-enable form fields? Or recommend refresh page to start over?
+                        window.setTimeout(resetPage, checkInvoiceInterval);
                     }
                     if(orderStatus == "cancelled") {
                         makeDiv('payinvoice', '<p>Invoice cancelled</p>','toastwarn');
+                        window.setTimeout(resetPage, checkInvoiceInterval);
                     }
                     if(orderStatus == "paid") {
                         if(fulfillmentStatus == "done") {
-                            makeToast('payinvoice', '<p>Order Complete</p><p>Download link below</p>', 'toastok');
-                            productDesc = document.createElement('p');
-                            productDesc.appendChild(document.createTextNode('A link to your item is below.'));
-                            document.getElementById('product').appendChild(productDesc);
+                            makeToast('payinvoice', '<p>Order Complete</p>', 'toastok');
+                            //productDesc = document.createElement('p');
+                            //productDesc.appendChild(document.createTextNode('A link to your item is below.'));
+                            //document.getElementById('product').appendChild(productDesc);
                             productAnchor = document.createElement("a");
                             productAnchor.href = fulfillmentUrl;
-                            productAnchor.appendChild(document.createTextNode(fulfillmentUrl));
+                            productAnchor.appendChild(document.createTextNode('Download File'));
                             document.getElementById('product').appendChild(productAnchor);
                             if(fulfillmentUrl.endsWith(".png")) {
                                 prodimg = document.createElement('img');
@@ -363,12 +460,13 @@ function checkInvoiceStatus() {
                             ordercompletep.setAttribute('align','center');
                             ordercompletep.appendChild(document.createTextNode('Order Complete'));
                             document.getElementById('product').style.display = 'initial';
+                            document.getElementById('product').scrollIntoView();
                         } else {
                             if(fulfillmentStatus == 'building' && buildingTimeEnd < Math.floor(new Date().getTime() / 1000)) {
                                 emptyElement('payinvoice');
                                 makeDiv('payinvoice', '<p>Invoice PAID, but building is taking longer than allowed. Contact vicariousdrama to look into orderId = ' + orderId + '</p>','toastwarn');
                             } else {
-                                makeToast('payinvoice', '<p>Invoice PAID</p><p>Fulfillment status:' + fulfillmentStatus + '</p>', 'toastok');
+                                makeToast('payinvoice', '<p>Order Id: ' + orderId + '</p><p>Invoice PAID</p><p>Fulfillment status:' + fulfillmentStatus + ' <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></p>', 'toastok');
                                 window.setTimeout(checkInvoiceStatus, checkInvoiceInterval);
                             }
                         }
@@ -379,6 +477,7 @@ function checkInvoiceStatus() {
             response = this.responseText;
             emptyElement('payinvoice');
             makeDiv('payinvoice', '<p>checkInvoiceStatus: orderId = ' + orderId + '</p><p>Server Error</p><p>Response:' + response + '</p>','toastwarn');
+            document.getElementById('payinvoice').scrollIntoView();
         }
     };
     xhttp.open("GET", url, false);
@@ -595,6 +694,9 @@ function removeToast(i) {
         }
     }
 }
+function resetPage() {
+    location.reload();
+}
 function setSeedType(v) {
     ste = document.getElementsByName('seedtype');
     if(ste == null) {
@@ -615,7 +717,7 @@ function updateCountdown() {
     if(secondsLeft > 0) {
         o.appendChild(document.createTextNode(secondsLeft + ' seconds remaining'));
         // Do again in a second
-        window.setTimeout(updateCountdown, 1000);
+        window.setTimeout(updateCountdown, 800);
     }
 }
 function validateBlockHeight() {
@@ -631,29 +733,19 @@ function validateBlockHeight() {
 //--></script>
 </head>
 <body>
-
 <table style="max-width:800px">
   <tr>
     <td colspan="2">
-      <h1>Customized Maze Maker, using Nodeyez!</h1>
+      <h1>Nodeyez Maze Maker!</h1>
       <p>The Nodeyez <a href="https://nodeyez.com/docs/script-blockhashdungeon">Blockhash Dungeon</a>
-         has been retrofitted into this application.  A slight modification
+         has been retrofitted into this lightning enabled application.  A slight modification
          allows you to initialize the randomization for deterministic generation
          by specifying either a bitcoin block number, or a personalized text message.
       </p>
-      <p>Built with
-        <ul>
-            <li>Frontend: simple HTML, CSS, and Javascript</li>
-            <li>Backend: AWS API Gateway, Lambda (Node.js and Python)</li>
-            <li>Data Storage: AWS Dynamo, S3</li>
-            <li>Payment Processor: <a href="https://nodeless.io">Nodeless.io</a></li>
-            <li>Data Providers: <a href="https://blockstream.info/">Blockstream.info</a>, <a href="https://btc.com">BTC.com</a> </li>
-        </ul>
-      </p>
-      <p>Various discount codes are support (try 'HoneyBadger').</p>
-      <p>If you encounter a bug, or have suggestions, contact 
+      <p>A few discount value codes are supported (try 'HoneyBadger').
+         For bugs or suggestions, contact 
         <a href="https://snort.social/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza">vicariousdrama on nostr</a>
-         and make note of the Order Id or Store Invoice ID</p>
+         and reference the Order or Store Invoice ID</p>
     </td>
   </tr>
   <tr>
@@ -760,7 +852,7 @@ function validateBlockHeight() {
               id="btnBuy"
               onclick="buyIt()"
               type="button">
-      Buy Now
+      Send Order
       </button>
     </td>
   </tr>
@@ -770,6 +862,18 @@ function validateBlockHeight() {
 <div id="payinvoice"></div>
 
 <div id="product"></div>
+
+<div id="builtwith">
+    <p>Built with
+        <ul>
+            <li>Frontend: simple HTML, CSS, and Javascript</li>
+            <li>Backend: AWS API Gateway, Lambda (Node.js and Python)</li>
+            <li>Data Storage: AWS Dynamo, S3</li>
+            <li>Payment Processor: <a href="https://nodeless.io">Nodeless.io</a></li>
+            <li>Data Providers: <a href="https://blockstream.info/">Blockstream.info</a>, <a href="https://btc.com">BTC.com</a> </li>
+        </ul>
+      </p>
+</div>
 
 </body>
 </html>
