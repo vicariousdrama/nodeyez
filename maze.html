@@ -1,0 +1,775 @@
+<!doctype html>
+<html>
+<head>
+<title>Customized Maze Maker, using Nodeyez!</title>
+<style>
+body {
+    font-family: Arial, Helvetica, Ubuntu;
+    background-color: #000000;
+    color: #ffffff;
+}
+a {
+    color: #88f;
+}
+a:hover {
+    color: #fff;
+}
+.styledbutton {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 220, 1);
+    background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+    cursor: hand;
+}
+.styledbutton:hover {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 220, .50);
+    background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+    cursor: hand;
+}
+.styledbutton:active {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(48, 48, 220, .70);
+    background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+    cursor: hand;
+}
+
+td {
+    color: #fff;
+    font-size: 1rem;
+}
+th {
+    color: #ddf;
+    text-shadow: 1px 1px 1px #000;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.usertext {
+    border-color: #ddf;
+    height: 1.4rem;
+    width: 13rem;
+    font-size: 1rem;
+    text-shadow: 1px 1px 1px #000;
+}
+.numbers {
+    border-color: #ddf;
+    height: 1.4rem;
+    width: 6rem;
+    font-size: 1rem;
+    text-shadow: 1px 1px 1px #000;
+}
+.dimensions {
+    border-color: #ddf;
+    height: 1.4rem;
+    width: 13rem;
+    font-size: 1rem;
+    text-shadow: 1px 1px 1px #000;
+}
+.toastok {
+    border: 0;
+    font-size: 1rem;
+    background-color: rgba(24,192,24,.80);
+    color: rgba(255,255,255,1);
+}
+.toastwarn {
+    border: 0;
+    font-size: 1rem;
+    background-color: rgba(192,24,24,.80);
+    color: rgba(255,255,255,1);
+}
+</style>
+<script language="JavaScript"><!--
+apiBaseUrl           = "https://3fqvgnelae.execute-api.us-east-1.amazonaws.com/"
+productType          = "MAZE2307";  // only valid products get built
+checkInvoiceInterval = 3000;        // check status every 3 seconds
+basePrice            = 7500;        // enforced on server side as well
+maxHeight            = 2160;        // Too big will break things
+maxWidth             = 3840;        // 8k
+minHeight            = 320;         // Too small will break things
+minWidth             = 480;         //
+blockheight          = 777777;      // fallback value if api calls fail
+discount             = 0;           // gets assigned by api call
+orderId              = "";          // gets assigned by api call
+storeInvoiceId       = "";          // gets assigned by api call
+orderStatus          = "new";       // updated from status checks
+orderSatsAmount      = basePrice;   // tracking total of order
+invoiceTimeStarted   = 0;           // just tracking invoice created
+invoiceTimeEnd       = 0;           // .. and estimated expiration
+buildingTimeStarted  = 0;           // just tracking building began
+buildingTimeEnd      = 0;           // .. and when it should be done by
+window.addEventListener("load", function() {
+    r = randomInteger(1,2);
+    if(r == 1) { getBlockHeight1(); }   // blockstream.info
+    if(r == 2) { getBlockHeight2(); }   // btc.com
+    computeCost();
+});
+
+function buyIt() {
+    if (document.getElementById('btnBuy').style.display == 'none') {
+        return;
+    }
+    url = apiBaseUrl + "orders";
+    // build up object to post
+    height = document.getElementById('height').value;
+    width = document.getElementById('width').value;
+    usertext = document.getElementById('seedtypetext').value;
+    blockheight = document.getElementById('seedtypeblock').value;
+    seedtype = '';
+    ste = document.getElementsByName('seedtype');
+    for(i in ste) {
+        if(ste[i].checked) seedtype = ste[i].value;
+    }
+    postdata = {};
+    postdata["discount"] = {};
+    postdata["discount"]["vcode"] = document.getElementById('vcode').value;
+    postdata["metadata"] = {};
+    postdata["metadata"]["bitcoin"] = {};
+    postdata["metadata"]["bitcoin"]["blockheight"] = blockheight;
+    postdata["metadata"]["height"] = height;
+    postdata["metadata"]["seedtype"] = seedtype;
+    postdata["metadata"]["type"] = productType;
+    postdata["metadata"]["usertext"] = usertext;
+    postdata["metadata"]["width"] = width;
+
+    // Hide the input fields and Buy Now button
+    document.getElementById("btnBuy").style.display = 'none';
+    widthText = document.createTextNode(" = " + width);
+    document.getElementById("widthText").appendChild(widthText);
+    document.getElementById('width').style.display = 'none';
+    heightText = document.createTextNode(" = " + height);
+    document.getElementById("heightText").appendChild(heightText);
+    document.getElementById('height').style.display = 'none';
+    document.getElementById('dimensions').style.display = 'none';
+    document.getElementById('inputrowseedtype2').style.display = 'none';
+    emptyElement('seedtypecolumn');
+    seedtypedesc = "Using " + seedtype + "(blockheight:" + blockheight + ", usertext: " + usertext + ")";
+    if(seedtype == 'blockheight') {
+        seedtypedesc = "Using blockhash from block height " + blockheight;
+    }
+    if(seedtype == 'usertext') {
+        seedtypedesc = "Using custom text: " + usertext;
+    }
+    seedtypeText = document.createTextNode(seedtypedesc)
+    document.getElementById('seedtypecolumn').appendChild(seedtypeText);
+    document.getElementById('inputrowvcode').style.display = 'none';
+
+    // Update the payinvoice placeholder
+    document.getElementById('payinvoice').style.display = 'initial';
+    makeToast('payinvoice', '<p>Requesting invoice...</p>', 'toastok');
+
+    // Now send our request
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response != null) { 
+                myJson = JSON.parse(response);
+                invoiceTimeStarted = Math.floor(new Date().getTime() / 1000);
+                // TODO: parse out actual TTL from invoice. But generally 5 minutes is good.
+                invoiceTimeEnd = invoiceTimeStarted + 300;
+                orderId = myJson["id"];
+                orderStatus = myJson["status"];
+                orderSatsAmount = myJson["satsAmount"];
+                lightningInvoice = myJson["lightningInvoice"];
+                qrCode = myJson["qrCode"];
+                storeInvoiceId = myJson["storeInvoiceId"];
+                // Setup feedback area
+                emptyElement('payinvoice'); // will pre-emptively remove the toast as well
+                payinvoice = document.getElementById('payinvoice');
+                // Show invoice if one was created
+                if(orderSatsAmount > 0 && qrCode != null) {
+                    invoiceimgdiv = document.createElement('div');
+                    invoiceimgdiv.style.marginLeft = 'auto';
+                    invoiceimgdiv.style.marginRight = 'auto';
+                    invoiceimgdiv.style.width = '18rem;'
+                    invoiceimg = document.createElement('img');
+                    invoiceimg.align = 'center';
+                    invoiceimg.src = qrCode;
+                    invoiceimg.style.backgroundColor = '#ffffff';
+                    invoiceimg.style.margin = '0 auto';
+                    invoiceimg.style.width = '18rem';
+                    invoiceimganchor = document.createElement('a');
+                    invoiceimganchor.href = 'lightning:' + lightningInvoice;
+                    invoiceimganchor.appendChild(invoiceimg);
+                    invoiceimgphead = document.createElement('p');
+                    invoiceimgphead.setAttribute('align','center');
+                    invoiceimgphead.style.fontSize = '1.5rem';
+                    invoiceimgphead.appendChild(document.createTextNode("Pay Lightning Invoice"));
+                    invoiceimgpamt = document.createElement('p');
+                    invoiceimgpamt.setAttribute('align','center');
+                    invoiceimgpamt.appendChild(document.createTextNode(orderSatsAmount + " sats"));
+                    invoiceimgp = document.createElement('p');
+                    invoiceimgp.setAttribute('align','center');
+                    invoiceimgp.appendChild(invoiceimganchor);
+                    invoiceimgdiv.appendChild(invoiceimgphead);
+                    invoiceimgdiv.appendChild(invoiceimgpamt);
+                    invoiceimgdiv.appendChild(invoiceimgp);
+                    payinvoice.appendChild(invoiceimgdiv);
+                    invoicetext = document.createElement('div');
+                    invoicetext.id = 'lightninginvoice';
+                    invoicetext.style.cursor = 'pointer';
+                    invoicetext.style.fontFamily = 'Courier';
+                    invoicetext.style.marginLeft = 'auto';
+                    invoicetext.style.marginRight = 'auto';
+                    invoicetext.style.overflowWrap = 'break-word';
+                    invoicetext.style.width = '18rem'
+                    invoicetext.title = 'Click to copy';
+                    invoicetext.addEventListener('click', function() { copyToClipboard('lightninginvoice'); });
+                    invoicetext.appendChild(document.createTextNode(lightningInvoice));
+                    payinvoice.appendChild(invoicetext);
+                    // Countdown label
+                    countdowntext = document.createElement('div');
+                    countdowntext.id = 'countdown';
+                    countdowntext.style.marginLeft = 'auto';
+                    countdowntext.style.marginRight = 'auto';
+                    countdowntext.style.width = '18rem';
+                    countdownp = document.createElement('p');
+                    countdownp.id = 'countdownseconds';
+                    countdownp.setAttribute('align','center');
+                    countdownp.appendChild(document.createTextNode('300 seconds remaining'));
+                    countdowntext.appendChild(countdownp);
+                    payinvoice.appendChild(countdowntext);
+                    window.setTimeout(updateCountdown, 1000);
+                }
+
+                // Reference info
+                referencetext = document.createElement('div');
+                referencetext.style.marginLeft = 'auto';
+                referencetext.style.marginRight = 'auto';
+                referencetext.style.width = '18rem';
+                orderidp = document.createElement('p');
+                orderidp.style.textAlign = 'center';
+                orderidp.appendChild(document.createTextNode('Order ID:'));
+                orderidpv = document.createElement('p');
+                orderidpv.style.textAlign = 'center';
+                orderidpv.appendChild(document.createTextNode(orderId));
+                referencetext.appendChild(orderidp);
+                referencetext.appendChild(orderidpv);
+                storeinvoiceidp = document.createElement('p');
+                storeinvoiceidp.style.textAlign = 'center';
+                storeinvoiceidp.appendChild(document.createTextNode('StoreInvoice ID: '));
+                storeinvoiceidpv = document.createElement('p');
+                storeinvoiceidpv.style.textAlign = 'center';
+                storeinvoiceidpv.appendChild(document.createTextNode(storeInvoiceId));
+                referencetext.appendChild(storeinvoiceidp);
+                referencetext.appendChild(storeinvoiceidpv);
+                payinvoice.appendChild(referencetext);
+
+                // Update countdown eye candy
+                window.setTimeout(checkInvoiceStatus, checkInvoiceInterval);
+            }
+        }
+    };
+    xhttp.open("POST", url, false); 
+    xhttp.send(JSON.stringify(postdata));
+}
+function checkInvoiceStatus() {
+    currentTime = new Date().getTime() / 1000;
+    if (currentTime >= invoiceTimeEnd) {
+        // Invoice will have expired, or be expring shortly.
+        makeDiv('payinvoice', '<p>Invoice expired</p>','toastwarn');
+        return
+    }
+
+    url = apiBaseUrl + "orders/" + orderId;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response != null) { 
+                myJson = JSON.parse(response);
+                orderStatus = "new";
+                if("status" in myJson) { orderStatus = myJson["status"]; }
+                if("s" in myJson) { orderStatus = myJson["s"]; }
+                if(orderStatus == "n") { orderStatus = "new"; }
+                if(orderStatus == "c") { orderStatus = "cancelled"; }
+                if(orderStatus == "e") { orderStatus = "expired"; }
+                if(orderStatus == "p") { orderStatus = "paid"; }
+                fulfillmentStatus = "pending";
+                fulfillmentUrl = null;
+                if("fulfillment" in myJson) {
+                    if("status" in myJson["fulfillment"] ) { fulfillmentStatus = myJson["fulfillment"]["status"]; }
+                    if("url" in myJson["fulfillment"]) { fulfillmentUrl = myJson["fulfillment"]["url"]; }
+                }
+                if("fs" in myJson) { fulfillmentStatus = myJson["fs"]; }
+                if(fulfillmentStatus == "p") { fulfillmentStatus = "pending"; }
+                if(fulfillmentStatus == "b") { fulfillmentStatus = "building"; }
+                if(fulfillmentStatus == "d") { fulfillmentStatus = "done"; }
+                if(fulfillmentStatus == 'building' && buildingTimeStarted == 0) {
+                    buildingTimeStarted = Math.floor(new Date().getTime() / 1000);
+                    buildingTimeEnd = buildingTimeStarted + 30;
+                }
+                if("fu" in myJson) { fulfillmentUrl = myJson["fu"]; }
+                if(orderStatus == "new") {
+                    window.setTimeout(checkInvoiceStatus, checkInvoiceInterval);
+                } else {
+                    // clear the invoice qrcode
+                    emptyElement('payinvoice');
+                    if(orderStatus == "expired") {
+                        makeDiv('payinvoice', '<p>Invoice expired</p>','toastwarn');
+                        // TODO: Re-enable form fields? Or recommend refresh page to start over?
+                    }
+                    if(orderStatus == "cancelled") {
+                        makeDiv('payinvoice', '<p>Invoice cancelled</p>','toastwarn');
+                    }
+                    if(orderStatus == "paid") {
+                        if(fulfillmentStatus == "done") {
+                            makeToast('payinvoice', '<p>Order Complete</p><p>Download link below</p>', 'toastok');
+                            productDesc = document.createElement('p');
+                            productDesc.appendChild(document.createTextNode('A link to your item is below.'));
+                            document.getElementById('product').appendChild(productDesc);
+                            productAnchor = document.createElement("a");
+                            productAnchor.href = fulfillmentUrl;
+                            productAnchor.appendChild(document.createTextNode(fulfillmentUrl));
+                            document.getElementById('product').appendChild(productAnchor);
+                            if(fulfillmentUrl.endsWith(".png")) {
+                                prodimg = document.createElement('img');
+                                prodimg.align = 'center';
+                                prodimg.src = fulfillmentUrl;
+                                prodimg.style.margin = '0 auto';
+                                prodimg.style.maxWidth = '100%';
+                                prodimg.style.height = 'auto';
+                                prodimg.style.width = 'auto\9';
+                                prodp = document.createElement('p');
+                                prodp.setAttribute('align','center');
+                                prodp.appendChild(prodimg);
+                                document.getElementById('product').appendChild(prodp);
+                            }
+                            ordercompletep = document.createElement('p');
+                            ordercompletep.setAttribute('align','center');
+                            ordercompletep.appendChild(document.createTextNode('Order Complete'));
+                            document.getElementById('product').style.display = 'initial';
+                        } else {
+                            if(fulfillmentStatus == 'building' && buildingTimeEnd < Math.floor(new Date().getTime() / 1000)) {
+                                emptyElement('payinvoice');
+                                makeDiv('payinvoice', '<p>Invoice PAID, but building is taking longer than allowed. Contact vicariousdrama to look into orderId = ' + orderId + '</p>','toastwarn');
+                            } else {
+                                makeToast('payinvoice', '<p>Invoice PAID</p><p>Fulfillment status:' + fulfillmentStatus + '</p>', 'toastok');
+                                window.setTimeout(checkInvoiceStatus, checkInvoiceInterval);
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (this.readyState == 4 && this.status >= 400) {
+            response = this.responseText;
+            emptyElement('payinvoice');
+            makeDiv('payinvoice', '<p>checkInvoiceStatus: orderId = ' + orderId + '</p><p>Server Error</p><p>Response:' + response + '</p>','toastwarn');
+        }
+    };
+    xhttp.open("GET", url, false);
+    xhttp.send();
+}
+function checkVCode() {
+    o = document.getElementById('vcode');
+    v = o.value;
+    discount = 0;
+    url = apiBaseUrl + "codes";
+    postdata = '{"vcode": "' + encodeURIComponent(v) + '"}';
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response != null) { 
+                myJson = JSON.parse(response);
+                discount = myJson["discount"];
+            }
+        }
+    };
+    xhttp.open("POST", url, false); 
+    xhttp.send(postdata);
+}
+function computeCost() {
+    w = document.getElementById("width").value;
+    h = document.getElementById("height").value;
+    amt = basePrice;
+    desc = "Base fee: " + basePrice;
+    j = false
+    ovr = getOverage(w,h);
+    if(ovr > 0) {
+        amt += ovr;
+        desc = desc + " + overage (" + ovr + ")";
+        j = true;
+    }
+    if(discount > 0) {
+        if(discount > amt) discount = amt;
+        amt -= discount;
+        desc = desc + " - discount (" + discount + ")"
+        j = true;
+    }
+    if(amt > 0) {
+        if(j) {
+            desc = desc + " = " + amt + " sats";
+        } else {
+            desc = desc + " sats";
+        }
+    } else {
+        desc = desc + " = FREE!";
+    }
+    emptyElement("cost");
+    c = document.getElementById("cost");
+    v = document.createTextNode(desc);
+    c.appendChild(v);
+}
+function constrainDimensions() {
+    h = document.getElementById("height");
+    w = document.getElementById("width");
+    e = ''
+    if(h.value > maxHeight) {
+        e = e + '<p>Height is limited to range ' + minHeight + '..' + maxHeight + '</p>';
+        h.value = maxHeight;
+    }
+    if(h.value < minHeight) {
+        e = e + '<p>Height is limited to range ' + minHeight + '..' + maxHeight + '</p>';
+        h.value = minHeight;
+    }
+    if(w.value > maxWidth) {
+        e = e + '<p>Width is limited to range ' + minWidth + '..' + maxWidth + '</p>';
+        w.value = maxWidth;
+    }
+    if(w.value < minWidth) {
+        e = e + '<p>Width is limited to range ' + minWidth + '..' + maxWidth + '</p>';
+        w.value = minWidth;
+    }
+    if(e.length > 0) {
+        makeToast('toastSize',e,'toastwarn');
+    }
+    // add unique values to dimensionselect
+    ds = document.getElementById('dimensions');
+    dv = w.value + 'x' + h.value;
+    dt = w.value + ' x ' + h.value;
+    dr = getOverage(w.value, h.value);
+    if(dr > 0) {
+        dt = dt + ' (+ ' + dr + ' sats)';
+    }
+    df = false;
+    dl = ds.options.length;
+    for(di = 0; di < dl; di ++) {
+        if(ds.options[di].value == dv) {
+            df = true;
+            break;
+        }
+    }
+    if(!df) {
+        dn = document.createElement('option');
+        dn.value = dv;
+        dn.text = dt;
+        ds.add(dn);
+    }
+    // choose matching value
+    ds.value = dv;
+}
+function copyToClipboard(containerid) {
+    if (document.selection) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(containerid));
+        range.select().createTextRange();
+        document.execCommand('copy');
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+    }
+}
+function dimensionSelect() {
+    o = document.getElementById('dimensions');
+    if(o == null) {
+        return;
+    }
+    i = o.selectedIndex;
+    v = o.options[i].value;
+    x = v.split('x');
+    document.getElementById('width').value = x[0];
+    document.getElementById('height').value = x[1];
+}
+function emptyElement(id) {
+    var o = document.getElementById(id);
+    if(o == null) {
+        return;
+    }
+    var child = o.lastChild;
+    while (child) {
+        o.removeChild(child);
+        child = o.lastChild;
+    }
+}
+function getBlockHeight1() {
+    url = "https://blockstream.info/api/blocks/tip/height";
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response != null) { 
+                blockheight = response; 
+                stb = document.getElementById("seedtypeblock");
+                stb.max = blockheight;
+                stb.value = blockheight;
+            }
+        }
+    };
+    xhttp.open("GET", url);
+    xhttp.send();
+}
+function getBlockHeight2() {
+    url = "https://chain.api.btc.com/v3/block/latest";
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = this.responseText;
+            if(response != null) { 
+                myJson = JSON.parse(response);
+                blockheight = myJson["data"]["height"];
+                stb = document.getElementById("seedtypeblock");
+                stb.max = blockheight;
+                stb.value = blockheight;
+            }
+        }
+    };
+    xhttp.open("GET", url);
+    xhttp.send();
+}
+function getOverage(w,h) {
+    p = w * h;
+    bp = 2100000;
+    ovr = 0;
+    if (p > bp) {
+        ovr = (Math.ceil((p - bp) / 500000) * 500); 
+    }
+    return ovr;
+}
+function makeDiv(i,h,c) {
+    o = document.getElementById(i);
+    t = document.createElement('div');
+    t.className = c;
+    t.innerHTML = h;
+    o.appendChild(t);
+}
+function makeToast(i,h,c) {
+    makeDiv(i,h,c);
+    t.timeoutId = setTimeout(removeToast, 2500, i);
+}
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function removeToast(i) {
+    o = document.getElementById(i);
+    if (o == null) {
+        return;
+    }
+    if(o.hasChildNodes()) {
+        hasToast = false;
+        for (const node of o.childNodes) {
+            if (node.className == 'toast') {
+                hasToast = true;
+            }
+        }
+        if(hasToast) {
+            emptyElement(i);
+        }
+    }
+}
+function setSeedType(v) {
+    ste = document.getElementsByName('seedtype');
+    if(ste == null) {
+        return;
+    }
+    for(i in ste) {
+        ste[i].checked = (ste[i].value == v);
+    }
+}
+function updateCountdown() {
+    currentTime = new Date().getTime() / 1000;
+    secondsLeft = Math.floor(invoiceTimeEnd - currentTime);
+    o = document.getElementById('countdownseconds');
+    if(o == null) {
+        return;
+    }
+    emptyElement('countdownseconds');
+    if(secondsLeft > 0) {
+        o.appendChild(document.createTextNode(secondsLeft + ' seconds remaining'));
+        // Do again in a second
+        window.setTimeout(updateCountdown, 1000);
+    }
+}
+function validateBlockHeight() {
+    o = document.getElementById("seedtypeblock");
+    if (o == null) {
+        return;
+    }
+    if(o.value > blockheight) {
+        alert('Block Height restricted to tip: ' + blockheight);
+        o.value = blockheight;
+    }
+}
+//--></script>
+</head>
+<body>
+
+<table style="max-width:800px">
+  <tr>
+    <td colspan="2">
+      <h1>Customized Maze Maker, using Nodeyez!</h1>
+      <p>The Nodeyez <a href="https://nodeyez.com/docs/script-blockhashdungeon">Blockhash Dungeon</a>
+         has been retrofitted into this application.  A slight modification
+         allows you to initialize the randomization for deterministic generation
+         by specifying either a bitcoin block number, or a personalized text message.
+      </p>
+      <p>Built with
+        <ul>
+            <li>Frontend: simple HTML, CSS, and Javascript</li>
+            <li>Backend: AWS API Gateway, Lambda (Node.js and Python)</li>
+            <li>Data Storage: AWS Dynamo, S3</li>
+            <li>Payment Processor: <a href="https://nodeless.io">Nodeless.io</a></li>
+            <li>Data Providers: <a href="https://blockstream.info/">Blockstream.info</a>, <a href="https://btc.com">BTC.com</a> </li>
+        </ul>
+      </p>
+      <p>Various discount codes are support (try 'HoneyBadger').</p>
+      <p>If you encounter a bug, or have suggestions, contact 
+        <a href="https://snort.social/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza">vicariousdrama on nostr</a>
+         and make note of the Order Id or Store Invoice ID</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldlabel" rowspan="3" valign="top">Size</td>
+    <td class="fieldvalue">
+      <input class="numbers"
+             id="width"
+             onchange="constrainDimensions();computeCost();"
+             type="text"
+             value="1920" /> 
+      Width <span id="widthText"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldvalue">
+      <input class="numbers" 
+             id="height"
+             onchange="constrainDimensions();computeCost();"
+             type="text"
+             value="1080" />
+      Height <span id="heightText"></span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldvalue">
+      <select name="dimensions" id="dimensions" class="dimensions" onchange="dimensionSelect();computeCost();">
+        <option value="480x320">480 x 320</option>
+        <option value="640x480">640 x 480</option>
+        <option value="800x480">800 x 480</option>
+        <option value="800x600">800 x 600</option>
+        <option value="1024x768">1024 x 768</option>
+        <option value="1280x720">1280 x 720</option>
+        <option value="1280x800">1280 x 800</option>
+        <option value="1280x1024">1280 x 1024</option>
+        <option value="1360x768">1360 x 768</option>
+        <option value="1600x1200">1600 x 1200</option>
+        <option value="1920x1080">1920 x 1080</option>
+        <option value="2560x1440">2560 x 1440 (+2000 sats)</option>
+        <option value="2560x1600">2560 x 1600 (+2000 sats)</option>
+        <option value="3440x1440">3440 x 1440 (+3000 sats)</option>
+        <option value="3840x2160">3840 x 2160 (+6500 sats)</option>
+      </select><br /><br />
+    </td>
+  </tr>
+  <tr><td colspan="2" id="toastSize"></td></tr>
+
+  <tr>
+    <td class="fieldlabel" rowspan="2" valign="top">Randomization Seed</td>
+    <td class="fieldvalue" id="seedtypecolumn">
+      <input checked
+             name="seedtype" 
+             onclick="setSeedType('blockheight');" 
+             type="radio" 
+             value="blockheight" />
+      Using Blockhash of Block<br />
+      <input class="numbers"
+             id="seedtypeblock"
+             max="777777" 
+             min="0" 
+             onchange="validateBlockHeight();"
+             onclick="setSeedType('blockheight');"
+             type="text"
+             value="777777" />
+    </td>
+  </tr>
+  <tr id="inputrowseedtype2" title="DO NOT ENTER A MNEMONIC SEED. This text should be any personalized text you want to use as the basis for randomization">
+    <td class="fieldvalue">
+      <input name="seedtype"
+             onclick="setSeedType('usertext');"
+             type="radio"
+             value="usertext" />
+      Using custom text: <br />
+      <input class="usertext" 
+             id="seedtypetext"
+             onclick="setSeedType('usertext');"
+             type="text"
+             value="" 
+             />
+             <br /><br />
+    </td>
+  </tr>
+  <tr><td colspan="2" id="toastSeed"></td></tr>
+
+  <tr id="inputrowvcode" title="If you have a value code for a discount, enter it here">
+    <td class="fieldlabel" valign="top">Value Code</td>
+    <td class="fieldvalue">
+      <input class="usertext" 
+             id="vcode"
+             onchange="checkVCode();computeCost();"
+             type="text"
+             value="" />
+             <br /><br />
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldlabel" valign="top">Cost</td>
+    <td class="fieldvalue">
+      <span id="cost">Base fee: 7500 sats</span>
+    </td>
+  </tr>
+  <tr>
+    <td class="fieldlabel" colspan="2" style="text-align:center;">
+      <button class="styledbutton"
+              id="btnBuy"
+              onclick="buyIt()"
+              type="button">
+      Buy Now
+      </button>
+    </td>
+  </tr>
+  <tr><td colspan="2" id="toastBuy"></td></tr>
+</table>
+
+<div id="payinvoice"></div>
+
+<div id="product"></div>
+
+</body>
+</html>
