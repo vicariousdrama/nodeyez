@@ -53,7 +53,7 @@ If you cannot get one at a local electronics store, you may be able to source fr
   or [here](https://www.amazon.com/gp/product/B083C12N57).  
 
 If you can't source one from any of the above, reach out to me on 
-[Twitter](https://twitter.com/vicariousdrama) or [Nostr](https://snort.social/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza). I have some extras that I can sell.
+ [Nostr](https://snort.social/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza). I have some extras that I can sell.
 
 **To setup the screen**
 

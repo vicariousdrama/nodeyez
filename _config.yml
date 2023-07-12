@@ -9,7 +9,7 @@ title: NODEYEZ - Display panels to get the most from your Bitcoin node
 description: Display panels and scripts to get the most from your Bitcoin node
 url: https://nodeyez.com
 #baseurl: /nodeyez
-twitter_username: vicariousdrama
+nostr_nip05: vicariousdrama@nodeyez.com
 header_image: /images/nodeyez.svg
 collections:
   developer:
