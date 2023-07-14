@@ -7,6 +7,7 @@ groups:
   - Bitcoin Panels
   - Lightning Panels
   - Mining Panels
+  - Nostr Panels
   - Other Fun Panels
   - Composite Displays
 ---

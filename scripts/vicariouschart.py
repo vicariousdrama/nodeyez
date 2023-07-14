@@ -14,11 +14,14 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, thelist=[], fieldna
     lowy, highy = -1, -1
     # process each column from right to left
     l = len(thelist) - 1
+    xwidth = width // l
+    xhalfwidth = (xwidth // 2) - 1
+    if xhalfwidth < 0: xhalfwidth = 0
     for i in range(l, 0, -1):
         item = thelist[i]
         # determine x coordinate for column
         px = float(i) / float(l)
-        x = left + int(width * px)
+        x = left + int(width * px) - xhalfwidth
         # get current value
         if type(item) is dict and fieldname is not None:
             curval = int(item[fieldname])
@@ -36,7 +39,7 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, thelist=[], fieldna
             highx = x
             highy = y
         # plot the value as a vertical bar
-        draw.rectangle(xy=[(x,y),(x,top+height-1)],fill=ImageColor.getrgb(valueColor))
+        draw.rectangle(xy=[(x-xhalfwidth,y),(x+xhalfwidth,top+height-1)],fill=ImageColor.getrgb(valueColor))
     # draw average line
     avgy = top if high == 0 else top + int(   (1.0-(float(avg) / float(high))) * height)
     draw.line(xy=[(left,avgy),(left+width-1,avgy)],fill=ImageColor.getrgb(averageColor),width=2)

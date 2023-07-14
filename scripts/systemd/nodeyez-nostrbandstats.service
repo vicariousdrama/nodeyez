@@ -1,0 +1,18 @@
+# Nodeyez: systemd unit for Nostr.Band Stats panel generation
+# /etc/systemd/system/nodeyez-nostrbandstats.service
+
+[Unit]
+Description=Retrieve Nostr.Band stats data and render charts
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/nostrbandstats.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
