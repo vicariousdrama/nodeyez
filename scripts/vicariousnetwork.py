@@ -166,11 +166,10 @@ def getnewestfile(fileDirectory):
         newestfile = max(files, key=os.path.getctime)
     return newestfile
 
-def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker", price_last=-1, price_high=-1, price_low=-1, fiatUnit="USD"):
-
+def getfromurlifstale(useTor=True, url="https://example.com/", basePath="../data/example", fileAge=86400):
     year = datetime.utcnow().strftime("%Y")
     month = datetime.utcnow().strftime("%m")
-    path = f"../data/bisq/{year}/{month}/"
+    path = f"{basePath}/{year}/{month}/"
     if not exists(path):
         os.makedirs(path)
     newestfile = getnewestfile(path + "*.json")
@@ -179,7 +178,7 @@ def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker"
         mtime = int(os.path.getmtime(newestfile))
         currenttime = int(time.time())
         diff = currenttime - mtime
-        if diff > 3600: fileOK = False
+        if diff > 86400: fileOK = False
     else:
         fileOK = False
     if not fileOK:
@@ -187,11 +186,27 @@ def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker"
         savetofile = f"{path}{fn}"
         getandsavefile(useTor, url, savetofile)
         newestfile = getnewestfile(path + "*.json")
+    return newestfile
+
+def getnostrstats(useTor=True, url="https://stats.nostr.band/stats_api?method=stats&options="):
+    errresponse = {"relays":-1,"pubkeys":-1,"users":-1,"trusted_users":-1,
+                   "events":-1,"posts":-1,"zaps":-1,"zap_amount":-1,
+                   "daily":None,"daily_totals":None,"relay_stats":None}
+    j = errresponse
+    try:
+        newestfile = getfromurlifstale(useTor, url, "../data/nostrbandstats", 86400)
+        if len(newestfile) > 0:
+            with open(newestfile) as f:
+                j = json.load(f)
+    except:
+        j = errresponse
+    return j
+
+def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker", price_last=-1, price_high=-1, price_low=-1, fiatUnit="USD"):
+    newestfile = getfromurlifstale(useTor, url, "../data/bisq", 3600)
     if len(newestfile) > 0:
         with open(newestfile) as f:
             j = json.load(f)
-        #defaultResponse = '{"error": "dont care"}'
-        #j = geturl(useTor, url, defaultResponse)
         if "error" not in j:
             keyname = f"btc_{fiatUnit}".lower()
             if keyname not in j: 
@@ -202,7 +217,7 @@ def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker"
             price_low = int(math.floor(float(j[keyname]["low"])))
     return (price_last,price_high,price_low,keyname)
 
-def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
+def getraretoshiuserinfoFallback(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     userFilename = raretoshiUser + ".json"
     localFilename = raretoshiDataDirectory + userFilename
     tempFilename = localFilename + ".tmp"
@@ -237,7 +252,7 @@ def getraretoshiuserinfo1(useTor=True, raretoshiDataDirectory="../data/raretoshi
                 print("Error raised reading {localFilename} as json")
     return userInfo, userInfoLast
 
-def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
+def getraretoshiuserinfoNew(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
     userFilename = raretoshiUser + ".json"
     localFilename = raretoshiDataDirectory + userFilename
     tempFilename = localFilename + ".tmp"
@@ -288,11 +303,11 @@ def getraretoshiuserinfo2(useTor=True, raretoshiDataDirectory="../data/raretoshi
     except Exception as e:
         print("could not get user")
         print(f"{e}")
-    print("falling back to getraretoshiuserinfo1 logic")
-    return getraretoshiuserinfo1(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
+    print("falling back to getraretoshiuserinfoFallback logic")
+    return getraretoshiuserinfoFallback(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
 
 def getraretoshiuserinfo(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
-    return getraretoshiuserinfo2(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
+    return getraretoshiuserinfoNew(useTor, raretoshiDataDirectory, raretoshiUser, userInfo, userInfoLast, userInfoInterval)
 
 def getbraiinspoolheaders(authtoken):
     headers = {"SlushPool-Auth-Token": authtoken}

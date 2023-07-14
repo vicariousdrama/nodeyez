@@ -7,6 +7,29 @@ title: NODEYEZ Change Log
 
 **New Panels and Ehancements**
 
+- Nostr.Band Stats panel graphs the Zaps per Day seen over the previous 2 months
+
+**General**
+
+- Removed Twitter references
+- Added maze.html serverless sample (https://nodeyez.com/maze.html)
+- Reverted Python dependency to support 3.7
+
+**Bugfixes**
+
+- Fixed Bitcoin CLI handling of getblockhash 
+- Fixed halving if block retrieval failed
+- Fixed install script failure
+- Fixed some documentation images and links
+
+## 23.06
+
+Released: 2023-06-28
+
+Tagged Commit: [bd4fb43d249ec1f69414467f10fe13c0dca826cc](https://github.com/vicariousdrama/nodeyez/commit/bd4fb43d249ec1f69414467f10fe13c0dca826cc)
+
+**New Panels and Ehancements**
+
 - Blockstats panel now supports sub-panels for input and output script types
 - Compass Hardware moved to deprecated-scripts and service file deleted
 - Halving panel scaled better and informs number of blocks to go, estimated times

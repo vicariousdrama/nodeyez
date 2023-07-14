@@ -42,6 +42,7 @@ sudo systemctl enable nodeyez-miningpool-braiinspool.service
 sudo systemctl enable nodeyez-miningpool-f2pool.service
 sudo systemctl enable nodeyez-miningpool-luxorpool.service
 sudo systemctl enable nodeyez-nodeyezdual.service
+sudo systemctl enable nodeyez-nostrbandstats.service
 sudo systemctl enable nodeyez-opreturn.service
 sudo systemctl enable nodeyez-satsperfiatunit.service
 sudo systemctl enable nodeyez-slideshow.service
@@ -78,6 +79,7 @@ sudo systemctl start nodeyez-miningpool-braiinspool.service
 sudo systemctl start nodeyez-miningpool-f2pool.service
 sudo systemctl start nodeyez-miningpool-luxorpool.service
 sudo systemctl start nodeyez-nodeyezdual.service
+sudo systemctl start nodeyez-nostrbandstats.service
 sudo systemctl start nodeyez-opreturn.service
 sudo systemctl start nodeyez-satsperfiatunit.service
 sudo systemctl start nodeyez-slideshow.service

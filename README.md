@@ -53,6 +53,10 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [F2 Pool](./_docs/script-miningpool-f2pool.md)
 * [Luxor Pool](./_docs/script-miningpool-luxorpool.md)
 
+## Nostr Panels
+
+* [Nostr.Band Stats](./_docs/script-nostrbandstats.md)
+
 ## Other Fun Panels
 
 * [Compass Mining Status](./_docs/script-compassminingstatus.md)
