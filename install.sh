@@ -225,7 +225,20 @@ if id bitcoin &>/dev/null; then
       echo "  warning: certificate not found"
     fi
     echo "- baking custom macaroon"
-    sudo -u bitcoin ${LNCLI_PATH} bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to /tmp/nodeyez.macaroon
+    sudo -u bitcoin ${LNCLI_PATH} bakemacaroon \
+      uri:/lnrpc.Lightning/GetInfo \
+      uri:/lnrpc.Lightning/GetNodeInfo \
+      uri:/lnrpc.Lightning/ListPeers \
+      uri:/lnrpc.Lightning/ListChannels \
+      uri:/lnrpc.Lightning/ChannelBalance \
+      uri:/lnrpc.Lightning/ConnectPeer \
+      uri:/lnrpc.Lightning/DisconnectPeer \
+      uri:/lnrpc.Lightning/ForwardingHistory \
+      uri:/lnrpc.Lightning/ListPayments \
+      uri:/lnrpc.Lightning/DecodePayReq \
+      uri:/lnrpc.Lightning/FeeReport \
+      uri:/lnrpc.Lightning/ListInvoices \
+      --save_to /tmp/nodeyez.macaroon
     macaroonhex=$(xxd -ps -u -c 1000 /tmp/nodeyez.macaroon)
     if [ -f "/home/nodeyez/.lnd/nodeyez.macaroon" ]; then
       rm /home/nodeyez/.lnd/nodeyez.macaroon

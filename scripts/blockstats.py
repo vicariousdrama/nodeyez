@@ -344,11 +344,29 @@ class BlockStatsPanel(NodeyezPanel):
         self.headerText = f"Fee Rates from {blockheight_low} to {self.blocknumber}"
         self.pageSuffix = "feerates" if len(sys.argv) <= 1 else f"feerates-{self.blocknumber}"
         super().startImage()
-        chartpad=10
+        chartpad=6
         h3 = (self.getInsetHeight() - (chartpad*2)) // 3
-        vicariouschart.drawBarChart(self.draw, 0, self.getInsetTop() + (h3*0), self.width, h3, self.dataBlockStatsHistory, "maxfeerate", True, "Maximum Fee Rate", 144, self.graphDataColors[0], self.graphAverageColor, self.graphBorderColor)
-        vicariouschart.drawBarChart(self.draw, 0, self.getInsetTop() + ((h3+chartpad)*1), self.width, h3, self.dataBlockStatsHistory, "avgfeerate", True, "Average Fee Rate", 144, self.graphDataColors[1], self.graphAverageColor, self.graphBorderColor)
-        vicariouschart.drawBarChart(self.draw, 0, self.getInsetTop() + ((h3+chartpad)*2), self.width, h3, self.dataBlockStatsHistory, "minfeerate", True, "Minimum Fee Rate", 144, self.graphDataColors[2], self.graphAverageColor, self.graphBorderColor)
+        vicariouschart.drawBarChart(draw=self.draw, left=0, top=self.getInsetTop() + (h3*0), 
+            width=self.width, height=h3, 
+            theList=self.dataBlockStatsHistory, fieldName="maxfeerate", 
+            showLabels=True, chartLabel="Maximum Fee Rate", grouping=144, 
+            valueColor=self.graphDataColors[0], 
+            averageColor=self.graphAverageColor, 
+            borderColor=self.graphBorderColor)
+        vicariouschart.drawBarChart(draw=self.draw, left=0, top=self.getInsetTop() + ((h3+chartpad)*1), 
+            width=self.width, height=h3, 
+            theList=self.dataBlockStatsHistory, fieldName="avgfeerate", 
+            showLabels=True, chartLabel="Average Fee Rate", grouping=144, 
+            valueColor=self.graphDataColors[1], 
+            averageColor=self.graphAverageColor, 
+            borderColor=self.graphBorderColor)
+        vicariouschart.drawBarChart(draw=self.draw, left=0, top=self.getInsetTop() + ((h3+chartpad)*2), 
+            width=self.width, height=h3, 
+            theList=self.dataBlockStatsHistory, fieldName="minfeerate", 
+            showLabels=True, chartLabel="Minimum Fee Rate", grouping=144, 
+            valueColor=self.graphDataColors[2], 
+            averageColor=self.graphAverageColor, 
+            borderColor=self.graphBorderColor)
         super().finishImage()
 
     def _renderSegwitImage(self):

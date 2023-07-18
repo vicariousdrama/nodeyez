@@ -7,7 +7,8 @@ title: NODEYEZ Change Log
 
 **New Panels and Ehancements**
 
-- Nostr.Band Stats panel graphs the Zaps per Day seen over the previous 2 months
+- Blockstats panels for feerates now reports the low value in addition to high and avg
+- Nostr.Band Stats panel graphs the Active Pubkeys, Badge Definitions and Zaps per Day seen over the previous 2 months
 
 **General**
 

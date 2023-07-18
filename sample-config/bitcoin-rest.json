@@ -18,6 +18,13 @@
             "rpcpassword.comment": "The password for accessing the Bitcoin node",
             "rpcpassword.type": "password",
             "rpcpassword": "rpcpassword",
+            "protocol.comment": "The protocol to connect to the Bitcoin node",
+            "protocol.type": "string",
+            "protocol.choices": {
+                "http": "Natively supported by Bitcoin on a local network",
+                "https": "No native support. Use nginx as reverse proxy to the Bitcoin node"
+            },
+            "protocol": "http",
             "address.comment": "The ip address or fully qualified domain name to access the Bitcoin node",
             "address.type": "string",
             "address": "127.0.0.1",
@@ -32,6 +39,7 @@
             "name": "regtest1",
             "rpcuser": "regtestuser1",
             "rpcpassword": "regtestpass1",
+            "protocol": "http",
             "address": "127.0.0.1",
             "port": "18444",
             "useTor": false

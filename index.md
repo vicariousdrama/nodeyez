@@ -37,6 +37,9 @@ There are a variety of panel types that you can selectively enable and configure
   <div class="slide"><img src="./images/miningpool-braiinspool.png" width=196 title="Visualize hashrate and earnings on your Braiinspool account" /></div>
   <div class="slide"><img src="./images/miningpool-f2pool.png" width=196 title="Visualize hashrate and earnings on your F2Pool account" /></div>
   <div class="slide"><img src="./images/miningpool-luxorpool.png" width=196 title="Render average hashrate per days of month in your Luxor Pool account" /></div>
+  <div class="slide"><img src="./images/nostrbandstats-activepubkeysperday.png" width=196 title="Active Pubkeys on Nostr by day per Nostr.Band" /></div>
+  <div class="slide"><img src="./images/nostrbandstats-badgescreatedperday.png" width=196 title="Badge Definitions Created on Nostr by day per Nostr.Band" /></div>
+  <div class="slide"><img src="./images/nostrbandstats-zapsperday.png" width=196 title="Zaps on Nostr by day per Nostr.Band" /></div>
   <div class="slide"><img src="./images/opreturn.png" width=196 title="Show OP_RETURNS found in Bitcoin blocks" /></div>
   <div class="slide"><img src="./images/satsperfiatunit.png" width=196 title="Report number of sats you can get for a fiat unit such as a dollar" /></div>
   <div class="slide"><img src="./images/sysinfo.png" width=196 title="Report basic system metrics to keep tabs on storage space free, temperature and more" /></div>
