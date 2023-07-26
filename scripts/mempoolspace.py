@@ -93,6 +93,7 @@ class MempoolSpacePanel(NodeyezPanel):
         self._defaultattr("renderDirection", "righttoleft")
         self._defaultattr("renderMaximumBlocks", 3)
         self._defaultattr("useTor", True)
+        self._defaultattr("watermarkAnchor", "topleft")
 
         # Initialize
         super().__init__(name="mempoolspace")
@@ -344,7 +345,9 @@ class MempoolSpacePanel(NodeyezPanel):
             if self._isMempoolSpace(): text = "Data from mempool.space"
             attFont = int(self.height * 16/320)
             attY = attY1 + (attY2-attY1)//2
-            vicarioustext.drawcenteredtext(self.draw, text, attFont, self.width//2, attY, ImageColor.getrgb(self.attributionColor))
+            # vicarioustext.drawcenteredtext(self.draw, text, attFont, self.width//2, attY, ImageColor.getrgb(self.attributionColor))
+            vicarioustext.drawbottomlefttext(self.draw, text, attFont, 0, self.height, ImageColor.getrgb(self.attributionColor))
+
 
         super().finishImage()
 

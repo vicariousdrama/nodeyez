@@ -128,7 +128,7 @@ sudo systemctl restart bitcoind
 Bake a macaroon for Nodeyez with only the permissions needed for scripts.
 
 ```sh
-lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport --save_to ${HOME}/nodeyez.macaroon
+lncli bakemacaroon uri:/lnrpc.Lightning/GetInfo uri:/lnrpc.Lightning/GetNodeInfo uri:/lnrpc.Lightning/ListPeers uri:/lnrpc.Lightning/ListChannels uri:/lnrpc.Lightning/ChannelBalance uri:/lnrpc.Lightning/ConnectPeer uri:/lnrpc.Lightning/DisconnectPeer uri:/lnrpc.Lightning/ForwardingHistory uri:/lnrpc.Lightning/ListPayments uri:/lnrpc.Lightning/DecodePayReq uri:/lnrpc.Lightning/FeeReport uri:/lnrpc.Lightning/ListInvoices --save_to ${HOME}/nodeyez.macaroon
 ```
 
 Proceed to one of the following two sections depending on whether you are setting up for [CLI](#grant-lnd-cli-access) or [REST](#setup-lnd-rest-access) access.
@@ -348,6 +348,7 @@ The output should appear as follows. These are the only calls that the  nodeyez 
     "uri:/lnrpc.Lightning/GetInfo",
     "uri:/lnrpc.Lightning/GetNodeInfo",
     "uri:/lnrpc.Lightning/ListChannels",
+    "uri:/lnrpc.Lightning/ListInvoices",
     "uri:/lnrpc.Lightning/ListPayments",
     "uri:/lnrpc.Lightning/ListPeers"
   ],

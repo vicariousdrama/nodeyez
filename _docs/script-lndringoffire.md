@@ -14,6 +14,18 @@ groups.  If you have a lightning node and participate in a Ring of Fire, you can
 configure the pubkeys for each node in the agreed sequence and the script 
 will provide a useful image showing its present state.  
 
+All calls originate from a single Lightning node regardless of how many are defined in configuration files. Either the local instance when running with CLI, or the node indicated by activeProfile when configured for REST based calls.  Permissions needed in the macaroon are as follows
+
+- uri:/lnrpc.Lightning/ConnectPeer
+- uri:/lnrpc.Lightning/DisconnectPeer
+- uri:/lnrpc.Lightning/GetInfo
+- uri:/lnrpc.Lightning/GetNodeInfo
+- uri:/lnrpc.Lightning/ListChannels
+- uri:/lnrpc.Lightning/ListPeers
+
+The following command can be used to convert a macaroon into the necessary hex
+format: `xxd -ps -u -c 1000 nodeyez.macaroon`
+
 Color coding differentiates an online node from an offline one, as well as the
 channels between them. Names of nodes can be labeled on the resulting image for
 context. You can define as many ring of fire configurations as you want. 

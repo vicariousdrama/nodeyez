@@ -48,6 +48,7 @@ The information you need to configure in Nodeyez for each Bitcoin Profile is
 - address: The ip address or fully qualified domain name of the Bitcoin server accessible over rest for rpc calls. The default assumes running Nodeyez on the same machine as bitcoin. Note that if its a docker setup, you need to specify the IP address associated with that container.
 - name: You can name profiles to tell them apart
 - port: The port the server will listen for requests on. By default, this is port 8332, and is set as the `rpcport` line in bitcoin.conf
+- protocol: The protocol to use when connecting to the bitcoin node. Bitcoin itself only supports http and is intended for access only on local networks. If for some reason you need to access a remote server over the internet, you should first setup a reverse proxy for the Bitcoin node such as NGINX with SSL support, and then choose the https protocol.  This is an experimental configuration.
 - rpcpassword: The password for accessing the bitcoin node. This will either be the same as the clear text value of the deprecated `rpcpassword` in the bitcoin.conf, or the password specified or returned when preparing the `rpcauth` line from the rpcauth.py script.
 - rpcuser: This is the same value as the `rpcuser` in bitcoin.conf, or the user portion of the `rpcauth` line.
 - useTor: For remote nodes, you can optionally enable calls over Tor. For internal network nodes, leave it as False.

@@ -5,59 +5,94 @@ import math
 import time
 import vicarioustext
 
-def drawBarChart(draw, left=0, top=0, width=480, height=320, thelist=[], fieldname=None, 
-                 showlabels=False, chartlabel="", grouping=1, valueColor="#ff8888",
-                 averageColor="#8888ff", borderColor="#888888"
+def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldName=None, 
+                 showLabels=False, chartLabel="", grouping=1, valueColor="#ff8888",
+                 showAverage=True, averageColor="#8888ff", 
+                 movingAverageDuration=0, movingAverageColor="#88ff88", 
+                 movingAverageWidth=3, borderColor="#888888"
                   ):
-    low, high, avg, xo, x1 = getFieldMinMaxAvgValues(thelist, fieldname)
+    low, high, avg, _, _ = getFieldMinMaxAvgValues(theList, fieldName)
     lowx, highx = -1, -1
     lowy, highy = -1, -1
+    lowFound, highFound = False, False
+    minfloor = .8
+    maxy = top + height - 1
+    ma = []
+    # draw average line
+    if showAverage:
+        avgy = top if high == 0 else top + int(   (1.0-(float(avg) / float(high))) * height)
+        draw.line(xy=[(left,avgy),(left+width-1,avgy)],fill=ImageColor.getrgb(averageColor),width=2)
     # process each column from right to left
-    l = len(thelist) - 1
+    l = len(theList) - 1
     xwidth = width // l
-    xhalfwidth = (xwidth // 2) - 1
+    xhalfwidth = (xwidth // 2) - 1  # for calculating bar width
     if xhalfwidth < 0: xhalfwidth = 0
-    for i in range(l, 0, -1):
-        item = thelist[i]
+    index = 0
+    for i in range(0,l+1,1): # range(l, 0, -1):
+        index += 1
+        item = theList[i]
         # determine x coordinate for column
         px = float(i) / float(l)
-        x = left + int(width * px) - xhalfwidth
+        x = left + xhalfwidth + int((width-xwidth) * px) + 1
         # get current value
-        if type(item) is dict and fieldname is not None:
-            curval = int(item[fieldname])
+        if type(item) is dict and fieldName is not None:
+            curval = int(item[fieldName])
         else:
             curval = int(item)
         # determine y coordinate for column based on value
-        py = 1.0 if high <= 0 else float(curval) / float(high)
-        y = top + int((1.0 - py) * height)
+        py = 1.0 if high <= 0 else float(curval-(low*minfloor)) / float(high-(low*minfloor))
+        y = top + int((1.0 - py) * height) - 1
         y = top if y < top else y
-        y = top + height - 1 if y > top + height - 1 else y
-        if curval <= low:
+        y = maxy if y > maxy else y
+        if curval <= low: # gets right most low value to avoid conflict with avg label:
             lowx = x
             lowy = y
-        if curval >= high:
+            lowFound = True
+        if curval >= high and not highFound:
             highx = x
             highy = y
+            highFound = True
         # plot the value as a vertical bar
-        draw.rectangle(xy=[(x-xhalfwidth,y),(x+xhalfwidth,top+height-1)],fill=ImageColor.getrgb(valueColor))
-    # draw average line
-    avgy = top if high == 0 else top + int(   (1.0-(float(avg) / float(high))) * height)
-    draw.line(xy=[(left,avgy),(left+width-1,avgy)],fill=ImageColor.getrgb(averageColor),width=2)
-    # draw box
+        draw.rectangle(xy=[(x-xhalfwidth,y),(x+xhalfwidth,maxy)],fill=ImageColor.getrgb(valueColor))
+        # process moving average
+        if movingAverageDuration > 0:
+            v = curval
+            ma = ma[-1 * movingAverageDuration:]
+            maold = v if len(ma) == 0 else sum(ma) / len(ma)
+            ma.append(v)
+            ma = ma[-1 * movingAverageDuration:]
+            manew = v if len(ma) == 0 else sum(ma) / len(ma)
+            if index > 1:
+                if high - low > 0:
+                    maoldy = top+((1.0-(float(maold-(low*minfloor))/float(high-(low*minfloor))))*height)//1
+                    manewy = top+((1.0-(float(manew-(low*minfloor))/float(high-(low*minfloor))))*height)//1
+                else:
+                    maoldy = top + (height//2)
+                    manewy = maoldy
+                if manewy < top + movingAverageWidth: manewy = top + movingAverageWidth
+                if manewy > top + height - movingAverageWidth: manewy = top + height - movingAverageWidth
+                draw.line(xy=[(maoldx,maoldy),(x,manewy)],fill=ImageColor.getrgb(movingAverageColor),width=movingAverageWidth)
+            maoldx = x
+    # draw box around chart
     draw.rectangle(xy=[(left,top),(left+width-1,top+height-1)],outline=ImageColor.getrgb(borderColor),width=1)
     # draw labels
-    if showlabels:
-        if highx > 0 and highy > 0:
-            highy = highy + 20 if highx - 100 < left else highy
+    if showLabels:
+        if highFound and highx > 0 and highy > 0:
+            if highx - 100 < left and len(chartLabel) > 0: highy = highy + 20
             highpos = "tr" if highx + 150 > left + width else "tl"
             highx = highx + 3 if highpos == "tl" else highx - 3
-            drawLabel(draw, "HIGH:" + str(high), 10, highpos, highx, highy+2)
-        avgpos = "tl" if avgy + 20 < top+height-1 else "bl"
-        avgx = left+2
-        avgy = avgy - 2 if avgpos == "bl" else avgy + 2
-        drawLabel(draw, "AVG:" + str(avg), 10, avgpos, avgx, avgy)
-        if len(chartlabel) > 0:
-            drawLabel(draw, chartlabel, 12, "tl", left+2, top+2)
+            drawLabel(draw, f"HIGH:{high}", 10, highpos, highx, highy+2)
+        if lowFound and lowx > 0 and lowy > 0:
+            lowpos = "br" if lowx + 150 > left + width else "bl"
+            lowx = lowx + 3 if lowpos == "bl" else lowx - 3
+            drawLabel(draw, f"LOW:{low}", 10, lowpos, lowx, lowy-2)
+        if showAverage:
+            avgpos = "tl" if avgy + 20 < top+height-1 else "bl"
+            avgx = left+2
+            avgy = avgy - 2 if avgpos == "bl" else avgy + 2
+            drawLabel(draw, "AVG:" + str(avg), 10, avgpos, avgx, avgy)
+        if len(chartLabel) > 0:
+            drawLabel(draw, chartLabel, 12, "tl", left+2, top+2)
 
 def drawDotChart(draw, left=0, top=0, width=480, height=320, list=[], fieldName=None,
                  valueColor="#2f3fc5", valueRadius=3,

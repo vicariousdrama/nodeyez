@@ -53,7 +53,7 @@ def getpage(useTor=True, url=None, defaultResponse="{}", headers={}):
         cmdoutput = requests.get(url,timeout=timeout,proxies=proxies,headers=headers,verify=False).text
     except Exception as e:
         print(f"error calling geturl: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         cmdoutput = defaultResponse
     return cmdoutput
 
@@ -67,13 +67,13 @@ def geturl(useTor=True, url=None, defaultResponse="{}", headers={}):
         cmdoutput = requests.get(url,timeout=timeout,proxies=proxies,headers=headers,verify=False).text
     except Exception as e:
         print(f"error calling geturl: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         cmdoutput = defaultResponse
     try:
         j = json.loads(cmdoutput)
     except Exception as e:
         print(f"error loading response as json: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         j = json.loads(defaultResponse)
     return j
 
@@ -395,13 +395,13 @@ def posturl(useTor=True, url=None, data=None, defaultResponse="{}", headers={}, 
         cmdoutput = requests.post(url=url, data=data, headers=headers, auth=auth, timeout=timeout, proxies=proxies, verify=False).text
     except Exception as e:
         print(f"error calling posturl: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         cmdoutput = defaultResponse
     try:
         j = json.loads(cmdoutput)
     except Exception as e:
         print(f"error loading response as json: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         j = json.loads(defaultResponse)
     return j
 

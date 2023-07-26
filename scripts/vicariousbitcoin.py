@@ -505,7 +505,9 @@ def pickBitcoinRESTSettingsFromPool():
     rpcuser = o["rpcuser"] if "rpcuser" in o else ""
     rpcpassword = o["rpcpassword"] if "rpcpassword" in o else ""
     useTor = o["useTor"] if "useTor" in o else True
-    return f"http://{address}:{port}/", rpcuser, rpcpassword, useTor
+    protocol = o["protocol"] if "protocol" in o else "http"
+    rpcurl = f"{protocol}://{address}:{port}/"
+    return rpcurl, rpcuser, rpcpassword, useTor
 
 def setPrunedBlockHeight():
     global prunedBlockHeight
@@ -562,7 +564,7 @@ def lndCreateMockAliasForPubkey(pubkey):
 def lndDoNodeRestCommand(node=None, method="GET", suffix="/", defaultResponse="{}", postData="{}"):
     if node is None or not lndIsNodeConfigValid(node):
         print(f"rest command for node could not be processed. node value is not valid: {node}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         return json.loads(defaultResponse)
     url, headers, timeout, proxies = lndGetNodeRestVars(node, suffix)    
     cmdoutput = ""
@@ -576,13 +578,13 @@ def lndDoNodeRestCommand(node=None, method="GET", suffix="/", defaultResponse="{
             cmdoutput = requests.post(url,data=postData,headers=headers,timeout=timeout,proxies=proxies,verify=False).text
     except Exception as e:
         print(f"error calling lndNodeRest({method}) for suffix: {suffix}. {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         cmdoutput = defaultResponse
     try:
         j = json.loads(cmdoutput)
     except Exception as e:
         print(f"error loading response from lndNodeRest({method}) as json: {e}")
-        print(f"using default")
+        print(f"using default response {defaultResponse}")
         j = json.loads(defaultResponse)
     return j
 
@@ -680,6 +682,29 @@ def lndGetNodeInfo(pubkey, node=None):
             j = json.loads(cmdoutput)
     if lndMode == "REST":
         suffix = f"/v1/graph/node/{pubkey}?include_channels=true"
+        defaultResponse = fakeresult
+        j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
+    if j is None:
+        j = json.loads(fakeresult)
+    return j
+
+def lndGetNodeInvoices(node=None):
+    fakeresult = '{"invoices": []}'
+    j = None
+    if lndMode == "MOCK":
+        j = loadJSONData("../mock-data/getnodeinvoices.json")
+        if j is not None and "result" in j: j = j["result"]
+    if lndMode == "CLI":
+        if lndIsAvailable():
+            cmd = f"lncli {lndMacaroonOpts} listinvoices {lndTimeoutOpts} 2>&1"
+            try:
+                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                print(f"error in lndGetNodeInvoices: {e}")
+                cmdoutput = fakeresult
+            j = json.loads(cmdoutput)
+    if lndMode == "REST":
+        suffix = "/v1/invoices"
         defaultResponse = fakeresult
         j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
     if j is None:
