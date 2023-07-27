@@ -54,7 +54,7 @@ class NostrBandStatsPanel(NodeyezPanel):
         # set date range for charts based on data
         activeRelays, _ = vicariouschart.getNestedField(self.transformStats, "daily.datasets.active_relays")
         self.dateBegin = activeRelays[0]["d"]
-        self.dateEnd = activeRelays[-1]["d"]
+        self.dateEnd = activeRelays[-2]["d"] # second to last to only include full day
 
     def transformData(self):
         # make a copy to work with
@@ -75,26 +75,31 @@ class NostrBandStatsPanel(NodeyezPanel):
                             if "c" in o:
                                 listk.append(o["c"])
                                 valueAdded = True
-                    if valueAdded: datasets[flatk] = listk
+                    if valueAdded: 
+                        listk.pop() # remove last entry as its a partial day
+                        datasets[flatk] = listk
         self.transformStats = tstats
 
     def renderChart(self, pageSuffix, headerText, baseKey, colorIndex):
         attributionSize = int(self.height * 14/320)
         labelSize = int(self.height * 12/320)
+        showGridLines = True
+        gridLegendWidth = 0
+        if showGridLines: gridLegendWidth = 50
         self.headerText = headerText
         self.pageSuffix = pageSuffix
         super().startImage()
         nestedField = f"daily.datasets.{baseKey}_flat"
         chartStats, _ = vicariouschart.getNestedField(self.transformStats, nestedField)
         vicariouschart.drawBarChart(draw=self.draw, left=0, top=self.getInsetTop(), 
-            width=self.width, height=self.getInsetHeight(), 
+            width=self.width, height=self.getInsetHeight()-10, 
             theList=chartStats, fieldName=None, 
             showLabels=True, chartLabel="", grouping=1, 
             valueColor=self.graphDataColors[colorIndex], 
             showAverage=True, averageColor=self.graphAverageColor, 
             movingAverageDuration=7, movingAverageColor="#33ff33", movingAverageWidth=2,
-            borderColor=self.graphBorderColor)
-        vicariouschart.drawLabel(self.draw, self.dateBegin, labelSize, "tl", 0 + 2, self.getInsetTop()+2 )
+            borderColor=self.graphBorderColor, showGridLines=showGridLines)
+        vicariouschart.drawLabel(self.draw, self.dateBegin, labelSize, "tl", gridLegendWidth + 0 + 2, self.getInsetTop()+2 )
         vicariouschart.drawLabel(self.draw, self.dateEnd, labelSize, "tr", self.width - 3, self.getInsetTop()+2)
         vicarioustext.drawbottomlefttext(self.draw, self.attributionLine, attributionSize, 0, self.height, ImageColor.getrgb(self.attributionColor))
         super().finishImage()
