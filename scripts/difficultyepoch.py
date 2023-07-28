@@ -47,7 +47,8 @@ class DifficultyEpochPanel(NodeyezPanel):
         """Fetches all the data needed for this panel"""
 
         self.blockheight = vicariousbitcoin.getcurrentblock()
-        j = vicariousbitcoin.getblock(vicariousbitcoin.getfirstblockforepoch(self.blockheight))
+        self.epochFirstBlock = vicariousbitcoin.getfirstblockforepoch(self.blockheight)
+        j = vicariousbitcoin.getblock(self.epochFirstBlock)
         self.epochBlocksMined = int(j["confirmations"])
         self.epochBeganTime = int(j["time"])
 
@@ -93,6 +94,10 @@ class DifficultyEpochPanel(NodeyezPanel):
         else:
             nextEpochDescription = "about 2 weeks"
 
+        # tracking for labeling
+        lastMinedX, lastMinedY, lastMinedBlock = -1, -1, -1
+        lastAheadX, lastAheadY, lastAheadBlock = -1, -1, -1
+        lastBehindX, lastBehindY, lastBehindBlock = -1, -1, -1
         # grid
         gridRows = 32
         blocksPerGridRow = blocksPerDifficultyEpoch // gridRows # 63
@@ -103,23 +108,85 @@ class DifficultyEpochPanel(NodeyezPanel):
         for dc in range(blocksPerGridRow):
             for dr in range(gridRows):
                 epochblocknum = ((dr*blocksPerGridRow) + dc)+1
+                blockBeingRendered = self.epochFirstBlock + epochblocknum - 1
                 tlx = (padleft + (dc*blockw))
                 tly = (padtop + (dr*blockw))
                 brx = tlx+blockw-2
                 bry = tly+blockw-2
                 if epochblocknum <= self.epochBlocksMined:
-                    fillcolor = self.minedColor
+                    fillcolor = self.minedColor                 # green
                     if epochblocknum > epochBlocksExpected:
-                        fillcolor = self.aheadColor
-                        currentminedcolor = self.aheadColor
+                        fillcolor = self.aheadColor             # yellow
+                        currentminedcolor = self.aheadColor     # yellow
+                        if blockBeingRendered > lastAheadBlock:
+                            lastAheadX = tlx
+                            lastAheadY = tly
+                            lastAheadBlock = blockBeingRendered
+                    else:
+                        if blockBeingRendered > lastMinedBlock:
+                            lastMinedX = tlx
+                            lastMinedY = tly
+                            lastMinedBlock = blockBeingRendered
                     self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=ImageColor.getrgb(fillcolor))
                 else:
-                    outlinecolor = self.gridColor
+                    outlinecolor = self.gridColor               # grey
                     if epochblocknum <= epochBlocksExpected:
-                        outlinecolor = self.behindColor
-                        currentminedcolor = self.behindColor
-                    self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=ImageColor.getrgb(outlinecolor))
-        # labels
+                        outlinecolor = self.behindColor         # red
+                        currentminedcolor = self.behindColor    # red
+                        if blockBeingRendered > lastBehindBlock:
+                            lastBehindX = tlx
+                            lastBehindY = tly
+                            lastBehindBlock = blockBeingRendered
+                        self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=ImageColor.getrgb(outlinecolor))
+                    else: # dashed box
+                        dllen = 2
+                        dslen = 1
+                        for dlx in range(tlx,brx,dllen): self.draw.line(xy=[(dlx,tly),(dlx+(dslen-1),tly)],fill=ImageColor.getrgb(outlinecolor),width=1)
+                        for dly in range(tly,bry,dllen): self.draw.line(xy=[(brx,dly),(brx,dly+(dslen-1))],fill=ImageColor.getrgb(outlinecolor),width=1)
+                        for dlx in range(brx,tlx,(-1*dllen)): self.draw.line(xy=[(dlx,bry),(dlx-(dslen-1),bry)],fill=ImageColor.getrgb(outlinecolor),width=1)
+                        for dly in range(bry,tly,(-1*dllen)): self.draw.line(xy=[(tlx,dly),(tlx,dly-(dslen-1))],fill=ImageColor.getrgb(outlinecolor),width=1)
+
+        # labels - key blocks
+        if lastMinedBlock > -1:
+            labelText = str(lastMinedBlock)
+            labelX = lastMinedX
+            if lastMinedY < (padtop + (2*blockw)):
+                minedAnchor = "tr"
+                labelY = lastMinedY + blockw + math.ceil(blockw/2)
+                if lastMinedX < 100: minedAnchor = "tl"
+            else:                
+                minedAnchor = "br"
+                labelY = lastMinedY - math.ceil(blockw/2)
+                if lastMinedX < 100: minedAnchor = "bl"
+            vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=minedAnchor,anchorx=labelX,anchory=labelY,textColor=self.minedColor)
+        if lastBehindBlock > -1:
+            labelText = str(lastBehindBlock)
+            labelX = lastBehindX
+            if lastBehindY > (padtop + ((gridRows-2)*blockw)):
+                behindAnchor = "bl"
+                labelY = lastBehindY - math.ceil(blockw/2)
+                if lastBehindX > self.width - 100: behindAnchor = "br"
+            else:                
+                behindAnchor = "tl"
+                labelY = lastBehindY + blockw + math.ceil(blockw/2)
+                if lastBehindX > self.width - 100: behindAnchor = "tr"
+            if lastMinedY != lastBehindY or minedAnchor[:1] != behindAnchor[:1]:
+                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=behindAnchor,anchorx=labelX,anchory=labelY,textColor=self.behindColor)
+        if lastAheadBlock > -1:
+            labelText = str(lastAheadBlock)
+            labelX = lastAheadX
+            if lastAheadY > (padtop + ((gridRows-2)*blockw)):
+                aheadAnchor = "bl"
+                labelY = lastAheadY - math.ceil(blockw/2)
+                if lastAheadX > self.width - 100: aheadAnchor = "br"
+            else:                
+                aheadAnchor = "tl"
+                labelY = lastAheadY + blockw + math.ceil(blockw/2)
+                if lastAheadX > self.width - 100: aheadAnchor = "tr"
+            if lastMinedY != lastAheadY or minedAnchor[:1] != aheadAnchor[:1]:
+                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=aheadAnchor,anchorx=labelX,anchory=labelY,textColor=self.aheadColor)
+
+        # labels - general
         fs = int(self.height * (18/320))    # 18 default font size for 320 pixel high image
         labelHeight = int(fs * 1.40)
         col1X = int(self.width * .25)
