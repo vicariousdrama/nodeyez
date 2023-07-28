@@ -8,6 +8,7 @@ title: NODEYEZ Change Log
 **New Panels and Ehancements**
 
 - Blockstats panels for feerates now reports the low value in addition to high and avg
+- Difficulty Epoch panel now shows key block height labels and dithered outline for unexpected non-mined
 - Nostr.Band Stats panel graphs the Active Pubkeys, Badge Definitions and Zaps per Day seen over the previous 2 months
 
 **General**
