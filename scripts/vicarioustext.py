@@ -37,26 +37,36 @@ def getmaxtextforwidth(draw, words, width, fontsize, isbold=False):
 
 def gettextdimensions(draw, s, fontsize, isbold=False):
     thefont = getfont(fontsize, isbold)
-    sw,sh = draw.textsize(s, thefont)
-    return sw,sh,thefont
+    # Deprecated, removed in Pillow 10.0.0
+    #sw,sh = draw.textsize(s, thefont)
+    # New in 8.0.0, required in Pillow 10.0.0
+    left, top, right, bottom = thefont.getbbox(text=s)
+    return right, bottom, thefont
+
+def gettextoffset(thefont,s):
+    # Deprecated, removed in Pillow 10.0.0
+    #ox,oy = thefont.getoffset(s)
+    # New in 8.0.0, required in Pillow 10.0.0
+    left,top,_,_ = thefont.getbbox(text=s)
+    return left, top
 
 def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
 
 def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x,y-sh), text=s, font=thefont, fill=textcolor)
 
 def drawbottomrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y-sh), text=s, font=thefont, fill=textcolor)
@@ -99,28 +109,28 @@ def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0
 
 def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x,y), text=s, font=thefont, fill=textcolor)
 
 def drawtoprighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y), text=s, font=thefont, fill=textcolor)
 
 def drawrighttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x-sw,y-(sh/2)), text=s, font=thefont, fill=textcolor)
 
 def drawlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
-    ox,oy = thefont.getoffset(s)
+    ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x,y-(sh/2)), text=s, font=thefont, fill=textcolor)
