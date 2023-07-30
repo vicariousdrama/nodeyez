@@ -74,6 +74,32 @@ Provides for network connection calls used by Miner tools
 sudo apt-get install netcat
 ```
 
+## Install Uncomplicated Firewall Rules
+
+This provides for a convenient wrapper around iptables for network rules
+
+```shell
+UFW_PATH=$(which ufw)
+if [ -z "$UFW_PATH" ]; then
+  echo "installing and initializing ufw..."
+  sudo apt-get -y install ufw
+  sudo ufw default deny incoming
+  sudo ufw default allow outgoing
+  sudo ufw allow ssh
+  sudo ufw logging off
+  sudo ufw enable
+fi
+```
+
+## Install Fail2Ban
+
+Prevent brute force login attempts by rejecting for time after too many successive failed logins
+
+```shell
+sudo apt-get -y install fail2ban
+```
+
+
 ---
 
 [Home](../) | [Back to Display Screen]({% link _install_steps/2displayscreen.md %}) | [Continue to Nodeyez]({% link _install_steps/4nodeyez.md %})

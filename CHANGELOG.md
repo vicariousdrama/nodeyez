@@ -5,6 +5,10 @@ title: NODEYEZ Change Log
 
 ## main
 
+## 23.07
+
+Released: 2023-07-30
+
 **New Panels and Ehancements**
 
 - Blockstats panels for feerates now reports the low value in addition to high and avg
@@ -16,6 +20,9 @@ title: NODEYEZ Change Log
 - Removed Twitter references
 - Added maze.html serverless sample (https://nodeyez.com/maze.html)
 - Reverted Python dependency to support 3.7
+- Installation now gives guidance on setting up UFW and fail2ban instead of assuming it was present. UFW is called upon to enable the website dashboard port for local network access
+- Mitigating partial RaspiBolt setup (Bitcoin installed, but not NGINX)
+- Updates to resolve deprecated and removed functions in Pillow
 
 **Bugfixes**
 

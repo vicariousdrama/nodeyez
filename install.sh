@@ -138,6 +138,21 @@ apt-get -y install \
     python3-venv \
     zlib1g-dev 
 
+# Install and initialize UFW if not present
+UFW_PATH=$(which ufw)
+if [ -z "$UFW_PATH" ]; then
+  echo "installing and initializing ufw..."
+  apt-get -y install ufw
+  ufw default deny incoming
+  ufw default allow outgoing
+  ufw allow ssh
+  ufw logging off
+  ufw enable
+fi
+
+# Install fail2ban
+apt-get -y install fail2ban
+
 # Create Nodeyez user
 echo "================================================"
 echo "CREATING NODEYEZ USER"
@@ -426,6 +441,19 @@ elif [ $ISRASPIBOLT -gt 0 ]; then
       cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez_raspibolt.conf /etc/nginx/streams-enabled/https_nodeyez_raspibolt.conf
       CREATED_WEBSITE=1
     fi
+  else
+    # nginx installed, but not with raspibolt custom config, warn and install generic
+    echo "- based on the Bitcoin service file, this appears to be a RaspiBolt install"
+    echo "  but the Nginx configuration is default using sites-enabled instead of"
+    echo "  streams-enabled.  A generic configuration for Nodeyez dashboard will be"
+    echo "  installed."
+    echo "WARNING: If you proceed with the Raspibolt configuration of NGINX as defined here"
+    echo "  https://raspibolt.org/guide/raspberry-pi/security.html#prepare-nginx-reverse-proxy"
+    echo "you may need to re-run this installation to setup the Nodeyez dashboard"
+    echo "with the streams-enabled setup"
+    echo "- copying Nodeyez site configuration as generic sites-enabled"
+    cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-enabled/https_nodeyez.conf
+    CREATED_WEBSITE=1
   fi
 else
   # generic site config
