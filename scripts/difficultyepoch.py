@@ -42,15 +42,31 @@ class DifficultyEpochPanel(NodeyezPanel):
 
         # Initialize
         super().__init__(name="difficultyepoch")
+        if vicariousbitcoin.prunedBlockHeight is None:
+            vicariousbitcoin.setPrunedBlockHeight()
 
     def fetchData(self):
         """Fetches all the data needed for this panel"""
 
         self.blockheight = vicariousbitcoin.getcurrentblock()
         self.epochFirstBlock = vicariousbitcoin.getfirstblockforepoch(self.blockheight)
-        j = vicariousbitcoin.getblock(self.epochFirstBlock)
-        self.epochBlocksMined = int(j["confirmations"])
-        self.epochBeganTime = int(j["time"])
+
+        if vicariousbitcoin.prunedBlockHeight == 0 or \
+            vicariousbitcoin.prunedBlockHeight <= self.epochFirstBlock:
+            j = vicariousbitcoin.getblock(self.epochFirstBlock)
+            self.epochBlocksMined = int(j["confirmations"])
+            self.epochBeganTime = int(j["time"])
+            self.usingPrunedData = False
+        else:
+            # estimate based on pruned data
+            self.usingPrunedData = True
+            j = vicariousbitcoin.getblock(vicariousbitcoin.prunedBlockHeight)
+            self.epochBlocksMined = self.blockheight - self.epochFirstBlock + 1
+            jTime = int(j["time"])
+            currentTime = int(time.time())
+            secondsPassed = currentTime - jTime
+            secondsPerBlock = int(secondsPassed / (self.blockheight - vicariousbitcoin.prunedBlockHeight + 1))
+            self.epochBeganTime = currentTime - (self.epochBlocksMined * secondsPerBlock)
 
     def _buildEpochDescription(self, s, d, i, l):
         if s > i:
@@ -79,6 +95,7 @@ class DifficultyEpochPanel(NodeyezPanel):
         if "-" not in nextAdjustment:
             nextAdjustment = f"+{nextAdjustment}"
             adjustcolor = self.minedColor
+        nextAdjustment += "%"
         epochEndETA = self.epochBeganTime + (blocksPerDifficultyEpoch * secondsPerBlockExpected)
         if float(self.epochBlocksMined) > 0:
             epochEndETA = int(math.floor((float(secondsPassed) / float(self.epochBlocksMined))*blocksPerDifficultyEpoch)) + self.epochBeganTime
@@ -93,11 +110,15 @@ class DifficultyEpochPanel(NodeyezPanel):
                 nextEpochDescription = "a few minutes"
         else:
             nextEpochDescription = "about 2 weeks"
+        if self.usingPrunedData: 
+            nextAdjustment += " ?"
+            nextEpochDescription += " ?"
 
         # tracking for labeling
         lastMinedX, lastMinedY, lastMinedBlock = -1, -1, -1
         lastAheadX, lastAheadY, lastAheadBlock = -1, -1, -1
         lastBehindX, lastBehindY, lastBehindBlock = -1, -1, -1
+        prunedMaxY = -1
         # grid
         gridRows = 32
         blocksPerGridRow = blocksPerDifficultyEpoch // gridRows # 63
@@ -127,7 +148,16 @@ class DifficultyEpochPanel(NodeyezPanel):
                             lastMinedX = tlx
                             lastMinedY = tly
                             lastMinedBlock = blockBeingRendered
-                    self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=ImageColor.getrgb(fillcolor))
+                    if self.usingPrunedData and blockBeingRendered < vicariousbitcoin.prunedBlockHeight:
+                        prunedMaxY = bry if bry > prunedMaxY else prunedMaxY
+                        blockInset = (brx-tlx)//3
+                        tlx += blockInset
+                        tly += blockInset
+                        brx -= blockInset
+                        bry -= blockInset
+                        self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=ImageColor.getrgb(fillcolor))
+                    else:
+                        self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=ImageColor.getrgb(fillcolor))
                 else:
                     outlinecolor = self.gridColor               # grey
                     if epochblocknum <= epochBlocksExpected:
@@ -148,6 +178,7 @@ class DifficultyEpochPanel(NodeyezPanel):
 
         # labels - key blocks
         if lastMinedBlock > -1:
+            fs = int(self.height * (14/320))
             labelText = str(lastMinedBlock)
             labelX = lastMinedX
             if lastMinedY < (padtop + (2*blockw)):
@@ -158,8 +189,9 @@ class DifficultyEpochPanel(NodeyezPanel):
                 minedAnchor = "br"
                 labelY = lastMinedY - math.ceil(blockw/2)
                 if lastMinedX < 100: minedAnchor = "bl"
-            vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=minedAnchor,anchorx=labelX,anchory=labelY,textColor=self.minedColor)
+            vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=fs,anchorposition=minedAnchor,anchorx=labelX,anchory=labelY,textColor=self.minedColor)
         if lastBehindBlock > -1:
+            fs = int(self.height * (14/320))
             labelText = str(lastBehindBlock)
             labelX = lastBehindX
             if lastBehindY > (padtop + ((gridRows-2)*blockw)):
@@ -171,8 +203,9 @@ class DifficultyEpochPanel(NodeyezPanel):
                 labelY = lastBehindY + blockw + math.ceil(blockw/2)
                 if lastBehindX > self.width - 100: behindAnchor = "tr"
             if lastMinedY != lastBehindY or minedAnchor[:1] != behindAnchor[:1]:
-                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=behindAnchor,anchorx=labelX,anchory=labelY,textColor=self.behindColor)
+                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=fs,anchorposition=behindAnchor,anchorx=labelX,anchory=labelY,textColor=self.behindColor)
         if lastAheadBlock > -1:
+            fs = int(self.height * (14/320))
             labelText = str(lastAheadBlock)
             labelX = lastAheadX
             if lastAheadY > (padtop + ((gridRows-2)*blockw)):
@@ -184,7 +217,35 @@ class DifficultyEpochPanel(NodeyezPanel):
                 labelY = lastAheadY + blockw + math.ceil(blockw/2)
                 if lastAheadX > self.width - 100: aheadAnchor = "tr"
             if lastMinedY != lastAheadY or minedAnchor[:1] != aheadAnchor[:1]:
-                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=10,anchorposition=aheadAnchor,anchorx=labelX,anchory=labelY,textColor=self.aheadColor)
+                vicarioustext.drawLabel(draw=self.draw,s=labelText,fontsize=fs,anchorposition=aheadAnchor,anchorx=labelX,anchory=labelY,textColor=self.aheadColor)
+
+        # labels for pruned mode
+        if self.usingPrunedData:
+            fs = int(self.height * (10/320))
+            blockMaxY = max([0,lastBehindY,lastMinedY,lastAheadY]) + blockw
+            blockMinY = min(set([self.height,lastBehindY,lastMinedY,lastAheadY]).symmetric_difference(set([-1])))
+            gridBottom = self.getInsetTop() + (gridRows*blockw)
+            spaceNeeded = fs*6
+            ly = 0
+            if (prunedMaxY - self.getInsetTop() > spaceNeeded):
+                # labels overlap pruned blocks at top
+                ly = self.getInsetTop() + ((prunedMaxY - self.getInsetTop())//2)
+            elif (gridBottom - blockMaxY > spaceNeeded):
+                # labels in unmined blocks area
+                ly = blockMaxY + ((gridBottom - blockMaxY)//2)
+            elif (blockMaxY - blockMinY > spaceNeeded):
+                # labels on blocks mined/expected area between ranges
+                ly = blockMinY + ((blockMaxY-blockMinY)//2)
+            elif (blockMinY - prunedMaxY > spaceNeeded):
+                # labels below pruned blocks and above recent mined/expected
+                ly = prunedMaxY + ((blockMinY - prunedMaxY)//2)
+            else:
+                # labels overlap pruned to mined/expected
+                ly = self.getInsetTop() + ((blockMinY - self.getInsetTop())//2)
+            lt = f"Node is pruned to block height {vicariousbitcoin.prunedBlockHeight}"
+            vicarioustext.drawLabel(draw=self.draw,s=lt,fontsize=fs,anchorposition="b",anchorx=self.width//2,anchory=ly-1)
+            lt = f"Expected mined and Retarget info will lose accuracy as a result"
+            vicarioustext.drawLabel(draw=self.draw,s=lt,fontsize=fs,anchorposition="t",anchorx=self.width//2,anchory=ly+1)
 
         # labels - general
         fs = int(self.height * (18/320))    # 18 default font size for 320 pixel high image
@@ -198,10 +259,9 @@ class DifficultyEpochPanel(NodeyezPanel):
         vicarioustext.drawtoprighttext(self.draw, "Mined: ",                 fs, col1X, row2Y, ImageColor.getrgb(self.textColor))
         vicarioustext.drawtoplefttext(self.draw, f"{self.epochBlocksMined}", fs, col1X, row2Y, ImageColor.getrgb(currentminedcolor))
         vicarioustext.drawtoprighttext(self.draw, "Retarget: ",              fs, col2X, row1Y, ImageColor.getrgb(self.textColor))
-        vicarioustext.drawtoplefttext(self.draw, f"{nextAdjustment}%",       fs, col2X, row1Y, ImageColor.getrgb(adjustcolor))
+        vicarioustext.drawtoplefttext(self.draw, f"{nextAdjustment}",        fs, col2X, row1Y, ImageColor.getrgb(adjustcolor))
         vicarioustext.drawtoprighttext(self.draw, "In: ",                    fs, col2X, row2Y, ImageColor.getrgb(self.textColor))
         vicarioustext.drawtoplefttext(self.draw, f"{nextEpochDescription}",  fs, col2X, row2Y, ImageColor.getrgb(self.textColor))
-
 
         super().finishImage()
 

@@ -18,6 +18,13 @@ It depends on a bitcoin node.
 
 ![difficulty epoch image sample showing several blocks mined, and ahead of schedule](../images/difficultyepoch.png)
 
+Like other Bitcoin dependent panels, the Difficulty Epoch panel can also use
+a pruned node, though a loss of estimate accuracy will result.  The following
+example depicts pruned blocks at the beginning of the Difficulty Epoch, and
+warns about the loss of accuracy as a result of the pruned block height
+
+![difficulty epoch image on a pruned node](../images/difficultyepoch-pruned.png)
+
 ## Script Location
 The script is installed at
 [~/nodeyez/scripts/difficultyepoch.py](../scripts/difficultyepoch.py).
