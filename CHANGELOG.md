@@ -5,9 +5,16 @@ title: NODEYEZ Change Log
 
 ## main
 
+**New Panels and Enhancements**
+
+- Difficulty Epoch panel enhanced for pruned node support to estimate times
+- OP_RETURN panel now has more exclusion patterns by default
+
 ## 23.07
 
 Released: 2023-07-30
+
+Tagged Commit: [07bab8ea03371f3baadfbb8b52ddba6c5eaa4b5a](https://github.com/vicariousdrama/nodeyez/commit/07bab8ea03371f3baadfbb8b52ddba6c5eaa4b5a)
 
 **New Panels and Ehancements**
 

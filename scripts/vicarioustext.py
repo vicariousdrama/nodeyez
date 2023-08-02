@@ -104,6 +104,9 @@ def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0
         nx = anchorx - sw
         ny = anchory - (sh/2)
         pass
+    elif anchorposition == "c":
+        nx = anchorx - (sw/2)
+        ny = anchory - (sh/2)
     draw.rectangle(xy=[(nx-padding-border,ny-padding-border),(nx+sw+padding+border,ny+sh+padding+border)],fill=ImageColor.getrgb(backgroundColor),outline=ImageColor.getrgb(borderColor),width=1)
     draw.text(xy=(nx,ny), text=s, font=f, fill=ImageColor.getrgb(textColor))
 

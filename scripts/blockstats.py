@@ -294,7 +294,8 @@ class BlockStatsPanel(NodeyezPanel):
                         (self.artLeft+self.artWidth+1,self.artTop+self.artHeight+1)],
                     fill=ImageColor.getrgb(self.shapeShadowColor))
         # Labels
-        vicarioustext.drawLabel(self.draw, blockstats["blockhash"], 10, "t", (self.width/2), 75, self.backgroundColor, self.textColor, self.shapeOutlineColor)
+        vicarioustext.drawLabel(self.draw, str(blockstats["blockhash"][0:32]).upper(), 10, "t", (self.width/2), 75-15, self.backgroundColor, self.textColor, self.shapeOutlineColor)
+        vicarioustext.drawLabel(self.draw, str(blockstats["blockhash"][32:64]).upper(), 10, "t", (self.width/2), 75, self.backgroundColor, self.textColor, self.shapeOutlineColor)
         # IOD
         vicarioustext.drawLabel(self.draw, "INPUTS          ", 12, "tl", (self.width/2)-100, 95, self.backgroundColor, self.textColor, self.shapeOutlineColor)
         vicarioustext.drawLabel(self.draw, str(blockstats["ins"]), 12, "tr", (self.width/2)-5, 95, self.backgroundColor, self.textColor, self.shapeOutlineColor)

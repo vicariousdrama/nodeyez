@@ -29,7 +29,9 @@ class OPReturnPanel(NodeyezPanel):
         self._defaultattr("dataRowEvenTextColor", "#ff7f00")
         self._defaultattr("dataRowOddTextColor", "#dddd00")
         self._defaultattr("excludedPatterns", [
-             "^[+=\-s]:(ATOM|AVAX|BCH|BNB|BTC|DOGE|ETH|GAIA|LTC|RUNE|THOR|USDC).*",
+             "^[+=\-s]:(ATOM|AVAX|BCH|BNB|BTC|DOGE|ETH|GAIA|LTC|MAYA|RUNE|THOR|USDC).*",
+             "^[+=\-s]:[A-Z]{3,4}\..*",
+             "^[+=\-s]:[A-Za-z]{1,4}:.*",
              "^.{1,5}$",
              "^.*(BERNSTEIN 2.0|HEX.com|WanChain).*",
              "^(Binance|Betnomi|Kinesis|RSK|ScytheX.io|btt|euklid|omni).*$",
