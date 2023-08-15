@@ -1,0 +1,23 @@
+# Nodeyez: systemd unit for Fee Estimates panel generation
+# /etc/systemd/system/nodeyez-feeestimates.service
+
+[Unit]
+Description=Fee estimates from Bitcoin Core
+StartLimitIntervalSec=600
+StartLimitBurst=2
+Wants=bitcoind.service
+After=bitcoind.service
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStartPre=/bin/sh -c '/bin/cp /home/bitcoin/.bitcoin/.cookie /home/nodeyez/.bitcoin/ 2>/dev/null || exit 0'
+ExecStartPre=/bin/sh -c '/bin/chown -R nodeyez:nodeyez /home/nodeyez/.bitcoin 2>/dev/null || exit 0'
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/feeestimates.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+PermissionsStartOnly=true
+
+[Install]
+WantedBy=multi-user.target

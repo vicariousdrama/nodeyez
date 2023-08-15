@@ -417,6 +417,34 @@ def getcurrentblock():
 def getepochnum(blocknum):
     return blocknum // 2016
 
+def getestimatesmartfee(targetblocks=1):
+    fakeresult = {"feerate":0.00000001,"blocks":1}
+    j = None
+    if bitcoinMode == "MOCK":
+        j = loadJSONData("../mock-data/getestimatesmartfee.json", fakeresult)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if bitcoinMode == "CLI" and isBitcoinAvailable():
+        if prunedBlockHeight is None:
+            setPrunedBlockHeight()
+        cmd = f"bitcoin-cli {bitcoinCLIOptions} estimatesmartfee {targetblocks}"
+        try:
+            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            j = json.loads(cmdoutput)
+        except subprocess.CalledProcessError as e:
+            print(e)
+            j = fakeresult
+    if bitcoinMode == "REST" and isBitcoinRESTOK():
+        data = f'{{"jsonrpc": "1.0", "id": "nodeyez", "method": "estimatesmartfee", "params": [{targetblocks}]}}'
+        headers = {"content-type":"text/plain;"}
+        url, rpcuser, rpcpassword, useTor = pickBitcoinRESTSettingsFromPool()
+        j = vicariousnetwork.posturl(useTor=useTor, url=url, data=data, defaultResponse="{}", headers=headers, username=rpcuser, password=rpcpassword)
+        if j is not None and "result" in j:
+            j = j["result"]
+    if j is None: 
+        j = fakeresult
+    return j["feerate"], j["blocks"]
+
 def getfirstblockforepoch(blocknum):
     epochnum = getepochnum(blocknum)
     return min(blocknum, (int(epochnum * 2016) + 1))

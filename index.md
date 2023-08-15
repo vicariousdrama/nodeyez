@@ -23,6 +23,7 @@ There are a variety of panel types that you can selectively enable and configure
   <div class="slide"><img src="./images/compassminingstatus.png" width=196 title="Compass Mining facility status" /></div>
   <div class="slide"><img src="./images/difficultyepoch.png" width=196 title="Progress through current mining difficulty epoch" /></div>
   <div class="slide"><img src="./images/fearandgreed.png" width=196 title="Social media sentiment of Bitcoin and crypto" /></div>
+  <div class="slide"><img src="./images/feeestimates.png" width=196 title="Bitcoin Core Fee Estimates" /></div>
   <div class="slide"><img src="./images/fiatprice.png" width=196 title="The price of a Bitcoin in fiat, can choose which fiat to price against" /></div>
   <div class="slide"><img src="./images/inscriptionmempool.png" width=196 title="Show inscriptions within transactions in the mempool before they are mined" /></div>
   <div class="slide"><img src="./images/inscriptionparser.png" width=196 title="Parse out inscriptions from transactions in a block" /></div>
@@ -50,17 +51,35 @@ There are a variety of panel types that you can selectively enable and configure
   <button class="btn btn-prev">&lt;</button>
 </div>
 
-## Additional Info
+# Additional Info
 
-Full [Install Steps]({% link _install_steps/index.md %}) are broken down and explained for each command run.
+## Install Steps
 
-You can choose which panels you want to run from the [Panel Index]({% link _install_steps/5panels.md %}).
+Full **[Install Steps]({% link _install_steps/index.md %})** are broken down and explained for each command run.
 
-Optionally attach a [Display Screen]({% link _install_steps/2displayscreen.md %}) and [Run as a Slideshow]({% link _install_steps/6slideshow.md %}).
+## Panel Index
 
-Want to contribute and make changes? For guidance on setting up a development environment, start with the [Python and IDE Setup]({% link _developer/1basicsetup.md %}).
+You can choose which panels you want to run from the **[Panel Index]({% link _install_steps/5panels.md %})**.
 
-View the [Change Log]({% link CHANGELOG.md %})
+## Display Screen
 
-You can support me by using the Mash Boost button, or sending me tips via [Strike](https://strike.me/vicariousdrama)
+Optionally attach a **[Display Screen]({% link _install_steps/2displayscreen.md %})** and **[Run as a Slideshow]({% link _install_steps/6slideshow.md %})**.
 
+## Development
+
+Want to contribute and make changes? For guidance on setting up a development environment, start with the **[Python and IDE Setup]({% link _developer/1basicsetup.md %})**.
+
+## Change Log
+
+View the **[Change Log]({% link CHANGELOG.md %})**
+
+## Support the Project
+
+You can support this project by:
+- contributing code, submitting bugs or feaure requests via [Github](https://github.com/vicariousdrama/nodeyez)
+- help with panel design, the website and other UI elements!
+- following me on [Nostr](https://primal.net/p/npub1yx6pjypd4r7qh2gysjhvjd9l2km6hnm4amdnjyjw3467fy05rf0qfp7kza)
+- sats via
+  - [Geyser Fund](https://geyser.fund/project/nodeyez)
+  - the Mash Boost button
+  - [Strike](https://strike.me/vicariousdrama)

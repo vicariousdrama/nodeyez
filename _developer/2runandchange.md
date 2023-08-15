@@ -310,4 +310,4 @@ From within the GitHub interface, you can view your branch, and create a pull re
 
 ---
 
-[Home](../) | [Back to Python and IDE Setup]({% link _developer/1basicsetup.md %}) | [Continue to Regtest]({% link _developer/3regtest.md %})
+[Home](../) | [Back to Python and IDE Setup]({% link _developer/1basicsetup.md %}) | [Continue to Create New Panel]({% link _developer/3createpanel.md %})

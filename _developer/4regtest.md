@@ -191,4 +191,4 @@ rm -rf ~/nodeyez/data/bitcoinregtest1/regtest
 
 ---
 
-[Home](../) | [Back to Running and Changing Scripts]({% link _developer/2runandchange.md %})
+[Home](../) | [Back to Running and Create New Panel]({% link _developer/3createpanel.md %})

@@ -23,9 +23,12 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldNa
                  showAverage=True, averageColor="#8888ff", 
                  movingAverageDuration=0, movingAverageColor="#88ff88", 
                  movingAverageWidth=3, borderColor="#888888", 
-                 showGridLines=False, gridLineColor="#444444"
+                 showGridLines=False, gridLineColor="#444444",
+                 forceHigh=None, forceLow=None
                   ):
     low, high, avg, _, _ = getFieldMinMaxAvgValues(theList, fieldName)
+    if forceHigh is not None: high = forceHigh
+    if forceLow is not None: low = forceLow
     lowx, highx = -1, -1
     lowy, highy = -1, -1
     lowFound, highFound = False, False
@@ -44,11 +47,11 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldNa
         chartLeft += gridLegendWidth
         chartWidth -= gridLegendWidth
         difference = high - low
-        units = int(math.pow(10, len(str(difference)) - 1))
+        units = int(math.pow(10, len(str(int(difference))) - 1))
         chartHigh = int(math.ceil(high / units) * units)
         chartLow = int(math.floor(low / units) * units)
-        if chartHigh - (units//2) > high: chartHigh -= (units//2)
-        if chartLow + (units//2) < low: chartLow += (units//2)
+        if chartHigh - (units//2) >= high: chartHigh -= (units//2)
+        if chartLow + (units//2) <= low: chartLow += (units//2)
         chartDifference = (chartHigh - chartLow)
         gridSteps = 5
         gridStepSize = (float(chartDifference) / float(gridSteps))
@@ -71,22 +74,37 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldNa
         avgy = chartTop if high == 0 else chartTop + int((1.0-(float(avg-chartLow) / float(chartHigh-chartLow))) * chartHeight)
         draw.line(xy=[(chartLeft,avgy),(chartLeft+chartWidth-1,avgy)],fill=ImageColor.getrgb(averageColor),width=2)
     # process each column
-    l = len(theList) - 1
-    xwidth = chartWidth // l
-    xhalfwidth = (xwidth // 2) - 1  # for calculating bar width
-    if xhalfwidth < 0: xhalfwidth = 0
+    l = len(theList) #- 1
+    xwidth = math.ceil(chartWidth/l) # chartWidth // l
+    #xhalfwidth = (xwidth // 2) - 1  # for calculating bar width
+    #if xhalfwidth < 0: xhalfwidth = 0
+    xhalfwidthl = math.ceil(float(chartWidth/(l/grouping))/2) #xhalfwidth
+    xhalfwidthr = math.ceil(float(chartWidth/(l/grouping))/2) #xhalfwidth
+    if xhalfwidthl == 0 and xhalfwidthr == 0: xhalfwidthl = 1
     index = 0
-    for i in range(0,l+1,1): # range(l, 0, -1):
+    for i in range(0,l,grouping): #range(0,l+1,1): # range(l, 0, -1):
         index += 1
-        item = theList[i]
         # determine x coordinate for column
         px = float(i) / float(l)
-        x = chartLeft + xhalfwidth + int((chartWidth-xwidth) * px) + 1
+        x = chartLeft + xhalfwidthl + int((chartWidth-xwidth) * px) + 1
         # get current value
-        if type(item) is dict and fieldName is not None:
-            curval = int(item[fieldName])
+        if grouping == 1:
+            # single value
+            item = theList[i]
+            if type(item) is dict and fieldName is not None:
+                curval = float(item[fieldName])
+            else:
+                curval = float(item)
         else:
-            curval = int(item)
+            if i + grouping >= l: grouping = l - i
+            # highest of the range of values
+            curval = 0
+            for g in range (0,grouping):
+                item = theList[i+g]
+                if type(item) is dict and fieldName is not None:
+                    curval = max(float(curval),float(item[fieldName]))
+                else:
+                    curval = max(float(curval),float(item))
         # determine y coordinate for column based on value
         py = 1.0 if high <= 0 else float(curval-chartLow) / float(chartHigh-chartLow)
         y = chartTop + int((1.0 - py) * chartHeight) - 1
@@ -101,7 +119,7 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldNa
             highy = y
             highFound = True
         # plot the value as a vertical bar
-        draw.rectangle(xy=[(x-xhalfwidth,y),(x+xhalfwidth,maxy)],fill=ImageColor.getrgb(valueColor))
+        draw.rectangle(xy=[(x-xhalfwidthl,y),(x+xhalfwidthr,maxy)],fill=ImageColor.getrgb(valueColor),outline=ImageColor.getrgb(valueColor))
         # process moving average
         if movingAverageDuration > 0:
             v = curval
@@ -126,21 +144,23 @@ def drawBarChart(draw, left=0, top=0, width=480, height=320, theList=[], fieldNa
     # draw labels
     if showLabels:
         if highFound and highx > 0 and highy > 0:
-            if highx - 100 < chartLeft and len(chartLabel) > 0: highy = highy + 20
+            if highx - 100 < chartLeft and (chartLabel is not None and len(chartLabel)) > 0: highy = highy + 20
             highpos = "tr" if highx + 150 > chartLeft + chartWidth else "tl"
             highx = highx + 3 if highpos == "tl" else highx - 3
             drawLabel(draw, f"HIGH:{high}", 10, highpos, highx, highy+2)
-        if lowFound and lowx > 0 and lowy > 0:
+        if lowFound and lowx > 0 and lowy > 0 and low < high:
             lowpos = "br" if lowx + 150 > chartLeft + chartWidth else "bl"
             lowx = lowx + 3 if lowpos == "bl" else lowx - 3
             drawLabel(draw, f"LOW:{low}", 10, lowpos, lowx, lowy-2)
-        if showAverage:
+        if showAverage and (avg < high) and (avg > low):
             avgpos = "tl" if avgy + 20 < chartTop+chartHeight-1 else "bl"
             avgx = chartLeft+2
             avgy = avgy - 2 if avgpos == "bl" else avgy + 2
-            drawLabel(draw, "AVG:" + str(avg), 10, avgpos, avgx, avgy)
-        if len(chartLabel) > 0:
+            if avgy > highy:
+                drawLabel(draw, "AVG:" + str(avg), 10, avgpos, avgx, avgy)
+        if chartLabel is not None and len(chartLabel) > 0:
             drawLabel(draw, chartLabel, 12, "tl", chartLeft+2, chartTop+2)
+    return chartHigh, chartLow, chartLeft, chartWidth
 
 def drawDotChart(draw, left=0, top=0, width=480, height=320, list=[], fieldName=None,
                  valueColor="#2f3fc5", valueRadius=3,
@@ -371,11 +391,11 @@ def getFieldMinMaxAvgValues(thelist, thefield=None):
                     o = o[thefieldpart]
                 else:
                     bOK = False
-        v = 0 if not bOK else int(o)
+        v = 0 if not bOK else o # int(o)
         total += v
         valuemin = v if valuemin is None or v < valuemin else valuemin
         valuemax = v if v > valuemax else valuemax
         valueminx0 = v if valueminx0 is None or v < valueminx0 and v > 0 else valueminx0
         valueminx1 = v if valueminx1 is None or v < valueminx1 and v > 1 else valueminx1
-    valueavg = int(float(total) / float(len(thelist)))
+    valueavg = (float(total) / float(len(thelist)))
     return valuemin, valuemax, valueavg, valueminx0, valueminx1
