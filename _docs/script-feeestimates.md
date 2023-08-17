@@ -67,9 +67,9 @@ Press CTRL+C to stop the process
 To enable the script to run at startup, as the privileged user run the following
 
 ```shell
-sudo systemctl enable nodeyez-blockstats.service
+sudo systemctl enable nodeyez-feeestimates.service
 
-sudo systemctl start nodeyez-blockstats.service
+sudo systemctl start nodeyez-feeestimates.service
 ```
 
 ---
