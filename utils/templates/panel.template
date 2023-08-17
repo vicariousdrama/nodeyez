@@ -8,10 +8,10 @@ import vicariouslookup
 import vicariousnetwork
 import vicarioustext
 
-class <Template Class>Panel(NodeyezPanel):
+class <Class>Panel(NodeyezPanel):
 
     def __init__(self):
-        """Instantiates a new <Template Name> panel"""
+        """Instantiates a new <Name> panel"""
 
         # Define which additional attributes we have
         self.configAttributes = {
@@ -23,11 +23,11 @@ class <Template Class>Panel(NodeyezPanel):
         }
 
         # Define our defaults (all panel specific key names should be listed)
-        self._defaultattr("headerText", "<Template Name>")
+        self._defaultattr("headerText", "<Name>")
         self._defaultattr("interval", 120)
 
         # Initialize
-        super().__init__(name="<Template Class Lower>")
+        super().__init__(name="<ClassLower>")
 
     def fetchData(self):
         """Fetches all the data needed for this panel"""
@@ -40,6 +40,21 @@ class <Template Class>Panel(NodeyezPanel):
 
         # Your image logic here
 
+        # This sample will just fit the description you provided for the panel
+        # as output, sort of like a "Hello World!" program
+        texty = self.getInsetTop()
+        textystop = self.height - self.getFooterHeight()
+        description = "<Description>"
+        fontsize = int(self.height * (18/320)) 
+        rwords = description.split()
+        rpart, rwords = vicarioustext.getmaxtextforwidth(self.draw, rwords, self.width, fontsize)
+        while len(rpart) > 0:
+            _,sh,_ = vicarioustext.gettextdimensions(self.draw, rpart, fontsize)
+            texty += sh
+            if texty > textystop: break
+            vicarioustext.drawbottomlefttext(self.draw, rpart, fontsize, 0, texty, ImageColor.getrgb(self.textColor), False)
+            rpart, rwords = vicarioustext.getmaxtextforwidth(self.draw, rwords, self.width, fontsize)
+
         super().finishImage()
 
 # --------------------------------------------------------------------------------------
@@ -48,12 +63,12 @@ class <Template Class>Panel(NodeyezPanel):
 
 if __name__ == '__main__':
 
-    p = <Template Class>Panel()
+    p = <Class>Panel()
 
     # If arguments were passed in, treat as a single run
     if len(sys.argv) > 1:
         if sys.argv[1] in ['-h','--help']:
-            print(f"Creates a summary image of <Template Name>")
+            print(f"<Description>")
             print(f"Usage:")
             print(f"1) Call without arguments to run continuously using the configuration or defaults")
             print(f"2) Call with an argument other then -h or --help to run once and exit")

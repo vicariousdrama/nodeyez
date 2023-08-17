@@ -31,6 +31,7 @@ All of these panels can work with a local Bitcoin node. At this time, informatio
 * [Block Height](./_docs/script-blockheight.md)
 * [Block Stats](./_docs/script-blockstats.md)
 * [Difficulty Epoch](./_docs/script-difficultyepoch.md)
+* [Fee Estimates](./_docs/feeestimates.md)
 * [Halving Countdown](./_docs/script-halving.md)
 * [Inscription Mempool](./_docs/script-inscriptionmempool.md)
 * [Inscription Parser](./_docs/script-inscriptionparser.md)
@@ -88,5 +89,6 @@ These panels can be configured to report on local LND based nodes, as well as re
 1. [Architecture](./_developer/0architecture.md)
 2. [Python and IDE](./_developer/1basicsetup.md)
 3. [Run and Change Code](./_developer/2runandchange.md)
-4. [Regtest](./_developer/3regtest.md)
+4. [Create New Panel](./_developer/3createpanel.md)
+5. [Setting up Regtest](./_developer/4regtest.md)
 

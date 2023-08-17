@@ -9,6 +9,11 @@ title: NODEYEZ Change Log
 
 - Difficulty Epoch panel enhanced for pruned node support to estimate times
 - OP_RETURN panel now has more exclusion patterns by default
+- Add Fee Estimates panel for graphing Bitcoin Fee Estimates
+
+**General**
+
+- Add utility script newpanel.py for creating scaffolding of a new panel using templates
 
 ## 23.07
 
