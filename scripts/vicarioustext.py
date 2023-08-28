@@ -11,9 +11,9 @@ def getdateandtime():
 
 def getfont(size, isbold=False):
     if isbold:
-        return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",size)
+        return ImageFont.truetype(font="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",size=size,encoding="unic")
     else:
-        return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",size)
+        return ImageFont.truetype(font="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",size=size,encoding="unic")
 
 def getmaxfontsize(draw, s, maxwidth=480, maxheight=320, isbold=False, maxfontsize=128, minfontsize=8):
     sw = maxwidth
@@ -33,15 +33,21 @@ def getmaxtextforwidth(draw, words, width, fontsize, isbold=False):
         sw,sh,f = gettextdimensions(draw, s, fontsize, isbold)
         if sw <= width:
             return s, words[x:]
-    return " ".join(words[0:1]), []
+    if wlen > 1:
+        # next long word
+        return " ".join(words[0:1]), words[1:]
+    else:
+        # final word
+        return " ".join(words[0:1]), []
 
 def gettextdimensions(draw, s, fontsize, isbold=False):
     thefont = getfont(fontsize, isbold)
     # Deprecated, removed in Pillow 10.0.0
     #sw,sh = draw.textsize(s, thefont)
     # New in 8.0.0, required in Pillow 10.0.0
-    left, top, right, bottom = thefont.getbbox(text=s)
-    return right, bottom, thefont
+    #left, top, right, bottom = thefont.getbbox(text=s)
+    left, top, right, bottom = draw.multiline_textbbox(xy=(0,0),text=f"{s}",font=thefont)
+    return right, bottom+top, thefont
 
 def gettextoffset(thefont,s):
     # Deprecated, removed in Pillow 10.0.0
@@ -50,12 +56,29 @@ def gettextoffset(thefont,s):
     left,top,_,_ = thefont.getbbox(text=s)
     return left, top
 
+def getwrappedtextatwidth(draw, text, width, fontsize, isbold=False):
+    outputtext = ""
+    rwords = text.split()
+    rpart, rwords = getmaxtextforwidth(draw, rwords, width, fontsize, isbold)
+    while len(rpart) > 0:
+        outputtext = outputtext + rpart
+        if len(rwords) > 0: outputtext = outputtext + "\n"
+        rpart, rwords = getmaxtextforwidth(draw, rwords, width, fontsize, isbold)
+    return outputtext
+
 def drawcenteredtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
     ox,oy = gettextoffset(thefont,s)
     sw += ox
     sh += oy
     draw.text(xy=(x-(sw/2),y-(sh/2)), text=s, font=thefont, fill=textcolor)
+
+def drawbottomtext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
+    ox,oy = gettextoffset(thefont,s)
+    sw += ox
+    sh += oy
+    draw.text(xy=(x-(sw/2),y-sh), text=s, font=thefont, fill=textcolor)
 
 def drawbottomlefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
@@ -109,6 +132,13 @@ def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0
         ny = anchory - (sh/2)
     draw.rectangle(xy=[(nx-padding-border,ny-padding-border),(nx+sw+padding+border,ny+sh+padding+border)],fill=ImageColor.getrgb(backgroundColor),outline=ImageColor.getrgb(borderColor),width=1)
     draw.text(xy=(nx,ny), text=s, font=f, fill=ImageColor.getrgb(textColor))
+
+def drawtoptext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
+    sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)
+    ox,oy = gettextoffset(thefont,s)
+    sw += ox
+    sh += oy
+    draw.text(xy=(x-(sw/2),y), text=s, font=thefont, fill=textcolor)
 
 def drawtoplefttext(draw, s, fontsize, x, y, textcolor=colorFFFFFF, isbold=False):
     sw,sh,thefont = gettextdimensions(draw, s, fontsize, isbold)

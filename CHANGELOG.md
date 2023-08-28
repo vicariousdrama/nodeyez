@@ -9,11 +9,19 @@ title: NODEYEZ Change Log
 
 - Difficulty Epoch panel enhanced for pruned node support to estimate times
 - OP_RETURN panel now has more exclusion patterns by default
-- Add Fee Estimates panel for graphing Bitcoin Fee Estimates
+- New Panel: Fee Estimates for graphing Bitcoin Fee Estimates
+- New Panel: LND Messages to display those received in invoices and keysends
 
 **General**
 
-- Add utility script newpanel.py for creating scaffolding of a new panel using templates
+- New utility script scaffolding new panel using templates
+- New helper functions for top and bottom anchored text
+- New helper functions for wrapping text to a width and calculating multiline text height
+
+**Bugfixes**
+
+- Fixed logic in removeOldImages. Prior to this release it would remove all files of the given type (default png) from the directory from which the script was being run.
+
 
 ## 23.07
 

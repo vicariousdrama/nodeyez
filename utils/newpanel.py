@@ -12,6 +12,7 @@ currentDescription=""
 currentGroup=""
 
 pathprefix = dirname(sys.argv[0])
+if len(pathprefix) == 0: pathprefix = "."
 
 # Functions
 def promptTextValue(title="Value", msg="Provide a value", currentValue="", warningText=""):
