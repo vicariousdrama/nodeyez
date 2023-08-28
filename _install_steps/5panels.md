@@ -3,11 +3,11 @@ name: Panel Index
 title: NODEYEZ Panels
 layout: default
 groups:
-  - Informational Panels
   - Bitcoin Panels
   - Lightning Panels
   - Mining Panels
   - Nostr Panels
+  - Informational Panels
   - Other Fun Panels
   - Composite Displays
 ---
@@ -59,6 +59,4 @@ no image defined
 
 {% endfor %}
 
-
 [Home](../) | [Back to Nodeyez User and Code]({% link _install_steps/4nodeyez.md %}) | [Continue to Slideshow]({% link _install_steps/6slideshow.md %})
-
