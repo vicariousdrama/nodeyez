@@ -16,12 +16,6 @@ A few sample images that you can produce on your node using Nodeyez are shown be
 
 <img src="./images/blockhashdungeon.png" width=196 /><img src="./images/lndchannelbalance.png" width=196 /><img src="./images/difficultyepoch.png" width=196 /><img src="./images/fearandgreed.png" width=196 /><img src="./images/fiatprice.png" width=196 /><img src="./images/mempoolspace.png" width=196 /><img src="./images/miner.png" width=196 /><img src="./images/satsperfiatunit.png" width=196 /><img src="./images/miningpool-luxorpool.png" width=196 /><img src="./images/sysinfo.png" width=196 /><img src="./images/whirlpoolclimix.png" width=196 /><img src="./images/whirlpoolliquidity.png" width=196 />
 
-## Informational Panels
-
-* [IP Addresses](./_docs/script-ipaddresses.md)
-* [System Metrics](./_docs/script-sysinfo.md)
-* [UTC Clock](./_docs/script-utcclock.md)
-
 ## Bitcoin Panels
 
 All of these panels can work with a local Bitcoin node. At this time, information is accessed via bitcoin-cli RPC calls.
@@ -45,9 +39,12 @@ These panels can be configured to report on local LND based nodes, as well as re
 * [LND Channel Balance](./_docs/script-lndchannelbalance.md)
 * [LND Channel Fees](./_docs/script-lndchannelfees.md)
 * [LND Hub Account Balances](./_docs/script-lndhub.md)
+* [LND Messages](./docs/script-lndmessages.md)
 * [LND Ring of Fire](./_docs/script-lndringoffire.md)
 
 ## Mining Panels
+
+Panels in support of mining pools and mining devices
 
 * [Miner Status](./_docs/script-miner.md)
 * [Braiins Pool](./_docs/script-miningpool-braiinspool.md)
@@ -56,7 +53,17 @@ These panels can be configured to report on local LND based nodes, as well as re
 
 ## Nostr Panels
 
+Panels specifically related to Nostr
+
 * [Nostr.Band Stats](./_docs/script-nostrbandstats.md)
+
+## Informational Panels
+
+These panels only get their info from local system data
+
+* [IP Addresses](./_docs/script-ipaddresses.md)
+* [System Metrics](./_docs/script-sysinfo.md)
+* [UTC Clock](./_docs/script-utcclock.md)
 
 ## Other Fun Panels
 

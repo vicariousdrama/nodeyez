@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Usage: Uninstalls all of Nodeyez user, services, website dashboard
+# By default will be prompted at the outset and before each major
+# section.  This can be overridden by setting the following variables
+#    NODEYEZ_DELETE_CONFIRM="YES"
+#    NODEYEZ_DELETE_PROMPT="NO"
+
 prompt_delete() {
   result=$OK_TO_DELETE
   if [ $PROMPT_ALL -eq 1 ]; then

@@ -3,11 +3,11 @@ name: Documentation Index
 title: NODEYEZ Panels
 layout: default
 groups:
-  - Informational Panels
   - Bitcoin Panels
   - Lightning Panels
   - Mining Panels
   - Nostr Panels
+  - Informational Panels
   - Other Fun Panels
   - Composite Displays
 ---

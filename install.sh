@@ -686,6 +686,8 @@ if [ $GRANTED_BITCOIN -ge 1 ]; then
     systemctl start nodeyez-lndchannelbalance.service
     systemctl enable nodeyez-lndchannelfees.service
     systemctl start nodeyez-lndchannelfees.service
+    systemctl enable nodeyez-lndmessages.service
+    systemctl start nodeyez-lndmessages.service
   fi
 fi
 

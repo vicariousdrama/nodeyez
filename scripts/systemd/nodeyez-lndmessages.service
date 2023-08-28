@@ -1,0 +1,18 @@
+# Nodeyez: systemd unit for LND Messages panel generation
+# /etc/systemd/system/nodeyez-lndmessages.service
+
+[Unit]
+Description=Displays messages received via invoices or keysend payments
+StartLimitIntervalSec=600
+StartLimitBurst=2
+
+[Service]
+EnvironmentFile=/etc/nodeyez.conf
+WorkingDirectory=/home/nodeyez/nodeyez/scripts
+ExecStart=/home/nodeyez/.pyenv/nodeyez/bin/python3 /home/nodeyez/nodeyez/scripts/lndmessages.py
+User=nodeyez
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

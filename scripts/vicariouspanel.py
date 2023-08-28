@@ -655,7 +655,7 @@ class NodeyezPanel:
         if hasattr(self, "pageSuffix"):
             if len(self.pageSuffix) > 0:
                 globPattern = f"{globPattern}-{self.pageSuffix}"
-        globPattern = f"*.{fileExt}"
+        globPattern = f"{globPattern}*.{fileExt}"
         files = glob.glob(globPattern)
         for file in files:
             os.remove(file)

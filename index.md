@@ -31,6 +31,7 @@ There are a variety of panel types that you can selectively enable and configure
   <div class="slide"><img src="./images/lndchannelbalance.png" width=196 title="Display local and remote channel balances for nodes you control" /></div>
   <div class="slide"><img src="./images/lndchannelfees.png" width=196 title="Generate reports for fees paid and routing fees earned by your node" /></div>
   <div class="slide"><img src="./images/lndhub.png" width=196 title="List account balances on your LNDHub instance" /></div>
+  <div class="slide"><img src="./images/lndmessages.png" width=196 title="Display messages received via invoices or keysend payments" /></div>
   <div class="slide"><img src="./images/lndringoffire-1.png" width=196 title="View connection and channel up/down status between nodes in a defined lightning rings" /></div>
   <div class="slide"><img src="./images/logo.png" width=196 /></div>
   <div class="slide"><img src="./images/mempoolspace.png" width=196 title="Estimated block size and fee rates based on Mempool.space" /></div>

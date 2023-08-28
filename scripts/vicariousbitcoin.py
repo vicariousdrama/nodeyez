@@ -716,7 +716,8 @@ def lndGetNodeInfo(pubkey, node=None):
         j = json.loads(fakeresult)
     return j
 
-def lndGetNodeInvoices(node=None):
+def lndGetNodeInvoices(node=None, indexOffset=None, maxInvoices=None, 
+                       paginateForwards=None, creationDateStart=None, creationDateEnd=None):
     fakeresult = '{"invoices": []}'
     j = None
     if lndMode == "MOCK":
@@ -725,6 +726,13 @@ def lndGetNodeInvoices(node=None):
     if lndMode == "CLI":
         if lndIsAvailable():
             cmd = f"lncli {lndMacaroonOpts} listinvoices {lndTimeoutOpts} 2>&1"
+            args = ""
+            if indexOffset is not None: args += f" --index_offset {indexOffset}"
+            if maxInvoices is not None: args += f" --max_invoices {maxInvoices}"
+            if paginateForwards is not None: args += f" --paginate-forwards {paginateForwards}"
+            if creationDateStart is not None: args += f" --creation_date_start {creationDateStart}"
+            if creationDateEnd is not None: args += f" --creation_date_end {creationDateEnd}"
+            if len(args) > 0: cmd = cmd[:len(cmd)-5] + args + " 2>&1"
             try:
                 cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
             except subprocess.CalledProcessError as e:
@@ -733,6 +741,13 @@ def lndGetNodeInvoices(node=None):
             j = json.loads(cmdoutput)
     if lndMode == "REST":
         suffix = "/v1/invoices"
+        query = ""
+        if indexOffset is not None: query += f"&index_offset={indexOffset}"
+        if maxInvoices is not None: query += f"&num_max_invoices={maxInvoices}"
+        if paginateForwards is not None: query += f"&reversed={paginateForwards}"
+        if creationDateStart is not None: query += f"&creation_date_start={creationDateStart}"
+        if creationDateEnd is not None: query += f"&creation_date_end={creationDateEnd}"
+        if len(query) > 0: suffix += "?" + query[1:]
         defaultResponse = fakeresult
         j = lndDoNodeRestCommand(node, "GET", suffix, defaultResponse)
     if j is None:

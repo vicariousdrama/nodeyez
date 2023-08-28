@@ -36,6 +36,7 @@ sudo systemctl enable nodeyez-ipaddresses.service
 sudo systemctl enable nodeyez-lndchannelbalance.service
 sudo systemctl enable nodeyez-lndchannelfees.service
 sudo systemctl enable nodeyez-lndhub.service
+sudo systemctl enable nodeyez-lndmessages.service
 sudo systemctl enable nodeyez-lndringoffire.service
 sudo systemctl enable nodeyez-mempoolspace.service
 sudo systemctl enable nodeyez-miner.service
@@ -74,6 +75,7 @@ sudo systemctl start nodeyez-ipaddresses.service
 sudo systemctl start nodeyez-lndchannelbalance.service
 sudo systemctl start nodeyez-lndchannelfees.service
 sudo systemctl start nodeyez-lndhub.service
+sudo systemctl start nodeyez-lndmessages.service
 sudo systemctl start nodeyez-lndringoffire.service
 sudo systemctl start nodeyez-mempoolspace.service
 sudo systemctl start nodeyez-miner.service
