@@ -63,6 +63,16 @@ Drop in the Nodeyez XSLT Templates used for building directory listings
 sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
 ```
 
+If the above statement fails with a cannot stat error, use this
+
+```shell
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_dirlistblack.xslt /etc/nginx/
+
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_imagegallery128.xslt /etc/nginx/
+
+sudo cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_imagegallery.xslt /etc/nginx/
+```
+
 ## Copy Nodeyez SSL Config
 
 The prebuilt SSL configuration files include references to the cert and key, common parameters, and proxy definitions.
@@ -125,6 +135,18 @@ sudo cp /home/nodeyez/nodeyez/scripts/nginx/https_nodeyez.conf /etc/nginx/sites-
 Once complete, set the ownership
 ```shell
 sudo chown root:root -R /etc/nginx/
+```
+
+## Grant Group and Execute permission
+
+This will assign group to nginx, and also give it execute permission to the
+group so that members can traverse the folders of nodeyez
+
+```shell
+sudo gpasswd -a www-data nodeyez
+sudo chmod g+x /home/nodeyez 
+sudo chmod g+x /home/nodeyez/nodeyez 
+sudo chmod g+x /home/nodeyez/nodeyez/imageoutput
 ```
 
 ## Configure Firewall rules

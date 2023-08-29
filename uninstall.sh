@@ -72,7 +72,7 @@ DELETED_USER=0
 DELETED_CONFIGTOOL=0
 
 # Remove Nodeyez services
-systemctl reset-failed nodeyez*
+systemctl reset-failed nodeyez* 2>&1
 HAS_SERVICES=$(systemctl --type=service | grep nodeyez | sed -n 1p | wc -l)
 if [ $HAS_SERVICES -ge 1 ]; then
   section_delete=$(prompt_delete "Delete all Nodeyez services?")
@@ -218,9 +218,11 @@ if id nodeyez &>/dev/null; then
     if [ -z ${EXT_DRIVE_MOUNT+x} ]; then
       echo "- deleting Nodeyez user and home folder"
       deluser --remove-home nodeyez
+      groupdel nodeyez
     else
       echo "- deleting Nodeyez user and home folder mapped to external drive"
       deluser --remove-home nodeyez
+      groupdel nodeyez
       echo "- removing link for /home/nodeyez to external drive"
       unlink /home/nodeyez
     fi
