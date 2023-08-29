@@ -3,7 +3,11 @@ title: NODEYEZ Change Log
 ---
 # CHANGELOG
 
-## main
+## 23.08
+
+Released: 2023-08-29
+
+Tagged Commit: [781f1ee18b919548eebfebaa74a6a5259e80635e](https://github.com/vicariousdrama/nodeyez/commit/781f1ee18b919548eebfebaa74a6a5259e80635e)
 
 **New Panels and Enhancements**
 
