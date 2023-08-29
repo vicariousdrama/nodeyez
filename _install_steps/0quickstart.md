@@ -50,7 +50,7 @@ Otherwise, you can jump ahead to using the [Nodeyez-Config]({% link _install_ste
 
 Uninstalling is similar, simply run the following
 ```shell
-wget -qO- https://nodeyez.com/uninstall.sh | sudo bash
+wget -q -O /tmp/uninstall.sh https://nodeyez.com/uninstall.sh && chmod +x /tmp/uninstall.sh && sudo /tmp/uninstall.sh
 ```
 
 An existing NGINX instance will be left running after Nodeyez is removed.
