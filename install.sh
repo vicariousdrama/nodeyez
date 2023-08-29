@@ -394,6 +394,9 @@ line_ssl_certificate_key=$(nginx -T 2>&1 | grep "ssl_certificate_key " | sed -n 
 # copy xslt templates
 echo "- copying in Nodeyez XSLT templates"
 cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez*.xslt /etc/nginx/
+cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_dirlistblack.xslt /etc/nginx/
+cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_imagegallery128.xslt /etc/nginx/
+cp /home/nodeyez/nodeyez/scripts/nginx/nodeyez_imagegallery.xslt /etc/nginx/
 # nodeyez config referencing our freshly minted self signed certs
 echo "- copying in Nodeyez SSL config"
 mkdir -p /etc/nginx/nodeyez
@@ -469,6 +472,9 @@ if [ $(cat /etc/nginx/modules-enabled/* | grep xslt | wc -l) -gt 1 ]; then
   CREATED_WEBSITE=1
   fi
 fi
+# give nginx access to nodeyez and execute permissions to traverse into folder
+gpasswd -a www-data nodeyez
+chmod g+x /home/nodeyez && chmod g+x /home/nodeyez/nodeyez && chmod g+x /home/nodeyez/nodeyez/imageoutput
 
 WEBURL=""
 if [ $CREATED_WEBSITE -eq 1 ]; then
