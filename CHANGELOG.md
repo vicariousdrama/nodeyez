@@ -3,6 +3,12 @@ title: NODEYEZ Change Log
 ---
 # CHANGELOG
 
+## main
+
+**Bugfixes**
+
+- Corrected documentation error referencing package inkspace instead of inkscape
+
 ## 23.08
 
 Released: 2023-08-29

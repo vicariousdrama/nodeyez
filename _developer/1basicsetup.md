@@ -11,7 +11,7 @@ If you want to make improvements to Nodeyez, it's strongly recommended to have a
 # Install Tools
 
 ```shell
-sudo apt-get install python3 python3-venv git apt-transport-tor libjpeg-dev zlib1g-dev imagemagick inkspace -y
+sudo apt-get install python3 python3-venv git apt-transport-tor libjpeg-dev zlib1g-dev imagemagick inkscape -y
 ```
 
 # Python Environment
