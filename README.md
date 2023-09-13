@@ -70,6 +70,7 @@ These panels only get their info from local system data
 * [Compass Mining Status](./_docs/script-compassminingstatus.md)
 * [Dual Image Display](./_docs/script-nodeyezdual.md)
 * [Fear and Greed Index](./_docs/script-fearandgreed.md)
+* [Geyser Fund Projects](./_docs/script-geyserfund.md)
 * [Price of Bitcoin](./_docs/script-fiatprice.md)
 * [Raretoshi](./_docs/script-raretoshi.md)
 * [Sats per Fiat Unit](./_docs/script-satsperfiatunit.md)

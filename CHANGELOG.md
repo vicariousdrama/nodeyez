@@ -5,9 +5,14 @@ title: NODEYEZ Change Log
 
 ## main
 
+**New Panels and Enhancements**
+
+- New Panel: Geyser Fund panel spotlights a randomly selected project
+
 **Bugfixes**
 
 - Corrected documentation error referencing package inkspace instead of inkscape
+- vicariousnetwork.getfromurlifstale now honors fileAge parameter
 
 ## 23.08
 

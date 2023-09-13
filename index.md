@@ -25,6 +25,7 @@ There are a variety of panel types that you can selectively enable and configure
   <div class="slide"><img src="./images/fearandgreed.png" width=196 title="Social media sentiment of Bitcoin and crypto" /></div>
   <div class="slide"><img src="./images/feeestimates.png" width=196 title="Bitcoin Core Fee Estimates" /></div>
   <div class="slide"><img src="./images/fiatprice.png" width=196 title="The price of a Bitcoin in fiat, can choose which fiat to price against" /></div>
+  <div class="slide"><img src="./images/geyserfund.png" width=196 title="Spotlight a randomly selected project from Geyser Fund" /></div>
   <div class="slide"><img src="./images/inscriptionmempool.png" width=196 title="Show inscriptions within transactions in the mempool before they are mined" /></div>
   <div class="slide"><img src="./images/inscriptionparser.png" width=196 title="Parse out inscriptions from transactions in a block" /></div>
   <div class="slide"><img src="./images/ipaddresses.png" width=196 title="Display this nodes IP addresses, useful if you dont assign a static IP" /></div>

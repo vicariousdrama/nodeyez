@@ -166,27 +166,108 @@ def getnewestfile(fileDirectory):
         newestfile = max(files, key=os.path.getctime)
     return newestfile
 
+def checkifstale(filePath=None, fileAge=86400):
+    if filePath is None: return False
+    if len(filePath) <= 0: return False
+    mtime = int(os.path.getmtime(filePath))
+    currenttime = int(time.time())
+    diff = currenttime - mtime
+    if diff > fileAge: return False
+    return True
+
 def getfromurlifstale(useTor=True, url="https://example.com/", basePath="../data/example", fileAge=86400):
     year = datetime.utcnow().strftime("%Y")
     month = datetime.utcnow().strftime("%m")
     path = f"{basePath}/{year}/{month}/"
-    if not exists(path):
-        os.makedirs(path)
+    if not os.path.exists(path): os.makedirs(path)
     newestfile = getnewestfile(path + "*.json")
-    fileOK = True
-    if len(newestfile) > 0:
-        mtime = int(os.path.getmtime(newestfile))
-        currenttime = int(time.time())
-        diff = currenttime - mtime
-        if diff > 86400: fileOK = False
-    else:
-        fileOK = False
+    fileOK = checkifstale(filePath=newestfile, fileAge=fileAge)
     if not fileOK:
         fn = datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
         savetofile = f"{path}{fn}"
         getandsavefile(useTor, url, savetofile)
         newestfile = getnewestfile(path + "*.json")
     return newestfile
+
+def posttourlifstale(useTor=True, url="https://example.com", data=None, defaultResponse="{}", headers={}, username=None, password=None, basePath="../data/example", fileAge=86400):
+    year = datetime.utcnow().strftime("%Y")
+    month = datetime.utcnow().strftime("%m")
+    path = f"{basePath}/{year}/{month}/"
+    if not os.path.exists(path): os.makedirs(path)
+    newestfile = getnewestfile(path + "*.json")
+    fileOK = checkifstale(filePath=newestfile, fileAge=fileAge)
+    if not fileOK:
+        fn = datetime.utcnow().strftime("%Y-%m-%d-%H") + ".json"
+        savetofile = f"{path}{fn}"
+        try:
+            j = posturl(useTor=useTor, url=url, data=data, defaultResponse=defaultResponse, headers=headers, username=username, password=password)
+            if j != {}:
+                with open(savetofile, "w") as f:
+                    json.dump(j, f)
+        except Exception as e:
+            # warn 
+            print("error in posttourlifstale")
+            print(f"{e}")
+        newestfile = getnewestfile(path + "*.json")
+    return newestfile
+
+def getgeysertags(useTor=False):
+    geyserUrl = "https://api.geyser.fund/graphql"
+    graphqlHeaders = {"content-type": "application/json"}
+    graphqlQuery = '{"operationName":"TagsGet","query":"query TagsGet {tagsGet {label id count} }"}'
+    defaultResponse = "{}"
+    basePath="../data/geyserfund/taglist"
+    fileAge=86400
+    errresponse={}
+    j = errresponse
+    try:
+        newestfile = posttourlifstale(useTor=useTor, url=geyserUrl, data=graphqlQuery, defaultResponse=defaultResponse, headers=graphqlHeaders, username=None, password=None, basePath=basePath, fileAge=fileAge)
+        if len(newestfile) > 0:
+            with open(newestfile) as f:
+                j = json.load(f)
+        while "data" in j: j = j["data"]
+        while "tagsGet" in j: j = j["tagsGet"]
+    except:
+        j = errresponse
+    return j
+
+def getgeyserprojects(useTor=False, tagId=1, pagination=None):
+    pageSize = 20
+    paginationCursorInfo = ""
+    if pagination is not None:
+        # want to produce to look like      "cursor":{"id":476},
+        paginationCursorInfo = '"cursor":{"id":' + f"{pagination}" + '},'
+    geyserUrl = "https://api.geyser.fund/graphql"
+    graphqlHeaders = {"content-type": "application/json"}
+    # old get most funded for week
+    #graphqlQuery = '{"query":"query Project($input: GetProjectsMostFundedOfTheWeekInput) {projectsMostFundedOfTheWeekGet(input:$input) {project {id title shortDescription name image tags {label}}}}","variables":{"input":{"take":10}}}'
+    # new project focused by tag
+    graphqlQuery = '{"operationName":"ProjectsForLandingPage","variables":{"input":{"pagination":{' + paginationCursorInfo + '"take":' + f"{pageSize}" + '},"where":{"tagIds":[' + f"{tagId}" + ']},"orderBy":[{"createdAt":"desc"}]}},"query":"fragment ProjectForLandingPage on Project {id name image tags {label} status balance fundersCount thumbnailImage shortDescription title owners {id user {id username imageUrl}}} query ProjectsForLandingPage($input: ProjectsGetQueryInput) {projects(input: $input) {projects {...ProjectForLandingPage}}}"}'
+    defaultResponse = "{}"
+    basePath=f"../data/geyserfund/tagid-{tagId}"
+    fileAge=86400
+    errresponse={}
+    j = errresponse
+    try:
+        newestfile = posttourlifstale(useTor=useTor, url=geyserUrl, data=graphqlQuery, defaultResponse=defaultResponse, headers=graphqlHeaders, username=None, password=None, basePath=basePath, fileAge=fileAge)
+        if len(newestfile) > 0:
+            with open(newestfile) as f:
+                j = json.load(f)
+        while "data" in j: j = j["data"]
+        while "projects" in j: j = j["projects"]
+        # subsequent requests to get more
+        if len(j) == pageSize:
+            k = j[pageSize-1]
+            if "id" in k: 
+                nextPagination = k["id"]
+                os.remove(newestfile)
+                l = getgeyserprojects(useTor=useTor, tagId=tagId, pagination=nextPagination)
+                j.extend(l)
+                with open(newestfile, "w") as f:
+                    json.dump(j, f)
+    except:
+        j = errresponse
+    return j
 
 def getnostrstats(useTor=True, url="https://stats.nostr.band/stats_api?method=stats&options="):
     errresponse = {"relays":-1,"pubkeys":-1,"users":-1,"trusted_users":-1,

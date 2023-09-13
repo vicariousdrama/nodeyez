@@ -41,7 +41,7 @@ Fields are defined below
 | overlayBackgroundColor | If overlayEnabled is true, this is the color of the annotation text background overlay expressed as a Hexadecimal color specifier. Default `#00000080` |
 | overlayEnabled | Indicates whether annotations should be labeled over the image to display the title, author, edition and owner information. Default `true` |
 | overlayTextColor | If overlayTextEnabled is true, this is the color of the annotation text expressed as a Hexadecimal color specifier. Default `#ffffff` |
-| qrCodeEnabled | Indicates whether to show a QR code to link from the image to the raretoshi website for that item. Dfeault `true` |
+| qrCodeEnabled | Indicates whether to show a QR code to link from the image to the raretoshi website for that item. Default `true` |
 | qrCodePixelSize | If qrCodeEnabled is true, then this indicates the qr code box size for each pixel. Default `2` |
 | randomUserEnabled | Indicates whether to traverse random users based upon discovery through holdings and favorites. Default `true` |
 | randomUserInterval | If randomUserEnabled is true, then this is the amount of time, in seconds, before switching to a random user. Default `300` |

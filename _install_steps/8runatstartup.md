@@ -29,6 +29,7 @@ sudo systemctl enable nodeyez-difficultyepoch.service
 sudo systemctl enable nodeyez-fearandgreed.service
 sudo systemctl enable nodeyez-feeestimates.service
 sudo systemctl enable nodeyez-fiatprice.service
+sudo systemctl enable nodeyez-geyserfund.service
 sudo systemctl enable nodeyez-halving.service
 sudo systemctl enable nodeyez-inscriptionmempool.service
 sudo systemctl enable nodeyez-inscriptionparser.service
@@ -68,6 +69,7 @@ sudo systemctl start nodeyez-difficultyepoch.service
 sudo systemctl start nodeyez-fearandgreed.service
 sudo systemctl start nodeyez-feeestimates.service
 sudo systemctl start nodeyez-fiatprice.service
+sudo systemctl start nodeyez-geyserfund.service
 sudo systemctl start nodeyez-halving.service
 sudo systemctl start nodeyez-inscriptionmempool.service
 sudo systemctl start nodeyez-inscriptionparser.service
