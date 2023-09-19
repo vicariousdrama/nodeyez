@@ -551,6 +551,8 @@ def setPrunedBlockHeight():
 
 # ------ Lightning LND Related ------------------------------------------------------
 
+pubkey_alias = {'pubkey':'alias'}
+
 # config opts
 lndMode="MOCK"  # available modes are MOCK, CLI, and REST
                 # to force a mode, assign it below
