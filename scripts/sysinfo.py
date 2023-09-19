@@ -36,6 +36,8 @@ class SysInfoPanel(NodeyezPanel):
         self.drive2Info = vicariousstat.getdrive2info()
         self.memoryInfo = vicariousstat.getmemoryinfo("Mem")
         self.swapInfo = vicariousstat.getmemoryinfo("Swap")
+        self.log(f"cpu load: {self.cpuLoad}, cpu temp: {self.cpuTemp}, drive1: {self.drive1Info}, drive2: {self.drive2Info}, memory: {self.memoryInfo}, swap: {self.swapInfo}")
+
 
     def run(self):
 
@@ -43,6 +45,8 @@ class SysInfoPanel(NodeyezPanel):
         self.icons.draw = self.draw
         w = self.width // 3
         h = self.height // 2
+        if w < 1: w = 1
+        if h < 1: h = 1
         # Row 1
         x = 0
         y = 0

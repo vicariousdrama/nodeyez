@@ -51,16 +51,11 @@ class VicariousIcons:
         pcount = vicariousstat.getcpucount()
         loads = [load1min, load5min, load15min]
         for j in range(len(loads)):
-            x1 = x+ttw+3
-            y1 = y+((h/8)*((j*2)+2))+3
-            x2 = x+w
-            y2 = y+((h/8)*((j*2)+4))-3
-            x2 = x1 if x2 < x1 else x2
-            y2 = y1 if y2 < y1 else y2
-            self.draw.rounded_rectangle(xy=(x1,y1,x2,y2),radius=4,outline=self.cpuOutlineColor,width=1)
+            # fill portion
             ld = loads[j]
             ldp = float(ld) * float(100) / float(pcount)
             ldw = int(((x+w)-(x+ttw+3)) * (float(ld)/float(pcount)))
+            if ldw < 1: ldw = 1
             barcolor=self.cpuGoodColor
             if float(ldp) > 50.0:
                 barcolor=self.cpuWarnColor
@@ -68,11 +63,28 @@ class VicariousIcons:
                 barcolor=self.cpuDangerColor
             x1 = x+ttw+3+1
             y1 = y+((h/8)*((j*2)+2))+4
-            x2 = x+ttw+3+1+ldw
+            x2 = x1+ldw
             y2 = y+((h/8)*((j*2)+4))-3-1
-            x2 = x1 if x2 < x1 else x2
-            y2 = y1 if y2 < y1 else y2
-            self.draw.rounded_rectangle(xy=(x1,y1,x2,y2),radius=4,fill=barcolor,width=1)
+            x2 = x1 + 1 if x2 <= x1 else x2
+            y2 = y1 + 1 if y2 <= y1 else y2
+            if ldw >= 10: r = 4
+            elif ldw >= 8: r = 3
+            elif ldw >= 6: r = 2
+            elif ldw >= 4: r = 1
+            else: r = 0
+            if r > 0:
+                self.draw.rounded_rectangle(xy=(x1,y1,x2,y2),radius=r,fill=barcolor,width=1)
+            else:
+                self.draw.rectangle(xy=(x1,y1,x2,y2),fill=barcolor,width=1)
+            # outline portion
+            x1 = x+ttw+3
+            y1 = y+((h/8)*((j*2)+2))+3
+            x2 = x+w
+            y2 = y+((h/8)*((j*2)+4))-3
+            x2 = x1 + 1 if x2 <= x1 else x2
+            y2 = y1 + 1 if y2 <= y1 else y2
+            self.draw.rounded_rectangle(xy=(x1,y1,x2,y2),radius=4,outline=self.cpuOutlineColor,width=1)
+
 
     def drawDrive(self, x,y,w,h, drivePath="/",freeSpace="0G",availPercent=0.00,driveLabel="Drive Space"):
         if drivePath in ["error","None"]: return

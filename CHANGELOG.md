@@ -13,6 +13,8 @@ title: NODEYEZ Change Log
 
 - Corrected documentation error referencing package inkspace instead of inkscape
 - vicariousnetwork.getfromurlifstale now honors fileAge parameter
+- vicariousbitcoin.pubkey_alias restored for LND panels
+- Prevent crash of SysInfo panel when low CPU load and low resolution output
 
 ## 23.08
 
