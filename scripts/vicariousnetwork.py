@@ -239,10 +239,7 @@ def getgeyserprojects(useTor=False, tagId=1, pagination=None):
         paginationCursorInfo = '"cursor":{"id":' + f"{pagination}" + '},'
     geyserUrl = "https://api.geyser.fund/graphql"
     graphqlHeaders = {"content-type": "application/json"}
-    # old get most funded for week
-    #graphqlQuery = '{"query":"query Project($input: GetProjectsMostFundedOfTheWeekInput) {projectsMostFundedOfTheWeekGet(input:$input) {project {id title shortDescription name image tags {label}}}}","variables":{"input":{"take":10}}}'
-    # new project focused by tag
-    graphqlQuery = '{"operationName":"ProjectsForLandingPage","variables":{"input":{"pagination":{' + paginationCursorInfo + '"take":' + f"{pageSize}" + '},"where":{"tagIds":[' + f"{tagId}" + ']},"orderBy":[{"createdAt":"desc"}]}},"query":"fragment ProjectForLandingPage on Project {id name image tags {label} status balance fundersCount thumbnailImage shortDescription title owners {id user {id username imageUrl}}} query ProjectsForLandingPage($input: ProjectsGetQueryInput) {projects(input: $input) {projects {...ProjectForLandingPage}}}"}'
+    graphqlQuery = '{"operationName":"ProjectsForLandingPage","variables":{"input":{"pagination":{' + paginationCursorInfo + '"take":' + f"{pageSize}" + '},"where":{"tagIds":[' + f"{tagId}" + ']},"orderBy":{"field":"balance", "direction":"desc"}}},"query":"fragment ProjectForLandingPage on Project {id name image tags {label} status thumbnailImage shortDescription title} query ProjectsForLandingPage($input: ProjectsGetQueryInput) {projectsGet(input: $input) {projects {...ProjectForLandingPage}}}"}'
     defaultResponse = "{}"
     basePath=f"../data/geyserfund/tagid-{tagId}"
     fileAge=86400
@@ -253,8 +250,12 @@ def getgeyserprojects(useTor=False, tagId=1, pagination=None):
         if len(newestfile) > 0:
             with open(newestfile) as f:
                 j = json.load(f)
-        while "data" in j: j = j["data"]
-        while "projects" in j: j = j["projects"]
+        readjust = True
+        while readjust:
+            readjust = False
+            while "data" in j: j = j["data"]; readjust = True
+            while "projectsGet" in j: j = j["projectsGet"]; readjust = True
+            while "projects" in j: j = j["projects"]; readjust = True                
         # subsequent requests to get more
         if len(j) == pageSize:
             k = j[pageSize-1]
