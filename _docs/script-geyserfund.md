@@ -35,8 +35,9 @@ Fields are defined below
 | backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `300` |
-| qrCodeEnabled | Indicates whether to show a QR code to link from the image to the raretoshi website for that item. Dfeault `true` |
+| qrCodeEnabled | Indicates whether to show a QR code to link from the image to the raretoshi website for that item. Default `true` |
 | qrCodePixelSize | If qrCodeEnabled is true, then this indicates the qr code box size for each pixel. Default `2` |
+| saveUniqueFile | Indicates whether each to save an image file with the project name so it doesnt get replaced on next interval. Default `false` |
 | tagRestriction | To restrict images generated to a specific tag or set of tags, specify a value that indicates either the name of the tag, or with a * at the end of the value for tags beginning with the value (e.g. _bitcoin*_). Multiple tags may be specified by including a space between each tag. Default `bitcoin* nostr open-source` To allow any tag, either specify an empty string, or the word `any` or `*`. |
 | tagLabelsEnabled | Indicates whether to show all tags associated with the project. Default `true` |
 | textColor | The color of the text expressed as a hexadecimal color specifier. Default `#ffffff` | 

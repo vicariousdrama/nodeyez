@@ -6,6 +6,7 @@ import hashlib
 import os
 import qrcode
 import random
+import shutil
 import sys
 import vicariousnetwork
 import vicarioustext
@@ -24,6 +25,7 @@ class GeyserFundPanel(NodeyezPanel):
             # panel specific key names
             "qrCodeEnabled": "qrCodeEnabled",
             "qrCodePixelSize": "qrCodePixelSize",
+            "saveUniqueFile": "saveUniqueFile",
             "tagLabelsEnabled": "tagLabelsEnabled",
             "tagRestriction": "tagRestriction",
             "useTor": "useTor",
@@ -33,6 +35,7 @@ class GeyserFundPanel(NodeyezPanel):
         self._defaultattr("interval", 300)
         self._defaultattr("qrCodeEnabled", True)
         self._defaultattr("qrCodePixelSize", 2)
+        self._defaultattr("saveUniqueFile", False)
         self._defaultattr("tagLabelsEnabled", True)
         self._defaultattr("tagRestriction", "bitcoin* nostr open-source")
         self._defaultattr("useTor", False)
@@ -220,6 +223,14 @@ class GeyserFundPanel(NodeyezPanel):
                 vicarioustext.drawcenteredtext(self.draw, tagValue, fontsize, centerx, centery)
                 y2 = y1
 
+    def copyAsUniqueFile(self, projectName):
+        rFrom = f"/{self.name}."        
+        rTo = f"/{self.name}-{projectName}."
+        panelFileName = super().getOutputFile()
+        projectFileName = panelFileName.replace(rFrom, rTo)
+        self.log(f"Saving copy to {projectFileName}")
+        shutil.copyfile(panelFileName, projectFileName)
+
     def run(self):
 
         # Bail if we have no projects
@@ -245,6 +256,9 @@ class GeyserFundPanel(NodeyezPanel):
         self.renderAttribution()
 
         super().finishImage()
+
+        if self.saveUniqueFile:
+            self.copyAsUniqueFile(project["name"])        
 
 # --------------------------------------------------------------------------------------
 # Entry point if running this script directly
