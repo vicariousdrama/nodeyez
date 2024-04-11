@@ -229,6 +229,10 @@ class HalvingPanel(NodeyezPanel):
         secondsPassed = currentTime - self.halvingBeganTime
         avgBlockTime = 600 if self.halvingBeganTime == 0 else secondsPassed / self.halvingBlocksMined
         secondsRemain = avgBlockTime * blocksToGo
+        # report the halving time
+        self.log(f"seconds until halving: {secondsRemain}")
+        theHalvingTime = int(time.time()) + secondsRemain
+        self.log(datetime.fromtimestamp(theHalvingTime).strftime("%A, %B, %d, %Y %I:%M:%S"))
         if blocksToGo % 4 == 0:
             # block height
             blockText = f"BLOCK {self.blockheight}"

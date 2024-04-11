@@ -101,22 +101,29 @@ class MempoolSpacePanel(NodeyezPanel):
     def fetchData(self):
         """Fetches all the data needed for this panel"""
 
+        self.log("Fetching mempool blocks")
         mempoolData = vicariousnetwork.getmempoolblocks(self.useTor, self.mempoolBlocksUrl)
         if mempoolData != []:
-            if self.mempoolBlocksData != mempoolData: 
+            if self.mempoolBlocksData != mempoolData:
                 self.mempoolBlocksData = mempoolData
 
+        self.log("Fetching mempool histogram info")
         histogramData = vicariousnetwork.getmempoolhistograminfo(self.useTor, self.feeHistogramUrl)
         if histogramData != {"count":-1,"vsize":0,"total_fee":0,"fee_histogram":[]}:
             if self.feeHistogramData != histogramData:
                 self.feeHistogramData = histogramData
 
+        self.log("Fetching mempool recommended fees")
         fastestFee, halfHourFee, hourFee, minimumFee = vicariousnetwork.getmempoolrecommendedfees(self.useTor, self.feeRecommendationsUrl)
         if fastestFee != -1: self.fastestFee = fastestFee
         if halfHourFee != -1: self.halfHourFee = halfHourFee
         if hourFee != -1: self.hourFee = hourFee
         if minimumFee != -1: self.minimumFee = minimumFee
-    
+        if not hasattr(self, "fastestFee"): self.fastestFee = "?"
+        if not hasattr(self, "halfHourFee"): self.halfHourFee = "?"
+        if not hasattr(self, "hourFee"): self.hourFee = "?"
+        if not hasattr(self, "minimumFee"): self.minimumFee = "?"
+
     def _getColorsForBlock(self, satfee):
         satFee = float(satfee)
         b = "#404040"

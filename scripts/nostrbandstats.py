@@ -52,9 +52,12 @@ class NostrBandStatsPanel(NodeyezPanel):
         self.transformData()
 
         # set date range for charts based on data
-        activeRelays, _ = vicariouschart.getNestedField(self.transformStats, "daily.datasets.active_relays")
-        self.dateBegin = activeRelays[0]["d"]
-        self.dateEnd = activeRelays[-2]["d"] # second to last to only include full day
+        dataArray, _ = vicariouschart.getNestedField(self.transformStats, "daily.datasets.active_relays")
+        try:
+            self.dateBegin = dataArray[0]["d"]
+            self.dateEnd = dataArray[-2]["d"] # second to last to only include full day
+        except Exception as e:
+            self.log("Error parsing daily.datasets.active_relays from returned data. Is it malformed?")
 
     def transformData(self):
         # make a copy to work with
