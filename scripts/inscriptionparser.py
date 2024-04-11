@@ -260,7 +260,8 @@ if __name__ == '__main__':
             if re.match(r'^-?\d+$', arg1) is not None:
                 if int(arg1) <= p.blocknumber: 
                     p.blocknumber = int(arg1)
-            p.opreturns = vicariousbitcoin.getblockopreturns(p.blocknumber)
+            p.inscriptions = vicariousbitcoin.getblockinscriptions(p.blocknumber)
+            # p.opreturns = vicariousbitcoin.getblockopreturns(p.blocknumber)
             p.run()
         exit(0)
 

@@ -220,7 +220,6 @@ def drawDotChart(draw, left=0, top=0, width=480, height=320, list=[], fieldName=
             maoldx = px
 
     return low, high, avg
-    
 
 def drawStackedPercentageBarChart(draw, left=0, top=0, width=480, height=320, 
                                   thelist=[], fieldnames=[], showlabels=False, chartlabel="", 
@@ -360,6 +359,8 @@ def drawLabel(draw, s="", fontsize=12, anchorposition="tl", anchorx=0, anchory=0
     draw.text(xy=(nx,ny), text=s, font=f, fill=ImageColor.getrgb(textColor))
 
 def getNestedField(thedict, thefield):
+    if thedict is None:
+        return None, False
     fieldDelimiter = "."
     if thefield.find(fieldDelimiter) > -1:
         thefieldparts = thefield.split(fieldDelimiter)

@@ -14,9 +14,11 @@ import requests
 import time
 import wand.color
 import wand.image
+from pathlib import Path
+
 
 def gettimeouts():
-    return (5,20)
+    return (10,20)
 
 def gettorproxies():
     # with tor service installed, default port is 9050
@@ -205,7 +207,7 @@ def posttourlifstale(useTor=True, url="https://example.com", data=None, defaultR
                 with open(savetofile, "w") as f:
                     json.dump(j, f)
         except Exception as e:
-            # warn 
+            # warn
             print("error in posttourlifstale")
             print(f"{e}")
         newestfile = getnewestfile(path + "*.json")
@@ -259,7 +261,7 @@ def getgeyserprojects(useTor=False, tagId=1, pagination=None):
         # subsequent requests to get more
         if len(j) == pageSize:
             k = j[pageSize-1]
-            if "id" in k: 
+            if "id" in k:
                 nextPagination = k["id"]
                 os.remove(newestfile)
                 l = getgeyserprojects(useTor=useTor, tagId=tagId, pagination=nextPagination)
@@ -278,9 +280,18 @@ def getnostrstats(useTor=True, url="https://stats.nostr.band/stats_api?method=st
     try:
         newestfile = getfromurlifstale(useTor, url, "../data/nostrbandstats", 86400)
         if len(newestfile) > 0:
-            with open(newestfile) as f:
-                j = json.load(f)
-    except:
+            # 2024-04 NostrBand may have errors in their JSON output. We need to read the file and massage it
+            with open(newestfile, 'r') as file:
+                s = " ".join(line for line in file)
+                s = s.replace("-nan", "0")
+                s = s.replace("nan", "0")
+                j = json.loads(s)
+
+            # Original way
+            #with open(newestfile) as f:
+            #    j = json.load(f)
+    except Exception as e:
+        print(e)
         j = errresponse
     return j
 
@@ -291,7 +302,7 @@ def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker"
             j = json.load(f)
         if "error" not in j:
             keyname = f"btc_{fiatUnit}".lower()
-            if keyname not in j: 
+            if keyname not in j:
                 print(f"Price service does not have BTC to {fiatUnit} currency pair. Using btc_usd")
                 keyname = "btc_usd"
             price_last = int(math.floor(float(j[keyname]["last"])))

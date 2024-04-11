@@ -139,39 +139,40 @@ class LNDChannelBalancePanel(NodeyezPanel):
                 lastIndex = (firstIndex + self.pageSize) - 1
                 if lastIndex > channelCount - 1: lastIndex = channelCount - 1
                 channelsRendered = 0
-                for channelIndex in range(firstIndex, (lastIndex+1)):
-                    channelsRendered += 1
-                    channel = node["channels"][channelIndex]
-                    capacity = int(channel["capacity"])
-                    local_balance = int(channel["local_balance"])
-                    remote_balance = int(channel["remote_balance"])
-                    remote_alias = channel["remote_alias"]
-                    nodecolor = self.textColor if channel["active"] else self.nodeOfflineColor
-                    if not channel["active"]:
-                        remote_updated = channel["remote_updated"]
-                        remote_updateddate = datetime.fromtimestamp(remote_updated)
-                        csvdelay = int(channel["csv_delay"])
-                        daysold = utcnow - remote_updateddate
-                        csvrisk = (daysold.days * 144) > csvdelay
-                        csvrisks = "-risk" if csvrisk else ""
-                        remote_alias = "(" + str(daysold.days) + "d" + csvrisks + ")" + remote_alias
-                        if daysold.days >= 5 or csvrisk: nodecolor = self.nodeDeadColor
-                    dataRowTop = self.getInsetTop() + (channelsRendered * dataRowHeight)
-                    dataRowBottom = dataRowTop + dataRowHeight
-                    # alias
-                    vicarioustext.drawlefttext(self.draw, remote_alias, nodeFontSize, 0, dataRowTop + (dataRowHeight//2), ImageColor.getrgb(nodecolor))
-                    # capacity bar
-                    self.draw.rounded_rectangle(xy=(aliasWidth, dataRowTop+dataRowPadding, self.width-outlineWidth, dataRowBottom), radius=4, fill=ImageColor.getrgb(self.barEmptyColor), outline=ImageColor.getrgb(self.barOutlineColor), width=outlineWidth)
-                    # local balance is filled portion
-                    percentage = float(local_balance)/float(capacity)
-                    barWidth = int(float(self.width - aliasWidth - outlineWidth) * percentage)
-                    self.draw.rounded_rectangle(xy=(aliasWidth + outlineWidth, dataRowTop + dataRowPadding + outlineWidth, aliasWidth + outlineWidth + barWidth, dataRowBottom - outlineWidth), radius=3, fill=ImageColor.getrgb(self.barFilledColor))
-                    # labels
-                    if self.displayBalancesEnabled:
-                        vicarioustext.drawlefttext(self.draw, str(local_balance), nodeFontSize, aliasWidth+outlineWidth+1, dataRowTop + (dataRowHeight//2) + outlineWidth + 1, ImageColor.getrgb(self.backgroundColor))
-                        vicarioustext.drawlefttext(self.draw, str(local_balance), nodeFontSize, aliasWidth+outlineWidth,   dataRowTop + (dataRowHeight//2) + outlineWidth,     ImageColor.getrgb(self.textColor))
-                        vicarioustext.drawrighttext(self.draw, str(remote_balance), nodeFontSize, self.width-outlineWidth-outlineWidth,   dataRowTop + (dataRowHeight//2) + outlineWidth + 1, ImageColor.getrgb(self.backgroundColor))
-                        vicarioustext.drawrighttext(self.draw, str(remote_balance), nodeFontSize, self.width-outlineWidth-outlineWidth-1, dataRowTop + (dataRowHeight//2) + outlineWidth,     ImageColor.getrgb(self.textColor))
+                if lastIndex > -1:
+                    for channelIndex in range(firstIndex, (lastIndex+1)):
+                        channelsRendered += 1
+                        channel = node["channels"][channelIndex]
+                        capacity = int(channel["capacity"])
+                        local_balance = int(channel["local_balance"])
+                        remote_balance = int(channel["remote_balance"])
+                        remote_alias = channel["remote_alias"]
+                        nodecolor = self.textColor if channel["active"] else self.nodeOfflineColor
+                        if not channel["active"]:
+                            remote_updated = channel["remote_updated"]
+                            remote_updateddate = datetime.fromtimestamp(remote_updated)
+                            csvdelay = int(channel["csv_delay"])
+                            daysold = utcnow - remote_updateddate
+                            csvrisk = (daysold.days * 144) > csvdelay
+                            csvrisks = "-risk" if csvrisk else ""
+                            remote_alias = "(" + str(daysold.days) + "d" + csvrisks + ")" + remote_alias
+                            if daysold.days >= 5 or csvrisk: nodecolor = self.nodeDeadColor
+                        dataRowTop = self.getInsetTop() + (channelsRendered * dataRowHeight)
+                        dataRowBottom = dataRowTop + dataRowHeight
+                        # alias
+                        vicarioustext.drawlefttext(self.draw, remote_alias, nodeFontSize, 0, dataRowTop + (dataRowHeight//2), ImageColor.getrgb(nodecolor))
+                        # capacity bar
+                        self.draw.rounded_rectangle(xy=(aliasWidth, dataRowTop+dataRowPadding, self.width-outlineWidth, dataRowBottom), radius=4, fill=ImageColor.getrgb(self.barEmptyColor), outline=ImageColor.getrgb(self.barOutlineColor), width=outlineWidth)
+                        # local balance is filled portion
+                        percentage = float(local_balance)/float(capacity)
+                        barWidth = int(float(self.width - aliasWidth - outlineWidth) * percentage)
+                        self.draw.rounded_rectangle(xy=(aliasWidth + outlineWidth, dataRowTop + dataRowPadding + outlineWidth, aliasWidth + outlineWidth + barWidth, dataRowBottom - outlineWidth), radius=3, fill=ImageColor.getrgb(self.barFilledColor))
+                        # labels
+                        if self.displayBalancesEnabled:
+                            vicarioustext.drawlefttext(self.draw, str(local_balance), nodeFontSize, aliasWidth+outlineWidth+1, dataRowTop + (dataRowHeight//2) + outlineWidth + 1, ImageColor.getrgb(self.backgroundColor))
+                            vicarioustext.drawlefttext(self.draw, str(local_balance), nodeFontSize, aliasWidth+outlineWidth,   dataRowTop + (dataRowHeight//2) + outlineWidth,     ImageColor.getrgb(self.textColor))
+                            vicarioustext.drawrighttext(self.draw, str(remote_balance), nodeFontSize, self.width-outlineWidth-outlineWidth,   dataRowTop + (dataRowHeight//2) + outlineWidth + 1, ImageColor.getrgb(self.backgroundColor))
+                            vicarioustext.drawrighttext(self.draw, str(remote_balance), nodeFontSize, self.width-outlineWidth-outlineWidth-1, dataRowTop + (dataRowHeight//2) + outlineWidth,     ImageColor.getrgb(self.textColor))
                 # draw a line separating alias if it bleeds under balance bar
                 self.draw.rectangle(xy=(aliasWidth-dataRowPadding,self.getInsetTop(),aliasWidth-1,self.getInsetTop()+self.getInsetHeight()),fill=ImageColor.getrgb(self.backgroundColor))
                 # done this page of channels for this node
