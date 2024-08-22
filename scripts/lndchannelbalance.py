@@ -47,7 +47,7 @@ class LNDChannelBalancePanel(NodeyezPanel):
         self._defaultattr("nodes", [{}])
         self._defaultattr("pageSize", 8)
         self._defaultattr("watermarkAnchor", "bottom")
-    
+
         # Initialize
         super().__init__(name="lndchannelbalance")
 
@@ -166,7 +166,9 @@ class LNDChannelBalancePanel(NodeyezPanel):
                         # local balance is filled portion
                         percentage = float(local_balance)/float(capacity)
                         barWidth = int(float(self.width - aliasWidth - outlineWidth) * percentage)
-                        self.draw.rounded_rectangle(xy=(aliasWidth + outlineWidth, dataRowTop + dataRowPadding + outlineWidth, aliasWidth + outlineWidth + barWidth, dataRowBottom - outlineWidth), radius=3, fill=ImageColor.getrgb(self.barFilledColor))
+                        radius = 2
+                        if barWidth < radius: barWidth = radius
+                        self.draw.rounded_rectangle(xy=(aliasWidth + outlineWidth, dataRowTop + dataRowPadding + outlineWidth, aliasWidth + outlineWidth + barWidth, dataRowBottom - outlineWidth), radius=radius, fill=ImageColor.getrgb(self.barFilledColor))
                         # labels
                         if self.displayBalancesEnabled:
                             vicarioustext.drawlefttext(self.draw, str(local_balance), nodeFontSize, aliasWidth+outlineWidth+1, dataRowTop + (dataRowHeight//2) + outlineWidth + 1, ImageColor.getrgb(self.backgroundColor))
