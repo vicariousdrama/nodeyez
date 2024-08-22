@@ -64,7 +64,7 @@ sudo apt-get install imagemagick inkscape
 
 This provides for JSON processing
 ```shell
-sudo apt-get insall jq
+sudo apt-get install jq
 ```
 
 ## Install Netcat
