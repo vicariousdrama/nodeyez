@@ -42,7 +42,7 @@ class SatsPerFiatUnitPanel(NodeyezPanel):
         }
 
         # Define our defaults (all panel specific key names should be listed)
-        self._defaultattr("attributionColor", "#40ff40")
+        self._defaultattr("attributionColor", "#1bd8f4")
         self._defaultattr("bigTextEnabled", True)
         self._defaultattr("bigTextOnTopEnabled", True)
         self._defaultattr("fiatUnit", "USD")
@@ -55,7 +55,7 @@ class SatsPerFiatUnitPanel(NodeyezPanel):
         self._defaultattr("priceLow", 0)
         self._defaultattr("priceShadowColor", "#ffffff7f")
         self._defaultattr("priceUpColor", "#40ff407f")
-        self._defaultattr("priceUrl", "https://bisq.markets/bisq/api/markets/ticker")
+        self._defaultattr("priceUrl", "https://mempool.space/api/v1/prices")
         self._defaultattr("satShape", "square") # circle, square, symbol-s, triangle
         self._defaultattr("satShapeColor", "#ff7f00")
         self._defaultattr("useTor", True)
@@ -74,15 +74,15 @@ class SatsPerFiatUnitPanel(NodeyezPanel):
             self.priceColor = self.priceDownColor
         if self.priceChange > 0:
             self.priceColor = self.priceUpColor
-        if fiatkeyname != f"btc_{self.fiatUnit}".lower():
-            self.fiatUnit = fiatkeyname.split("_")[1].upper()
+        if fiatkeyname != f"{self.fiatUnit}".upper():
+            self.fiatUnit = fiatkeyname.upper()
 
     def getSatsPerFiatUnit(self):
         return int(round(100000000.0 / self.priceLast))
 
     def renderAttribution(self):
         fontsize = int(self.height * 16/320)
-        vicarioustext.drawbottomlefttext(self.draw, "Data from bisq", fontsize, 0, self.height, ImageColor.getrgb(self.attributionColor))
+        vicarioustext.drawbottomlefttext(self.draw, "Data from mempool", fontsize, 0, self.height, ImageColor.getrgb(self.attributionColor))
 
     def renderBigTextOver(self):
         if not self.bigTextEnabled: return

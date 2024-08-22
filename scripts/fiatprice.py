@@ -38,7 +38,7 @@ class FiatPricePanel(NodeyezPanel):
         }
 
         # Define our defaults (all panel specific key names should be listed)
-        self._defaultattr("attributionColor", "#40ff40")
+        self._defaultattr("attributionColor", "#1bd8f4")
         self._defaultattr("bigTextEnabled", True)
         self._defaultattr("bigTextOnTopEnabled", True)
         self._defaultattr("fiatUnit", "USD")
@@ -51,7 +51,7 @@ class FiatPricePanel(NodeyezPanel):
         self._defaultattr("priceLow", 0)
         self._defaultattr("priceShadowColor", "#ffffff7f")
         self._defaultattr("priceUpColor", "#40ff40")
-        self._defaultattr("priceUrl", "https://bisq.markets/bisq/api/markets/ticker")
+        self._defaultattr("priceUrl", "https://mempool.space/api/v1/prices")
         self._defaultattr("useTor", True)
         self._defaultattr("watermarkAnchor", "bottom")
 
@@ -89,7 +89,7 @@ class FiatPricePanel(NodeyezPanel):
         else:
             vicarioustext.drawcenteredtext(self.draw, f"Price: {priceText}", smallPriceSize, x, y, ImageColor.getrgb(self.priceColor))
         # attribution
-        vicarioustext.drawbottomlefttext(self.draw, "Data from bisq", attributionSize, 0, self.height, ImageColor.getrgb(self.attributionColor))
+        vicarioustext.drawbottomlefttext(self.draw, "Data from mempool", attributionSize, 0, self.height, ImageColor.getrgb(self.attributionColor))
 
         self.canvas.alpha_composite(alphaLayer)
         alphaLayer.close()

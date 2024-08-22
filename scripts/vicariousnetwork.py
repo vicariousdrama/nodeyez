@@ -295,19 +295,19 @@ def getnostrstats(useTor=True, url="https://stats.nostr.band/stats_api?method=st
         j = errresponse
     return j
 
-def getpriceinfo(useTor=True, url="https://bisq.markets/bisq/api/markets/ticker", price_last=-1, price_high=-1, price_low=-1, fiatUnit="USD"):
-    newestfile = getfromurlifstale(useTor, url, "../data/bisq", 3600)
+def getpriceinfo(useTor=True, url="https://mempool.space/api/v1/prices", price_last=-1, price_high=-1, price_low=-1, fiatUnit="USD"):
+    newestfile = getfromurlifstale(useTor, url, "../data/mempoolprices", 3600)
     if len(newestfile) > 0:
         with open(newestfile) as f:
             j = json.load(f)
         if "error" not in j:
-            keyname = f"btc_{fiatUnit}".lower()
+            keyname = f"{fiatUnit}".upper()
             if keyname not in j:
-                print(f"Price service does not have BTC to {fiatUnit} currency pair. Using btc_usd")
-                keyname = "btc_usd"
-            price_last = int(math.floor(float(j[keyname]["last"])))
-            price_high = int(math.floor(float(j[keyname]["high"])))
-            price_low = int(math.floor(float(j[keyname]["low"])))
+                print(f"Price service does not have BTC to {fiatUnit} currency pair. Using USD")
+                keyname = "USD"
+            price_last = int(math.floor(float(j[keyname])))
+            price_high = price_last
+            price_low = price_last
     return (price_last,price_high,price_low,keyname)
 
 def getraretoshiuserinfoFallback(useTor=True, raretoshiDataDirectory="../data/raretoshi/", raretoshiUser="rapidstart", userInfo=None, userInfoLast=0, userInfoInterval=3600):
