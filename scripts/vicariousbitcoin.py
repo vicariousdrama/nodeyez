@@ -2,9 +2,12 @@
 from os.path import exists
 from urllib3.exceptions import InsecureRequestWarning
 import json
+import os
 import random
 import re
 import requests
+import shlex
+import shutil
 import subprocess
 import time
 import vicariousnetwork
@@ -21,9 +24,19 @@ def loadJSONData(dataFile=None, default={}):
     return j
 
 def binaryExists(binName):
-    cmd = f"which {binName} | wc -l"
-    cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    return int(cmdoutput) > 0
+    return shutil.which(binName) is not None
+
+def getBitcoinCLICommand(*args):
+    cliargs = []
+    if isinstance(bitcoinCLIOptions, str) and len(bitcoinCLIOptions.strip()) > 0:
+        cliargs = [
+            os.path.expanduser(os.path.expandvars(arg))
+            for arg in shlex.split(bitcoinCLIOptions)
+        ]
+    return ["bitcoin-cli"] + cliargs + [str(arg) for arg in args]
+
+def runBitcoinCLI(*args, stderr=None):
+    return subprocess.check_output(getBitcoinCLICommand(*args), stderr=stderr).decode("utf-8")
 
 # ------ Bitcoin Core Related ------------------------------------------------------
 
@@ -124,9 +137,8 @@ def getblock(blocknum, verbosity=1):
         if prunedBlockHeight > blocknum:
             print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
         else:
-            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblock {blockhash} {verbosity}"
             try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                cmdoutput = runBitcoinCLI("getblock", blockhash, verbosity)
                 j = json.loads(cmdoutput)
             except subprocess.CalledProcessError as e:
                 print(e)
@@ -155,9 +167,8 @@ def getblockchaininfo():
         if j is not None and "result" in j:
             j = j["result"]
     if bitcoinMode == "CLI" and isBitcoinAvailable():
-        cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockchaininfo"
         try:
-            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            cmdoutput = runBitcoinCLI("getblockchaininfo")
             j = json.loads(cmdoutput)
         except subprocess.CalledProcessError as e:
             print(e)
@@ -186,9 +197,8 @@ def getblockhash(blocknum=1):
         if prunedBlockHeight > blocknum:
             print(f"Call to getblockhash for blocknum {blocknum} below pruned height {prunedBlockHeight}")
         else:
-            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockhash {blocknum}"
             try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                cmdoutput = runBitcoinCLI("getblockhash", blocknum)
                 j = cmdoutput
             except subprocess.CalledProcessError as e:
                 print(e)
@@ -347,9 +357,8 @@ def getblockstats(blocknum):
         if prunedBlockHeight > blocknum:
             print(f"Call to getblock for blocknum {blocknum} below pruned height {prunedBlockHeight}")
         else:
-            cmd = f"bitcoin-cli {bitcoinCLIOptions} getblockstats {blocknum}"
             try:
-                cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+                cmdoutput = runBitcoinCLI("getblockstats", blocknum)
                 j = json.loads(cmdoutput)
             except subprocess.CalledProcessError as e:
                 print(e)
@@ -427,9 +436,8 @@ def getestimatesmartfee(targetblocks=1):
     if bitcoinMode == "CLI" and isBitcoinAvailable():
         if prunedBlockHeight is None:
             setPrunedBlockHeight()
-        cmd = f"bitcoin-cli {bitcoinCLIOptions} estimatesmartfee {targetblocks}"
         try:
-            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            cmdoutput = runBitcoinCLI("estimatesmartfee", targetblocks)
             j = json.loads(cmdoutput)
         except subprocess.CalledProcessError as e:
             print(e)
@@ -472,9 +480,8 @@ def getmempool():
         if j is not None and "result" in j:
             j = j["result"]
     if bitcoinMode == "CLI" and isBitcoinAvailable():
-        cmd = "bitcoin-cli " + bitcoinCLIOptions + " getrawmempool"
         try:
-            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            cmdoutput = runBitcoinCLI("getrawmempool")
             j = json.loads(cmdoutput)
         except subprocess.CalledProcessError as e:
             print(e)
@@ -500,9 +507,11 @@ def gettransaction(txid, blockhash=""):
         if j is not None and "result" in j:
             j = j["result"]
     if bitcoinMode == "CLI" and isBitcoinAvailable():
-        cmd = f"bitcoin-cli {bitcoinCLIOptions} getrawtransaction {txid} true {blockhash} 2>&1"
         try:
-            cmdoutput = subprocess.check_output(cmd, shell=True).decode("utf-8")
+            cmdargs = ["getrawtransaction", txid, "true"]
+            if len(blockhash) > 0:
+                cmdargs.append(blockhash)
+            cmdoutput = runBitcoinCLI(*cmdargs, stderr=subprocess.STDOUT)
             j = json.loads(cmdoutput)
             return j
         except subprocess.CalledProcessError as e:
