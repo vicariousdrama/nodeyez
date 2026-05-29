@@ -45,7 +45,7 @@ Fields are defined below
 | --- | --- |
 | aheadColor | The color to fill in the block when ahead of schedule, expressed as a Hexadecimal color specifier. Default `#ffff40` |
 | backgroundColor | The background color of the image expressed as a hexadecimal color specifier. Default `#000000` |
-| behindColor | The color to draw the grid for a block when its not yet mined and was expected to be, expressed as a Hexadecimal color specifier. Default `#ff0000` |
+| behindColor | The color to draw the grid and X mark for a block when its not yet mined and was expected to be, expressed as a Hexadecimal color specifier. Default `#ff0000` |
 | gridColor | The base color of the grid representing each block during the difficulty period, expressed as a Hexadecimal color specifier. Default `#404040` |
 | height | The height, in pixels, to generate the image. Default `320` |
 | interval | The amount of time, in seconds, the script should wait before data gathering and image creation again. Default `540` |
@@ -86,4 +86,4 @@ sudo systemctl start nodeyez-difficultyepoch.service
 
 ---
 
-[Home](../) | 
+[Home](../) |
