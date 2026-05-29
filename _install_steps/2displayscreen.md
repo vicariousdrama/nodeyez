@@ -71,6 +71,12 @@ Choose the menu options for
 
 Note that the raspi-config program has changed over time and your menu choices may differ. Ultimately, you're looking for the option to enable SPI to support access to the display attached to the GPIO pins
 
+On newer Raspberry Pi OS releases, the display server may default to Wayland. If your attached display setup or slideshow is not working as expected, switch back to X11 from the same config program:
+
+- Choice 6. Advanced Options
+- Choice A6 Wayland
+- Choice W1 X11
+
 Save and exit the raspi-config program
 
 ### Edit /boot/config.txt

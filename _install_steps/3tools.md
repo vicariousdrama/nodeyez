@@ -71,7 +71,7 @@ sudo apt-get install jq
 
 Provides for network connection calls used by Miner tools
 ```shell
-sudo apt-get install netcat
+sudo apt-get install netcat-traditional
 ```
 
 ## Install Uncomplicated Firewall Rules

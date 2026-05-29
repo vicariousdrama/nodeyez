@@ -133,7 +133,7 @@ apt-get -y install \
     inkscape \
     jq \
     libjpeg-dev \
-    netcat \
+    netcat-traditional \
     python3 \
     python3-venv \
     zlib1g-dev 
