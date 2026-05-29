@@ -167,7 +167,10 @@ class DifficultyEpochPanel(NodeyezPanel):
                             lastBehindX = tlx
                             lastBehindY = tly
                             lastBehindBlock = blockBeingRendered
-                        self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=ImageColor.getrgb(outlinecolor))
+                        outlinecolor = ImageColor.getrgb(outlinecolor)
+                        self.draw.rectangle(xy=((tlx,tly),(brx,bry)),fill=None,outline=outlinecolor)
+                        self.draw.line(xy=[(tlx+1,tly+1),(brx-1,bry-1)],fill=outlinecolor,width=1)
+                        self.draw.line(xy=[(tlx+1,bry-1),(brx-1,tly+1)],fill=outlinecolor,width=1)
                     else: # dashed box
                         dllen = 2
                         dslen = 1
@@ -285,4 +288,4 @@ if __name__ == '__main__':
         exit(0)
 
     # Continuous run
-    p.runContinuous()    
+    p.runContinuous()
